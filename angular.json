@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/sakai-ng",
+                        "outputPath": "dist/tigin",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": [
@@ -29,7 +29,8 @@
                             {
                                 "glob": "**/*",
                                 "input": "public"
-                            }
+                            },
+                            "src/assets"
                         ],
                         "styles": [
                             "src/assets/styles.scss"
@@ -76,7 +77,8 @@
                             {
                                 "glob": "**/*",
                                 "input": "public"
-                            }
+                            },
+                            "src/assets"
                         ],
                         "styles": [
                             "src/assets/styles.scss"
@@ -88,6 +90,6 @@
         }
     },
     "cli": {
-      "analytics": false
+        "analytics": false
     }
 }
