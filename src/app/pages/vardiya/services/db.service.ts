@@ -140,13 +140,9 @@ export class DbService {
 
         if (await this.db.personeller.count() === 0) {
             const varsayilanPersoneller: Omit<DBPersonel, 'id'>[] = [
-                { keyId: 'P001', ad: 'A.', soyad: 'VURAL', tamAd: 'A. VURAL', istasyonId: 1, rol: 'POMPACI', aktif: true },
-                { keyId: 'P002', ad: 'E.', soyad: 'AKCA', tamAd: 'E. AKCA', istasyonId: 1, rol: 'POMPACI', aktif: true },
-                { keyId: 'P003', ad: 'M.', soyad: 'DUMDUZ', tamAd: 'M. DUMDUZ', istasyonId: 1, rol: 'POMPACI', aktif: true },
-                { keyId: 'P004', ad: 'F.', soyad: 'BAYLAS', tamAd: 'F. BAYLAS', istasyonId: 1, rol: 'POMPACI', aktif: true },
-                { keyId: 'M001', ad: 'Market', soyad: 'Sorumlusu', tamAd: 'Market Sorumlusu', istasyonId: 1, rol: 'MARKET_SORUMLUSU', aktif: true },
-                { keyId: 'V001', ad: 'Vardiya', soyad: 'Sorumlusu', tamAd: 'Vardiya Sorumlusu', istasyonId: 1, rol: 'VARDIYA_SORUMLUSU', aktif: true },
-                { keyId: 'Y001', ad: 'İstasyon', soyad: 'Sahibi', tamAd: 'İstasyon Sahibi', istasyonId: 1, rol: 'YONETICI', aktif: true }
+                { keyId: 'M001', ad: 'MARKET', soyad: '', tamAd: 'Market Sorumlusu', istasyonId: 1, rol: 'MARKET_SORUMLUSU', aktif: true },
+                { keyId: 'V001', ad: 'VARDIYA', soyad: '', tamAd: 'Vardiya Sorumlusu', istasyonId: 1, rol: 'VARDIYA_SORUMLUSU', aktif: true },
+                { keyId: 'Y001', ad: 'ONAY', soyad: '', tamAd: 'İstasyon Sahibi', istasyonId: 1, rol: 'YONETICI', aktif: true }
             ];
             await this.db.personeller.bulkAdd(varsayilanPersoneller);
         }
@@ -169,6 +165,34 @@ export class DbService {
 
     async getPersonelByKey(keyId: string): Promise<DBPersonel | undefined> {
         return this.db.personeller.where('keyId').equals(keyId).first();
+    }
+
+    async personelEkle(personel: Omit<DBPersonel, 'id'>): Promise<number> {
+        return this.db.personeller.add(personel);
+    }
+
+    async personelGuncelle(id: number, changes: Partial<DBPersonel>): Promise<void> {
+        await this.db.personeller.update(id, changes);
+    }
+
+    async personelSil(id: number): Promise<void> {
+        await this.db.personeller.delete(id);
+    }
+
+    // ==========================================
+    // İSTASYON İŞLEMLERİ
+    // ==========================================
+
+    async istasyonEkle(istasyon: Omit<DBIstasyon, 'id'>): Promise<number> {
+        return this.db.istasyonlar.add(istasyon);
+    }
+
+    async istasyonGuncelle(id: number, changes: Partial<DBIstasyon>): Promise<void> {
+        await this.db.istasyonlar.update(id, changes);
+    }
+
+    async istasyonSil(id: number): Promise<void> {
+        await this.db.istasyonlar.delete(id);
     }
 
     // ==========================================
@@ -436,6 +460,282 @@ export class DbService {
             onayBekleyen: vardiyalar.filter(v => v.durum === 'ONAY_BEKLIYOR').length,
             onaylanan: vardiyalar.filter(v => v.durum === 'ONAYLANDI').length,
             toplamCiro: vardiyalar.reduce((sum, v) => sum + v.toplamTutar, 0)
+        };
+    }
+
+    // ==========================================
+    // RAPORLAR
+    // ==========================================
+
+    async getVardiyaRaporu(baslangic: Date, bitis: Date): Promise<{
+        ozet: {
+            toplamVardiya: number;
+            toplamTutar: number;
+            toplamLitre: number;
+            toplamIade: number;
+            toplamGider: number;
+        };
+        vardiyalar: {
+            tarih: Date;
+            dosyaAdi: string;
+            tutar: number;
+            durum: string;
+        }[];
+    }> {
+        // Tarih aralığındaki vardiyaları bul (başlangıç ve bitiş dahil)
+        // Dexie'de tarih sorgusu yaparken sadece tarih kısmına bakmak zor olabilir, 
+        // bu yüzden geniş bir aralık çekip JS tarafında filtreleyeceğiz veya
+        // tam timestamp karşılaştırması yapacağız.
+        const vardiyalar = await this.db.vardiyalar
+            .where('yuklemeTarihi')
+            .between(baslangic, bitis, true, true)
+            .toArray();
+
+        // Satışları da çekelim (litre hesabı için)
+        // Performans için sadece ilgili vardiyaların satışlarını çekmek daha iyi olur
+        // Ancak karmaşık sorgular yerine JS'de hesaplamak şimdilik daha güvenli
+
+        const vardiyaIds = vardiyalar.map(v => v.id!);
+        const satislar = await this.db.satislar
+            .where('vardiyaId')
+            .anyOf(vardiyaIds)
+            .toArray();
+
+        const giderler = await this.db.giderler
+            .where('vardiyaId')
+            .anyOf(vardiyaIds)
+            .toArray();
+
+        const ozet = {
+            toplamVardiya: vardiyalar.length,
+            toplamTutar: vardiyalar.reduce((sum, v) => sum + v.toplamTutar, 0),
+            toplamLitre: satislar.reduce((sum, s) => sum + s.litre, 0),
+            toplamIade: 0, // İade mantığı henüz yok
+            toplamGider: giderler.reduce((sum, g) => sum + g.tutar, 0)
+        };
+
+        const raporVardiyalar = vardiyalar.map(v => ({
+            tarih: v.yuklemeTarihi,
+            dosyaAdi: v.dosyaAdi,
+            tutar: v.toplamTutar,
+            durum: v.durum
+        }));
+
+        return { ozet, vardiyalar: raporVardiyalar };
+    }
+
+    async getPersonelKarnesi(personelId: number, baslangic: Date, bitis: Date): Promise<{
+        personel: DBPersonel | undefined;
+        hareketler: {
+            tarih: Date;
+            vardiyaId: number;
+            otomasyonSatis: number;
+            manuelTahsilat: number;
+            fark: number;
+            aracSayisi: number;
+            litre: number;
+            aciklama?: string;
+        }[];
+        ozet: {
+            toplamSatis: number;
+            toplamTahsilat: number;
+            toplamFark: number;
+            toplamLitre: number;
+            aracSayisi: number;
+            ortalamaLitre: number;
+            ortalamaTutar: number;
+            yakitDagilimi: { yakit: string, litre: number, tutar: number, oran: number }[];
+        }
+    }> {
+        const personel = await this.db.personeller.get(personelId);
+
+        // Tarih aralığındaki vardiyalar
+        const vardiyalar = await this.db.vardiyalar
+            .where('yuklemeTarihi')
+            .between(baslangic, bitis, true, true)
+            .toArray();
+
+        const vardiyaIds = vardiyalar.map(v => v.id!);
+
+        // İlgili satışlar
+        const satislar = await this.db.satislar
+            .where('vardiyaId').anyOf(vardiyaIds)
+            .and(s => s.personelId === personelId)
+            .toArray();
+
+        // İlgili pusulalar (tahsilatlar)
+        const pusulalar = await this.db.pusulalar
+            .where('vardiyaId').anyOf(vardiyaIds)
+            .and(p => p.personelId === personelId)
+            .toArray();
+
+        // Yakıt Dağılımı Hesaplama
+        const yakitMap = new Map<string, { litre: number, tutar: number }>();
+        let globalToplamLitre = 0;
+
+        satislar.forEach(s => {
+            if (!yakitMap.has(s.yakitTuru)) {
+                yakitMap.set(s.yakitTuru, { litre: 0, tutar: 0 });
+            }
+            const yakit = yakitMap.get(s.yakitTuru)!;
+            yakit.litre += s.litre;
+            yakit.tutar += s.toplamTutar;
+            globalToplamLitre += s.litre;
+        });
+
+        const yakitDagilimi = Array.from(yakitMap.entries()).map(([yakit, data]) => ({
+            yakit,
+            litre: data.litre,
+            tutar: data.tutar,
+            oran: globalToplamLitre > 0 ? (data.litre / globalToplamLitre) * 100 : 0
+        })).sort((a, b) => b.litre - a.litre);
+
+        const hareketler = vardiyalar.map(v => {
+            const vSatislar = satislar.filter(s => s.vardiyaId === v.id);
+            const vPusula = pusulalar.find(p => p.vardiyaId === v.id);
+
+            const otomasyonSatis = vSatislar.reduce((sum, s) => sum + s.toplamTutar, 0);
+            const litre = vSatislar.reduce((sum, s) => sum + s.litre, 0);
+            const aracSayisi = vSatislar.length;
+            const manuelTahsilat = vPusula ? vPusula.toplam : 0;
+            const fark = manuelTahsilat - otomasyonSatis;
+
+            return {
+                tarih: v.yuklemeTarihi,
+                vardiyaId: v.id!,
+                otomasyonSatis,
+                manuelTahsilat,
+                fark,
+                litre,
+                aracSayisi,
+                aciklama: vPusula?.krediKartiDetay ? `${vPusula.krediKartiDetay.length} adet KK` : undefined
+            };
+        }).filter(h => h.otomasyonSatis > 0 || h.manuelTahsilat > 0); // Hareketsiz günleri gösterme
+
+        const toplamSatis = hareketler.reduce((sum, h) => sum + h.otomasyonSatis, 0);
+        const toplamTahsilat = hareketler.reduce((sum, h) => sum + h.manuelTahsilat, 0);
+        const toplamFark = hareketler.reduce((sum, h) => sum + h.fark, 0);
+        const toplamLitre = hareketler.reduce((sum, h) => sum + h.litre, 0);
+        const toplamArac = hareketler.reduce((sum, h) => sum + h.aracSayisi, 0);
+
+        const ozet = {
+            toplamSatis,
+            toplamTahsilat,
+            toplamFark,
+            toplamLitre,
+            aracSayisi: toplamArac,
+            ortalamaLitre: toplamArac > 0 ? toplamLitre / toplamArac : 0,
+            ortalamaTutar: toplamArac > 0 ? toplamSatis / toplamArac : 0,
+            yakitDagilimi
+        };
+
+        return { personel, hareketler, ozet };
+    }
+
+    async getFarkRaporu(baslangic: Date, bitis: Date): Promise<{
+        ozet: {
+            toplamFark: number;
+            toplamAcik: number;
+            toplamFazla: number;
+            vardiyaSayisi: number;
+            acikVardiyaSayisi: number;
+            fazlaVardiyaSayisi: number;
+        };
+        vardiyalar: {
+            vardiyaId: number;
+            tarih: Date;
+            dosyaAdi: string;
+            otomasyonToplam: number;
+            tahsilatToplam: number;
+            fark: number;
+            durum: string;
+            personelFarklari: {
+                personelAdi: string;
+                personelKeyId: string;
+                otomasyon: number;
+                tahsilat: number;
+                fark: number;
+            }[];
+        }[];
+    }> {
+        const vardiyalar = await this.db.vardiyalar
+            .where('yuklemeTarihi')
+            .between(baslangic, bitis, true, true)
+            .toArray();
+
+        const vardiyaIds = vardiyalar.map(v => v.id!);
+        const satislar = await this.db.satislar.where('vardiyaId').anyOf(vardiyaIds).toArray();
+        const pusulalar = await this.db.pusulalar.where('vardiyaId').anyOf(vardiyaIds).toArray();
+
+        // Satışlardan personelId -> personelKeyId eşleştirmesi oluştur (bu daha güvenilir)
+        const personelIdToKeyFromSales = new Map<number, string>();
+        satislar.forEach(s => {
+            personelIdToKeyFromSales.set(s.personelId, s.personelKeyId);
+        });
+
+        const vardiyaDetaylari = vardiyalar.map(v => {
+            const vSatislar = satislar.filter(s => s.vardiyaId === v.id);
+            const vPusulalar = pusulalar.filter(p => p.vardiyaId === v.id);
+
+            // Personel bazında grupla
+            const personelMap = new Map<string, { personelAdi: string, personelKeyId: string, otomasyon: number, tahsilat: number }>();
+
+            vSatislar.forEach(s => {
+                const key = s.personelKeyId;
+                if (!personelMap.has(key)) {
+                    personelMap.set(key, { personelAdi: s.personelAdi, personelKeyId: s.personelKeyId, otomasyon: 0, tahsilat: 0 });
+                }
+                personelMap.get(key)!.otomasyon += s.toplamTutar;
+            });
+
+            vPusulalar.forEach(p => {
+                const key = personelIdToKeyFromSales.get(p.personelId) || `UNKNOWN_${p.personelId}`;
+                if (!personelMap.has(key)) {
+                    personelMap.set(key, { personelAdi: p.personelAdi, personelKeyId: key, otomasyon: 0, tahsilat: 0 });
+                }
+                personelMap.get(key)!.tahsilat += p.toplam;
+            });
+
+            const personelFarklari = Array.from(personelMap.values()).map(p => ({
+                personelAdi: p.personelAdi,
+                personelKeyId: p.personelKeyId,
+                otomasyon: p.otomasyon,
+                tahsilat: p.tahsilat,
+                fark: p.tahsilat - p.otomasyon
+            }));
+
+            const otomasyonToplam = vSatislar.reduce((sum, s) => sum + s.toplamTutar, 0);
+            const tahsilatToplam = vPusulalar.reduce((sum, p) => sum + p.toplam, 0);
+            const fark = tahsilatToplam - otomasyonToplam;
+
+            return {
+                vardiyaId: v.id!,
+                tarih: v.yuklemeTarihi,
+                dosyaAdi: v.dosyaAdi,
+                otomasyonToplam,
+                tahsilatToplam,
+                fark,
+                durum: v.durum,
+                personelFarklari
+            };
+        });
+
+        const toplamFark = vardiyaDetaylari.reduce((sum, v) => sum + v.fark, 0);
+        const toplamAcik = vardiyaDetaylari.reduce((sum, v) => sum + (v.fark < 0 ? Math.abs(v.fark) : 0), 0);
+        const toplamFazla = vardiyaDetaylari.reduce((sum, v) => sum + (v.fark > 0 ? v.fark : 0), 0);
+        const acikVardiyaSayisi = vardiyaDetaylari.filter(v => v.fark < -0.01).length;
+        const fazlaVardiyaSayisi = vardiyaDetaylari.filter(v => v.fark > 0.01).length;
+
+        return {
+            ozet: {
+                toplamFark,
+                toplamAcik,
+                toplamFazla,
+                vardiyaSayisi: vardiyaDetaylari.length,
+                acikVardiyaSayisi,
+                fazlaVardiyaSayisi
+            },
+            vardiyalar: vardiyaDetaylari.sort((a, b) => Math.abs(b.fark) - Math.abs(a.fark))
         };
     }
 

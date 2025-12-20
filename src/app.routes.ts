@@ -8,7 +8,11 @@ export const appRoutes: Routes = [
         component: AppLayout,
         children: [
             { path: '', redirectTo: 'vardiya', pathMatch: 'full' },
-            { path: 'vardiya', loadChildren: () => import('./app/pages/vardiya/vardiya.routes') }
+            { path: 'vardiya', loadChildren: () => import('./app/pages/vardiya/vardiya.routes') },
+            {
+                path: 'sistem/ayarlar',
+                loadComponent: () => import('./app/pages/sistem/ayarlar/ayarlar.component').then(m => m.AyarlarComponent)
+            }
         ]
     },
     { path: 'notfound', component: Notfound },

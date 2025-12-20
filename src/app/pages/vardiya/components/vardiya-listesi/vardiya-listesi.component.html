@@ -211,7 +211,9 @@
                         </td>
                         <td class="text-center">
                             <p-tag [value]="getDurumLabel(vardiya.durum)" [severity]="getDurumSeverity(vardiya.durum)"
-                                styleClass="text-sm px-3 py-1">
+                                styleClass="text-sm px-3 py-1 cursor-pointer"
+                                [pTooltip]="vardiya.durum === 'REDDEDILDI' ? vardiya.redNedeni : undefined"
+                                tooltipPosition="bottom">
                             </p-tag>
                         </td>
                         <td>

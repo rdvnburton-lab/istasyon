@@ -29,6 +29,7 @@ interface YuklenenVardiya {
     islemSayisi: number;
     toplamTutar: number;
     durum: VardiyaDurum;
+    redNedeni?: string;
     satislar: OtomasyonSatis[];
 }
 
@@ -93,6 +94,7 @@ export class VardiyaListesi implements OnInit {
             durum: v.durum === 'ACIK' ? VardiyaDurum.ACIK :
                 v.durum === 'ONAY_BEKLIYOR' ? VardiyaDurum.ONAY_BEKLIYOR :
                     v.durum === 'ONAYLANDI' ? VardiyaDurum.ONAYLANDI : VardiyaDurum.REDDEDILDI,
+            redNedeni: v.redNedeni,
             satislar: [] // Listede satış detayına gerek yok
         }));
     }

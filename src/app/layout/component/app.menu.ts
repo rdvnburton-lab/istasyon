@@ -51,17 +51,17 @@ export class AppMenu {
                     {
                         label: 'Vardiya Raporu',
                         icon: 'pi pi-fw pi-file',
-                        routerLink: ['/raporlar/vardiya']
+                        routerLink: ['/vardiya/raporlar/vardiya']
                     },
                     {
                         label: 'Personel Karnesi',
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['/raporlar/personel']
+                        routerLink: ['/vardiya/raporlar/personel']
                     },
                     {
                         label: 'Fark Raporu',
                         icon: 'pi pi-fw pi-exclamation-triangle',
-                        routerLink: ['/raporlar/fark']
+                        routerLink: ['/vardiya/raporlar/fark']
                     }
                 ]
             },
@@ -71,17 +71,23 @@ export class AppMenu {
                     {
                         label: 'Onay Bekleyenler',
                         icon: 'pi pi-fw pi-check-circle',
-                        routerLink: ['/yonetim/onay']
+                        routerLink: ['/vardiya/onay-bekleyenler']
                     },
                     {
-                        label: 'İstasyonlar',
-                        icon: 'pi pi-fw pi-building',
-                        routerLink: ['/yonetim/istasyonlar']
-                    },
-                    {
-                        label: 'Personel',
-                        icon: 'pi pi-fw pi-user',
-                        routerLink: ['/yonetim/personel']
+                        label: 'Tanımlamalar',
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'İstasyon Tanımları',
+                                icon: 'pi pi-fw pi-building',
+                                routerLink: ['/vardiya/tanimlamalar/istasyon']
+                            },
+                            {
+                                label: 'Personel Tanımları',
+                                icon: 'pi pi-fw pi-user',
+                                routerLink: ['/vardiya/tanimlamalar/personel']
+                            }
+                        ]
                     }
                 ]
             },

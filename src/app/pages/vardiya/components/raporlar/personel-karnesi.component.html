@@ -1,0 +1,135 @@
+<div class="card">
+    <div class="flex flex-col md:flex-row gap-4 mb-4 items-end">
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-2">
+                <label class="font-bold">Personel Seçimi</label>
+                <p-select [options]="personeller" [(ngModel)]="secilenPersonel" optionLabel="tamAd"
+                    placeholder="Personel Seçiniz" [filter]="true" filterBy="tamAd" styleClass="w-full"></p-select>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-bold">Başlangıç Tarihi</label>
+                <p-datePicker [(ngModel)]="baslangicTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
+                    inputId="baslangic"></p-datePicker>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-bold">Bitiş Tarihi</label>
+                <p-datePicker [(ngModel)]="bitisTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
+                    inputId="bitis"></p-datePicker>
+            </div>
+        </div>
+        <div class="flex items-end pb-1">
+            <p-button label="Karnesini Göster" icon="pi pi-search" (onClick)="raporla()" severity="primary"
+                [disabled]="!secilenPersonel"></p-button>
+        </div>
+    </div>
+
+    <div *ngIf="raporGoster">
+        <!-- Ana Özet Kartları -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <p-card styleClass="bg-blue-50 border-none shadow-none h-full">
+                <div class="text-blue-600 font-medium mb-2">Toplam Otomasyon Satışı</div>
+                <div class="text-2xl font-bold text-blue-900">{{ozet.toplamSatis |
+                    currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+                <div class="mt-2 text-sm text-blue-700">
+                    <span class="font-bold">{{ozet.aracSayisi}}</span> Araç
+                </div>
+            </p-card>
+            <p-card styleClass="bg-orange-50 border-none shadow-none h-full">
+                <div class="text-orange-600 font-medium mb-2">Toplam Litre</div>
+                <div class="text-2xl font-bold text-orange-900">{{ozet.toplamLitre | number:'1.2-2'}} Lt</div>
+                <div class="mt-2 text-sm text-orange-700">
+                    Ort. <span class="font-bold">{{ozet.ortalamaLitre | number:'1.2-2'}}</span> Lt/Araç
+                </div>
+            </p-card>
+            <p-card styleClass="bg-indigo-50 border-none shadow-none h-full">
+                <div class="text-indigo-600 font-medium mb-2">Toplam Tahsilat</div>
+                <div class="text-2xl font-bold text-indigo-900">{{ozet.toplamTahsilat |
+                    currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+                <div class="mt-2 text-sm text-indigo-700">
+                    Ort. <span class="font-bold">{{ozet.ortalamaTutar | currency:'TRY':'symbol-narrow':'1.2-2'}}</span>
+                    /Araç
+                </div>
+            </p-card>
+            <p-card
+                [styleClass]="ozet.toplamFark >= 0 ? 'bg-green-50 border-none shadow-none h-full' : 'bg-red-50 border-none shadow-none h-full'">
+                <div
+                    [class]="ozet.toplamFark >= 0 ? 'text-green-600 font-medium mb-2' : 'text-red-600 font-medium mb-2'">
+                    Genel Durum</div>
+                <div
+                    [class]="ozet.toplamFark >= 0 ? 'text-2xl font-bold text-green-900' : 'text-2xl font-bold text-red-900'">
+                    {{ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2'}}
+                </div>
+                <div class="mt-2 text-sm font-semibold"
+                    [class]="ozet.toplamFark >= 0 ? 'text-green-700' : 'text-red-700'">
+                    {{ozet.toplamFark >= 0 ? 'FAZLA' : 'AÇIK'}}
+                </div>
+            </p-card>
+        </div>
+
+        <!-- Yakıt Kaynaklı Dağılım ve Detaylı Liste -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+            <!-- Sol: Yakıt Dağılımı -->
+            <div class="lg:col-span-1">
+                <div class="card p-0 overflow-hidden">
+                    <p-table [value]="ozet.yakitDagilimi" styleClass="p-datatable-sm">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Yakıt Türü</th>
+                                <th class="text-right">Litre</th>
+                                <th class="text-right">Oran</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-yakit>
+                            <tr>
+                                <td class="font-medium">{{yakit.yakit}}</td>
+                                <td class="text-right">{{yakit.litre | number:'1.0-2'}}</td>
+                                <td class="text-right">
+                                    <p-tag [value]="(yakit.oran | number:'1.1-1') + '%'" severity="info"></p-tag>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div *ngIf="ozet.yakitDagilimi.length === 0" class="p-4 text-center text-gray-500">
+                        Veri yok.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ: Hareket Listesi -->
+            <div class="lg:col-span-2">
+                <p-table [value]="hareketler" [paginator]="true" [rows]="10" [loading]="loading"
+                    styleClass="p-datatable-sm" [rowHover]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Tarih</th>
+                            <th class="text-right">Araç</th>
+                            <th class="text-right">Litre</th>
+                            <th class="text-right">Satış</th>
+                            <th class="text-right">Tahsilat</th>
+                            <th class="text-right">Fark</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item>
+                        <tr>
+                            <td>{{item.tarih | date:'dd.MM.yyyy'}}</td>
+                            <td class="text-right">{{item.aracSayisi}}</td>
+                            <td class="text-right">{{item.litre | number:'1.0-2'}}</td>
+                            <td class="text-right">{{item.otomasyonSatis | currency:'TRY':'symbol-narrow':'1.0-0'}}</td>
+                            <td class="text-right">{{item.manuelTahsilat | currency:'TRY':'symbol-narrow':'1.0-0'}}</td>
+                            <td class="text-right font-bold"
+                                [ngClass]="{'text-red-500': item.fark < -1, 'text-green-500': item.fark > 1}">
+                                {{item.fark | currency:'TRY':'symbol-narrow':'1.2-2'}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">Bu tarih aralığında hareket bulunamadı.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

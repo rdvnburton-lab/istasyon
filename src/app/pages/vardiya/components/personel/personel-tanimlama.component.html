@@ -1,0 +1,111 @@
+<div class="card">
+    <p-toast></p-toast>
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <p-button label="Yeni Personel" icon="pi pi-plus" severity="success" (onClick)="yeniEkle()"></p-button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table [value]="personeller" [rows]="10" [paginator]="true" [rowHover]="true" styleClass="p-datatable-sm"
+        [tableStyle]="{'min-width': '60rem'}" [globalFilterFields]="['tamAd', 'ad', 'keyId', 'rol']">
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Personel Tanımları</h5>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Ad Soyad (Görünen)</th>
+                <th>Otomasyon Adı</th>
+                <th>Key ID</th>
+                <th>Rol</th>
+                <th>İstasyon</th>
+                <th class="text-center">Durum</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-personel>
+            <tr [ngClass]="{'bg-yellow-50': personel.ad === personel.tamAd}">
+                <td>
+                    <span class="font-bold">{{personel.tamAd}}</span>
+                    <i *ngIf="personel.ad === personel.tamAd" class="pi pi-exclamation-circle text-orange-500 ml-2"
+                        pTooltip="Düzenlenmeli (Otomatik Oluşturuldu)" tooltipPosition="top"></i>
+                </td>
+                <td>{{personel.ad}}</td>
+                <td>{{personel.keyId}}</td>
+                <td>
+                    <p-tag [value]="personel.rol" severity="info"></p-tag>
+                </td>
+                <td>{{getIstasyonAdi(personel.istasyonId)}}</td>
+                <td class="text-center">
+                    <p-tag [value]="personel.aktif ? 'Aktif' : 'Pasif'"
+                        [severity]="personel.aktif ? 'success' : 'danger'"></p-tag>
+                </td>
+                <td>
+                    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="success"
+                        (onClick)="duzenle(personel)"></p-button>
+                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                        (onClick)="sil(personel)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                Toplam {{personeller ? personeller.length : 0}} personel var.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="personelDialog" [style]="{width: '500px'}" header="Personel Detayı" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="formgrid grid grid-cols-2 gap-4">
+            <div class="field mb-4 col">
+                <label for="ad">Otomasyon Adı</label>
+                <input type="text" pInputText id="ad" [(ngModel)]="personel.ad" required [readonly]="true"
+                    class="bg-gray-100" />
+                <small class="block text-gray-500 mt-1">Sistemden otomatik gelir, değiştirilemez.</small>
+            </div>
+            <div class="field mb-4 col">
+                <label for="keyId">Otomasyon Key ID</label>
+                <input type="text" pInputText id="keyId" [(ngModel)]="personel.keyId" [readonly]="true"
+                    class="bg-gray-100" />
+                <small class="block text-gray-500 mt-1">Sistemden otomatik gelir.</small>
+            </div>
+        </div>
+
+        <div class="field mb-4 bg-blue-50 p-3 rounded border border-blue-100">
+            <label for="tamAd" class="font-bold text-blue-900">Tam Ad Soyad (Görünen İsim)</label>
+            <input type="text" pInputText id="tamAd" [(ngModel)]="personel.tamAd" required autofocus
+                class="mt-1 font-bold" />
+            <small class="p-error" *ngIf="submitted && !personel.tamAd">Tam ad zorunludur.</small>
+            <small class="block text-blue-800 mt-1">Raporlarda görünecek isim (örn: Ahmet Vural)</small>
+        </div>
+
+        <div class="formgrid grid grid-cols-2 gap-4">
+            <div class="field mb-4 col">
+                <label for="rol">Rol</label>
+                <p-select [options]="roller" [(ngModel)]="personel.rol" optionLabel="label" optionValue="value"
+                    appendTo="body"></p-select>
+            </div>
+            <div class="field mb-4 col">
+                <label for="istasyon">İstasyon</label>
+                <p-select [options]="istasyonlar" [(ngModel)]="personel.istasyonId" optionLabel="ad" optionValue="id"
+                    appendTo="body"></p-select>
+            </div>
+        </div>
+
+        <div class="field-checkbox mb-4">
+            <p-checkbox [(ngModel)]="personel.aktif" [binary]="true" inputId="aktif"></p-checkbox>
+            <label for="aktif" class="ml-2">Aktif Personel</label>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button label="İptal" icon="pi pi-times" [text]="true" (onClick)="dialogKapat()"></p-button>
+        <p-button label="Kaydet" icon="pi pi-check" [text]="true" (onClick)="kaydet()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

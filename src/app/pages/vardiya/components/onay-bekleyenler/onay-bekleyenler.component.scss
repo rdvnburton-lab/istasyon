@@ -1,0 +1,32 @@
+:host {
+    display: block;
+}
+
+.card {
+    background: var(--surface-card);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.surface-card {
+    background: var(--surface-card);
+}
+
+// Custom Scrollbar for the table if needed
+::ng-deep .p-datatable-wrapper {
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--surface-300);
+        border-radius: 4px;
+    }
+}
+
+// Tag styles adjustment
+::ng-deep .p-tag {
+    font-weight: 600;
+}

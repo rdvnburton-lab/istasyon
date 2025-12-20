@@ -40,12 +40,16 @@ import {
     FiloSatis
 } from '../models/vardiya.model';
 import { DbService, DBVardiya, DBSatis, DBPusula, DBGider } from './db.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VardiyaService {
-    constructor(private dbService: DbService) { }
+    constructor(
+        private dbService: DbService,
+        private authService: AuthService
+    ) { }
 
     private aktifVardiya = new BehaviorSubject<Vardiya | null>(null);
     private pusulaGirisleri = new BehaviorSubject<PusulaGirisi[]>([]);
@@ -112,10 +116,57 @@ export class VardiyaService {
         this.aktifVardiya.next(vardiya);
     }
 
+    getOnayBekleyenVardiyalar(): Observable<Vardiya[]> {
+        return from(this.dbService.onayBekleyenVardiyalar()).pipe(
+            map(dbVardiyalar => dbVardiyalar.map(v => ({
+                id: v.id!,
+                istasyonId: 1, // Default
+                istasyonAdi: 'Merkez İstasyon', // Default
+                baslangicTarihi: v.baslangicTarih || v.yuklemeTarihi,
+                bitisTarihi: v.bitisTarih || undefined,
+                durum: VardiyaDurum.ONAY_BEKLIYOR,
+                sorumluId: 0,
+                sorumluAdi: 'Bilinmiyor',
+                olusturmaTarihi: v.yuklemeTarihi,
+                guncellemeTarihi: v.mutabakatTarihi || new Date(),
+                dosyaAdi: v.dosyaAdi,
+                pompaToplam: v.toplamTutar, // Tahmini
+                marketToplam: 0,
+                genelToplam: v.toplamTutar,
+                toplamFark: 0,
+                kilitli: true
+            })))
+        );
+    }
+
     async vardiyaEkle(vardiya: Vardiya, satislar: OtomasyonSatis[], filoSatislari: FiloSatis[] = []): Promise<number> {
         // 1. Vardiya kaydı
         const personelToplam = satislar.reduce((sum, s) => sum + s.toplamTutar, 0);
         const filoToplam = filoSatislari.reduce((sum, s) => sum + s.tutar, 0);
+
+        // 0. Personel Kontrolü ve Otomatik Oluşturma
+        const uniqueNames = [...new Set(satislar.map(s => s.personelAdi))];
+        for (const ad of uniqueNames) {
+            // Otomasyon genelde adı 'A. VURAL' gibi verir.
+            // Veritabanında KeyId veya Ad ile eşleşme arayalım.
+            // Basitçe KeyId kontrolü yapalım (parse edilen keyId üzerinden)
+            const ornekSatis = satislar.find(s => s.personelAdi === ad);
+            if (ornekSatis) {
+                const mevcutPersonel = await this.dbService.getPersonelByKey(ornekSatis.personelKeyId);
+                if (!mevcutPersonel) {
+                    console.log(`Yeni personel tespit edildi: ${ad} (${ornekSatis.personelKeyId})`);
+                    await this.dbService.personelEkle({
+                        keyId: ornekSatis.personelKeyId,
+                        ad: ad, // Otomasyondan gelen isim (örn: A. VURAL)
+                        soyad: '', // Soyad ayrıştırması zor olabilir, boş bırakalım
+                        tamAd: ad, // Kullanıcı sonra bunu düzeltecek (örn: Ahmet Vural)
+                        istasyonId: 1, // Varsayılan
+                        rol: 'POMPACI',
+                        aktif: true
+                    });
+                }
+            }
+        }
 
         const dbVardiya: Omit<DBVardiya, 'id'> = {
             dosyaAdi: vardiya.dosyaAdi || 'Bilinmeyen Dosya',
@@ -309,41 +360,60 @@ export class VardiyaService {
         }
     }
 
-    vardiyaOnayla(vardiyaId: number, onaylayanId: number): Observable<Vardiya> {
+    vardiyaOnayla(vardiyaId: number, onaylayanId?: number): Observable<Vardiya> {
         const vardiya = this.aktifVardiya.value;
-        if (vardiya && vardiya.id === vardiyaId) {
-            // Gerçek uygulamada onaylayan kişi Auth servisinden alınır
-            // Burada şimdilik basit bir isim atıyoruz veya DB'den çekebiliriz.
-            // Şimdilik 'Yönetici' diyelim.
-            const muhurlu: Vardiya = {
-                ...vardiya,
-                durum: VardiyaDurum.ONAYLANDI,
-                onaylayanId,
-                onaylayanAdi: 'Yönetici', // TODO: Auth servisinden al
-                onayTarihi: new Date(),
-                guncellemeTarihi: new Date(),
-                kilitli: true // Mühürlendi
-            };
-            this.aktifVardiya.next(muhurlu);
-            return of(muhurlu).pipe(delay(500));
-        }
-        throw new Error('Vardiya bulunamadı');
+        const currentUser = this.authService.getCurrentUser();
+
+        // Eğer parametre olarak gelmediyse giriş yapan kullanıcıyı al
+        const finalOnaylayanId = onaylayanId || currentUser?.id || 0;
+        const finalOnaylayanAdi = currentUser ? `${currentUser.ad} ${currentUser.soyad}` : 'Sistem';
+
+        // DB'de güncelle
+        return from(this.dbService.onayla(vardiyaId, finalOnaylayanId, finalOnaylayanAdi)).pipe(
+            map(() => {
+                if (vardiya && vardiya.id === vardiyaId) {
+                    const muhurlu: Vardiya = {
+                        ...vardiya,
+                        durum: VardiyaDurum.ONAYLANDI,
+                        onaylayanId: finalOnaylayanId,
+                        onaylayanAdi: finalOnaylayanAdi,
+                        onayTarihi: new Date(),
+                        guncellemeTarihi: new Date(),
+                        kilitli: true // Mühürlendi
+                    };
+                    this.aktifVardiya.next(muhurlu);
+                    return muhurlu;
+                }
+                // Eğer aktif vardiya bu değilse bile işlem başarılı, boş veya yeni halini döndürebiliriz
+                // Ancak bu metod genellikle aktif vardiya üzerinde çağrılır.
+                // API tutarlılığı için dummy bir obje veya tekrar fetch gerekebilir ama şimdilik:
+                return { id: vardiyaId, durum: VardiyaDurum.ONAYLANDI } as Vardiya;
+            })
+        );
     }
 
     vardiyaReddet(vardiyaId: number, redNedeni: string): Observable<Vardiya> {
         const vardiya = this.aktifVardiya.value;
-        if (vardiya && vardiya.id === vardiyaId) {
-            const reddedilmis: Vardiya = {
-                ...vardiya,
-                durum: VardiyaDurum.REDDEDILDI,
-                redNedeni,
-                guncellemeTarihi: new Date(),
-                kilitli: false // Düzenleme için açık
-            };
-            this.aktifVardiya.next(reddedilmis);
-            return of(reddedilmis).pipe(delay(500));
-        }
-        throw new Error('Vardiya bulunamadı');
+        const currentUser = this.authService.getCurrentUser();
+        const onaylayanId = currentUser?.id || 0;
+        const onaylayanAdi = currentUser ? `${currentUser.ad} ${currentUser.soyad}` : 'Sistem';
+
+        return from(this.dbService.reddet(vardiyaId, onaylayanId, onaylayanAdi, redNedeni)).pipe(
+            map(() => {
+                if (vardiya && vardiya.id === vardiyaId) {
+                    const reddedilmis: Vardiya = {
+                        ...vardiya,
+                        durum: VardiyaDurum.REDDEDILDI,
+                        redNedeni,
+                        guncellemeTarihi: new Date(),
+                        kilitli: false // Düzenleme için açık
+                    };
+                    this.aktifVardiya.next(reddedilmis);
+                    return reddedilmis;
+                }
+                return { id: vardiyaId, durum: VardiyaDurum.REDDEDILDI } as Vardiya;
+            })
+        );
     }
 
     private temizle(): void {
