@@ -2,6 +2,28 @@ import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
 
 // Veritabanı modelleri
+// Veritabanı modelleri
+export interface DBIstasyon {
+    id?: number;
+    ad: string;
+    kod: string;
+    adres: string;
+    pompaSayisi: number;
+    marketVar: boolean;
+    aktif: boolean;
+}
+
+export interface DBPersonel {
+    id?: number;
+    keyId: string; // Otomasyon ID (P001, V001 vb)
+    ad: string;
+    soyad: string;
+    tamAd: string;
+    istasyonId: number;
+    rol: string;
+    aktif: boolean;
+}
+
 export interface DBVardiya {
     id?: number;
     dosyaAdi: string;
@@ -70,6 +92,8 @@ export interface DBOnayLog {
 
 // Dexie Veritabanı Sınıfı
 class IstasyonDB extends Dexie {
+    istasyonlar!: Table<DBIstasyon>;
+    personeller!: Table<DBPersonel>;
     vardiyalar!: Table<DBVardiya>;
     satislar!: Table<DBSatis>;
     pusulalar!: Table<DBPusula>;
@@ -79,7 +103,9 @@ class IstasyonDB extends Dexie {
     constructor() {
         super('IstasyonDB');
 
-        this.version(1).stores({
+        this.version(2).stores({
+            istasyonlar: '++id, kod',
+            personeller: '++id, keyId, istasyonId, rol',
             vardiyalar: '++id, dosyaAdi, durum, yuklemeTarihi',
             satislar: '++id, vardiyaId, personelId',
             pusulalar: '++id, vardiyaId, personelId',
@@ -97,6 +123,52 @@ export class DbService {
 
     constructor() {
         this.db = new IstasyonDB();
+        this.baslangicVerileriniYukle();
+    }
+
+    private async baslangicVerileriniYukle() {
+        if (await this.db.istasyonlar.count() === 0) {
+            await this.db.istasyonlar.add({
+                ad: 'Merkez İstasyon',
+                kod: 'IST001',
+                adres: 'Merkez Mah.',
+                pompaSayisi: 12,
+                marketVar: true,
+                aktif: true
+            });
+        }
+
+        if (await this.db.personeller.count() === 0) {
+            const varsayilanPersoneller: Omit<DBPersonel, 'id'>[] = [
+                { keyId: 'P001', ad: 'A.', soyad: 'VURAL', tamAd: 'A. VURAL', istasyonId: 1, rol: 'POMPACI', aktif: true },
+                { keyId: 'P002', ad: 'E.', soyad: 'AKCA', tamAd: 'E. AKCA', istasyonId: 1, rol: 'POMPACI', aktif: true },
+                { keyId: 'P003', ad: 'M.', soyad: 'DUMDUZ', tamAd: 'M. DUMDUZ', istasyonId: 1, rol: 'POMPACI', aktif: true },
+                { keyId: 'P004', ad: 'F.', soyad: 'BAYLAS', tamAd: 'F. BAYLAS', istasyonId: 1, rol: 'POMPACI', aktif: true },
+                { keyId: 'M001', ad: 'Market', soyad: 'Sorumlusu', tamAd: 'Market Sorumlusu', istasyonId: 1, rol: 'MARKET_SORUMLUSU', aktif: true },
+                { keyId: 'V001', ad: 'Vardiya', soyad: 'Sorumlusu', tamAd: 'Vardiya Sorumlusu', istasyonId: 1, rol: 'VARDIYA_SORUMLUSU', aktif: true },
+                { keyId: 'Y001', ad: 'İstasyon', soyad: 'Sahibi', tamAd: 'İstasyon Sahibi', istasyonId: 1, rol: 'YONETICI', aktif: true }
+            ];
+            await this.db.personeller.bulkAdd(varsayilanPersoneller);
+        }
+    }
+
+    // ==========================================
+    // TANIMLAMALAR (İstasyon / Personel)
+    // ==========================================
+
+    async getIstasyonlar(): Promise<DBIstasyon[]> {
+        return this.db.istasyonlar.toArray();
+    }
+
+    async getPersoneller(istasyonId?: number): Promise<DBPersonel[]> {
+        if (istasyonId) {
+            return this.db.personeller.where('istasyonId').equals(istasyonId).toArray();
+        }
+        return this.db.personeller.toArray();
+    }
+
+    async getPersonelByKey(keyId: string): Promise<DBPersonel | undefined> {
+        return this.db.personeller.where('keyId').equals(keyId).first();
     }
 
     // ==========================================

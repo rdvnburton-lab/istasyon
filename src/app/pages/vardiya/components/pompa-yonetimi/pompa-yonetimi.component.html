@@ -1,0 +1,602 @@
+<p-toast></p-toast>
+
+<div class="grid grid-cols-12 gap-6">
+    <!-- Başlık -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                        <i class="pi pi-box mr-2 text-blue-500"></i>Pompa Yönetimi
+                    </h2>
+                    <p class="text-surface-500 mt-2" *ngIf="aktifVardiya">
+                        {{ aktifVardiya.istasyonAdi }} - {{ aktifVardiya.sorumluAdi }}
+                        <span class="mx-2 text-surface-300">|</span>
+                        <i class="pi pi-calendar mr-1"></i>
+                        {{ aktifVardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}
+                    </p>
+                </div>
+                <div class="flex gap-2 flex-wrap items-center">
+                    <!-- Mutabakat Durumu -->
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg mr-2"
+                        [style.background]="mutabakatTamamlandi ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' : 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)'">
+                        <i class="pi" [ngClass]="mutabakatTamamlandi ? 'pi-check-circle' : 'pi-clock'"
+                            style="color: white;"></i>
+                        <span style="color: white; font-weight: 600;">
+                            {{ mutabakatTamamlandi ? 'Mutabakat Tamam' : eksikPersonelSayisi + ' personel bekliyor' }}
+                        </span>
+                    </div>
+
+                    <p-button label="Gider Ekle" icon="pi pi-minus-circle" severity="warn" (onClick)="giderDialogAc()">
+                    </p-button>
+                    <p-button label="Fark Analizi" icon="pi pi-chart-bar" severity="info" (onClick)="farkAnaliziYap()">
+                    </p-button>
+                    <p-button label="Onaya Gönder" icon="pi pi-send" severity="success"
+                        [disabled]="!mutabakatTamamlandi" (onClick)="onayaGonder()">
+                    </p-button>
+                    <p-button label="Geri" icon="pi pi-arrow-left" severity="secondary" [routerLink]="['/vardiya']">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Özet Kartları -->
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
+            style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);">
+            <div class="flex justify-between items-start mb-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style="background: rgba(255,255,255,0.2);">
+                    <i class="pi pi-server text-xl" style="color: white;"></i>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs uppercase tracking-wider"
+                        style="color: rgba(255,255,255,0.7);">Otomasyon</span>
+                    <h3 class="text-2xl font-bold m-0" style="color: white !important;">
+                        {{ pompaOzet?.toplamOtomasyonSatis | currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}
+                    </h3>
+                </div>
+            </div>
+            <div class="pt-2" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                <span class="text-sm flex items-center gap-1" style="color: rgba(255,255,255,0.9);">
+                    <i class="pi pi-users"></i> {{ pompaOzet?.personelSayisi || 0 }} Pompacı
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
+            style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 10px 40px rgba(34, 197, 94, 0.3);">
+            <div class="flex justify-between items-start mb-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style="background: rgba(255,255,255,0.2);">
+                    <i class="pi pi-wallet text-xl" style="color: white;"></i>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,0.7);">Pusula</span>
+                    <h3 class="text-2xl font-bold m-0" style="color: white !important;">
+                        {{ pompaOzet?.toplamPusulaTahsilat | currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}
+                    </h3>
+                </div>
+            </div>
+            <div class="pt-2" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                <span class="text-sm flex items-center gap-1" style="color: rgba(255,255,255,0.9);">
+                    <i class="pi pi-pencil"></i> Manuel Giriş
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
+            style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 10px 40px rgba(249, 115, 22, 0.3);">
+            <div class="flex justify-between items-start mb-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style="background: rgba(255,255,255,0.2);">
+                    <i class="pi pi-shopping-cart text-xl" style="color: white;"></i>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,0.7);">Gider</span>
+                    <h3 class="text-2xl font-bold m-0" style="color: white !important;">
+                        {{ pompaOzet?.giderToplam | currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}
+                    </h3>
+                </div>
+            </div>
+            <div class="pt-2" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                <span class="text-sm flex items-center gap-1" style="color: rgba(255,255,255,0.9);">
+                    <i class="pi pi-list"></i> {{ giderler.length }} Kalem
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
+            [style.background]="getFarkBackground()" [style.box-shadow]="getFarkShadow()">
+            <div class="flex justify-between items-start mb-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style="background: rgba(255,255,255,0.2);">
+                    <i class="pi text-xl" style="color: white;" [ngClass]="getFarkIcon()"></i>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,0.7);">Fark</span>
+                    <h3 class="text-2xl font-bold m-0" style="color: white !important;">
+                        {{ pompaOzet?.toplamFark | currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}
+                    </h3>
+                </div>
+            </div>
+            <div class="pt-2" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                <span class="text-sm flex items-center gap-1" style="color: rgba(255,255,255,0.9);">
+                    <i class="pi pi-info-circle"></i> {{ getFarkAciklama() }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Personel Bazlı Otomasyon Verileri -->
+    <div class="col-span-12 lg:col-span-6">
+        <div class="card h-full">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="font-semibold m-0">
+                    <i class="pi pi-server mr-2 text-blue-500"></i>Otomasyon Verileri
+                </h5>
+                <p-tag value="Otomatik" severity="info" [rounded]="true"></p-tag>
+            </div>
+
+            <p-table [value]="personelOtomasyonlar" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Personel</th>
+                        <th>Key ID</th>
+                        <th class="text-right">Litre</th>
+                        <th class="text-right">Otomasyon</th>
+                        <th class="text-right">Pusula</th>
+                        <th class="text-right">Fark</th>
+                        <th style="width: 4rem"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-personel>
+                    <tr [ngClass]="{
+                        'row-selected': seciliPersonel?.personelId === personel.personelId,
+                        'row-completed': seciliPersonel?.personelId !== personel.personelId && isPusulaGirildi(personel.personelId)
+                    }">
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="pi pi-user text-sm"></i>
+                                </div>
+                                <span class="font-semibold">{{ personel.personelAdi }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <code class="bg-surface-100 dark:bg-surface-700 px-2 py-1 rounded text-sm">
+                                {{ personel.personelKeyId }}
+                            </code>
+                        </td>
+                        <td class="text-right">{{ personel.toplamLitre | number:'1.2-2' }} Lt</td>
+                        <td class="text-right font-bold text-blue-600">
+                            {{ personel.toplamTutar | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td class="text-right font-bold text-surface-900 dark:text-surface-0">
+                            {{ getPusulaTutar(personel.personelId) | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td class="text-right font-bold" [ngClass]="{
+                                'text-green-600': getPusulaFark(personel.personelId, personel.toplamTutar) >= -1 && getPusulaFark(personel.personelId, personel.toplamTutar) <= 1,
+                                'text-red-600': getPusulaFark(personel.personelId, personel.toplamTutar) < -1,
+                                'text-blue-600': getPusulaFark(personel.personelId, personel.toplamTutar) > 1
+                            }">
+                            {{ getPusulaFark(personel.personelId, personel.toplamTutar) |
+                            currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td>
+                            <p-button icon="pi pi-pencil" [rounded]="true"
+                                [text]="seciliPersonel?.personelId !== personel.personelId"
+                                [severity]="seciliPersonel?.personelId === personel.personelId ? 'primary' : 'secondary'"
+                                (onClick)="personelSec(personel)" pTooltip="Pusula Girişi" tooltipPosition="left">
+                            </p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7" class="text-center py-6 text-surface-500">
+                            <i class="pi pi-inbox text-3xl mb-2"></i>
+                            <p class="m-0">Otomasyon verisi bulunamadı</p>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr class="bg-surface-50 dark:bg-surface-800 font-bold">
+                        <td colspan="2">TOPLAM</td>
+                        <td class="text-right">{{ getTotalLitre() | number:'1.2-2' }} Lt</td>
+                        <td class="text-right text-blue-600">
+                            {{ pompaOzet?.toplamOtomasyonSatis | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td class="text-right text-surface-900 dark:text-surface-0">
+                            {{ pompaOzet?.toplamPusulaTahsilat | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td class="text-right" [ngClass]="{
+                            'text-green-600': (pompaOzet?.toplamFark || 0) >= -1 && (pompaOzet?.toplamFark || 0) <= 1,
+                            'text-red-600': (pompaOzet?.toplamFark || 0) < -1,
+                            'text-blue-600': (pompaOzet?.toplamFark || 0) > 1
+                        }">
+                            {{ pompaOzet?.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- Pusula Girişi -->
+    <div class="col-span-12 lg:col-span-6">
+        <div class="card h-full">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="font-semibold m-0">
+                    <i class="pi pi-pencil mr-2 text-green-500"></i>Pusula Girişi
+                </h5>
+                <p-tag value="Manuel" severity="success" [rounded]="true"></p-tag>
+            </div>
+
+            <!-- Personel Seçimi ve Giriş Formu -->
+            <div class="mb-4 p-4 bg-surface-50 dark:bg-surface-800 rounded-lg">
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12">
+                        <div *ngIf="!seciliPersonel"
+                            class="flex flex-col items-center justify-center p-8 text-surface-500 border-2 border-dashed border-surface-300 dark:border-surface-700 rounded-lg">
+                            <i class="pi pi-arrow-left text-4xl mb-2 text-blue-500"></i>
+                            <p class="font-semibold text-lg">Personel Seçimi Yapınız</p>
+                            <p class="text-sm">Pusula girişi yapmak için soldaki tablodan bir personel seçiniz.</p>
+                        </div>
+
+                        <div *ngIf="seciliPersonel"
+                            class="flex items-center justify-between bg-white dark:bg-surface-900 p-3 rounded-lg border border-blue-200 dark:border-blue-900/50 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="pi pi-user text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-surface-500">Seçili Personel</p>
+                                    <p class="font-bold text-lg text-blue-600">{{ seciliPersonel.personelAdi }}</p>
+                                </div>
+                            </div>
+                            <p-button icon="pi pi-times" [text]="true" severity="secondary"
+                                (onClick)="seciliPersonel = null" pTooltip="Seçimi Kaldır">
+                            </p-button>
+                        </div>
+                    </div>
+
+                    <ng-container *ngIf="seciliPersonel">
+                        <div class="col-span-6 md:col-span-3">
+                            <label class="font-semibold text-sm mb-2 block text-green-600">Nakit</label>
+                            <p-inputnumber [(ngModel)]="pusulaForm.nakit" mode="currency" currency="TRY" locale="tr-TR"
+                                styleClass="w-full">
+                            </p-inputnumber>
+                        </div>
+                        <div class="col-span-6 md:col-span-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="font-semibold text-sm text-blue-600">Kredi Kartı</label>
+                                <p-button label="Detay Gir" icon="pi pi-list" size="small" [text]="true" severity="info"
+                                    styleClass="!p-0 !h-auto !py-0" (onClick)="krediKartiDialogAc()">
+                                </p-button>
+                            </div>
+                            <p-inputnumber [(ngModel)]="pusulaForm.krediKarti" mode="currency" currency="TRY"
+                                locale="tr-TR" [readonly]="true" styleClass="w-full" placeholder="Detaylardan giriniz"
+                                (click)="krediKartiDialogAc()">
+                            </p-inputnumber>
+                        </div>
+                        <div class="col-span-6 md:col-span-3">
+                            <label class="font-semibold text-sm mb-2 block text-yellow-600">Veresiye</label>
+                            <p-inputnumber [(ngModel)]="pusulaForm.veresiye" mode="currency" currency="TRY"
+                                locale="tr-TR" styleClass="w-full">
+                            </p-inputnumber>
+                        </div>
+                        <div class="col-span-6 md:col-span-3">
+                            <label class="font-semibold text-sm mb-2 block text-purple-600">Filo Kartı</label>
+                            <p-inputnumber [(ngModel)]="pusulaForm.filoKarti" mode="currency" currency="TRY"
+                                locale="tr-TR" styleClass="w-full">
+                            </p-inputnumber>
+                        </div>
+                        <div class="col-span-12 flex justify-between items-center">
+                            <div>
+                                <span class="text-surface-500">Toplam:</span>
+                                <span class="font-bold text-lg ml-2">{{ getPusulaFormToplam() |
+                                    currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                <span class="ml-3" [ngClass]="getPusulaFarkClass()">
+                                    (Fark: {{ getPusulaFormFark() | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }})
+                                </span>
+                            </div>
+                            <p-button label="Kaydet" icon="pi pi-check" severity="success" [loading]="loading"
+                                (onClick)="pusulaKaydet()">
+                            </p-button>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Girilen Pusulalar -->
+            <p-table [value]="pusulalar" styleClass="p-datatable-sm" *ngIf="!seciliPersonel">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Personel</th>
+                        <th class="text-right">Nakit</th>
+                        <th class="text-right">K.Kartı</th>
+                        <th class="text-right">Veresiye</th>
+                        <th class="text-right">Toplam</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pusula>
+                    <tr>
+                        <td class="font-semibold">{{ pusula.personelAdi }}</td>
+                        <td class="text-right text-green-600">{{ pusula.nakit |
+                            currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
+                        <td class="text-right text-blue-600">{{ pusula.krediKarti |
+                            currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
+                        <td class="text-right text-yellow-600">{{ pusula.veresiye |
+                            currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
+                        <td class="text-right font-bold">{{ pusula.toplam | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                            }}</td>
+                        <td>
+                            <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true"
+                                (onClick)="pusulaSil(pusula.personelId)">
+                            </p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-surface-500">
+                            Henüz pusula girişi yapılmamış
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <!-- Seçili Personel Veri Özeti -->
+            <div *ngIf="seciliPersonel" class="mt-4">
+                <div class="p-4 border rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm">
+                    <h5 class="font-bold mb-4 flex items-center text-surface-900 dark:text-surface-0">
+                        <i class="pi pi-receipt mr-2 text-blue-500"></i>
+                        Pusula Önizleme
+                    </h5>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Genel Döküm -->
+                        <div>
+                            <span
+                                class="text-sm text-surface-500 block mb-2 font-semibold uppercase tracking-wider">Genel
+                                Döküm</span>
+                            <ul class="p-0 m-0 list-none">
+                                <li
+                                    class="flex justify-between py-2 border-b border-surface-200 dark:border-surface-700">
+                                    <span class="text-surface-600 dark:text-surface-400">Nakit</span>
+                                    <span class="font-bold text-green-600">{{ pusulaForm.nakit |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </li>
+                                <li
+                                    class="flex justify-between py-2 border-b border-surface-200 dark:border-surface-700">
+                                    <span class="text-surface-600 dark:text-surface-400">Kredi Kartı</span>
+                                    <span class="font-bold text-blue-600">{{ pusulaForm.krediKarti |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </li>
+                                <li
+                                    class="flex justify-between py-2 border-b border-surface-200 dark:border-surface-700">
+                                    <span class="text-surface-600 dark:text-surface-400">Veresiye</span>
+                                    <span class="font-bold text-yellow-600">{{ pusulaForm.veresiye |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </li>
+                                <li
+                                    class="flex justify-between py-2 border-b border-surface-200 dark:border-surface-700">
+                                    <span class="text-surface-600 dark:text-surface-400">Filo Kartı</span>
+                                    <span class="font-bold text-purple-600">{{ pusulaForm.filoKarti |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </li>
+                                <li
+                                    class="flex justify-between py-2 mt-2 bg-surface-50 dark:bg-surface-800 rounded px-2">
+                                    <span class="font-bold text-surface-900 dark:text-surface-0">TOPLAM</span>
+                                    <span class="font-bold text-lg text-surface-900 dark:text-surface-0">{{
+                                        getPusulaFormToplam() | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Kredi Kartı Detayları -->
+                        <div>
+                            <span
+                                class="text-sm text-surface-500 block mb-2 font-semibold uppercase tracking-wider">Kredi
+                                Kartı Detayları</span>
+
+                            <div *ngIf="!pusulaForm.krediKartiDetay?.length"
+                                class="text-center p-4 bg-surface-50 dark:bg-surface-800 rounded-lg text-surface-500 text-sm">
+                                Banka detayı girilmemiş
+                            </div>
+
+                            <div *ngIf="pusulaForm.krediKartiDetay?.length"
+                                class="border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden">
+                                <div *ngFor="let detay of pusulaForm.krediKartiDetay"
+                                    class="flex justify-between items-center p-2 border-b border-surface-200 dark:border-surface-700 last:border-0 hover:bg-surface-50 dark:hover:bg-surface-800">
+                                    <span class="text-sm font-medium">{{ detay.banka }}</span>
+                                    <span class="text-sm font-bold text-blue-600">{{ detay.tutar |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </div>
+                                <div
+                                    class="flex justify-between items-center p-2 bg-blue-50 dark:bg-blue-900/20 font-bold text-sm">
+                                    <span>Toplam</span>
+                                    <span class="text-blue-600">{{ pusulaForm.krediKarti |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fark Analizi Tablosu -->
+    <div class="col-span-12" *ngIf="farkAnalizleri.length > 0">
+        <div class="card">
+            <h5 class="font-semibold mb-4">
+                <i class="pi pi-chart-bar mr-2 text-purple-500"></i>Personel Fark Analizi
+            </h5>
+
+            <p-table [value]="farkAnalizleri" styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Personel</th>
+                        <th class="text-right">Otomasyon</th>
+                        <th class="text-right">Pusula</th>
+                        <th class="text-right">Fark</th>
+                        <th class="text-center">Durum</th>
+                        <th>Döküm</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-analiz>
+                    <tr>
+                        <td class="font-semibold">{{ analiz.personelAdi }}</td>
+                        <td class="text-right">{{ analiz.otomasyonToplam | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                            }}</td>
+                        <td class="text-right">{{ analiz.pusulaToplam | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td class="text-right font-bold" [ngClass]="getPersonelFarkClass(analiz.fark)">
+                            {{ analiz.fark | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                        </td>
+                        <td class="text-center">
+                            <p-tag [value]="getFarkDurumLabel(analiz.farkDurum)"
+                                [severity]="getFarkDurumSeverity(analiz.farkDurum)">
+                            </p-tag>
+                        </td>
+                        <td>
+                            <div class="flex gap-2 text-xs">
+                                <span class="text-green-600">N: {{ analiz.pusulaDokum.nakit | number:'1.0-0' }}</span>
+                                <span class="text-blue-600">K: {{ analiz.pusulaDokum.krediKarti | number:'1.0-0'
+                                    }}</span>
+                                <span class="text-yellow-600">V: {{ analiz.pusulaDokum.veresiye | number:'1.0-0'
+                                    }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- Giderler -->
+    <div class="col-span-12" *ngIf="giderler.length > 0">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="font-semibold m-0">
+                    <i class="pi pi-shopping-cart mr-2 text-orange-500"></i>Pompa Giderleri
+                </h5>
+                <span class="font-bold text-orange-600">
+                    Toplam: {{ getGiderToplam() | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                </span>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                <div *ngFor="let gider of giderler"
+                    class="flex items-center gap-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
+                        <i class="pi pi-shopping-cart"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold m-0">{{ gider.aciklama }}</p>
+                        <p class="text-orange-600 font-bold m-0">{{ gider.tutar |
+                            currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</p>
+                    </div>
+                    <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true"
+                        (onClick)="giderSil(gider.id)">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kredi Kartı Detay Dialog -->
+<p-dialog header="Kredi Kartı Detayları" [(visible)]="krediKartiDialogVisible" [modal]="true"
+    [style]="{width: '450px'}">
+
+    <div class="flex flex-col gap-4">
+        <div class="flex gap-2 items-end">
+            <div class="flex-1">
+                <label class="font-semibold text-sm block mb-1">Banka</label>
+                <p-select [(ngModel)]="yeniKrediKarti.banka" [options]="bankalar" placeholder="Banka Seçin"
+                    styleClass="w-full">
+                </p-select>
+            </div>
+            <div class="flex-1">
+                <label class="font-semibold text-sm block mb-1">Tutar</label>
+                <p-inputnumber [(ngModel)]="yeniKrediKarti.tutar" mode="currency" currency="TRY" locale="tr-TR"
+                    styleClass="w-full">
+                </p-inputnumber>
+            </div>
+            <p-button icon="pi pi-plus" (onClick)="krediKartiEkle()"
+                [disabled]="!yeniKrediKarti.banka || !yeniKrediKarti.tutar"></p-button>
+        </div>
+
+        <div class="border rounded-lg overflow-hidden">
+            <div *ngFor="let detay of anlikKrediKartiDetaylari; let i = index"
+                class="flex justify-between items-center p-3 border-b last:border-0 hover:bg-surface-50 dark:hover:bg-surface-800">
+                <span class="font-semibold">{{ detay.banka }}</span>
+                <div class="flex items-center gap-3">
+                    <span class="font-bold text-blue-600">{{ detay.tutar | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                        }}</span>
+                    <i class="pi pi-trash text-red-500 cursor-pointer" (click)="krediKartiSil(i)"></i>
+                </div>
+            </div>
+            <div *ngIf="anlikKrediKartiDetaylari.length === 0" class="p-4 text-center text-surface-500">
+                Henüz banka girişi yapılmadı
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg font-bold">
+            <span>TOPLAM</span>
+            <span class="text-blue-600">{{ getAnlikKrediKartiToplam() | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                }}</span>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Tamam" icon="pi pi-check" (onClick)="krediKartiOnayla()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Gider Ekleme Dialog -->
+<p-dialog header="Pompa Gideri Ekle" [(visible)]="giderDialogVisible" [modal]="true" [style]="{width: '400px'}">
+
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <label class="font-semibold">Gider Türü</label>
+            <p-select [(ngModel)]="giderForm.giderTuru" [options]="giderTurleri" optionLabel="label" optionValue="value"
+                placeholder="Gider Türü Seçin" styleClass="w-full">
+            </p-select>
+        </div>
+        <div class="flex flex-col gap-2">
+            <label class="font-semibold">Tutar</label>
+            <p-inputnumber [(ngModel)]="giderForm.tutar" mode="currency" currency="TRY" locale="tr-TR"
+                styleClass="w-full">
+            </p-inputnumber>
+        </div>
+        <div class="flex flex-col gap-2">
+            <label class="font-semibold">Açıklama</label>
+            <textarea pTextarea [(ngModel)]="giderForm.aciklama" rows="2" placeholder="Açıklama girin..."
+                class="w-full">
+            </textarea>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="İptal" icon="pi pi-times" severity="secondary"
+            (onClick)="giderDialogVisible = false"></p-button>
+        <p-button label="Ekle" icon="pi pi-check" severity="success" (onClick)="giderEkle()"></p-button>
+    </ng-template>
+</p-dialog>

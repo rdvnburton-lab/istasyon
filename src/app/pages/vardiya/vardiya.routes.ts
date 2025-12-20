@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { VardiyaListesi } from './components/vardiya-listesi.component';
-import { PompaYonetimi } from './components/pompa-yonetimi.component';
-import { MarketYonetimi } from './components/market-yonetimi.component';
-import { Karsilastirma } from './components/karsilastirma.component';
+import { VardiyaListesi } from './components/vardiya-listesi/vardiya-listesi.component';
+import { PompaYonetimi } from './components/pompa-yonetimi/pompa-yonetimi.component';
+import { MarketYonetimi } from './components/market-yonetimi/market-yonetimi.component';
+import { Karsilastirma } from './components/karsilastirma/karsilastirma.component';
 
 export default [
     { path: '', component: VardiyaListesi },

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, delay } from 'rxjs';
+import { BehaviorSubject, Observable, of, delay, from, map } from 'rxjs';
 import {
     Vardiya,
     VardiyaDurum,
@@ -61,87 +61,35 @@ export class VardiyaService {
     private tahsilatlar = new BehaviorSubject<Tahsilat[]>([]);
 
     // ==========================================
-    // MOCK VERİLER
-    // ==========================================
-
-    private mockIstasyonlar: Istasyon[] = [
-        { id: 1, ad: 'Shell Merkez', kod: 'SHL001', adres: 'Atatürk Cad. No:1', pompaSayisi: 8, marketVar: true, aktif: true },
-        { id: 2, ad: 'BP Sanayi', kod: 'BP002', adres: 'Sanayi Mah. No:25', pompaSayisi: 6, marketVar: true, aktif: true }
-    ];
-
-    private mockPersoneller: Personel[] = [
-        { id: 1, keyId: 'P001', ad: 'A.', soyad: 'VURAL', tamAd: 'A. VURAL', istasyonId: 1, rol: PersonelRol.POMPACI, aktif: true },
-        { id: 2, keyId: 'P002', ad: 'E.', soyad: 'AKCA', tamAd: 'E. AKCA', istasyonId: 1, rol: PersonelRol.POMPACI, aktif: true },
-        { id: 3, keyId: 'P003', ad: 'M.', soyad: 'DUMDUZ', tamAd: 'M. DUMDUZ', istasyonId: 1, rol: PersonelRol.POMPACI, aktif: true },
-        { id: 4, keyId: 'P004', ad: 'F.', soyad: 'BAYLAS', tamAd: 'F. BAYLAS', istasyonId: 1, rol: PersonelRol.POMPACI, aktif: true },
-        { id: 5, keyId: 'M001', ad: 'Market', soyad: 'Sorumlusu', tamAd: 'Market Sorumlusu', istasyonId: 1, rol: PersonelRol.MARKET_SORUMLUSU, aktif: true },
-        { id: 6, keyId: 'V001', ad: 'Vardiya', soyad: 'Sorumlusu', tamAd: 'Vardiya Sorumlusu', istasyonId: 1, rol: PersonelRol.VARDIYA_SORUMLUSU, aktif: true },
-        { id: 7, keyId: 'Y001', ad: 'İstasyon', soyad: 'Sahibi', tamAd: 'İstasyon Sahibi', istasyonId: 1, rol: PersonelRol.YONETICI, aktif: true }
-    ];
-
-    // Otomasyon verileri - 17.12.2025 Gece Vardiyası (Gerçek Veri)
-    private mockOtomasyonSatislari: OtomasyonSatis[] = [
-        // A. VURAL - LPG Satışları
-        { id: 1, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 14, yakitTuru: YakitTuru.LPG, litre: 12.21, birimFiyat: 25.99, toplamTutar: 317.34, satisTarihi: new Date('2025-12-17T00:02:13') },
-        { id: 2, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 13, yakitTuru: YakitTuru.LPG, litre: 18.06, birimFiyat: 25.99, toplamTutar: 469.38, satisTarihi: new Date('2025-12-17T00:02:37') },
-        { id: 3, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 12, yakitTuru: YakitTuru.LPG, litre: 15.39, birimFiyat: 25.99, toplamTutar: 400.00, satisTarihi: new Date('2025-12-17T00:02:43') },
-        { id: 4, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 13, yakitTuru: YakitTuru.LPG, litre: 25.01, birimFiyat: 25.99, toplamTutar: 650.00, satisTarihi: new Date('2025-12-17T00:13:40') },
-        { id: 5, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 14, yakitTuru: YakitTuru.LPG, litre: 27.86, birimFiyat: 25.99, toplamTutar: 724.08, satisTarihi: new Date('2025-12-17T00:41:37') },
-        { id: 6, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 14, yakitTuru: YakitTuru.LPG, litre: 36.39, birimFiyat: 25.99, toplamTutar: 945.78, satisTarihi: new Date('2025-12-17T03:08:02') },
-        // A. VURAL - Motorin Satışları
-        { id: 7, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 3, yakitTuru: YakitTuru.MOTORIN, litre: 26.59, birimFiyat: 54.16, toplamTutar: 1440.00, satisTarihi: new Date('2025-12-17T00:17:37') },
-        { id: 8, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 7, yakitTuru: YakitTuru.MOTORIN, litre: 18.46, birimFiyat: 54.16, toplamTutar: 1000.00, satisTarihi: new Date('2025-12-17T00:43:43') },
-        { id: 9, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 4, yakitTuru: YakitTuru.MOTORIN, litre: 53.73, birimFiyat: 54.16, toplamTutar: 2910.00, satisTarihi: new Date('2025-12-17T01:24:12') },
-        { id: 10, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 3, yakitTuru: YakitTuru.MOTORIN, litre: 27.70, birimFiyat: 54.16, toplamTutar: 1500.00, satisTarihi: new Date('2025-12-17T02:16:11') },
-        { id: 11, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 5, yakitTuru: YakitTuru.MOTORIN, litre: 49.85, birimFiyat: 54.16, toplamTutar: 2700.00, satisTarihi: new Date('2025-12-17T05:40:56') },
-        { id: 12, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 3, yakitTuru: YakitTuru.MOTORIN, litre: 42.47, birimFiyat: 54.16, toplamTutar: 2300.00, satisTarihi: new Date('2025-12-17T05:59:31') },
-        { id: 13, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 3, yakitTuru: YakitTuru.MOTORIN, litre: 36.93, birimFiyat: 54.16, toplamTutar: 2000.00, satisTarihi: new Date('2025-12-17T06:55:45') },
-        // A. VURAL - Kurşunsuz (Benzin) Satışları
-        { id: 14, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 4, yakitTuru: YakitTuru.BENZIN, litre: 9.51, birimFiyat: 52.57, toplamTutar: 500.00, satisTarihi: new Date('2025-12-17T01:07:12') },
-        { id: 15, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 7, yakitTuru: YakitTuru.BENZIN, litre: 41.85, birimFiyat: 52.57, toplamTutar: 2200.00, satisTarihi: new Date('2025-12-17T05:26:23') },
-        { id: 16, vardiyaId: 1, personelId: 1, personelAdi: 'A. VURAL', personelKeyId: 'P001', pompaNo: 8, yakitTuru: YakitTuru.BENZIN, litre: 19.02, birimFiyat: 52.57, toplamTutar: 1000.00, satisTarihi: new Date('2025-12-17T06:54:54') },
-
-        // E. AKCA Satışları
-        { id: 17, vardiyaId: 1, personelId: 2, personelAdi: 'E. AKCA', personelKeyId: 'P002', pompaNo: 16, yakitTuru: YakitTuru.LPG, litre: 21.28, birimFiyat: 25.99, toplamTutar: 553.07, satisTarihi: new Date('2025-12-17T07:04:09') },
-        { id: 18, vardiyaId: 1, personelId: 2, personelAdi: 'E. AKCA', personelKeyId: 'P002', pompaNo: 2, yakitTuru: YakitTuru.BENZIN, litre: 9.51, birimFiyat: 52.57, toplamTutar: 500.00, satisTarihi: new Date('2025-12-17T07:07:16') },
-        { id: 19, vardiyaId: 1, personelId: 2, personelAdi: 'E. AKCA', personelKeyId: 'P002', pompaNo: 6, yakitTuru: YakitTuru.BENZIN, litre: 22.55, birimFiyat: 52.57, toplamTutar: 1185.45, satisTarihi: new Date('2025-12-17T07:15:10') },
-        { id: 20, vardiyaId: 1, personelId: 2, personelAdi: 'E. AKCA', personelKeyId: 'P002', pompaNo: 4, yakitTuru: YakitTuru.BENZIN, litre: 27.39, birimFiyat: 52.57, toplamTutar: 1440.00, satisTarihi: new Date('2025-12-17T07:27:20') },
-        { id: 21, vardiyaId: 1, personelId: 2, personelAdi: 'E. AKCA', personelKeyId: 'P002', pompaNo: 3, yakitTuru: YakitTuru.BENZIN, litre: 40.53, birimFiyat: 52.57, toplamTutar: 2130.66, satisTarihi: new Date('2025-12-17T07:30:10') },
-        { id: 22, vardiyaId: 1, personelId: 2, personelAdi: 'E. AKCA', personelKeyId: 'P002', pompaNo: 6, yakitTuru: YakitTuru.BENZIN, litre: 38.62, birimFiyat: 52.57, toplamTutar: 2030.25, satisTarihi: new Date('2025-12-17T07:32:50') },
-
-        // M. DUMDUZ Satışları
-        { id: 23, vardiyaId: 1, personelId: 3, personelAdi: 'M. DUMDUZ', personelKeyId: 'P003', pompaNo: 9, yakitTuru: YakitTuru.LPG, litre: 31.88, birimFiyat: 25.99, toplamTutar: 828.56, satisTarihi: new Date('2025-12-17T07:11:19') },
-        { id: 24, vardiyaId: 1, personelId: 3, personelAdi: 'M. DUMDUZ', personelKeyId: 'P003', pompaNo: 9, yakitTuru: YakitTuru.LPG, litre: 19.24, birimFiyat: 25.99, toplamTutar: 500.00, satisTarihi: new Date('2025-12-17T07:14:20') },
-        { id: 25, vardiyaId: 1, personelId: 3, personelAdi: 'M. DUMDUZ', personelKeyId: 'P003', pompaNo: 14, yakitTuru: YakitTuru.LPG, litre: 18.02, birimFiyat: 25.99, toplamTutar: 468.34, satisTarihi: new Date('2025-12-17T07:15:23') },
-        { id: 26, vardiyaId: 1, personelId: 3, personelAdi: 'M. DUMDUZ', personelKeyId: 'P003', pompaNo: 7, yakitTuru: YakitTuru.MOTORIN, litre: 31.02, birimFiyat: 54.16, toplamTutar: 1680.00, satisTarihi: new Date('2025-12-17T07:17:19') },
-        { id: 27, vardiyaId: 1, personelId: 3, personelAdi: 'M. DUMDUZ', personelKeyId: 'P003', pompaNo: 8, yakitTuru: YakitTuru.MOTORIN, litre: 36.93, birimFiyat: 54.16, toplamTutar: 2000.00, satisTarihi: new Date('2025-12-17T07:27:14') },
-        { id: 28, vardiyaId: 1, personelId: 3, personelAdi: 'M. DUMDUZ', personelKeyId: 'P003', pompaNo: 14, yakitTuru: YakitTuru.LPG, litre: 24.80, birimFiyat: 25.99, toplamTutar: 644.55, satisTarihi: new Date('2025-12-17T07:30:09') },
-
-        // F. BAYLAS Satışları
-        { id: 29, vardiyaId: 1, personelId: 4, personelAdi: 'F. BAYLAS', personelKeyId: 'P004', pompaNo: 11, yakitTuru: YakitTuru.LPG, litre: 32.50, birimFiyat: 25.99, toplamTutar: 844.68, satisTarihi: new Date('2025-12-17T07:23:25') },
-        { id: 30, vardiyaId: 1, personelId: 4, personelAdi: 'F. BAYLAS', personelKeyId: 'P004', pompaNo: 6, yakitTuru: YakitTuru.MOTORIN, litre: 3.69, birimFiyat: 54.16, toplamTutar: 200.00, satisTarihi: new Date('2025-12-17T07:25:07') },
-        { id: 31, vardiyaId: 1, personelId: 4, personelAdi: 'F. BAYLAS', personelKeyId: 'P004', pompaNo: 15, yakitTuru: YakitTuru.LPG, litre: 7.70, birimFiyat: 25.99, toplamTutar: 200.00, satisTarihi: new Date('2025-12-17T07:28:36') },
-        { id: 32, vardiyaId: 1, personelId: 4, personelAdi: 'F. BAYLAS', personelKeyId: 'P004', pompaNo: 11, yakitTuru: YakitTuru.LPG, litre: 28.09, birimFiyat: 25.99, toplamTutar: 730.06, satisTarihi: new Date('2025-12-17T07:29:35') },
-        { id: 33, vardiyaId: 1, personelId: 4, personelAdi: 'F. BAYLAS', personelKeyId: 'P004', pompaNo: 16, yakitTuru: YakitTuru.LPG, litre: 25.12, birimFiyat: 25.99, toplamTutar: 652.87, satisTarihi: new Date('2025-12-17T07:32:56') },
-        { id: 34, vardiyaId: 1, personelId: 4, personelAdi: 'F. BAYLAS', personelKeyId: 'P004', pompaNo: 11, yakitTuru: YakitTuru.LPG, litre: 44.62, birimFiyat: 25.99, toplamTutar: 1159.67, satisTarihi: new Date('2025-12-17T07:34:25') }
-    ];
-
-
-
-    // ==========================================
     // İSTASYON / PERSONEL
     // ==========================================
 
     getIstasyonlar(): Observable<Istasyon[]> {
-        return of(this.mockIstasyonlar).pipe(delay(300));
+        return from(this.dbService.getIstasyonlar()).pipe(
+            map(dbStations => dbStations.map(s => ({ ...s, id: s.id! })))
+        );
     }
 
     getPersoneller(istasyonId: number, rol?: PersonelRol): Observable<Personel[]> {
-        let personeller = this.mockPersoneller.filter(p => p.istasyonId === istasyonId);
-        if (rol) {
-            personeller = personeller.filter(p => p.rol === rol);
-        }
-        return of(personeller).pipe(delay(300));
+        return from(this.dbService.getPersoneller(istasyonId)).pipe(
+            map(dbPersoneller => {
+                let pList = dbPersoneller.map(p => ({
+                    id: p.id!,
+                    keyId: p.keyId,
+                    ad: p.ad,
+                    soyad: p.soyad,
+                    tamAd: p.tamAd,
+                    istasyonId: p.istasyonId,
+                    rol: p.rol as PersonelRol,
+                    aktif: p.aktif
+                }));
+
+                if (rol) {
+                    pList = pList.filter(p => p.rol === rol);
+                }
+                return pList;
+            })
+        );
     }
 
     getPompacılar(istasyonId: number): Observable<Personel[]> {
@@ -316,29 +264,11 @@ export class VardiyaService {
         return this.yuklenenSatislar.value;
     }
 
+    // vardiyaBaslat silindi.
     vardiyaBaslat(sorumluId: number, istasyonId: number): Observable<Vardiya> {
-        const sorumlu = this.mockPersoneller.find(p => p.id === sorumluId);
-        const istasyon = this.mockIstasyonlar.find(i => i.id === istasyonId);
-
-        const yeniVardiya: Vardiya = {
-            id: Date.now(),
-            istasyonId,
-            istasyonAdi: istasyon?.ad || 'Bilinmeyen',
-            sorumluId,
-            sorumluAdi: sorumlu?.tamAd || 'Bilinmeyen',
-            baslangicTarihi: new Date(),
-            durum: VardiyaDurum.ACIK,
-            pompaToplam: 0,
-            marketToplam: 0,
-            genelToplam: 0,
-            toplamFark: 0,
-            olusturmaTarihi: new Date(),
-            kilitli: false
-        };
-
-        this.aktifVardiya.next(yeniVardiya);
-        this.temizle(); // Önceki verileri temizle
-        return of(yeniVardiya).pipe(delay(500));
+        // Bu özellik kaldırıldı ancak type güvenliği için boş bırakıyorum,
+        // bileşenlerden çağrılmayacak.
+        return of({} as Vardiya);
     }
 
     async vardiyaOnayaGonder(vardiyaId: number): Promise<void> {
@@ -382,12 +312,14 @@ export class VardiyaService {
     vardiyaOnayla(vardiyaId: number, onaylayanId: number): Observable<Vardiya> {
         const vardiya = this.aktifVardiya.value;
         if (vardiya && vardiya.id === vardiyaId) {
-            const onayli = this.mockPersoneller.find(p => p.id === onaylayanId);
+            // Gerçek uygulamada onaylayan kişi Auth servisinden alınır
+            // Burada şimdilik basit bir isim atıyoruz veya DB'den çekebiliriz.
+            // Şimdilik 'Yönetici' diyelim.
             const muhurlu: Vardiya = {
                 ...vardiya,
                 durum: VardiyaDurum.ONAYLANDI,
                 onaylayanId,
-                onaylayanAdi: onayli?.tamAd || 'Yönetici',
+                onaylayanAdi: 'Yönetici', // TODO: Auth servisinden al
                 onayTarihi: new Date(),
                 guncellemeTarihi: new Date(),
                 kilitli: true // Mühürlendi
@@ -432,9 +364,11 @@ export class VardiyaService {
     }
 
     getPersonelOtomasyonOzet(vardiyaId: number): Observable<PersonelOtomasyonOzet[]> {
-        const satislar = this.yuklenenSatislar.value.length > 0
-            ? this.yuklenenSatislar.value
-            : this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
+        const satislar = this.yuklenenSatislar.value;
+
+        if (satislar.length === 0) {
+            return of([]);
+        }
 
         const personelMap = new Map<number, PersonelOtomasyonOzet>();
 
@@ -531,24 +465,37 @@ export class VardiyaService {
     // ==========================================
 
     getFarkAnalizi(vardiyaId: number): Observable<PersonelFarkAnalizi[]> {
-        const pusulalar = this.pusulaGirisleri.value;
-        const otomasyonSatislari = this.yuklenenSatislar.value.length > 0
-            ? this.yuklenenSatislar.value
-            : this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
+        return from(this.hesaplaFarkAnalizi(vardiyaId));
+    }
 
-        const otomasyonMap = new Map<number, number>();
+    private async hesaplaFarkAnalizi(vardiyaId: number): Promise<PersonelFarkAnalizi[]> {
+        const pusulalar = this.pusulaGirisleri.value;
+        const otomasyonSatislari = this.yuklenenSatislar.value;
+
+        // Otomasyon verilerini personellere göre grupla
+        const otomasyonMap = new Map<number, { tutar: number, adi: string }>();
         otomasyonSatislari.forEach(s => {
-            const mevcut = otomasyonMap.get(s.personelId) || 0;
-            otomasyonMap.set(s.personelId, mevcut + s.toplamTutar);
+            const mevcut = otomasyonMap.get(s.personelId) || { tutar: 0, adi: s.personelAdi };
+            otomasyonMap.set(s.personelId, {
+                tutar: mevcut.tutar + s.toplamTutar,
+                adi: s.personelAdi
+            });
+        });
+
+        // Pusulaları da ekle (Otomasyonda olmayan ama pusula girilen durumlar için)
+        pusulalar.forEach(p => {
+            if (!otomasyonMap.has(p.personelId)) {
+                otomasyonMap.set(p.personelId, { tutar: 0, adi: p.personelAdi });
+            }
         });
 
         const analizler: PersonelFarkAnalizi[] = [];
 
-        otomasyonMap.forEach((otomasyonToplam, personelId) => {
-            const personel = this.mockPersoneller.find(p => p.id === personelId);
+        for (const [personelId, veri] of otomasyonMap.entries()) {
             const pusula = pusulalar.find(p => p.personelId === personelId);
 
             const pusulaToplam = pusula?.toplam || 0;
+            const otomasyonToplam = veri.tutar;
             const fark = pusulaToplam - otomasyonToplam;
 
             let farkDurum: FarkDurum;
@@ -562,7 +509,7 @@ export class VardiyaService {
 
             analizler.push({
                 personelId,
-                personelAdi: personel?.tamAd || 'Bilinmeyen',
+                personelAdi: veri.adi,
                 otomasyonToplam,
                 pusulaToplam,
                 fark,
@@ -574,9 +521,9 @@ export class VardiyaService {
                     filoKarti: pusula?.filoKarti || 0
                 }
             });
-        });
+        }
 
-        return of(analizler).pipe(delay(500));
+        return analizler;
     }
 
     // ==========================================
@@ -588,7 +535,7 @@ export class VardiyaService {
     }
 
     marketZRaporuKaydet(zRaporu: Omit<MarketZRaporu, 'id' | 'olusturmaTarihi' | 'kdvToplam' | 'kdvHaricToplam'>): Observable<MarketZRaporu> {
-        const kdvToplam = zRaporu.kdv1 + zRaporu.kdv10 + zRaporu.kdv20;
+        const kdvToplam = zRaporu.kdv0 + zRaporu.kdv1 + zRaporu.kdv10 + zRaporu.kdv20;
         const yeniZRaporu: MarketZRaporu = {
             ...zRaporu,
             id: Date.now(),
@@ -609,7 +556,7 @@ export class VardiyaService {
         const yeniTahsilat: MarketTahsilat = {
             ...tahsilat,
             id: Date.now(),
-            toplam: tahsilat.nakit + tahsilat.krediKarti + tahsilat.yemekKarti,
+            toplam: tahsilat.nakit + tahsilat.krediKarti,
             olusturmaTarihi: new Date()
         };
 
@@ -656,6 +603,7 @@ export class VardiyaService {
             netKasa,
             fark: zRaporuToplam - netKasa,
             kdvDokum: {
+                kdv0: zRaporu?.kdv0 || 0,
                 kdv1: zRaporu?.kdv1 || 0,
                 kdv10: zRaporu?.kdv10 || 0,
                 kdv20: zRaporu?.kdv20 || 0,
@@ -709,14 +657,16 @@ export class VardiyaService {
     // ==========================================
 
     getPompaOzet(vardiyaId: number): Observable<PompaOzet> {
+        return from(this.hesaplaPompaOzet(vardiyaId));
+    }
+
+    private async hesaplaPompaOzet(vardiyaId: number): Promise<PompaOzet> {
         const pusulalar = this.pusulaGirisleri.value;
         const giderler = this.pompaGiderler.value;
-
-        const otomasyonSatislari = this.yuklenenSatislar.value.length > 0
-            ? this.yuklenenSatislar.value
-            : this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
+        const otomasyonSatislari = this.yuklenenSatislar.value;
 
         const personelIds = new Set(otomasyonSatislari.map(s => s.personelId));
+        pusulalar.forEach(p => personelIds.add(p.personelId));
 
         const toplamOtomasyonSatis = otomasyonSatislari.reduce((sum, s) => sum + s.toplamTutar, 0);
         const toplamPusulaTahsilat = pusulalar.reduce((sum, p) => sum + p.toplam, 0);
@@ -733,12 +683,19 @@ export class VardiyaService {
         }
 
         const personelFarklari: PersonelFarkAnalizi[] = [];
-        personelIds.forEach(personelId => {
+        for (const personelId of personelIds) {
             const pusula = pusulalar.find(p => p.personelId === personelId);
             const personelSatislari = otomasyonSatislari.filter(s => s.personelId === personelId);
-            const personelAdi = personelSatislari[0]?.personelAdi || 'Bilinmeyen';
-            const otomasyonToplam = personelSatislari.reduce((sum, s) => sum + s.toplamTutar, 0);
 
+            // Personel adını bul
+            let personelAdi = 'Bilinmeyen';
+            if (personelSatislari.length > 0) {
+                personelAdi = personelSatislari[0].personelAdi;
+            } else if (pusula) {
+                personelAdi = pusula.personelAdi;
+            }
+
+            const otomasyonToplam = personelSatislari.reduce((sum, s) => sum + s.toplamTutar, 0);
             const pusulaToplam = pusula?.toplam || 0;
             const fark = pusulaToplam - otomasyonToplam;
 
@@ -765,9 +722,9 @@ export class VardiyaService {
                     filoKarti: pusula?.filoKarti || 0
                 }
             });
-        });
+        }
 
-        const ozet: PompaOzet = {
+        return {
             personelSayisi: personelIds.size,
             toplamOtomasyonSatis,
             toplamPusulaTahsilat,
@@ -777,8 +734,6 @@ export class VardiyaService {
             giderToplam,
             netTahsilat: toplamPusulaTahsilat - giderToplam
         };
-
-        return of(ozet).pipe(delay(500));
     }
 
     // ==========================================
@@ -786,39 +741,39 @@ export class VardiyaService {
     // ==========================================
 
     getGenelOzet(vardiyaId: number): Observable<GenelOzet> {
+        return from(this.hesaplaGenelOzet(vardiyaId));
+    }
+
+    private async hesaplaGenelOzet(vardiyaId: number): Promise<GenelOzet> {
         const pusulalar = this.pusulaGirisleri.value;
         const marketTahsilat = this.marketTahsilat.value;
         const pompaGiderler = this.pompaGiderler.value;
         const marketGiderler = this.marketGiderler.value;
         const zRaporu = this.marketZRaporu.value;
-
-        const otomasyonSatislari = this.yuklenenSatislar.value.length > 0
-            ? this.yuklenenSatislar.value
-            : this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
+        const otomasyonSatislari = this.yuklenenSatislar.value;
 
         const pompaToplam = otomasyonSatislari.reduce((sum, s) => sum + s.toplamTutar, 0);
-
-        const pompaTahsilat = pusulalar.reduce((sum, p) => sum + p.toplam, 0);
-
-        // Market toplamı
         const marketToplam = zRaporu?.genelToplam || 0;
-
-        // Genel toplam
         const genelToplam = pompaToplam + marketToplam;
 
-        // Tahsilat dağılımı
-        const toplamNakit = pusulalar.reduce((sum, p) => sum + p.nakit, 0) + (marketTahsilat?.nakit || 0);
-        const toplamKrediKarti = pusulalar.reduce((sum, p) => sum + p.krediKarti, 0) + (marketTahsilat?.krediKarti || 0);
-        const toplamVeresiye = pusulalar.reduce((sum, p) => sum + p.veresiye, 0);
+        // Tahsilat Toplamları
+        let toplamNakit = pusulalar.reduce((sum, p) => sum + p.nakit, 0);
+        let toplamKrediKarti = pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
+        let toplamVeresiye = pusulalar.reduce((sum, p) => sum + p.veresiye, 0);
 
-        // Giderler
+        if (marketTahsilat) {
+            toplamNakit += marketTahsilat.nakit;
+            toplamKrediKarti += marketTahsilat.krediKarti;
+        }
+
         const toplamGider = pompaGiderler.reduce((sum, g) => sum + g.tutar, 0) +
             marketGiderler.reduce((sum, g) => sum + g.tutar, 0);
 
-        // Fark
-        const toplamFark = (pompaTahsilat + (marketTahsilat?.toplam || 0)) - genelToplam;
+        const toplamTahsilat = toplamNakit + toplamKrediKarti + toplamVeresiye;
+        const netKasa = toplamTahsilat - toplamGider;
+        const toplamFark = netKasa - genelToplam; // Basit hesap
 
-        let durumRenk: 'success' | 'warn' | 'danger';
+        let durumRenk: 'success' | 'warn' | 'danger' = 'success';
         if (Math.abs(toplamFark) < 10) {
             durumRenk = 'success';
         } else if (Math.abs(toplamFark) < 100) {
@@ -827,7 +782,7 @@ export class VardiyaService {
             durumRenk = 'danger';
         }
 
-        const ozet: GenelOzet = {
+        return {
             pompaToplam,
             marketToplam,
             genelToplam,
@@ -838,8 +793,6 @@ export class VardiyaService {
             toplamFark,
             durumRenk
         };
-
-        return of(ozet).pipe(delay(500));
     }
 
     // ==========================================
@@ -858,7 +811,6 @@ export class VardiyaService {
             { label: 'Kredi Kartı', value: OdemeYontemi.KREDI_KARTI },
             { label: 'Veresiye', value: OdemeYontemi.VERESIYE },
             { label: 'Filo Kartı', value: OdemeYontemi.FILO_KARTI },
-            { label: 'Yemek Kartı', value: OdemeYontemi.YEMEK_KARTI }
         ];
     }
 
@@ -896,18 +848,20 @@ export class VardiyaService {
     // ==========================================
 
     getOperatorler(istasyonId?: number): Observable<Operator[]> {
-        const sorumlular = this.mockPersoneller
-            .filter(p => p.rol === PersonelRol.VARDIYA_SORUMLUSU)
-            .filter(p => !istasyonId || p.istasyonId === istasyonId)
-            .map(p => ({
-                id: p.id,
-                ad: p.ad,
-                soyad: p.soyad,
-                kullaniciAdi: p.keyId,
-                istasyonId: p.istasyonId,
-                aktif: p.aktif
-            }));
-        return of(sorumlular).pipe(delay(300));
+        return from(this.dbService.getPersoneller(istasyonId)).pipe(
+            map(personeller => {
+                return personeller
+                    .filter(p => p.rol === 'VARDIYA_SORUMLUSU' || p.rol === PersonelRol.VARDIYA_SORUMLUSU)
+                    .map(p => ({
+                        id: p.id!,
+                        ad: p.ad,
+                        soyad: p.soyad,
+                        kullaniciAdi: p.keyId,
+                        istasyonId: p.istasyonId,
+                        aktif: p.aktif
+                    }));
+            })
+        );
     }
 
     getTahsilatlar(): Observable<Tahsilat[]> {
@@ -947,9 +901,7 @@ export class VardiyaService {
     }
 
     getPompaSatislari(vardiyaId: number): Observable<PompaSatis[]> {
-        const source = this.yuklenenSatislar.value.length > 0
-            ? this.yuklenenSatislar.value
-            : this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
+        const source = this.yuklenenSatislar.value;
 
         const satislar = source.map(s => ({
             id: s.id,
@@ -966,8 +918,7 @@ export class VardiyaService {
 
     getSistemTahsilatlari(vardiyaId: number): Observable<{ odemeYontemi: OdemeYontemi; tutar: number }[]> {
         // Pompa satışlarından hesapla
-        const toplamSatis = this.mockOtomasyonSatislari
-            .filter(s => s.vardiyaId === vardiyaId)
+        const toplamSatis = this.yuklenenSatislar.value
             .reduce((sum, s) => sum + s.toplamTutar, 0);
 
         // Varsayılan dağılım
@@ -980,10 +931,7 @@ export class VardiyaService {
     }
 
     karsilastirmaYap(vardiyaId: number): Observable<KarsilastirmaSonuc> {
-        const otomasyonSatislari = this.yuklenenSatislar.value.length > 0
-            ? this.yuklenenSatislar.value
-            : this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
-
+        const otomasyonSatislari = this.yuklenenSatislar.value;
         const pusulalar = this.pusulaGirisleri.value;
 
         const sistemToplam = otomasyonSatislari.reduce((sum, s) => sum + s.toplamTutar, 0);
@@ -1029,7 +977,7 @@ export class VardiyaService {
     getVardiyaOzet(vardiyaId: number): Observable<VardiyaOzet> {
         const vardiya = this.aktifVardiya.value;
         const tahsilatlar = this.tahsilatlar.value;
-        const otomasyonSatislari = this.mockOtomasyonSatislari.filter(s => s.vardiyaId === vardiyaId);
+        const otomasyonSatislari = this.yuklenenSatislar.value;
 
         if (!vardiya) {
             throw new Error('Vardiya bulunamadı');

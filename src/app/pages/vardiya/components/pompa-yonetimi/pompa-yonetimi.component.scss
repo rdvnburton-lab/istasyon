@@ -1,0 +1,19 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .row-completed {
+    background-color: #dcfce7 !important;
+}
+
+:host ::ng-deep .row-selected {
+    background-color: #dbeafe !important;
+}
+
+:host ::ng-deep .dark .row-completed {
+    background-color: rgba(20, 83, 45, 0.3) !important;
+}
+
+:host ::ng-deep .dark .row-selected {
+    background-color: rgba(30, 58, 138, 0.5) !important;
+}

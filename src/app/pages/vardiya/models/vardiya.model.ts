@@ -175,6 +175,7 @@ export interface MarketZRaporu {
     id: number;
     vardiyaId: number;
     genelToplam: number;
+    kdv0: number;  // %0 KDV tutarı (muaf ürünler)
     kdv1: number;  // %1 KDV tutarı
     kdv10: number; // %10 KDV tutarı
     kdv20: number; // %20 KDV tutarı
@@ -189,7 +190,6 @@ export interface MarketTahsilat {
     vardiyaId: number;
     nakit: number;
     krediKarti: number;
-    yemekKarti: number;
     toplam: number;
     aciklama?: string;
     olusturmaTarihi: Date;
@@ -222,6 +222,7 @@ export interface MarketOzet {
     netKasa: number; // Tahsilat - Gider
     fark: number;    // ZRaporu - NetKasa
     kdvDokum: {
+        kdv0: number;
         kdv1: number;
         kdv10: number;
         kdv20: number;
@@ -339,8 +340,7 @@ export enum OdemeYontemi {
     NAKIT = 'NAKIT',
     KREDI_KARTI = 'KREDI_KARTI',
     VERESIYE = 'VERESIYE',
-    FILO_KARTI = 'FILO_KARTI',
-    YEMEK_KARTI = 'YEMEK_KARTI'
+    FILO_KARTI = 'FILO_KARTI'
 }
 
 // Tahsilat (Eski uyumluluk için)
