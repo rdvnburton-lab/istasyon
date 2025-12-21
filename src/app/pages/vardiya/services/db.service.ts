@@ -64,8 +64,8 @@ export interface DBPusula {
     personelAdi: string;
     nakit: number;
     krediKarti: number;
-    veresiye: number;
-    filoKarti: number;
+    paroPuan: number;
+    mobilOdeme: number;
     toplam: number;
     krediKartiDetay?: { banka: string; tutar: number }[];
     olusturmaTarihi: Date;
@@ -90,6 +90,60 @@ export interface DBOnayLog {
     tarih: Date;
 }
 
+// MARKET TABLES
+export interface DBMarketVardiya {
+    id?: number;
+    tarih: Date;
+    durum: string; // Enum string olarak saklanacak
+    toplamSatisTutari: number;
+    toplamTeslimatTutari: number;
+    toplamFark: number;
+    onaylayanId?: number;
+    onaylayanAdi?: string;
+    onayTarihi?: Date;
+    redNedeni?: string;
+    olusturmaTarihi: Date;
+}
+
+export interface DBMarketVardiyaPersonel {
+    id?: number;
+    vardiyaId: number;
+    personelId: number;
+    personelAdi: string;
+    sistemSatisTutari: number;
+    nakit: number;
+    krediKarti: number;
+    gider: number;
+    toplamTeslimat: number;
+    fark: number;
+    aciklama?: string;
+    olusturmaTarihi: Date;
+}
+
+export interface DBMarketZRaporu {
+    id?: number;
+    vardiyaId: number;
+    tarih: Date;
+    genelToplam: number;
+    kdv0: number;
+    kdv1: number;
+    kdv10: number;
+    kdv20: number;
+    kdvToplam: number;
+    kdvHaric: number;
+    olusturmaTarihi: Date;
+}
+
+export interface DBMarketGelir {
+    id?: number;
+    vardiyaId: number;
+    tarih: Date;
+    gelirTuru: string;
+    tutar: number;
+    aciklama: string;
+    olusturmaTarihi: Date;
+}
+
 // Dexie Veritabanı Sınıfı
 class IstasyonDB extends Dexie {
     istasyonlar!: Table<DBIstasyon>;
@@ -99,6 +153,12 @@ class IstasyonDB extends Dexie {
     pusulalar!: Table<DBPusula>;
     giderler!: Table<DBGider>;
     onayLoglar!: Table<DBOnayLog>;
+
+    // Market Tables
+    marketVardiyalar!: Table<DBMarketVardiya>;
+    marketVardiyaPersonel!: Table<DBMarketVardiyaPersonel>;
+    marketZRaporu!: Table<DBMarketZRaporu>;
+    marketGelirler!: Table<DBMarketGelir>;
 
     constructor() {
         super('IstasyonDB');
@@ -111,6 +171,16 @@ class IstasyonDB extends Dexie {
             pusulalar: '++id, vardiyaId, personelId',
             giderler: '++id, vardiyaId',
             onayLoglar: '++id, vardiyaId, islem, tarih'
+        });
+
+        this.version(3).stores({
+            marketVardiyalar: '++id, tarih',
+            marketVardiyaPersonel: '++id, vardiyaId, personelId',
+            marketZRaporu: '++id, vardiyaId'
+        });
+
+        this.version(4).stores({
+            marketGelirler: '++id, vardiyaId'
         });
     }
 }
@@ -138,13 +208,21 @@ export class DbService {
             });
         }
 
-        if (await this.db.personeller.count() === 0) {
-            const varsayilanPersoneller: Omit<DBPersonel, 'id'>[] = [
-                { keyId: 'M001', ad: 'MARKET', soyad: '', tamAd: 'Market Sorumlusu', istasyonId: 1, rol: 'MARKET_SORUMLUSU', aktif: true },
-                { keyId: 'V001', ad: 'VARDIYA', soyad: '', tamAd: 'Vardiya Sorumlusu', istasyonId: 1, rol: 'VARDIYA_SORUMLUSU', aktif: true },
-                { keyId: 'Y001', ad: 'ONAY', soyad: '', tamAd: 'İstasyon Sahibi', istasyonId: 1, rol: 'YONETICI', aktif: true }
-            ];
-            await this.db.personeller.bulkAdd(varsayilanPersoneller);
+        // Personelleri kontrol et ve eksikleri ekle
+        const varsayilanPersoneller: Omit<DBPersonel, 'id'>[] = [
+            { keyId: 'M001', ad: 'MARKET', soyad: '', tamAd: 'Market Sorumlusu', istasyonId: 1, rol: 'MARKET_SORUMLUSU', aktif: true },
+            { keyId: 'MG01', ad: 'Ayşe', soyad: 'Yılmaz', tamAd: 'Ayşe Yılmaz', istasyonId: 1, rol: 'MARKET_GOREVLISI', aktif: true },
+            { keyId: 'MG02', ad: 'Fatma', soyad: 'Demir', tamAd: 'Fatma Demir', istasyonId: 1, rol: 'MARKET_GOREVLISI', aktif: true },
+            { keyId: 'MG03', ad: 'Ali', soyad: 'Kaya', tamAd: 'Ali Kaya', istasyonId: 1, rol: 'MARKET_GOREVLISI', aktif: true },
+            { keyId: 'V001', ad: 'VARDIYA', soyad: '', tamAd: 'Vardiya Sorumlusu', istasyonId: 1, rol: 'VARDIYA_SORUMLUSU', aktif: true },
+            { keyId: 'Y001', ad: 'ONAY', soyad: '', tamAd: 'İstasyon Sahibi', istasyonId: 1, rol: 'YONETICI', aktif: true }
+        ];
+
+        for (const p of varsayilanPersoneller) {
+            const exists = await this.db.personeller.where('keyId').equals(p.keyId).first();
+            if (!exists) {
+                await this.db.personeller.add(p);
+            }
         }
     }
 
@@ -169,6 +247,10 @@ export class DbService {
 
     async personelEkle(personel: Omit<DBPersonel, 'id'>): Promise<number> {
         return this.db.personeller.add(personel);
+    }
+
+    async getPersonel(id: number): Promise<DBPersonel | undefined> {
+        return this.db.personeller.get(id);
     }
 
     async personelGuncelle(id: number, changes: Partial<DBPersonel>): Promise<void> {
@@ -366,6 +448,58 @@ export class DbService {
         };
     }
 
+
+    // ==========================================
+    // MARKET GELİR İŞLEMLERİ
+    // ==========================================
+
+    async marketGelirEkle(gelir: Omit<DBMarketGelir, 'id'>): Promise<number> {
+        return this.db.marketGelirler.add(gelir);
+    }
+
+    async marketGelirSil(id: number): Promise<void> {
+        await this.db.marketGelirler.delete(id);
+    }
+
+    async vardiyaGelirleriGetir(vardiyaId: number): Promise<DBMarketGelir[]> {
+        return this.db.marketGelirler.where('vardiyaId').equals(vardiyaId).toArray();
+    }
+
+    async getOnayBekleyenMarketVardiyalar(): Promise<DBMarketVardiya[]> {
+        return this.db.marketVardiyalar.where('durum').equals('ONAY_BEKLIYOR').toArray();
+    }
+
+    async marketVardiyaOnayaGonder(vardiyaId: number): Promise<void> {
+        await this.db.marketVardiyalar.update(vardiyaId, {
+            durum: 'ONAY_BEKLIYOR'
+        });
+
+        // Log ekle
+        await this.onayLogEkle({
+            vardiyaId, // Market vardiya ID'si ile normal vardiya ID çakışabilir, bunu ayrıştırmak gerekebilir ama şimdilik ID üzerinden gidiyoruz
+            islem: 'ONAYA_GONDERILDI',
+            aciklama: 'Market Vardiyası Onaya Gönderildi',
+            tarih: new Date()
+        });
+    }
+
+    async marketVardiyaOnayla(vardiyaId: number, onaylayanId: number, onaylayanAdi: string): Promise<void> {
+        await this.db.marketVardiyalar.update(vardiyaId, {
+            durum: 'ONAYLANDI',
+            onaylayanId,
+            onaylayanAdi,
+            onayTarihi: new Date()
+        });
+    }
+
+    async marketVardiyaReddet(vardiyaId: number, neden: string): Promise<void> {
+        await this.db.marketVardiyalar.update(vardiyaId, {
+            durum: 'REDDEDILDI',
+            redNedeni: neden,
+            onayTarihi: new Date()
+        });
+    }
+
     // ==========================================
     // ONAY İŞLEMLERİ
     // ==========================================
@@ -549,6 +683,80 @@ export class DbService {
     }> {
         const personel = await this.db.personeller.get(personelId);
 
+        if (!personel) {
+            return {
+                personel: undefined,
+                hareketler: [],
+                ozet: {
+                    toplamSatis: 0,
+                    toplamTahsilat: 0,
+                    toplamFark: 0,
+                    toplamLitre: 0,
+                    aracSayisi: 0,
+                    ortalamaLitre: 0,
+                    ortalamaTutar: 0,
+                    yakitDagilimi: []
+                }
+            };
+        }
+
+        // MARKET PERSONELİ İŞLEMLERİ
+        if (personel.rol === 'MARKET_GOREVLISI' || personel.rol === 'MARKET_SORUMLUSU') {
+            const marketVardiyalar = await this.db.marketVardiyalar
+                .where('tarih')
+                .between(baslangic, bitis, true, true)
+                .toArray();
+
+            const vardiyaIds = marketVardiyalar.map(v => v.id!);
+
+            const personelIslemler = await this.db.marketVardiyaPersonel
+                .where('vardiyaId')
+                .anyOf(vardiyaIds)
+                .filter(p => p.personelId === personelId)
+                .toArray();
+
+            const hareketler = marketVardiyalar.map(v => {
+                const islem = personelIslemler.find(p => p.vardiyaId === v.id);
+                if (!islem) return null;
+
+                const otomasyonSatis = islem.sistemSatisTutari;
+                const manuelTahsilat = (islem.nakit || 0) + (islem.krediKarti || 0); // veya islem.toplamTeslimat
+                const fark = manuelTahsilat - otomasyonSatis;
+
+                return {
+                    tarih: v.tarih,
+                    vardiyaId: v.id!,
+                    otomasyonSatis,
+                    manuelTahsilat,
+                    fark,
+                    litre: 0,
+                    aracSayisi: 0,
+                    aciklama: islem.aciklama
+                };
+            }).filter((h): h is NonNullable<typeof h> => h !== null)
+                .filter(h => h.otomasyonSatis > 0 || h.manuelTahsilat > 0);
+
+            const toplamSatis = hareketler.reduce((sum, h) => sum + h.otomasyonSatis, 0);
+            const toplamTahsilat = hareketler.reduce((sum, h) => sum + h.manuelTahsilat, 0);
+            const toplamFark = hareketler.reduce((sum, h) => sum + h.fark, 0);
+
+            return {
+                personel,
+                hareketler,
+                ozet: {
+                    toplamSatis,
+                    toplamTahsilat,
+                    toplamFark,
+                    toplamLitre: 0,
+                    aracSayisi: 0,
+                    ortalamaLitre: 0,
+                    ortalamaTutar: hareketler.length > 0 ? toplamSatis / hareketler.length : 0,
+                    yakitDagilimi: []
+                }
+            };
+        }
+
+        // POMPACI / VARDIYA SORUMLUSU İŞLEMLERİ (MEVCUT MANTIK)
         // Tarih aralığındaki vardiyalar
         const vardiyalar = await this.db.vardiyalar
             .where('yuklemeTarihi')
@@ -746,5 +954,56 @@ export class DbService {
         await this.db.pusulalar.clear();
         await this.db.giderler.clear();
         await this.db.onayLoglar.clear();
+        await this.db.marketVardiyalar.clear();
+        await this.db.marketGelirler.clear();
+        await this.db.marketVardiyaPersonel.clear();
+        await this.db.marketZRaporu.clear();
+    }
+
+    // ==========================================
+    // MARKET METODLARI
+    // ==========================================
+
+    async marketVardiyaEkle(vardiya: Omit<DBMarketVardiya, 'id'>): Promise<number> {
+        return this.db.marketVardiyalar.add(vardiya);
+    }
+
+    async marketVardiyalarGetir(): Promise<DBMarketVardiya[]> {
+        return this.db.marketVardiyalar.orderBy('tarih').reverse().toArray();
+    }
+
+    async marketVardiyaGuncelle(id: number, changes: Partial<DBMarketVardiya>): Promise<void> {
+        await this.db.marketVardiyalar.update(id, changes);
+    }
+
+    async marketPersonelIslemEkle(islem: Omit<DBMarketVardiyaPersonel, 'id'>): Promise<number> {
+        // Varsa güncelle
+        const mevcut = await this.db.marketVardiyaPersonel
+            .where('vardiyaId').equals(islem.vardiyaId)
+            .and(p => p.personelId === islem.personelId)
+            .first();
+
+        if (mevcut) {
+            await this.db.marketVardiyaPersonel.update(mevcut.id!, islem);
+            return mevcut.id!;
+        }
+        return this.db.marketVardiyaPersonel.add(islem);
+    }
+
+    async marketPersonelIslemleriGetir(vardiyaId: number): Promise<DBMarketVardiyaPersonel[]> {
+        return this.db.marketVardiyaPersonel.where('vardiyaId').equals(vardiyaId).toArray();
+    }
+
+    async marketZRaporuKaydet(zRaporu: Omit<DBMarketZRaporu, 'id'>): Promise<number> {
+        const mevcut = await this.db.marketZRaporu.where('vardiyaId').equals(zRaporu.vardiyaId).first();
+        if (mevcut) {
+            await this.db.marketZRaporu.update(mevcut.id!, zRaporu);
+            return mevcut.id!;
+        }
+        return this.db.marketZRaporu.add(zRaporu);
+    }
+
+    async marketZRaporuGetir(vardiyaId: number): Promise<DBMarketZRaporu | undefined> {
+        return this.db.marketZRaporu.where('vardiyaId').equals(vardiyaId).first();
     }
 }

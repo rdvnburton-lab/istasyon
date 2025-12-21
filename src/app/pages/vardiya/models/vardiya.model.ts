@@ -29,6 +29,7 @@ export interface Personel {
 export enum PersonelRol {
     POMPACI = 'POMPACI',
     MARKET_SORUMLUSU = 'MARKET_SORUMLUSU',
+    MARKET_GOREVLISI = 'MARKET_GOREVLISI',
     VARDIYA_SORUMLUSU = 'VARDIYA_SORUMLUSU',
     YONETICI = 'YONETICI'
 }
@@ -92,6 +93,7 @@ export interface FiloSatis {
     yakitTuru: YakitTuru;
     litre: number;
     tutar: number;
+    pompaNo: number;
     fisNo: number;
 }
 
@@ -120,8 +122,8 @@ export interface PusulaGirisi {
     personelAdi: string;
     nakit: number;
     krediKarti: number;
-    veresiye: number;
-    filoKarti: number;
+    paroPuan: number;
+    mobilOdeme: number;
     toplam: number;
     aciklama?: string;
     krediKartiDetay?: { banka: string; tutar: number }[];
@@ -139,8 +141,8 @@ export interface PersonelFarkAnalizi {
     pusulaDokum: {
         nakit: number;
         krediKarti: number;
-        veresiye: number;
-        filoKarti: number;
+        paroPuan: number;
+        mobilOdeme: number;
     };
 }
 
@@ -170,10 +172,48 @@ export interface PersonelKarne {
 // MARKET YÖNETİMİ
 // ==========================================
 
+export interface MarketVardiya {
+    id: number;
+    tarih: Date;
+    durum: VardiyaDurum;
+    toplamSatisTutari?: number;      // Günlük Toplam Sistem Satışı
+    toplamTeslimatTutari?: number;   // Günlük Toplam Pusula (Nakit + KK)
+    toplamFark?: number;             // Günlük Toplam Fark
+    zRaporuTutari?: number;          // Günü kontrol etmek için opsiyonel
+    onaylayanId?: number;
+    onaylayanAdi?: string;
+    onayTarihi?: Date;
+    redNedeni?: string;
+    olusturmaTarihi: Date;
+}
+
+export interface MarketVardiyaPersonel {
+    id: number;
+    vardiyaId: number;
+    personelId: number;
+    personelAdi: string;
+
+    // Satış Verisi (Harici Sistemden)
+    sistemSatisTutari: number;
+
+    // Teslimat Verisi (Pusula)
+    nakit: number;
+    krediKarti: number;
+    gider?: number;
+
+    // Hesaplanan
+    toplamTeslimat: number; // Nakit + KK
+    fark: number;           // ToplamTeslimat - SistemSatis
+
+    aciklama?: string;
+    olusturmaTarihi: Date;
+}
+
 // Market Z Raporu
 export interface MarketZRaporu {
     id: number;
     vardiyaId: number;
+    tarih: Date; // Verinin ait olduğu tarih
     genelToplam: number;
     kdv0: number;  // %0 KDV tutarı (muaf ürünler)
     kdv1: number;  // %1 KDV tutarı
@@ -188,6 +228,9 @@ export interface MarketZRaporu {
 export interface MarketTahsilat {
     id: number;
     vardiyaId: number;
+    tarih: Date; // Verinin ait olduğu tarih
+    personelId: number; // Tahsilatı yapan personel
+    personelAdi: string;
     nakit: number;
     krediKarti: number;
     toplam: number;
@@ -199,6 +242,7 @@ export interface MarketTahsilat {
 export interface MarketGider {
     id: number;
     vardiyaId: number;
+    tarih: Date; // Verinin ait olduğu tarih
     giderTuru: GiderTuru;
     tutar: number;
     aciklama: string;
@@ -214,13 +258,35 @@ export enum GiderTuru {
     DIGER = 'DIGER'
 }
 
+// Market Gelir
+export interface MarketGelir {
+    id: number;
+    vardiyaId: number;
+    tarih: Date; // Verinin ait olduğu tarih
+    gelirTuru: GelirTuru;
+    tutar: number;
+    aciklama: string;
+    belgeTarihi?: Date;
+    olusturmaTarihi: Date;
+}
+
+export enum GelirTuru {
+    KOMISYON = 'KOMISYON',
+    PRIM = 'PRIM',
+    DIGER = 'DIGER'
+}
+
 // Market Özet
 export interface MarketOzet {
     zRaporuToplam: number;
     tahsilatToplam: number;
     giderToplam: number;
-    netKasa: number; // Tahsilat - Gider
+    gelirToplam: number; // Yeni: Gelir toplamı
+    netKasa: number; // Tahsilat + Gelir - Gider
     fark: number;    // ZRaporu - NetKasa
+    tahsilatNakit: number;
+    tahsilatKrediKarti: number;
+    tahsilatParoPuan: number;
     kdvDokum: {
         kdv0: number;
         kdv1: number;
@@ -271,7 +337,8 @@ export interface GenelOzet {
     genelToplam: number;
     toplamNakit: number;
     toplamKrediKarti: number;
-    toplamVeresiye: number;
+    toplamParoPuan: number;
+    toplamMobilOdeme: number;
     toplamGider: number;
     toplamFark: number;
     durumRenk: 'success' | 'warn' | 'danger';
@@ -288,7 +355,8 @@ export interface GunlukOzet {
     toplamCiro: number;
     toplamNakit: number;
     toplamKrediKarti: number;
-    toplamVeresiye: number;
+    toplamParoPuan: number;
+    toplamMobilOdeme: number;
     toplamGider: number;
     kasaFarki: number;
     farkDurum: FarkDurum;
@@ -339,8 +407,8 @@ export interface VardiyaOzet {
 export enum OdemeYontemi {
     NAKIT = 'NAKIT',
     KREDI_KARTI = 'KREDI_KARTI',
-    VERESIYE = 'VERESIYE',
-    FILO_KARTI = 'FILO_KARTI'
+    PARO_PUAN = 'PARO_PUAN',
+    MOBIL_ODEME = 'MOBIL_ODEME'
 }
 
 // Tahsilat (Eski uyumluluk için)

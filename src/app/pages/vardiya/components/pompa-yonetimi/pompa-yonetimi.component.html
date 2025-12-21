@@ -293,14 +293,14 @@
                             </p-inputnumber>
                         </div>
                         <div class="col-span-6 md:col-span-3">
-                            <label class="font-semibold text-sm mb-2 block text-yellow-600">Veresiye</label>
-                            <p-inputnumber [(ngModel)]="pusulaForm.veresiye" mode="currency" currency="TRY"
+                            <label class="font-semibold text-sm mb-2 block text-yellow-600">Paro Puan</label>
+                            <p-inputnumber [(ngModel)]="pusulaForm.paroPuan" mode="currency" currency="TRY"
                                 locale="tr-TR" styleClass="w-full">
                             </p-inputnumber>
                         </div>
                         <div class="col-span-6 md:col-span-3">
-                            <label class="font-semibold text-sm mb-2 block text-purple-600">Filo Kartı</label>
-                            <p-inputnumber [(ngModel)]="pusulaForm.filoKarti" mode="currency" currency="TRY"
+                            <label class="font-semibold text-sm mb-2 block text-purple-600">Mobil Ödeme</label>
+                            <p-inputnumber [(ngModel)]="pusulaForm.mobilOdeme" mode="currency" currency="TRY"
                                 locale="tr-TR" styleClass="w-full">
                             </p-inputnumber>
                         </div>
@@ -328,7 +328,8 @@
                         <th>Personel</th>
                         <th class="text-right">Nakit</th>
                         <th class="text-right">K.Kartı</th>
-                        <th class="text-right">Veresiye</th>
+                        <th class="text-right">Paro Puan</th>
+                        <th class="text-right">Mobil Ödeme</th>
                         <th class="text-right">Toplam</th>
                         <th></th>
                     </tr>
@@ -340,7 +341,9 @@
                             currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
                         <td class="text-right text-blue-600">{{ pusula.krediKarti |
                             currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
-                        <td class="text-right text-yellow-600">{{ pusula.veresiye |
+                        <td class="text-right text-yellow-600">{{ pusula.paroPuan |
+                            currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
+                        <td class="text-right text-purple-600">{{ pusula.mobilOdeme |
                             currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
                         <td class="text-right font-bold">{{ pusula.toplam | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
                             }}</td>
@@ -353,7 +356,7 @@
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-surface-500">
+                        <td colspan="7" class="text-center py-4 text-surface-500">
                             Henüz pusula girişi yapılmamış
                         </td>
                     </tr>
@@ -389,14 +392,14 @@
                                 </li>
                                 <li
                                     class="flex justify-between py-2 border-b border-surface-200 dark:border-surface-700">
-                                    <span class="text-surface-600 dark:text-surface-400">Veresiye</span>
-                                    <span class="font-bold text-yellow-600">{{ pusulaForm.veresiye |
+                                    <span class="text-surface-600 dark:text-surface-400">Paro Puan</span>
+                                    <span class="font-bold text-yellow-600">{{ pusulaForm.paroPuan |
                                         currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
                                 </li>
                                 <li
                                     class="flex justify-between py-2 border-b border-surface-200 dark:border-surface-700">
-                                    <span class="text-surface-600 dark:text-surface-400">Filo Kartı</span>
-                                    <span class="font-bold text-purple-600">{{ pusulaForm.filoKarti |
+                                    <span class="text-surface-600 dark:text-surface-400">Mobil Ödeme</span>
+                                    <span class="font-bold text-purple-600">{{ pusulaForm.mobilOdeme |
                                         currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
                                 </li>
                                 <li
@@ -479,7 +482,9 @@
                                 <span class="text-green-600">N: {{ analiz.pusulaDokum.nakit | number:'1.0-0' }}</span>
                                 <span class="text-blue-600">K: {{ analiz.pusulaDokum.krediKarti | number:'1.0-0'
                                     }}</span>
-                                <span class="text-yellow-600">V: {{ analiz.pusulaDokum.veresiye | number:'1.0-0'
+                                <span class="text-yellow-600">P: {{ analiz.pusulaDokum.paroPuan | number:'1.0-0'
+                                    }}</span>
+                                <span class="text-purple-600">M: {{ analiz.pusulaDokum.mobilOdeme | number:'1.0-0'
                                     }}</span>
                             </div>
                         </td>

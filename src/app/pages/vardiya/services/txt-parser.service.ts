@@ -92,6 +92,7 @@ export class TxtParserService {
                     const litre = parseInt(litreStr) / 100;
                     const tutar = parseInt(tutarStr) / 100;
                     const fisNo = parseInt(fisNoStr);
+                    const pompaNo = parseInt(pompaNoStr);
 
                     const filo: FiloSatis = {
                         tarih,
@@ -100,6 +101,7 @@ export class TxtParserService {
                         yakitTuru: this.parseYakitTuru(yakitStr),
                         litre,
                         tutar,
+                        pompaNo,
                         fisNo
                     };
 
@@ -117,6 +119,7 @@ export class TxtParserService {
                     const litre = parseInt(litreStr) / 100;
                     const tutar = parseInt(tutarStr) / 100;
                     const fisNo = parseInt(fisNoStr);
+                    const pompaNo = parseInt(pompaNoStr);
 
                     const filo: FiloSatis = {
                         tarih,
@@ -125,6 +128,7 @@ export class TxtParserService {
                         yakitTuru: this.parseYakitTuru(yakitStr),
                         litre,
                         tutar,
+                        pompaNo,
                         fisNo
                     };
 
@@ -142,6 +146,7 @@ export class TxtParserService {
                     const litre = parseInt(litreStr) / 100;
                     const tutar = parseInt(tutarStr) / 100;
                     const fisNo = parseInt(fisNoStr);
+                    const pompaNo = parseInt(pompaNoStr);
 
                     const filo: FiloSatis = {
                         tarih,
@@ -150,6 +155,7 @@ export class TxtParserService {
                         yakitTuru: this.parseYakitTuru(yakitStr),
                         litre,
                         tutar,
+                        pompaNo,
                         fisNo
                     };
 

@@ -73,10 +73,10 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     pusulaForm: {
         nakit: number;
         krediKarti: number;
-        veresiye: number;
-        filoKarti: number;
+        paroPuan: number;
+        mobilOdeme: number;
         krediKartiDetay: { banka: string; tutar: number }[];
-    } = { nakit: 0, krediKarti: 0, veresiye: 0, filoKarti: 0, krediKartiDetay: [] };
+    } = { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0, krediKartiDetay: [] };
 
     giderDialogVisible = false;
     giderTurleri: { label: string; value: PompaGiderTuru }[] = [];
@@ -200,19 +200,19 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 this.pusulaForm = {
                     nakit: mevcutPusula.nakit,
                     krediKarti: mevcutPusula.krediKarti,
-                    veresiye: mevcutPusula.veresiye,
-                    filoKarti: mevcutPusula.filoKarti,
+                    paroPuan: mevcutPusula.paroPuan,
+                    mobilOdeme: mevcutPusula.mobilOdeme,
                     krediKartiDetay: mevcutPusula.krediKartiDetay || []
                 };
             } else {
-                this.pusulaForm = { nakit: 0, krediKarti: 0, veresiye: 0, filoKarti: 0, krediKartiDetay: [] };
+                this.pusulaForm = { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0, krediKartiDetay: [] };
             }
         }
     }
 
     getPusulaFormToplam(): number {
         return this.pusulaForm.nakit + this.pusulaForm.krediKarti +
-            this.pusulaForm.veresiye + this.pusulaForm.filoKarti;
+            this.pusulaForm.paroPuan + this.pusulaForm.mobilOdeme;
     }
 
     getPusulaFormFark(): number {
@@ -239,15 +239,15 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 personelAdi: this.seciliPersonel.personelAdi,
                 nakit: this.pusulaForm.nakit,
                 krediKarti: this.pusulaForm.krediKarti,
-                veresiye: this.pusulaForm.veresiye,
-                filoKarti: this.pusulaForm.filoKarti,
+                paroPuan: this.pusulaForm.paroPuan,
+                mobilOdeme: this.pusulaForm.mobilOdeme,
                 krediKartiDetay: this.pusulaForm.krediKartiDetay
             });
 
             this.loading = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Pusula kaydedildi' });
             this.seciliPersonel = null;
-            this.pusulaForm = { nakit: 0, krediKarti: 0, veresiye: 0, filoKarti: 0, krediKartiDetay: [] };
+            this.pusulaForm = { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0, krediKartiDetay: [] };
         } catch (error) {
             this.loading = false;
             this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kayıt başarısız' });

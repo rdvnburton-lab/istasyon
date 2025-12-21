@@ -4,7 +4,8 @@
             <div class="flex flex-col gap-2">
                 <label class="font-bold">Personel Seçimi</label>
                 <p-select [options]="personeller" [(ngModel)]="secilenPersonel" optionLabel="tamAd"
-                    placeholder="Personel Seçiniz" [filter]="true" filterBy="tamAd" styleClass="w-full"></p-select>
+                    placeholder="Personel Seçiniz" [filter]="true" filterBy="tamAd" styleClass="w-full"
+                    (onChange)="raporGoster = false"></p-select>
             </div>
             <div class="flex flex-col gap-2">
                 <label class="font-bold">Başlangıç Tarihi</label>
@@ -30,11 +31,11 @@
                 <div class="text-blue-600 font-medium mb-2">Toplam Otomasyon Satışı</div>
                 <div class="text-2xl font-bold text-blue-900">{{ozet.toplamSatis |
                     currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
-                <div class="mt-2 text-sm text-blue-700">
+                <div class="mt-2 text-sm text-blue-700" *ngIf="isPompaci">
                     <span class="font-bold">{{ozet.aracSayisi}}</span> Araç
                 </div>
             </p-card>
-            <p-card styleClass="bg-orange-50 border-none shadow-none h-full">
+            <p-card styleClass="bg-orange-50 border-none shadow-none h-full" *ngIf="isPompaci">
                 <div class="text-orange-600 font-medium mb-2">Toplam Litre</div>
                 <div class="text-2xl font-bold text-orange-900">{{ozet.toplamLitre | number:'1.2-2'}} Lt</div>
                 <div class="mt-2 text-sm text-orange-700">
@@ -45,7 +46,7 @@
                 <div class="text-indigo-600 font-medium mb-2">Toplam Tahsilat</div>
                 <div class="text-2xl font-bold text-indigo-900">{{ozet.toplamTahsilat |
                     currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
-                <div class="mt-2 text-sm text-indigo-700">
+                <div class="mt-2 text-sm text-indigo-700" *ngIf="isPompaci">
                     Ort. <span class="font-bold">{{ozet.ortalamaTutar | currency:'TRY':'symbol-narrow':'1.2-2'}}</span>
                     /Araç
                 </div>
@@ -70,7 +71,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
             <!-- Sol: Yakıt Dağılımı -->
-            <div class="lg:col-span-1">
+            <div class="lg:col-span-1" *ngIf="isPompaci">
                 <div class="card p-0 overflow-hidden">
                     <p-table [value]="ozet.yakitDagilimi" styleClass="p-datatable-sm">
                         <ng-template pTemplate="header">
@@ -97,14 +98,14 @@
             </div>
 
             <!-- Sağ: Hareket Listesi -->
-            <div class="lg:col-span-2">
+            <div [class]="isPompaci ? 'lg:col-span-2' : 'lg:col-span-3'">
                 <p-table [value]="hareketler" [paginator]="true" [rows]="10" [loading]="loading"
                     styleClass="p-datatable-sm" [rowHover]="true">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Tarih</th>
-                            <th class="text-right">Araç</th>
-                            <th class="text-right">Litre</th>
+                            <th class="text-right" *ngIf="isPompaci">Araç</th>
+                            <th class="text-right" *ngIf="isPompaci">Litre</th>
                             <th class="text-right">Satış</th>
                             <th class="text-right">Tahsilat</th>
                             <th class="text-right">Fark</th>
@@ -113,8 +114,8 @@
                     <ng-template pTemplate="body" let-item>
                         <tr>
                             <td>{{item.tarih | date:'dd.MM.yyyy'}}</td>
-                            <td class="text-right">{{item.aracSayisi}}</td>
-                            <td class="text-right">{{item.litre | number:'1.0-2'}}</td>
+                            <td class="text-right" *ngIf="isPompaci">{{item.aracSayisi}}</td>
+                            <td class="text-right" *ngIf="isPompaci">{{item.litre | number:'1.0-2'}}</td>
                             <td class="text-right">{{item.otomasyonSatis | currency:'TRY':'symbol-narrow':'1.0-0'}}</td>
                             <td class="text-right">{{item.manuelTahsilat | currency:'TRY':'symbol-narrow':'1.0-0'}}</td>
                             <td class="text-right font-bold"
@@ -125,7 +126,8 @@
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
                         <tr>
-                            <td colspan="6" class="text-center p-4">Bu tarih aralığında hareket bulunamadı.</td>
+                            <td [attr.colspan]="isPompaci ? 6 : 4" class="text-center p-4">Bu tarih aralığında hareket
+                                bulunamadı.</td>
                         </tr>
                     </ng-template>
                 </p-table>

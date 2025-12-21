@@ -131,8 +131,8 @@ export class TahsilatGiris implements OnInit, OnDestroy {
         const severities: Record<OdemeYontemi, 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast'> = {
             [OdemeYontemi.NAKIT]: 'success',
             [OdemeYontemi.KREDI_KARTI]: 'info',
-            [OdemeYontemi.VERESIYE]: 'warn',
-            [OdemeYontemi.FILO_KARTI]: 'secondary',
+            [OdemeYontemi.PARO_PUAN]: 'warn',
+            [OdemeYontemi.MOBIL_ODEME]: 'secondary',
         };
         return severities[yontem] || 'secondary';
     }

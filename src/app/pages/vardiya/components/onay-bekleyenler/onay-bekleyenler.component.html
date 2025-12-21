@@ -4,47 +4,122 @@
         <p-button icon="pi pi-refresh" label="Yenile" [text]="true" (onClick)="yukle()"></p-button>
     </div>
 
-    <p-table [value]="vardiyalar" [tableStyle]="{ 'min-width': '50rem' }" [rows]="10" [paginator]="true">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>ID</th>
-                <th>Tarih</th>
-                <th>Dosya Adı</th>
-                <th>Toplam Tutar</th>
-                <th>İstasyon</th>
-                <th>Durum</th>
-                <th>İşlemler</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-vardiya>
-            <tr>
-                <td><span class="text-muted-color">#</span>{{ vardiya.id }}</td>
-                <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
-                <td class="font-medium">{{ vardiya.dosyaAdi }}</td>
-                <td class="font-bold text-lg">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
-                <td>{{ vardiya.istasyonAdi }}</td>
-                <td>
-                    <p-tag [value]="'Onay Bekliyor'" severity="warning" icon="pi pi-clock"></p-tag>
-                </td>
-                <td>
-                    <div class="flex gap-2">
-                        <p-button icon="pi pi-search" label="İncele" severity="info" [rounded]="true" [outlined]="true"
-                            tooltipPosition="top" pTooltip="Detayları İncele" (onClick)="incele(vardiya)"></p-button>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="7" class="text-center p-8">
-                    <div class="flex flex-col items-center gap-4 text-muted-color opacity-60">
-                        <i class="pi pi-check-circle text-6xl"></i>
-                        <span class="font-medium text-xl">Bekleyen onay bulunmuyor. Her şey yolunda!</span>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <p-tabs value="0">
+        <p-tablist>
+            <p-tab value="0">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-briefcase"></i>
+                    <span>Pompa Vardiyaları</span>
+                    <p-tag [value]="vardiyalar.length.toString()" severity="info" *ngIf="vardiyalar.length > 0"></p-tag>
+                </div>
+            </p-tab>
+            <p-tab value="1">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-shopping-cart"></i>
+                    <span>Market Vardiyaları</span>
+                    <p-tag [value]="marketVardiyalar.length.toString()" severity="warning"
+                        *ngIf="marketVardiyalar.length > 0"></p-tag>
+                </div>
+            </p-tab>
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <p-table [value]="vardiyalar" [tableStyle]="{ 'min-width': '50rem' }" [rows]="10" [paginator]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Dosya Adı</th>
+                            <th>Toplam Tutar</th>
+                            <th>İstasyon</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vardiya>
+                        <tr>
+                            <td><span class="text-muted-color">#</span>{{ vardiya.id }}</td>
+                            <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
+                            <td class="font-medium">{{ vardiya.dosyaAdi }}</td>
+                            <td class="font-bold text-lg">{{ vardiya.genelToplam |
+                                currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                            <td>{{ vardiya.istasyonAdi }}</td>
+                            <td>
+                                <p-tag [value]="'Onay Bekliyor'" severity="warning" icon="pi pi-clock"></p-tag>
+                            </td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <p-button icon="pi pi-search" label="İncele" severity="info" [rounded]="true"
+                                        [outlined]="true" tooltipPosition="top" pTooltip="Detayları İncele"
+                                        (onClick)="incele(vardiya)"></p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7" class="text-center p-8">
+                                <div class="flex flex-col items-center gap-4 text-muted-color opacity-60">
+                                    <i class="pi pi-check-circle text-6xl"></i>
+                                    <span class="font-medium text-xl">Bekleyen onay bulunmuyor. Her şey yolunda!</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabpanel>
+
+            <p-tabpanel value="1">
+                <p-table [value]="marketVardiyalar" [tableStyle]="{ 'min-width': '50rem' }" [rows]="10"
+                    [paginator]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Top. Satış</th>
+                            <th>Top. Teslimat</th>
+                            <th>Fark</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vardiya>
+                        <tr>
+                            <td><span class="text-muted-color">#</span>{{ vardiya.id }}</td>
+                            <td>{{ vardiya.tarih | date:'dd.MM.yyyy' }}</td>
+                            <td class="font-bold">{{ vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.2-2'
+                                }}</td>
+                            <td class="font-bold text-green-600">{{ vardiya.toplamTeslimatTutari |
+                                currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                            <td class="font-bold"
+                                [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0, 'text-blue-500': (vardiya.toplamFark || 0) > 0}">
+                                {{ vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                            <td>
+                                <p-tag [value]="'Onay Bekliyor'" severity="warning" icon="pi pi-clock"></p-tag>
+                            </td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <p-button icon="pi pi-search" label="İncele" severity="info" [rounded]="true"
+                                        [outlined]="true" tooltipPosition="top" pTooltip="Detayları İncele"
+                                        (onClick)="marketIncele(vardiya)"></p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7" class="text-center p-8">
+                                <div class="flex flex-col items-center gap-4 text-muted-color opacity-60">
+                                    <i class="pi pi-check-circle text-6xl"></i>
+                                    <span class="font-medium text-xl">Bekleyen market onayı bulunmuyor.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
 
     <!-- Detay Modalı -->
     <p-dialog [(visible)]="detayVisible" [modal]="true" [header]="'Mutabakat Detayı: ' + seciliVardiya?.dosyaAdi"
@@ -53,25 +128,34 @@
         <div *ngIf="seciliVardiya && genelOzet" class="flex flex-col gap-6">
 
             <!-- Üst Bilgi Kartları -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div
                     class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
-                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Genel Ciro</span>
-                    <span class="text-3xl font-bold text-primary">{{ genelOzet.genelToplam |
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompa Cirosu</span>
+                    <span class="text-3xl font-bold text-primary">{{ genelOzet.pompaToplam |
                         currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                 </div>
                 <div
                     class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
-                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam
-                        Tahsilat</span>
-                    <span class="text-3xl font-bold text-green-600">{{ (genelOzet.toplamNakit +
-                        genelOzet.toplamKrediKarti + genelOzet.toplamVeresiye) | currency:'TRY':'symbol-narrow':'1.2-2'
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompacı
+                        Satışları</span>
+                    <span class="text-3xl font-bold text-green-600">{{ pompaciSatisTutar |
+                        currency:'TRY':'symbol-narrow':'1.2-2'
                         }}</span>
+                </div>
+                <!-- Toplam Kredi Kartı Kartı -->
+                <div class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-50 transition-colors"
+                    (click)="openKrediKartiDetay()">
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam K.
+                        Kartı</span>
+                    <span class="text-3xl font-bold text-blue-600">{{ toplamKrediKarti |
+                        currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                    <span class="text-xs text-muted-color mt-1"><i class="pi pi-search mr-1"></i>Detay</span>
                 </div>
                 <div
                     class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
-                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam Gider</span>
-                    <span class="text-3xl font-bold text-red-500">{{ genelOzet.toplamGider |
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam Nakit</span>
+                    <span class="text-3xl font-bold text-red-500">{{ pompaciNakitToplam |
                         currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                 </div>
                 <div
@@ -79,10 +163,10 @@
                     <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Fark Durumu</span>
                     <div class="flex items-center gap-2">
                         <i class="pi pi-circle-fill text-xs"
-                            [ngClass]="{'text-green-500': genelOzet.durumRenk === 'success', 'text-orange-500': genelOzet.durumRenk === 'warn', 'text-red-500': genelOzet.durumRenk === 'danger'}"></i>
+                            [ngClass]="{'text-green-500': pompaFarkDurumRenk === 'success', 'text-warning-500': pompaFarkDurumRenk === 'warn', 'text-red-500': pompaFarkDurumRenk === 'danger'}"></i>
                         <span class="text-3xl font-bold"
-                            [ngClass]="{'text-green-600': genelOzet.durumRenk === 'success', 'text-orange-600': genelOzet.durumRenk === 'warn', 'text-red-600': genelOzet.durumRenk === 'danger'}">
-                            {{ genelOzet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                            [ngClass]="{'text-green-600': pompaFarkDurumRenk === 'success', 'text-orange-600': pompaFarkDurumRenk === 'warn', 'text-red-600': pompaFarkDurumRenk === 'danger'}">
+                            {{ pompaFark | currency:'TRY':'symbol-narrow':'1.2-2' }}
                         </span>
                     </div>
                 </div>
@@ -120,7 +204,9 @@
                                     <tr>
                                         <th>Personel</th>
                                         <th class="text-right">Otomasyon Satış</th>
-                                        <th class="text-right">Pusula Tahsilat</th>
+                                        <th class="text-right">Nakit</th>
+                                        <th class="text-right">Kredi Kartı</th>
+                                        <th class="text-right">Pusula Toplam</th>
                                         <th class="text-right">Fark</th>
                                         <th class="text-center">Durum</th>
                                     </tr>
@@ -129,6 +215,10 @@
                                     <tr>
                                         <td class="font-medium">{{ item.personelAdi }}</td>
                                         <td class="text-right text-muted-color">{{ item.otomasyonToplam |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                                        <td class="text-right">{{ item.pusulaDokum?.nakit |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                                        <td class="text-right">{{ item.pusulaDokum?.krediKarti |
                                             currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
                                         <td class="text-right font-bold">{{ item.pusulaToplam |
                                             currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
@@ -253,5 +343,140 @@
         </ng-template>
     </p-dialog>
 
+    <!-- Market Detay Modalı -->
+    <p-dialog [(visible)]="marketDetayVisible" [modal]="true"
+        [header]="'Market Vardiya Detayı: ' + (seciliMarketVardiya?.tarih | date:'dd.MM.yyyy')"
+        [style]="{ width: '70vw' }" [maximizable]="true" [draggable]="false" [resizable]="false">
+
+        <div *ngIf="seciliMarketVardiya && marketOzet" class="flex flex-col gap-6">
+
+            <!-- Üst Bilgi Kartları -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div
+                    class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam Satış</span>
+                    <span class="text-3xl font-bold text-primary">{{ marketOzet.zRaporuToplam |
+                        currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                </div>
+                <div
+                    class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam
+                        Tahsilat</span>
+                    <span class="text-3xl font-bold text-green-600">{{ marketOzet.tahsilatToplam |
+                        currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                </div>
+                <div
+                    class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-800">
+                    <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Fark</span>
+                    <span class="text-3xl font-bold"
+                        [ngClass]="{'text-red-500': marketOzet.netKasa < 0, 'text-blue-500': marketOzet.netKasa >= 0}">
+                        {{ marketOzet.netKasa | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-lg font-bold border-b pb-2">Z-Raporu ve Satışlar</h3>
+                    <div class="flex justify-between p-3 bg-surface-50 rounded">
+                        <span>Z Raporu Toplamı</span>
+                        <span class="font-bold">{{ marketOzet.zRaporuToplam | currency:'TRY':'symbol-narrow':'1.2-2'
+                            }}</span>
+                    </div>
+                    <div class="flex justify-between p-3 rounded">
+                        <span>Toplam KDV</span>
+                        <span>{{ marketOzet.kdvDokum.toplam | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-lg font-bold border-b pb-2">Kasa Detayı</h3>
+                    <div class="flex justify-between p-3 bg-surface-50 rounded">
+                        <span>Nakit</span>
+                        <span class="font-bold">{{ marketOzet.tahsilatNakit | currency:'TRY':'symbol-narrow':'1.2-2'
+                            }}</span>
+                    </div>
+                    <div class="flex justify-between p-3 rounded">
+                        <span>Kredi Kartı</span>
+                        <span class="font-bold">{{ marketOzet.tahsilatKrediKarti |
+                            currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                    </div>
+                    <div class="flex justify-between p-3 bg-orange-50 rounded text-orange-700">
+                        <span>Paro Puan</span>
+                        <span class="font-bold">{{ marketOzet.tahsilatParoPuan | currency:'TRY':'symbol-narrow':'1.2-2'
+                            }}</span>
+                    </div>
+                    <div class="flex justify-between p-3 rounded border-t">
+                        <span>Giderler</span>
+                        <span class="text-red-500 font-bold">- {{ marketOzet.giderToplam |
+                            currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-surface-200">
+                <div class="text-sm text-muted-color">
+                    Onaya gönderen: Market Sorumlusu<br>
+                    Tarih: {{ seciliMarketVardiya.olusturmaTarihi | date:'dd.MM.yyyy HH:mm' }}
+                </div>
+                <div class="flex gap-3">
+                    <p-button label="Reddet" icon="pi pi-times" severity="danger" [outlined]="true"
+                        (onClick)="marketReddetDialogAc(seciliMarketVardiya)"></p-button>
+                    <p-button label="Onayla ve Kapat" icon="pi pi-check" severity="success"
+                        (onClick)="marketOnayla(seciliMarketVardiya)"></p-button>
+                </div>
+            </div>
+        </div>
+    </p-dialog>
+
+    <!-- Market Reddetme Dialog -->
+    <p-dialog header="Market Vardiya Red İşlemi" [(visible)]="marketRedDialogVisible" [modal]="true"
+        [style]="{width: '450px'}">
+        <div class="flex flex-col gap-4">
+            <p class="text-muted-color mb-2">Bu market vardiyasını reddetmek üzeresiniz. Lütfen aşağıya işlemin nedenini
+                açıklayan bir not giriniz.</p>
+            <div class="flex flex-col gap-2">
+                <label for="marketNeden" class="font-bold">Red Nedeni</label>
+                <textarea pInputTextarea id="marketNeden" [(ngModel)]="marketRedNedeni" rows="4" class="w-full"
+                    placeholder="Örn: Z raporu ile teslimat uyuşmuyor..."></textarea>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button label="İptal" icon="pi pi-times" [text]="true"
+                (onClick)="marketRedDialogVisible = false"></p-button>
+            <p-button label="Reddet" icon="pi pi-check" severity="danger" (onClick)="marketReddetIslemi()"></p-button>
+        </ng-template>
+    </p-dialog>
+
+
     <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+    <!-- Kredi Kartı Detay Dialog -->
+    <p-dialog [(visible)]="krediKartiDialogVisible" header="Kredi Kartı Tahsilat Detayları" [modal]="true"
+        [style]="{width: '400px'}">
+        <p-table [value]="pusulaKrediKartiDetaylari" [scrollable]="true" scrollHeight="400px"
+            styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Banka</th>
+                    <th class="text-right">Tutar</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr
+                    [ngClass]="{'border-t-2 border-dashed border-surface-300 dark:border-surface-600': item.showSeparator}">
+                    <td class="p-2" [ngClass]="{'font-bold text-surface-900 dark:text-surface-0': item.isSpecial}">
+                        {{item.banka}}</td>
+                    <td class="text-right font-bold p-2" [ngClass]="{'text-purple-600': item.isSpecial}">{{item.tutar |
+                        currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr>
+                    <td class="font-bold">Toplam</td>
+                    <td class="text-right font-bold text-blue-600">{{toplamKrediKarti |
+                        currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-dialog>
 </div>

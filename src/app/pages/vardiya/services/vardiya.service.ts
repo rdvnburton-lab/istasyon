@@ -16,7 +16,11 @@ import {
     MarketTahsilat,
     MarketGider,
     GiderTuru,
+    MarketGelir,
+    GelirTuru,
     MarketOzet,
+    MarketVardiya,
+    MarketVardiyaPersonel,
     PompaGider,
     PompaGiderTuru,
     PompaOzet,
@@ -39,7 +43,7 @@ import {
     Operator,
     FiloSatis
 } from '../models/vardiya.model';
-import { DbService, DBVardiya, DBSatis, DBPusula, DBGider } from './db.service';
+import { DbService, DBVardiya, DBSatis, DBPusula, DBGider, DBMarketVardiya, DBMarketVardiyaPersonel, DBMarketZRaporu } from './db.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Injectable({
@@ -56,6 +60,8 @@ export class VardiyaService {
     private marketZRaporu = new BehaviorSubject<MarketZRaporu | null>(null);
     private marketTahsilat = new BehaviorSubject<MarketTahsilat | null>(null);
     private marketGiderler = new BehaviorSubject<MarketGider[]>([]);
+
+    private marketGelirler = new BehaviorSubject<MarketGelir[]>([]);
     private pompaGiderler = new BehaviorSubject<PompaGider[]>([]);
 
     // Yüklenen dosyadan gelen satışlar
@@ -144,7 +150,9 @@ export class VardiyaService {
         const personelToplam = satislar.reduce((sum, s) => sum + s.toplamTutar, 0);
         const filoToplam = filoSatislari.reduce((sum, s) => sum + s.tutar, 0);
 
-        // 0. Personel Kontrolü ve Otomatik Oluşturma
+        // 0. Personel Kontrolü ve ID Eşleştirme
+        const personelIdMap = new Map<number, number>(); // FileID -> DbID
+
         const uniqueNames = [...new Set(satislar.map(s => s.personelAdi))];
         for (const ad of uniqueNames) {
             // Otomasyon genelde adı 'A. VURAL' gibi verir.
@@ -152,10 +160,11 @@ export class VardiyaService {
             // Basitçe KeyId kontrolü yapalım (parse edilen keyId üzerinden)
             const ornekSatis = satislar.find(s => s.personelAdi === ad);
             if (ornekSatis) {
-                const mevcutPersonel = await this.dbService.getPersonelByKey(ornekSatis.personelKeyId);
+                let mevcutPersonel = await this.dbService.getPersonelByKey(ornekSatis.personelKeyId);
+
                 if (!mevcutPersonel) {
                     console.log(`Yeni personel tespit edildi: ${ad} (${ornekSatis.personelKeyId})`);
-                    await this.dbService.personelEkle({
+                    const yeniId = await this.dbService.personelEkle({
                         keyId: ornekSatis.personelKeyId,
                         ad: ad, // Otomasyondan gelen isim (örn: A. VURAL)
                         soyad: '', // Soyad ayrıştırması zor olabilir, boş bırakalım
@@ -164,6 +173,15 @@ export class VardiyaService {
                         rol: 'POMPACI',
                         aktif: true
                     });
+
+                    // Yeni eklenen personeli getir (ID için)
+                    mevcutPersonel = await this.dbService.getPersonel(yeniId);
+                }
+
+                if (mevcutPersonel) {
+                    // Eşleşme bulundu, haritala
+                    // ornekSatis.personelId (File ID) -> mevcutPersonel.id (DB ID)
+                    personelIdMap.set(ornekSatis.personelId, mevcutPersonel.id!);
                 }
             }
         }
@@ -183,21 +201,27 @@ export class VardiyaService {
 
         const vardiyaId = await this.dbService.vardiyaEkle(dbVardiya);
 
-        // 2. Satış kayıtları
-        const dbSatislar: Omit<DBSatis, 'id'>[] = satislar.map(s => ({
-            vardiyaId,
-            personelId: s.personelId,
-            personelAdi: s.personelAdi,
-            personelKeyId: s.personelKeyId,
-            pompaNo: s.pompaNo,
-            yakitTuru: s.yakitTuru,
-            litre: s.litre,
-            birimFiyat: s.birimFiyat,
-            toplamTutar: s.toplamTutar,
-            satisTarihi: s.satisTarihi,
-            fisNo: s.fisNo,
-            plaka: s.plaka
-        }));
+        // 2. Satış kayıtları (ID Eşleştirme ile)
+        const dbSatislar: Omit<DBSatis, 'id'>[] = satislar.map(s => {
+            // Doğru Personel ID'yi bul
+            // Eğer haritada yoksa (ki olmalı), eski ID'yi kullan (fallback)
+            const dbPersonelId = personelIdMap.get(s.personelId) || s.personelId;
+
+            return {
+                vardiyaId,
+                personelId: dbPersonelId,
+                personelAdi: s.personelAdi,
+                personelKeyId: s.personelKeyId,
+                pompaNo: s.pompaNo,
+                yakitTuru: s.yakitTuru,
+                litre: s.litre,
+                birimFiyat: s.birimFiyat,
+                toplamTutar: s.toplamTutar,
+                satisTarihi: s.satisTarihi,
+                fisNo: s.fisNo,
+                plaka: s.plaka
+            };
+        });
 
         // Filo satışlarını da ekle
         const dbFiloSatislar: Omit<DBSatis, 'id'>[] = filoSatislari.map(s => ({
@@ -205,7 +229,7 @@ export class VardiyaService {
             personelId: 999, // Dummy ID
             personelAdi: 'OTOMASYON',
             personelKeyId: 'SYS001',
-            pompaNo: 0,
+            pompaNo: s.pompaNo,
             yakitTuru: s.yakitTuru,
             litre: s.litre,
             birimFiyat: s.litre > 0 ? s.tutar / s.litre : 0,
@@ -221,6 +245,19 @@ export class VardiyaService {
         await this.setAktifVardiyaById(vardiyaId);
 
         return vardiyaId;
+    }
+
+    getOnayBekleyenMarketVardiyalar(): Observable<MarketVardiya[]> {
+        return from(this.dbService.marketVardiyalarGetir()).pipe(
+            map(list => list
+                .filter(v => v.durum === 'ONAY_BEKLIYOR')
+                .map(v => ({
+                    ...v,
+                    id: v.id!,
+                    durum: v.durum as VardiyaDurum
+                }))
+            )
+        );
     }
 
     async setAktifVardiyaById(vardiyaId: number): Promise<void> {
@@ -281,8 +318,8 @@ export class VardiyaService {
                 personelAdi: p.personelAdi,
                 nakit: p.nakit,
                 krediKarti: p.krediKarti,
-                veresiye: p.veresiye,
-                filoKarti: p.filoKarti,
+                paroPuan: p.paroPuan,
+                mobilOdeme: p.mobilOdeme,
                 toplam: p.toplam,
                 krediKartiDetay: p.krediKartiDetay,
                 olusturmaTarihi: p.olusturmaTarihi
@@ -300,6 +337,53 @@ export class VardiyaService {
                 olusturmaTarihi: g.olusturmaTarihi
             }));
             this.pompaGiderler.next(giderler);
+
+            // MARKET VERİLERİNİ YÜKLE
+            // 1. Z Raporu
+            const zRaporu = await this.dbService.marketZRaporuGetir(vardiyaId);
+            if (zRaporu) {
+                const mappedZRaporu: MarketZRaporu = {
+                    id: zRaporu.id!,
+                    vardiyaId: zRaporu.vardiyaId,
+                    tarih: zRaporu.tarih,
+                    genelToplam: zRaporu.genelToplam,
+                    kdv0: zRaporu.kdv0,
+                    kdv1: zRaporu.kdv1,
+                    kdv10: zRaporu.kdv10,
+                    kdv20: zRaporu.kdv20,
+                    kdvToplam: zRaporu.kdvToplam,
+                    kdvHaricToplam: zRaporu.kdvHaric,
+                    olusturmaTarihi: zRaporu.olusturmaTarihi
+                };
+                this.marketZRaporu.next(mappedZRaporu);
+            } else {
+                this.marketZRaporu.next(null);
+            }
+
+            // 2. Market Tahsilat
+            // Not: Tahsilat şu an sadece memory'de veya dbService'de eksik olabilir.
+            // Fakat varsa yükleyelim:
+            // const marketTahsilat = await this.dbService.marketTahsilatGetir(vardiyaId); // Böyle bir metod varsa...
+            // Şimdilik subject'i sıfırlayalım ki eski data kalmasın
+            this.marketTahsilat.next(null);
+
+            // 3. Market Gelirleri
+            const dbGelirler = await this.dbService.vardiyaGelirleriGetir(vardiyaId);
+            const gelirler: MarketGelir[] = dbGelirler.map(g => ({
+                id: g.id!,
+                vardiyaId: g.vardiyaId,
+                tarih: g.tarih,
+                gelirTuru: g.gelirTuru as GelirTuru,
+                tutar: g.tutar,
+                aciklama: g.aciklama,
+                olusturmaTarihi: g.olusturmaTarihi,
+                belgeTarihi: g.tarih
+            }));
+            this.marketGelirler.next(gelirler);
+
+            // 4. Market Giderleri
+            // Şu an DB desteği yoksa boş array bas
+            this.marketGiderler.next([]);
 
         } else {
             console.warn('Vardiya bulunamadı:', vardiyaId);
@@ -339,6 +423,21 @@ export class VardiyaService {
             }
         } else {
             throw new Error('Mutabakat tamamlanmadığı için onaya gönderilemedi.');
+        }
+    }
+
+    async marketVardiyaOnayaGonder(vardiyaId: number): Promise<void> {
+        console.log('Market Vardiya onaya gönderiliyor. ID:', vardiyaId);
+        // Burada DB seviyesinde onaya gönder işlemi yapılmalı (durum güncelleme)
+        // Şimdilik doğrudan durumu güncelliyoruz.
+        await this.dbService.marketVardiyaGuncelle(vardiyaId, { durum: 'ONAY_BEKLIYOR' });
+
+        // Subject'i güncelle
+        const vardiyalar = this.marketVardiyalar.value;
+        const index = vardiyalar.findIndex(v => v.id === vardiyaId);
+        if (index !== -1) {
+            vardiyalar[index] = { ...vardiyalar[index], durum: VardiyaDurum.ONAY_BEKLIYOR };
+            this.marketVardiyalar.next([...vardiyalar]);
         }
     }
 
@@ -416,11 +515,57 @@ export class VardiyaService {
         );
     }
 
+    async marketVardiyaOnayla(vardiyaId: number, onaylayanId: number, onaylayanAdi: string): Promise<void> {
+        // DB güncelle
+        await this.dbService.marketVardiyaGuncelle(vardiyaId, {
+            durum: 'ONAYLANDI',
+            onaylayanId,
+            onaylayanAdi,
+            onayTarihi: new Date()
+        });
+
+        // Subject güncelle
+        const vardiyalar = this.marketVardiyalar.value;
+        const index = vardiyalar.findIndex(v => v.id === vardiyaId);
+        if (index !== -1) {
+            vardiyalar[index] = {
+                ...vardiyalar[index],
+                durum: VardiyaDurum.ONAYLANDI,
+                onaylayanId,
+                onaylayanAdi,
+                onayTarihi: new Date()
+            };
+            this.marketVardiyalar.next([...vardiyalar]);
+        }
+    }
+
+    async marketVardiyaReddet(vardiyaId: number, redNedeni: string): Promise<void> {
+        // DB güncelle
+        await this.dbService.marketVardiyaGuncelle(vardiyaId, {
+            durum: 'REDDEDILDI',
+            redNedeni
+        });
+
+        // Subject güncelle
+        const vardiyalar = this.marketVardiyalar.value;
+        const index = vardiyalar.findIndex(v => v.id === vardiyaId);
+        if (index !== -1) {
+            vardiyalar[index] = {
+                ...vardiyalar[index],
+                durum: VardiyaDurum.REDDEDILDI,
+                redNedeni
+            };
+            this.marketVardiyalar.next([...vardiyalar]);
+        }
+    }
+
     private temizle(): void {
         this.pusulaGirisleri.next([]);
         this.marketZRaporu.next(null);
         this.marketTahsilat.next(null);
         this.marketGiderler.next([]);
+        this.marketGiderler.next([]);
+        this.marketGelirler.next([]);
         this.pompaGiderler.next([]);
         this.yuklenenSatislar.next([]);
     }
@@ -486,7 +631,7 @@ export class VardiyaService {
         const yeniPusula: PusulaGirisi = {
             ...pusula,
             id: 0,
-            toplam: pusula.nakit + pusula.krediKarti + pusula.veresiye + pusula.filoKarti,
+            toplam: pusula.nakit + pusula.krediKarti + pusula.paroPuan + pusula.mobilOdeme,
             olusturmaTarihi: new Date()
         };
 
@@ -496,8 +641,8 @@ export class VardiyaService {
             personelAdi: pusula.personelAdi,
             nakit: pusula.nakit,
             krediKarti: pusula.krediKarti,
-            veresiye: pusula.veresiye,
-            filoKarti: pusula.filoKarti,
+            paroPuan: pusula.paroPuan,
+            mobilOdeme: pusula.mobilOdeme,
             toplam: yeniPusula.toplam,
             krediKartiDetay: pusula.krediKartiDetay,
             olusturmaTarihi: yeniPusula.olusturmaTarihi
@@ -587,8 +732,8 @@ export class VardiyaService {
                 pusulaDokum: {
                     nakit: pusula?.nakit || 0,
                     krediKarti: pusula?.krediKarti || 0,
-                    veresiye: pusula?.veresiye || 0,
-                    filoKarti: pusula?.filoKarti || 0
+                    paroPuan: pusula?.paroPuan || 0,
+                    mobilOdeme: pusula?.mobilOdeme || 0
                 }
             });
         }
@@ -599,23 +744,170 @@ export class VardiyaService {
     // ==========================================
     // MARKET YÖNETİMİ
     // ==========================================
+    // MARKET YÖNETİMİ
+    private marketVardiyalar = new BehaviorSubject<MarketVardiya[]>([]);
+    private marketVardiyaPersonelList = new BehaviorSubject<MarketVardiyaPersonel[]>([]);
 
-    getMarketZRaporu(): Observable<MarketZRaporu | null> {
-        return this.marketZRaporu.asObservable();
+    getMarketVardiyalar(): Observable<MarketVardiya[]> {
+        // DB'den yükle ve subject'i güncelle
+        this.dbService.marketVardiyalarGetir().then(list => {
+            const mappedList: MarketVardiya[] = list.map(v => ({
+                ...v,
+                id: v.id!, // DB'den gelen kayıtta id kesin vardır
+                durum: v.durum as VardiyaDurum,
+            }));
+            this.marketVardiyalar.next(mappedList);
+        });
+        return this.marketVardiyalar.asObservable();
+    }
+
+    marketVardiyaBaslat(veri: { tarih: Date }): Observable<MarketVardiya> {
+        const yeniVardiya: Omit<DBMarketVardiya, 'id'> = {
+            tarih: veri.tarih,
+            durum: 'ACIK',
+            toplamSatisTutari: 0,
+            toplamTeslimatTutari: 0,
+            toplamFark: 0,
+            olusturmaTarihi: new Date()
+        };
+
+        return from(this.dbService.marketVardiyaEkle(yeniVardiya)).pipe(
+            map(id => {
+                const olusturulan: MarketVardiya = {
+                    ...yeniVardiya,
+                    id,
+                    durum: yeniVardiya.durum as VardiyaDurum,
+                    toplamSatisTutari: yeniVardiya.toplamSatisTutari,
+                    toplamTeslimatTutari: yeniVardiya.toplamTeslimatTutari,
+                    toplamFark: yeniVardiya.toplamFark
+                };
+                const mevcut = this.marketVardiyalar.value;
+                this.marketVardiyalar.next([olusturulan, ...mevcut]);
+                return olusturulan;
+            })
+        );
+    }
+
+    getMarketVardiyaPersonelList(vardiyaId: number): Observable<MarketVardiyaPersonel[]> {
+        this.dbService.marketPersonelIslemleriGetir(vardiyaId).then(list => {
+            const mappedList: MarketVardiyaPersonel[] = list.map(p => ({
+                ...p,
+                id: p.id!
+            }));
+            this.marketVardiyaPersonelList.next(mappedList);
+        });
+        return this.marketVardiyaPersonelList.asObservable();
+    }
+
+    marketPersonelIslemKaydet(veri: Omit<MarketVardiyaPersonel, 'id' | 'olusturmaTarihi' | 'toplamTeslimat' | 'fark'>): Observable<MarketVardiyaPersonel> {
+        const toplamTeslimat = veri.nakit + veri.krediKarti + (veri.gider || 0);
+        const fark = toplamTeslimat - veri.sistemSatisTutari;
+
+        const yeniKayit: any = {
+            ...veri,
+            toplamTeslimat,
+            fark,
+            olusturmaTarihi: new Date()
+        };
+
+        // Önce işlemi kaydet
+        return from(this.dbService.marketPersonelIslemEkle(yeniKayit)).pipe(
+            map(id => {
+                yeniKayit.id = id;
+                // Listeyi güncelle
+                const mevcutList = this.marketVardiyaPersonelList.value;
+                const existingIndex = mevcutList.findIndex(p => p.personelId === veri.personelId);
+
+                let updatedList;
+                if (existingIndex !== -1) {
+                    updatedList = [...mevcutList];
+                    updatedList[existingIndex] = yeniKayit;
+                } else {
+                    updatedList = [...mevcutList, yeniKayit];
+                }
+                this.marketVardiyaPersonelList.next(updatedList);
+
+                // Vardiya Ozetini güncelle (DB + Subject)
+                this.updateMarketVardiyaOzetPersistent(veri.vardiyaId);
+
+                return yeniKayit;
+            })
+        );
+    }
+
+    private async updateMarketVardiyaOzetPersistent(vardiyaId: number) {
+        // DB'den güncel listeyi çek (Transaction safe olması için)
+        const personelList = await this.dbService.marketPersonelIslemleriGetir(vardiyaId);
+
+        const toplamSatis = personelList.reduce((sum, p) => sum + p.sistemSatisTutari, 0);
+        const toplamTeslimat = personelList.reduce((sum, p) => sum + p.toplamTeslimat, 0);
+        const toplamFark = personelList.reduce((sum, p) => sum + p.fark, 0);
+
+        // DB'yi güncelle
+        await this.dbService.marketVardiyaGuncelle(vardiyaId, {
+            toplamSatisTutari: toplamSatis,
+            toplamTeslimatTutari: toplamTeslimat,
+            toplamFark: toplamFark
+        });
+
+        // Subject'i güncelle
+        const vardiyalar = this.marketVardiyalar.value;
+        const index = vardiyalar.findIndex(v => v.id === vardiyaId);
+        if (index !== -1) {
+            vardiyalar[index] = {
+                ...vardiyalar[index],
+                toplamSatisTutari: toplamSatis,
+                toplamTeslimatTutari: toplamTeslimat,
+                toplamFark: toplamFark
+            };
+            this.marketVardiyalar.next([...vardiyalar]);
+        }
     }
 
     marketZRaporuKaydet(zRaporu: Omit<MarketZRaporu, 'id' | 'olusturmaTarihi' | 'kdvToplam' | 'kdvHaricToplam'>): Observable<MarketZRaporu> {
         const kdvToplam = zRaporu.kdv0 + zRaporu.kdv1 + zRaporu.kdv10 + zRaporu.kdv20;
-        const yeniZRaporu: MarketZRaporu = {
+        const yeniZRaporu: any = {
             ...zRaporu,
-            id: Date.now(),
             kdvToplam,
             kdvHaricToplam: zRaporu.genelToplam - kdvToplam,
             olusturmaTarihi: new Date()
         };
 
-        this.marketZRaporu.next(yeniZRaporu);
-        return of(yeniZRaporu).pipe(delay(300));
+        return from(this.dbService.marketZRaporuKaydet(yeniZRaporu)).pipe(
+            map(id => {
+                const result = { ...yeniZRaporu, id };
+                this.marketZRaporu.next(result);
+                // Eğer Z Raporu varsa vardiyaya da işleyebiliriz ama şimdilik bağımsız tutuyoruz
+                return result;
+            })
+        );
+    }
+
+    getMarketZRaporu(vardiyaId: number): Observable<MarketZRaporu | null> {
+        // DB'den çek
+        this.dbService.marketZRaporuGetir(vardiyaId).then(z => {
+            // DB type ile Model type uyuşmazlığı olabilir, maplemek gerekebilir
+            // DBMarketZRaporu -> MarketZRaporu
+            if (z) {
+                const mapped: MarketZRaporu = {
+                    id: z.id!,
+                    vardiyaId: z.vardiyaId,
+                    tarih: z.tarih,
+                    genelToplam: z.genelToplam,
+                    kdv0: z.kdv0,
+                    kdv1: z.kdv1,
+                    kdv10: z.kdv10,
+                    kdv20: z.kdv20,
+                    kdvToplam: z.kdvToplam,
+                    kdvHaricToplam: z.kdvHaric,
+                    olusturmaTarihi: z.olusturmaTarihi
+                };
+                this.marketZRaporu.next(mapped);
+            } else {
+                this.marketZRaporu.next(null);
+            }
+        });
+        return this.marketZRaporu.asObservable();
     }
 
     getMarketTahsilat(): Observable<MarketTahsilat | null> {
@@ -634,7 +926,64 @@ export class VardiyaService {
         return of(yeniTahsilat).pipe(delay(300));
     }
 
-    getMarketGiderler(): Observable<MarketGider[]> {
+    // ==========================================
+    // MARKET GELİR İŞLEMLERİ
+    // ==========================================
+
+    getMarketGelirler(vardiyaId: number): Observable<MarketGelir[]> {
+        this.dbService.vardiyaGelirleriGetir(vardiyaId).then(list => {
+            const mapped: MarketGelir[] = list.map(g => ({
+                id: g.id!,
+                vardiyaId: g.vardiyaId,
+                tarih: g.tarih,
+                gelirTuru: g.gelirTuru as GelirTuru,
+                tutar: g.tutar,
+                aciklama: g.aciklama,
+                olusturmaTarihi: g.olusturmaTarihi,
+                belgeTarihi: g.tarih
+            }));
+            this.marketGelirler.next(mapped);
+        });
+        return this.marketGelirler.asObservable();
+    }
+
+    marketGelirEkle(gelir: Omit<MarketGelir, 'id' | 'olusturmaTarihi'>): Observable<MarketGelir> {
+        const dbGelir: any = {
+            vardiyaId: gelir.vardiyaId,
+            tarih: gelir.tarih,
+            gelirTuru: gelir.gelirTuru,
+            tutar: gelir.tutar,
+            aciklama: gelir.aciklama,
+            olusturmaTarihi: new Date()
+        };
+
+        return from(this.dbService.marketGelirEkle(dbGelir)).pipe(
+            map(id => {
+                const yeniGelir: MarketGelir = {
+                    ...gelir,
+                    id: id,
+                    olusturmaTarihi: dbGelir.olusturmaTarihi
+                };
+                const mevcut = this.marketGelirler.value;
+                this.marketGelirler.next([...mevcut, yeniGelir]);
+                return yeniGelir;
+            })
+        );
+    }
+
+    marketGelirSil(gelirId: number): Observable<boolean> {
+        return from(this.dbService.marketGelirSil(gelirId)).pipe(
+            map(() => {
+                const mevcut = this.marketGelirler.value;
+                this.marketGelirler.next(mevcut.filter(g => g.id !== gelirId));
+                return true;
+            })
+        );
+    }
+
+    getMarketGiderler(vardiyaId?: number): Observable<MarketGider[]> {
+        // Market giderleri şu an memory-only görünüyor veya db entegrasyonu eksik.
+        // İleride burası da DB'den çekilecek şekilde güncellenmeli.
         return this.marketGiderler.asObservable();
     }
 
@@ -660,18 +1009,24 @@ export class VardiyaService {
         const zRaporu = this.marketZRaporu.value;
         const tahsilat = this.marketTahsilat.value;
         const giderler = this.marketGiderler.value;
+        const gelirler = this.marketGelirler.value;
 
         const zRaporuToplam = zRaporu?.genelToplam || 0;
         const tahsilatToplam = tahsilat?.toplam || 0;
         const giderToplam = giderler.reduce((sum, g) => sum + g.tutar, 0);
-        const netKasa = tahsilatToplam - giderToplam;
+        const gelirToplam = gelirler.reduce((sum, g) => sum + g.tutar, 0);
+        const netKasa = tahsilatToplam + gelirToplam - giderToplam;
 
         const ozet: MarketOzet = {
             zRaporuToplam,
             tahsilatToplam,
             giderToplam,
+            gelirToplam,
             netKasa,
             fark: zRaporuToplam - netKasa,
+            tahsilatNakit: tahsilat?.nakit || 0,
+            tahsilatKrediKarti: tahsilat?.krediKarti || 0,
+            tahsilatParoPuan: 0,
             kdvDokum: {
                 kdv0: zRaporu?.kdv0 || 0,
                 kdv1: zRaporu?.kdv1 || 0,
@@ -788,8 +1143,8 @@ export class VardiyaService {
                 pusulaDokum: {
                     nakit: pusula?.nakit || 0,
                     krediKarti: pusula?.krediKarti || 0,
-                    veresiye: pusula?.veresiye || 0,
-                    filoKarti: pusula?.filoKarti || 0
+                    paroPuan: pusula?.paroPuan || 0,
+                    mobilOdeme: pusula?.mobilOdeme || 0
                 }
             });
         }
@@ -829,7 +1184,8 @@ export class VardiyaService {
         // Tahsilat Toplamları
         let toplamNakit = pusulalar.reduce((sum, p) => sum + p.nakit, 0);
         let toplamKrediKarti = pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
-        let toplamVeresiye = pusulalar.reduce((sum, p) => sum + p.veresiye, 0);
+        let toplamParoPuan = pusulalar.reduce((sum, p) => sum + p.paroPuan, 0);
+        let toplamMobilOdeme = pusulalar.reduce((sum, p) => sum + p.mobilOdeme, 0);
 
         if (marketTahsilat) {
             toplamNakit += marketTahsilat.nakit;
@@ -839,7 +1195,7 @@ export class VardiyaService {
         const toplamGider = pompaGiderler.reduce((sum, g) => sum + g.tutar, 0) +
             marketGiderler.reduce((sum, g) => sum + g.tutar, 0);
 
-        const toplamTahsilat = toplamNakit + toplamKrediKarti + toplamVeresiye;
+        const toplamTahsilat = toplamNakit + toplamKrediKarti + toplamParoPuan + toplamMobilOdeme;
         const netKasa = toplamTahsilat - toplamGider;
         const toplamFark = netKasa - genelToplam; // Basit hesap
 
@@ -858,7 +1214,9 @@ export class VardiyaService {
             genelToplam,
             toplamNakit,
             toplamKrediKarti,
-            toplamVeresiye,
+            toplamParoPuan,
+            toplamMobilOdeme,
+
             toplamGider,
             toplamFark,
             durumRenk
@@ -879,8 +1237,8 @@ export class VardiyaService {
         return [
             { label: 'Nakit', value: OdemeYontemi.NAKIT },
             { label: 'Kredi Kartı', value: OdemeYontemi.KREDI_KARTI },
-            { label: 'Veresiye', value: OdemeYontemi.VERESIYE },
-            { label: 'Filo Kartı', value: OdemeYontemi.FILO_KARTI },
+            { label: 'Paro Puan', value: OdemeYontemi.PARO_PUAN },
+            { label: 'Mobil Ödeme', value: OdemeYontemi.MOBIL_ODEME },
         ];
     }
 
@@ -893,6 +1251,18 @@ export class VardiyaService {
         ];
     }
 
+    getMarketPersonelleri(): Observable<{ label: string, value: number }[]> {
+        return from(this.dbService.getPersoneller()).pipe(
+            map(personeller => personeller
+                .filter(p => p.rol === PersonelRol.MARKET_GOREVLISI)
+                .map(p => ({
+                    label: p.tamAd,
+                    value: p.id!
+                }))
+            )
+        );
+    }
+
     getGiderTurleri(): { label: string; value: GiderTuru }[] {
         return [
             { label: 'Ekmek', value: GiderTuru.EKMEK },
@@ -900,6 +1270,14 @@ export class VardiyaService {
             { label: 'Personel', value: GiderTuru.PERSONEL },
             { label: 'Kırtasiye', value: GiderTuru.KIRTASIYE },
             { label: 'Diğer', value: GiderTuru.DIGER }
+        ];
+    }
+
+    getGelirTurleri(): { label: string; value: GelirTuru }[] {
+        return [
+            { label: 'Komisyon', value: GelirTuru.KOMISYON },
+            { label: 'Prim', value: GelirTuru.PRIM },
+            { label: 'Diğer', value: GelirTuru.DIGER }
         ];
     }
 
@@ -995,8 +1373,8 @@ export class VardiyaService {
         return of([
             { odemeYontemi: OdemeYontemi.NAKIT, tutar: toplamSatis * 0.4 },
             { odemeYontemi: OdemeYontemi.KREDI_KARTI, tutar: toplamSatis * 0.35 },
-            { odemeYontemi: OdemeYontemi.VERESIYE, tutar: toplamSatis * 0.15 },
-            { odemeYontemi: OdemeYontemi.FILO_KARTI, tutar: toplamSatis * 0.1 }
+            { odemeYontemi: OdemeYontemi.PARO_PUAN, tutar: toplamSatis * 0.15 },
+            { odemeYontemi: OdemeYontemi.MOBIL_ODEME, tutar: toplamSatis * 0.1 }
         ]).pipe(delay(500));
     }
 
@@ -1009,10 +1387,10 @@ export class VardiyaService {
         // Calculate totals from Pusula
         const nakitToplam = pusulalar.reduce((sum, p) => sum + p.nakit, 0);
         const kkToplam = pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
-        const veresiyeToplam = pusulalar.reduce((sum, p) => sum + p.veresiye, 0);
-        const filoToplam = pusulalar.reduce((sum, p) => sum + p.filoKarti, 0);
+        const paroPuanToplam = pusulalar.reduce((sum, p) => sum + p.paroPuan, 0);
+        const mobilOdemeToplam = pusulalar.reduce((sum, p) => sum + p.mobilOdeme, 0);
 
-        const tahsilatToplam = nakitToplam + kkToplam + veresiyeToplam + filoToplam;
+        const tahsilatToplam = nakitToplam + kkToplam + paroPuanToplam + mobilOdemeToplam;
 
         const fark = tahsilatToplam - sistemToplam;
         const farkYuzde = sistemToplam > 0 ? (fark / sistemToplam) * 100 : 0;
@@ -1029,8 +1407,8 @@ export class VardiyaService {
         const detaylar: KarsilastirmaDetay[] = [
             { odemeYontemi: OdemeYontemi.NAKIT, sistemTutar: 0, tahsilatTutar: nakitToplam, fark: nakitToplam },
             { odemeYontemi: OdemeYontemi.KREDI_KARTI, sistemTutar: 0, tahsilatTutar: kkToplam, fark: kkToplam },
-            { odemeYontemi: OdemeYontemi.VERESIYE, sistemTutar: 0, tahsilatTutar: veresiyeToplam, fark: veresiyeToplam },
-            { odemeYontemi: OdemeYontemi.FILO_KARTI, sistemTutar: 0, tahsilatTutar: filoToplam, fark: filoToplam }
+            { odemeYontemi: OdemeYontemi.PARO_PUAN, sistemTutar: 0, tahsilatTutar: paroPuanToplam, fark: paroPuanToplam },
+            { odemeYontemi: OdemeYontemi.MOBIL_ODEME, sistemTutar: 0, tahsilatTutar: mobilOdemeToplam, fark: mobilOdemeToplam }
         ];
 
         return of({

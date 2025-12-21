@@ -12,20 +12,27 @@ import { DividerModule } from 'primeng/divider';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
 import { PanelModule } from 'primeng/panel';
+import { DatePickerModule } from 'primeng/datepicker';
+import { TooltipModule } from 'primeng/tooltip';
 
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { VardiyaService } from '../../services/vardiya.service';
 import {
-    Vardiya,
+    Vardiya, // Re-added
+    MarketVardiya,
+    MarketVardiyaPersonel,
     MarketZRaporu,
     MarketTahsilat,
     MarketGider,
     GiderTuru,
+    MarketGelir,
+    GelirTuru,
     MarketOzet
 } from '../../models/vardiya.model';
 
@@ -44,12 +51,15 @@ import {
         InputNumberModule,
         TextareaModule,
         DialogModule,
+        ConfirmDialogModule,
         ToastModule,
         SelectModule,
         MessageModule,
-        PanelModule
+        PanelModule,
+        DatePickerModule,
+        TooltipModule
     ],
-    providers: [MessageService],
+    providers: [MessageService, ConfirmationService],
     templateUrl: './market-yonetimi.component.html',
     styleUrls: ['./market-yonetimi.component.scss']
 })
@@ -58,90 +68,214 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     zRaporu: MarketZRaporu | null = null;
     tahsilat: MarketTahsilat | null = null;
     giderler: MarketGider[] = [];
+    gelirler: MarketGelir[] = [];
     marketOzet: MarketOzet | null = null;
+    secilenTarih: Date = new Date(); // Varsayılan olarak bugün
+    mutabakatBaslatildi: boolean = false; // Mutabakat başlatıldı mı?
+    marketVardiyalar: MarketVardiya[] = [] as MarketVardiya[];
+    seciliMarketVardiya: MarketVardiya | null = null;
+    yonetilenPersoneller: MarketVardiyaPersonel[] = [];
+
+    // Yeni Vardiya Formu
+    yeniVardiyaForm = {
+        tarih: new Date()
+    };
+
+    marketPersonelleri: { label: string; value: number }[] = [];
+
+    mutabakatBaslat(): void {
+        if (!this.secilenTarih) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Uyarı',
+                detail: 'Lütfen önce bir tarih seçin'
+            });
+            return;
+        }
+        this.mutabakatBaslatildi = true;
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Başarılı',
+            detail: `${this.secilenTarih.toLocaleDateString('tr-TR')} tarihi için mutabakat başlatıldı`
+        });
+    }
+
+    mutabakatGonder(vardiya: MarketVardiya): void {
+        this.confirmationService.confirm({
+            message: 'Bu vardiya mutabakatını onaya göndermek istediğinize emin misiniz?',
+            header: 'Onay Gönderimi',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet, Gönder',
+            rejectLabel: 'Vazgeç',
+            accept: () => {
+                this.vardiyaService.marketVardiyaOnayaGonder(vardiya.id).then(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Mutabakat onaya gönderildi' });
+                    // Durumu manuel güncelle veya listeyi dinle
+                    // List subscription handles update
+                }).catch((err: any) => {
+                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'İşlem sırasında bir hata oluştu' });
+                });
+            }
+        });
+    }
 
     zRaporuForm = { genelToplam: 0, kdv0: 0, kdv1: 0, kdv10: 0, kdv20: 0 };
-    tahsilatForm = { nakit: 0, krediKarti: 0 };
-
+    personelIslemForm = {
+        personelId: null as number | null,
+        sistemSatisTutari: 0,
+        nakit: 0,
+        krediKarti: 0,
+        gider: 0
+    };
     kdvKontrolSonuc = { gecerli: false, mesaj: 'Z Raporu bilgilerini girin', sinif: 'bg-surface-100 dark:bg-surface-800', icon: 'pi-info-circle' };
 
     giderDialogVisible = false;
     giderTurleri: { label: string; value: GiderTuru }[] = [];
     giderForm = { giderTuru: null as GiderTuru | null, tutar: 0, aciklama: '' };
 
+    gelirDialogVisible = false;
+    gelirTurleri: { label: string; value: GelirTuru }[] = [];
+    gelirForm = { gelirTuru: null as GelirTuru | null, tutar: 0, aciklama: '' };
+
     private subscriptions = new Subscription();
 
     constructor(
         private vardiyaService: VardiyaService,
         private messageService: MessageService,
+        private confirmationService: ConfirmationService,
         private router: Router
     ) { }
 
     ngOnInit(): void {
         this.giderTurleri = this.vardiyaService.getGiderTurleri();
+        this.gelirTurleri = this.vardiyaService.getGelirTurleri();
 
+        // Market personellerini yükle
+        this.vardiyaService.getMarketPersonelleri().subscribe(personeller => {
+            this.marketPersonelleri = personeller;
+        });
+
+        // Market vardiyalarını dinle
         this.subscriptions.add(
-            this.vardiyaService.getAktifVardiya().subscribe(vardiya => {
-                if (vardiya) {
-                    this.aktifVardiya = vardiya;
-                } else {
-                    // Pompa dosyası yüklenmeden market mutabakatı yapılabilmesi için
-                    // geçici bir market vardiyası oluştur
-                    this.aktifVardiya = {
-                        id: Date.now(),
-                        istasyonId: 1,
-                        istasyonAdi: 'Market Mutabakatı',
-                        sorumluId: 1,
-                        sorumluAdi: 'Market Sorumlusu',
-                        baslangicTarihi: new Date(),
-                        durum: 'ACIK' as any,
-                        pompaToplam: 0,
-                        marketToplam: 0,
-                        genelToplam: 0,
-                        toplamFark: 0,
-                        olusturmaTarihi: new Date(),
-                        kilitli: false
-                    };
-                }
+            this.vardiyaService.getMarketVardiyalar().subscribe(list => {
+                this.marketVardiyalar = list;
             })
         );
 
         this.subscriptions.add(
-            this.vardiyaService.getMarketZRaporu().subscribe((zRaporu: MarketZRaporu | null) => {
-                this.zRaporu = zRaporu;
-                if (zRaporu) {
-                    this.zRaporuForm = {
-                        genelToplam: zRaporu.genelToplam,
-                        kdv0: zRaporu.kdv0,
-                        kdv1: zRaporu.kdv1,
-                        kdv10: zRaporu.kdv10,
-                        kdv20: zRaporu.kdv20
-                    };
-                    this.kdvKontrol();
-                }
-                this.updateOzet();
+            this.vardiyaService.getMarketGelirler(0).subscribe(list => { // Initial empty or dummy
+                this.gelirler = list;
             })
         );
 
+        // Diğer abonelikleri şimdilik pasife alıyoruz veya seçili vardiyaya göre tekrar aktif edeceğiz
+        // Mevcut yapıyı korumak için, seciliMarketVardiya değiştiğinde bu verileri güncelleyeceğiz
+    }
+
+    listeyeDon(): void {
+        this.seciliMarketVardiya = null;
+        this.yonetilenPersoneller = [];
+        this.zRaporu = null;
+        this.giderler = [];
+        this.gelirler = [];
+        this.personelIslemForm = {
+            personelId: null,
+            sistemSatisTutari: 0,
+            nakit: 0,
+            krediKarti: 0,
+            gider: 0
+        };
+    }
+
+    yeniVardiyaEkle(): void {
+        if (!this.yeniVardiyaForm.tarih) {
+            this.messageService.add({ severity: 'warn', summary: 'Eksik Bilgi', detail: 'Lütfen tarih seçin' });
+            return;
+        }
+
+        // Aynı tarih kontrolü
+        const secilenTarih = new Date(this.yeniVardiyaForm.tarih);
+        secilenTarih.setHours(0, 0, 0, 0);
+
+        const mevcutVardiya = this.marketVardiyalar.find(v => {
+            const vTarih = new Date(v.tarih);
+            vTarih.setHours(0, 0, 0, 0);
+            return vTarih.getTime() === secilenTarih.getTime();
+        });
+
+        if (mevcutVardiya) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Kayıt Mevcut',
+                detail: 'Bu tarih için zaten bir vardiya kaydı bulunmaktadır.'
+            });
+            return;
+        }
+
+        this.vardiyaService.marketVardiyaBaslat({
+            tarih: this.yeniVardiyaForm.tarih
+        }).subscribe(yeniVardiya => {
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Yeni market vardiyası oluşturuldu' });
+            this.yeniVardiyaForm = { tarih: new Date() };
+        });
+        this.zRaporu = null;
+    }
+
+    isVardiyaSecili(vardiya: any): boolean {
+        return this.seciliMarketVardiya?.id === vardiya?.id;
+    }
+
+    vardiyaSec(vardiya: MarketVardiya): void {
+        this.seciliMarketVardiya = vardiya;
+        this.secilenTarih = new Date(vardiya.tarih);
+
+        // Personel Listesini veritabanından çek
+        // this.getMarketVardiyaPersonelList(vardiya.id); // Assuming this method will be added later or is a placeholder
+
+        // Z Raporunu veritabanından çek
+        // this.getMarketZRaporu(vardiya.id); // Assuming this method will be added later or is a placeholder
+
+        // Giderleri çek
+        // this.getMarketGiderleri(vardiya.id); // Assuming this method will be added later or is a placeholder
+
+        // Original logic for loading data, kept for now as helper methods are not defined
+        // Personel listesini yükle
+        this.vardiyaService.getMarketVardiyaPersonelList(vardiya.id).subscribe(
+            list => this.yonetilenPersoneller = list
+        );
+
+        // Z Raporunu yükle
+        this.vardiyaService.getMarketZRaporu(vardiya.id).subscribe(z => {
+            this.zRaporu = z;
+            if (z) {
+                this.zRaporuForm = {
+                    genelToplam: z.genelToplam,
+                    kdv0: z.kdv0,
+                    kdv1: z.kdv1,
+                    kdv10: z.kdv10,
+                    kdv20: z.kdv20
+                };
+            } else {
+                this.zRaporuForm = { genelToplam: 0, kdv0: 0, kdv1: 0, kdv10: 0, kdv20: 0 };
+            }
+        });
+
+        // Gelirleri dinle/yükle
         this.subscriptions.add(
-            this.vardiyaService.getMarketTahsilat().subscribe((tahsilat: MarketTahsilat | null) => {
-                this.tahsilat = tahsilat;
-                if (tahsilat) {
-                    this.tahsilatForm = {
-                        nakit: tahsilat.nakit,
-                        krediKarti: tahsilat.krediKarti
-                    };
-                }
-                this.updateOzet();
+            this.vardiyaService.getMarketGelirler(vardiya.id).subscribe(list => {
+                this.gelirler = list;
             })
         );
 
-        this.subscriptions.add(
-            this.vardiyaService.getMarketGiderler().subscribe((giderler: MarketGider[]) => {
-                this.giderler = giderler;
-                this.updateOzet();
-            })
-        );
+        this.messageService.add({ severity: 'info', summary: 'Seçildi', detail: 'Vardiya detayları görüntülüyor' });
+
+        // Alt forma scroll ol
+        setTimeout(() => {
+            const element = document.getElementById('detay-formu');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
     }
 
     ngOnDestroy(): void {
@@ -185,7 +319,7 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     }
 
     getTahsilatToplam(): number {
-        return (this.tahsilatForm.nakit || 0) + (this.tahsilatForm.krediKarti || 0);
+        return (this.personelIslemForm.nakit || 0) + (this.personelIslemForm.krediKarti || 0);
     }
 
     getGiderToplam(): number {
@@ -193,31 +327,80 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     }
 
     // Kayıt işlemleri
+    zRaporuDialogVisible = false;
+
+    zRaporuDialogAc(vardiya?: MarketVardiya): void {
+        if (vardiya) {
+            this.vardiyaSec(vardiya);
+        }
+        this.zRaporuDialogVisible = true;
+    }
+
     zRaporuKaydet(): void {
-        if (!this.aktifVardiya) return;
+        if (!this.seciliMarketVardiya) return;
 
         this.vardiyaService.marketZRaporuKaydet({
-            vardiyaId: this.aktifVardiya.id,
+            vardiyaId: this.seciliMarketVardiya.id,
+            tarih: this.secilenTarih,
             genelToplam: this.zRaporuForm.genelToplam,
             kdv0: this.zRaporuForm.kdv0,
             kdv1: this.zRaporuForm.kdv1,
             kdv10: this.zRaporuForm.kdv10,
             kdv20: this.zRaporuForm.kdv20
-        }).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Z Raporu kaydedildi' });
+        }).subscribe(z => {
+            this.zRaporu = z;
+            this.zRaporuDialogVisible = false;
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Z Raporu güncellendi' });
         });
     }
 
-    tahsilatKaydet(): void {
-        if (!this.aktifVardiya) return;
+    // Personel İşlem (Satış + Tahsilat) Kaydet
+    personelIslemKaydet(): void {
+        if (!this.seciliMarketVardiya || !this.personelIslemForm.personelId) {
+            this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Lütfen personel seçin' });
+            return;
+        }
 
-        this.vardiyaService.marketTahsilatKaydet({
-            vardiyaId: this.aktifVardiya.id,
-            nakit: this.tahsilatForm.nakit,
-            krediKarti: this.tahsilatForm.krediKarti
+        const personel = this.marketPersonelleri.find(p => p.value === this.personelIslemForm.personelId);
+
+        this.vardiyaService.marketPersonelIslemKaydet({
+            vardiyaId: this.seciliMarketVardiya.id,
+            personelId: this.personelIslemForm.personelId,
+            personelAdi: personel?.label || 'Bilinmiyor',
+            sistemSatisTutari: this.personelIslemForm.sistemSatisTutari,
+            nakit: this.personelIslemForm.nakit,
+            krediKarti: this.personelIslemForm.krediKarti,
+            gider: this.personelIslemForm.gider
         }).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Tahsilat kaydedildi' });
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Personel verisi kaydedildi' });
+            // Formu sıfırla veya yeni kayıt için hazırla
+            this.personelIslemForm = {
+                personelId: null,
+                sistemSatisTutari: 0,
+                nakit: 0,
+                krediKarti: 0,
+                gider: 0
+            };
         });
+    }
+
+    // Düzenlemek için personel seç
+    personelDuzenle(kayit: MarketVardiyaPersonel): void {
+        this.personelIslemForm = {
+            personelId: kayit.personelId,
+            sistemSatisTutari: kayit.sistemSatisTutari,
+            nakit: kayit.nakit,
+            krediKarti: kayit.krediKarti,
+            gider: kayit.gider || 0
+        };
+    }
+
+    getPersonelIslemToplam(): number {
+        return (this.personelIslemForm.nakit || 0) + (this.personelIslemForm.krediKarti || 0) + (this.personelIslemForm.gider || 0);
+    }
+
+    getPersonelFark(): number {
+        return this.getPersonelIslemToplam() - (this.personelIslemForm.sistemSatisTutari || 0);
     }
 
     // Gider işlemleri
@@ -227,10 +410,11 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     }
 
     giderEkle(): void {
-        if (!this.giderForm.giderTuru || !this.giderForm.tutar || !this.aktifVardiya) return;
+        if (!this.giderForm.giderTuru || !this.giderForm.tutar || !this.seciliMarketVardiya) return;
 
         this.vardiyaService.marketGiderEkle({
-            vardiyaId: this.aktifVardiya.id,
+            vardiyaId: this.seciliMarketVardiya.id,
+            tarih: this.secilenTarih,
             giderTuru: this.giderForm.giderTuru,
             tutar: this.giderForm.tutar,
             aciklama: this.giderForm.aciklama || this.getGiderTuruLabel(this.giderForm.giderTuru)
@@ -249,6 +433,42 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     getGiderTuruLabel(turu: GiderTuru): string {
         const found = this.giderTurleri.find(t => t.value === turu);
         return found?.label || turu;
+    }
+
+    // Gelir İşlemleri
+    gelirDialogAc(): void {
+        this.gelirForm = { gelirTuru: null, tutar: 0, aciklama: '' };
+        this.gelirDialogVisible = true;
+    }
+
+    gelirEkle(): void {
+        if (!this.gelirForm.gelirTuru || !this.gelirForm.tutar || !this.seciliMarketVardiya) return;
+
+        this.vardiyaService.marketGelirEkle({
+            vardiyaId: this.seciliMarketVardiya.id,
+            tarih: this.secilenTarih,
+            gelirTuru: this.gelirForm.gelirTuru,
+            tutar: this.gelirForm.tutar,
+            aciklama: this.gelirForm.aciklama || this.getGelirTuruLabel(this.gelirForm.gelirTuru)
+        }).subscribe(() => {
+            this.gelirDialogVisible = false;
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir eklendi' });
+        });
+    }
+
+    gelirSil(gelirId: number): void {
+        this.vardiyaService.marketGelirSil(gelirId).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir silindi' });
+        });
+    }
+
+    getGelirTuruLabel(turu: GelirTuru): string {
+        const found = this.gelirTurleri.find(t => t.value === turu);
+        return found?.label || turu;
+    }
+
+    getGelirToplam(): number {
+        return this.gelirler.reduce((sum, g) => sum + g.tutar, 0);
     }
 
     getFarkCardClass(): string {

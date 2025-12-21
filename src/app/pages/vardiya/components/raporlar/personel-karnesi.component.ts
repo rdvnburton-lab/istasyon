@@ -77,4 +77,8 @@ export class PersonelKarnesiComponent implements OnInit {
             this.loading = false;
         }
     }
+    get isPompaci(): boolean {
+        if (!this.secilenPersonel) return false;
+        return this.secilenPersonel.rol === 'POMPACI' || this.secilenPersonel.rol === 'VARDIYA_SORUMLUSU';
+    }
 }

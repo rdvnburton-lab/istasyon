@@ -54,7 +54,7 @@ export class Karsilastirma implements OnInit, OnDestroy {
     aktifVardiya: Vardiya | null = null;
     sonuc: KarsilastirmaSonuc | null = null;
     pompaSatislari: PompaSatis[] = [];
-    gruplanmisPompaSatislari: { pompaNo: number; toplamTutar: number; toplamLitre: number; satislar: PompaSatis[] }[] = [];
+    gruplanmisPompaSatislari: { pompaNo: number; toplamTutar: number; toplamLitre: number; aracSayisi: number; satislar: PompaSatis[] }[] = [];
     enYogunAkaryakitPompaNo: number | null = null;
     enYogunLpgPompaNo: number | null = null;
 
@@ -141,7 +141,7 @@ export class Karsilastirma implements OnInit, OnDestroy {
     }
 
     gruplaPompaSatislari(): void {
-        const gruplar = new Map<number, { pompaNo: number; toplamTutar: number; toplamLitre: number; satislar: PompaSatis[] }>();
+        const gruplar = new Map<number, { pompaNo: number; toplamTutar: number; toplamLitre: number; aracSayisi: number; satislar: PompaSatis[] }>();
 
         this.pompaSatislari.forEach(satis => {
             if (!gruplar.has(satis.pompaNo)) {
@@ -149,12 +149,14 @@ export class Karsilastirma implements OnInit, OnDestroy {
                     pompaNo: satis.pompaNo,
                     toplamTutar: 0,
                     toplamLitre: 0,
+                    aracSayisi: 0,
                     satislar: []
                 });
             }
             const grup = gruplar.get(satis.pompaNo)!;
             grup.toplamTutar += satis.toplamTutar;
             grup.toplamLitre += satis.litre;
+            grup.aracSayisi += 1;
 
             // Yakıt türüne göre grupla
             const existingSatis = grup.satislar.find(s => s.yakitTuru === satis.yakitTuru);
@@ -249,8 +251,8 @@ export class Karsilastirma implements OnInit, OnDestroy {
         const labels: Record<OdemeYontemi, string> = {
             [OdemeYontemi.NAKIT]: 'Nakit',
             [OdemeYontemi.KREDI_KARTI]: 'Kredi Kartı',
-            [OdemeYontemi.VERESIYE]: 'Veresiye',
-            [OdemeYontemi.FILO_KARTI]: 'Filo Kartı',
+            [OdemeYontemi.PARO_PUAN]: 'Paro Puan',
+            [OdemeYontemi.MOBIL_ODEME]: 'Mobil Ödeme',
         };
         return labels[yontem] || yontem;
     }
@@ -259,8 +261,8 @@ export class Karsilastirma implements OnInit, OnDestroy {
         const icons: Record<OdemeYontemi, string> = {
             [OdemeYontemi.NAKIT]: 'pi pi-money-bill text-green-500',
             [OdemeYontemi.KREDI_KARTI]: 'pi pi-credit-card text-blue-500',
-            [OdemeYontemi.VERESIYE]: 'pi pi-clock text-yellow-500',
-            [OdemeYontemi.FILO_KARTI]: 'pi pi-car text-purple-500',
+            [OdemeYontemi.PARO_PUAN]: 'pi pi-ticket text-yellow-500',
+            [OdemeYontemi.MOBIL_ODEME]: 'pi pi-mobile text-purple-500',
         };
         return icons[yontem] || 'pi pi-circle';
     }
