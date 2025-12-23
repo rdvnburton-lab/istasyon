@@ -1,18 +1,29 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from, of } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
-import { Personel, PersonelRol } from '../pages/vardiya/models/vardiya.model';
-import { DbService } from '../pages/vardiya/services/db.service';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+export interface User {
+    username: string;
+    role: string;
+    token?: string;
+}
+
+export interface AuthResponse {
+    token: string;
+    username: string;
+    role: string;
+}
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private currentUserSubject = new BehaviorSubject<Personel | null>(null);
+    private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
+    private apiUrl = `${environment.apiUrl}/auth`;
 
-    constructor(private dbService: DbService) {
-        // Uygulama açıldığında varsa oturumu yükle (basitçe localStorage'dan)
+    constructor(private http: HttpClient) {
         this.loadUserFromStorage();
     }
 
@@ -29,31 +40,15 @@ export class AuthService {
         }
     }
 
-    login(username: string): Observable<boolean> {
-        // Şifre kontrolü yok, sadece kullanıcı adı ile giriş
-        // DB'den kullanıcıyı bul
-        return from(this.dbService.getPersonelByKey(username)).pipe(
-            map(personel => {
-                if (personel) {
-                    // Personel modeline dönüştür
-                    const user: Personel = {
-                        id: personel.id!,
-                        keyId: personel.keyId,
-                        ad: personel.ad,
-                        soyad: personel.soyad,
-                        tamAd: personel.tamAd,
-                        istasyonId: personel.istasyonId,
-                        rol: personel.rol as PersonelRol,
-                        aktif: personel.aktif
-                    };
-                    this.setCurrentUser(user);
-                    return true;
-                }
-                return false;
-            }),
-            catchError(err => {
-                console.error('Giriş hatası:', err);
-                return of(false);
+    login(username: string, password: string): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { username, password }).pipe(
+            tap(response => {
+                const user: User = {
+                    username: response.username,
+                    role: response.role,
+                    token: response.token
+                };
+                this.setCurrentUser(user);
             })
         );
     }
@@ -63,12 +58,12 @@ export class AuthService {
         this.currentUserSubject.next(null);
     }
 
-    private setCurrentUser(user: Personel): void {
+    private setCurrentUser(user: User): void {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
     }
 
-    getCurrentUser(): Personel | null {
+    getCurrentUser(): User | null {
         return this.currentUserSubject.value;
     }
 
@@ -76,8 +71,8 @@ export class AuthService {
         return !!this.currentUserSubject.value;
     }
 
-    hasRole(rol: PersonelRol): boolean {
+    getToken(): string | null {
         const user = this.getCurrentUser();
-        return user ? user.rol === rol : false;
+        return user ? user.token || null : null;
     }
 }

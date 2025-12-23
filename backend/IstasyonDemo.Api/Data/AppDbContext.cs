@@ -14,6 +14,7 @@ namespace IstasyonDemo.Api.Data
         public DbSet<OtomasyonSatis> OtomasyonSatislar { get; set; }
         public DbSet<FiloSatis> FiloSatislar { get; set; }
         public DbSet<Pusula> Pusulalar { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

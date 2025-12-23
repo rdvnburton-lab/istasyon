@@ -1,6 +1,10 @@
 using IstasyonDemo.Api.Data;
+using IstasyonDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +35,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 
+// JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? "super_secret_key_change_this_in_production_12345";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -53,6 +78,19 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<AppDbContext>();
         // Migration dosyalari olmasa bile tablolari sifirdan olusturur
         context.Database.EnsureCreated();
+
+        // Seed Users
+        if (!context.Users.Any())
+        {
+            var users = new List<User>
+            {
+                new User { Username = "admin", Role = "admin", PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") },
+                new User { Username = "vardiya", Role = "vardiya sorumlusu", PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") },
+                new User { Username = "patron", Role = "patron", PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") }
+            };
+            context.Users.AddRange(users);
+            context.SaveChanges();
+        }
     }
     catch (Exception ex)
     {
@@ -73,6 +111,10 @@ app.UseRouting();
 app.UseCors("AllowAngular");
 
 // app.UseHttpsRedirection(); // Coolify/Traefik zaten HTTPS yönetiyor, uygulama içinde yönlendirme çakışma yapabilir
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
