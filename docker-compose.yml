@@ -3,8 +3,10 @@ services:
     build:
       context: ./backend/IstasyonDemo.Api
       dockerfile: Dockerfile
+    restart: always
     environment:
       - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres
       - AllowedOrigins__0=http://localhost:4200
       - AllowedOrigins__1=https://istasyon.tiginteknoloji.tr
@@ -17,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
     depends_on:
       - backend
 
@@ -26,6 +29,7 @@ services:
       - POSTGRES_DB=istasyon
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
