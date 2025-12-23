@@ -101,129 +101,46 @@ export class OnayBekleyenlerComponent implements OnInit {
         this.seciliVardiya = vardiya;
         this.messageService.add({ severity: 'info', summary: 'Lütfen Bekleyiniz', detail: 'Vardiya detayları yükleniyor...', life: 2000 });
 
-        this.vardiyaApiService.getVardiyaById(vardiya.id).subscribe({
+        console.time('⚡ Onay Detay Load');
+
+        // OPTIMIZED: Use new endpoint with server-side aggregation
+        this.vardiyaApiService.getOnayDetay(vardiya.id).subscribe({
             next: (data) => {
-                const otomasyonSatislari = data.otomasyonSatislar || [];
-                const pusulalar = data.pusulalar || [];
+                console.timeEnd('⚡ Onay Detay Load');
+                console.log(`📊 Performance: ${data._performanceMs}ms (server-side)`);
 
-                // Pusulaları işle (JSON parse vb.)
-                pusulalar.forEach((p: any) => {
-                    if (typeof p.krediKartiDetay === 'string') {
-                        try {
-                            p.krediKartiDetay = JSON.parse(p.krediKartiDetay);
-                        } catch (e) {
-                            p.krediKartiDetay = [];
-                        }
-                    }
-                });
-
-                // 1. Genel Özet Hesapla
-                const toplamNakit = pusulalar.reduce((sum: number, p: any) => sum + p.nakit, 0);
-                const toplamKrediKarti = pusulalar.reduce((sum: number, p: any) => sum + p.krediKarti, 0);
-                const toplamParoPuan = pusulalar.reduce((sum: number, p: any) => sum + p.paroPuan, 0);
-                const toplamMobilOdeme = pusulalar.reduce((sum: number, p: any) => sum + p.mobilOdeme, 0);
-                const pusulaToplam = toplamNakit + toplamKrediKarti + toplamParoPuan + toplamMobilOdeme;
-                const toplamFark = pusulaToplam - data.pompaToplam;
-
+                // 1. Genel Özet - Zaten hesaplanmış geliyor
                 this.genelOzet = {
-                    pompaToplam: data.pompaToplam,
-                    marketToplam: data.marketToplam,
-                    genelToplam: data.genelToplam,
-                    toplamNakit,
-                    toplamKrediKarti,
-                    toplamParoPuan,
-                    toplamMobilOdeme,
+                    pompaToplam: data.genelOzet.pompaToplam,
+                    marketToplam: data.genelOzet.marketToplam,
+                    genelToplam: data.genelOzet.genelToplam,
+                    toplamNakit: data.genelOzet.toplamNakit,
+                    toplamKrediKarti: data.genelOzet.toplamKrediKarti,
+                    toplamParoPuan: data.genelOzet.toplamParoPuan,
+                    toplamMobilOdeme: data.genelOzet.toplamMobilOdeme,
                     toplamGider: 0,
-                    toplamFark,
-                    durumRenk: Math.abs(toplamFark) < 10 ? 'success' : (toplamFark < 0 ? 'danger' : 'warn')
+                    toplamFark: data.genelOzet.toplamFark,
+                    durumRenk: data.genelOzet.durumRenk
                 };
 
-                // 2. Fark Analizi Hesapla (Gelişmiş Eşleştirme)
-                const analizList: any[] = [];
-
-                const findEntry = (id: number | null, name: string) => {
-                    if (id) {
-                        const byId = analizList.find(x => x.personelId === id);
-                        if (byId) return byId;
-                    }
-                    if (name) {
-                        return analizList.find(x => x.personelAdi?.trim().toLowerCase() === name?.trim().toLowerCase());
-                    }
-                    return null;
-                };
-
-                // Otomasyon Satışlarını İşle
-                otomasyonSatislari.forEach((s: any) => {
-                    let entry = findEntry(s.personelId, s.personelAdi);
-                    if (!entry) {
-                        entry = {
-                            personelId: s.personelId,
-                            personelAdi: s.personelAdi,
-                            otomasyonToplam: 0,
-                            pusulaToplam: 0,
-                            pusulaDokum: { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0 }
-                        };
-                        analizList.push(entry);
-                    }
-                    entry.otomasyonToplam += s.toplamTutar;
-                    if (!entry.personelId && s.personelId) entry.personelId = s.personelId;
-                });
-
-                // Pusulaları İşle
-                pusulalar.forEach((p: any) => {
-                    let entry = findEntry(p.personelId, p.personelAdi);
-                    if (!entry) {
-                        entry = {
-                            personelId: p.personelId,
-                            personelAdi: p.personelAdi,
-                            otomasyonToplam: 0,
-                            pusulaToplam: 0,
-                            pusulaDokum: { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0 }
-                        };
-                        analizList.push(entry);
-                    }
-
-                    entry.pusulaToplam += p.toplam;
-                    entry.pusulaDokum.nakit += p.nakit;
-                    entry.pusulaDokum.krediKarti += p.krediKarti;
-                    entry.pusulaDokum.paroPuan += p.paroPuan;
-                    entry.pusulaDokum.mobilOdeme += p.mobilOdeme;
-
-                    if (!entry.personelId && p.personelId) entry.personelId = p.personelId;
-                });
-
-                // Sonuçları Hesapla ve Dönüştür
-                this.farkAnalizi = analizList.map(item => {
-                    const fark = item.pusulaToplam - item.otomasyonToplam;
-                    let farkDurum: FarkDurum = FarkDurum.UYUMLU;
-
-                    if (Math.abs(fark) < 1) {
-                        farkDurum = FarkDurum.UYUMLU;
-                    } else if (fark < 0) {
-                        farkDurum = FarkDurum.ACIK;
-                    } else {
-                        farkDurum = FarkDurum.FAZLA;
-                    }
-
-                    return {
-                        personelId: item.personelId,
-                        personelAdi: item.personelAdi,
-                        otomasyonToplam: item.otomasyonToplam,
-                        pusulaToplam: item.pusulaToplam,
-                        fark: fark,
-                        farkDurum: farkDurum,
-                        pusulaDokum: item.pusulaDokum
-                    };
-                });
+                // 2. Fark Analizi - Zaten hesaplanmış geliyor
+                this.farkAnalizi = (data.farkAnalizi || []).map((item: any) => ({
+                    personelId: item.personelId,
+                    personelAdi: item.personelAdi,
+                    otomasyonToplam: item.otomasyonToplam,
+                    pusulaToplam: item.pusulaToplam,
+                    fark: item.fark,
+                    farkDurum: item.farkDurum === 'UYUMLU' ? FarkDurum.UYUMLU :
+                        (item.farkDurum === 'ACIK' ? FarkDurum.ACIK : FarkDurum.FAZLA),
+                    pusulaDokum: item.pusulaDokum || { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0 }
+                }));
 
                 // 3. İstatistikler
                 this.pompaciNakitToplam = this.farkAnalizi.reduce((sum, item) => sum + (item.pusulaDokum?.nakit || 0), 0);
-
                 this.pompaciSatisTutar = this.farkAnalizi
-                    .filter(item => item.personelAdi.toUpperCase() !== 'OTOMASYON')
+                    .filter(item => item.personelAdi?.toUpperCase() !== 'OTOMASYON')
                     .reduce((sum, item) => sum + (item.otomasyonToplam || 0), 0);
-
-                this.pompaFark = this.farkAnalizi.reduce((sum, item) => sum + item.fark, 0);
+                this.pompaFark = data.genelOzet.toplamFark;
 
                 if (Math.abs(this.pompaFark) < 10) {
                     this.pompaFarkDurumRenk = 'success';
@@ -237,28 +154,35 @@ export class OnayBekleyenlerComponent implements OnInit {
                 this.vardiyaOzet = {
                     vardiya: vardiya,
                     pompaOzet: {
-                        personelSayisi: this.farkAnalizi.length,
-                        toplamOtomasyonSatis: data.pompaToplam,
-                        toplamPusulaTahsilat: pusulaToplam,
+                        personelSayisi: data.personelSayisi,
+                        toplamOtomasyonSatis: data.genelOzet.pompaToplam,
+                        toplamPusulaTahsilat: data.genelOzet.pusulaToplam,
                         toplamFark: this.pompaFark,
                         farkDurum: Math.abs(this.pompaFark) < 10 ? FarkDurum.UYUMLU : (this.pompaFark < 0 ? FarkDurum.ACIK : FarkDurum.FAZLA),
                         personelFarklari: this.farkAnalizi,
                         giderToplam: 0,
-                        netTahsilat: pusulaToplam
+                        netTahsilat: data.genelOzet.pusulaToplam
                     },
                     marketOzet: null,
-                    genelToplam: data.genelToplam,
+                    genelToplam: data.genelOzet.genelToplam,
                     genelFark: this.pompaFark
                 };
 
-                // 5. Kredi Kartı Detaylarını Hesapla
-                this.hesaplaKrediKartiDetaylari(pusulalar);
+                // 5. Kredi Kartı Detayları - Zaten gruplu geliyor
+                this.pusulaKrediKartiDetaylari = (data.krediKartiDetaylari || []).map((item: any) => ({
+                    banka: item.banka,
+                    tutar: item.tutar,
+                    isSpecial: item.banka === 'Paro Puan' || item.banka === 'Mobil Ödeme',
+                    showSeparator: false
+                }));
+                this.toplamKrediKarti = this.pusulaKrediKartiDetaylari.reduce((sum, item) => sum + item.tutar, 0);
 
                 this.loading = false;
                 this.detayVisible = true;
             },
             error: (err) => {
                 this.loading = false;
+                console.error('❌ Onay detay yüklenemedi:', err);
                 this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Vardiya detayları yüklenemedi.' });
             }
         });

@@ -61,6 +61,14 @@ export class VardiyaApiService {
         return this.http.get<any>(`${this.apiUrl}/${id}/mutabakat`);
     }
 
+    /**
+     * OPTIMIZED: Returns pre-aggregated data for Onay Bekleyenler İncele
+     * All calculations done server-side for faster response
+     */
+    getOnayDetay(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${id}/onay-detay`);
+    }
+
     deleteVardiya(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }

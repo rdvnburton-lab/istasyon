@@ -444,5 +444,207 @@ namespace IstasyonDemo.Api.Controllers
                 _performanceMs = stopwatch.ElapsedMilliseconds
             });
         }
+
+        /// <summary>
+        /// OPTIMIZED endpoint for Onay Bekleyenler İncele functionality
+        /// Returns pre-aggregated data with personnel analysis
+        /// </summary>
+        [HttpGet("{id}/onay-detay")]
+        public async Task<IActionResult> GetOnayDetay(int id)
+        {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            Console.WriteLine($"🔍 GetOnayDetay başladı, ID: {id}");
+
+            // 1. Vardiya temel bilgileri
+            var vardiya = await _context.Vardiyalar
+                .AsNoTracking()
+                .Where(v => v.Id == id)
+                .Select(v => new
+                {
+                    v.Id,
+                    v.IstasyonId,
+                    v.BaslangicTarihi,
+                    v.BitisTarihi,
+                    v.Durum,
+                    v.PompaToplam,
+                    v.MarketToplam,
+                    v.GenelToplam,
+                    v.OlusturmaTarihi,
+                    v.DosyaAdi,
+                    v.RedNedeni,
+                    v.OnaylayanAdi,
+                    v.OnayTarihi
+                })
+                .FirstOrDefaultAsync();
+
+            if (vardiya == null)
+            {
+                return NotFound();
+            }
+
+            Console.WriteLine($"⏱️ Vardiya sorgusu: {stopwatch.ElapsedMilliseconds}ms");
+
+            // 2. Personel bazında GRUPLANMIŞ otomasyon satışları
+            var personelOzetler = await _context.OtomasyonSatislar
+                .AsNoTracking()
+                .Where(s => s.VardiyaId == id)
+                .GroupBy(s => new { s.PersonelAdi, s.PersonelId })
+                .Select(g => new
+                {
+                    PersonelAdi = g.Key.PersonelAdi,
+                    PersonelId = g.Key.PersonelId,
+                    ToplamLitre = g.Sum(s => s.Litre),
+                    OtomasyonToplam = g.Sum(s => s.ToplamTutar),
+                    IslemSayisi = g.Count()
+                })
+                .ToListAsync();
+
+            Console.WriteLine($"⏱️ Personel özetleri: {stopwatch.ElapsedMilliseconds}ms");
+
+            // 3. Pusulalar (personel bazında gruplanmış)
+            var pusulalar = await _context.Pusulalar
+                .AsNoTracking()
+                .Where(p => p.VardiyaId == id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.PersonelAdi,
+                    p.PersonelId,
+                    p.Nakit,
+                    p.KrediKarti,
+                    p.ParoPuan,
+                    p.MobilOdeme,
+                    p.KrediKartiDetay,
+                    p.Aciklama,
+                    p.Toplam
+                })
+                .ToListAsync();
+
+            Console.WriteLine($"⏱️ Pusulalar: {stopwatch.ElapsedMilliseconds}ms");
+
+            // 4. Sunucu tarafında fark analizi hesapla
+            var farkAnalizi = new List<object>();
+            var processedPersonel = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Önce otomasyon personellerini ekle
+            foreach (var personel in personelOzetler)
+            {
+                var pusula = pusulalar.FirstOrDefault(p => 
+                    (p.PersonelId != null && p.PersonelId == personel.PersonelId) ||
+                    (p.PersonelAdi != null && p.PersonelAdi.Trim().ToLower() == personel.PersonelAdi?.Trim().ToLower()));
+                
+                var pusulaToplam = pusula?.Toplam ?? 0;
+                var fark = pusulaToplam - personel.OtomasyonToplam;
+
+                farkAnalizi.Add(new
+                {
+                    PersonelId = personel.PersonelId,
+                    PersonelAdi = personel.PersonelAdi,
+                    OtomasyonToplam = personel.OtomasyonToplam,
+                    PusulaToplam = pusulaToplam,
+                    Fark = fark,
+                    FarkDurum = Math.Abs(fark) < 1 ? "UYUMLU" : (fark < 0 ? "ACIK" : "FAZLA"),
+                    PusulaDokum = pusula != null ? new
+                    {
+                        Nakit = pusula.Nakit,
+                        KrediKarti = pusula.KrediKarti,
+                        ParoPuan = pusula.ParoPuan,
+                        MobilOdeme = pusula.MobilOdeme,
+                        KrediKartiDetay = pusula.KrediKartiDetay
+                    } : null
+                });
+
+                if (personel.PersonelAdi != null)
+                    processedPersonel.Add(personel.PersonelAdi.Trim().ToLower());
+            }
+
+            // Pusulası olup otomasyonu olmayan personelleri ekle
+            foreach (var pusula in pusulalar)
+            {
+                var key = pusula.PersonelAdi?.Trim().ToLower() ?? "";
+                if (!string.IsNullOrEmpty(key) && !processedPersonel.Contains(key))
+                {
+                    farkAnalizi.Add(new
+                    {
+                        PersonelId = pusula.PersonelId,
+                        PersonelAdi = pusula.PersonelAdi,
+                        OtomasyonToplam = 0m,
+                        PusulaToplam = pusula.Toplam,
+                        Fark = pusula.Toplam,
+                        FarkDurum = pusula.Toplam > 1 ? "FAZLA" : "UYUMLU",
+                        PusulaDokum = new
+                        {
+                            Nakit = pusula.Nakit,
+                            KrediKarti = pusula.KrediKarti,
+                            ParoPuan = pusula.ParoPuan,
+                            MobilOdeme = pusula.MobilOdeme,
+                            KrediKartiDetay = pusula.KrediKartiDetay
+                        }
+                    });
+                }
+            }
+
+            // 5. Genel özet hesapla
+            var toplamNakit = pusulalar.Sum(p => p.Nakit);
+            var toplamKrediKarti = pusulalar.Sum(p => p.KrediKarti);
+            var toplamParoPuan = pusulalar.Sum(p => p.ParoPuan);
+            var toplamMobilOdeme = pusulalar.Sum(p => p.MobilOdeme);
+            var pusulaToplami = toplamNakit + toplamKrediKarti + toplamParoPuan + toplamMobilOdeme;
+            var toplamFark = pusulaToplami - vardiya.PompaToplam;
+
+            var genelOzet = new
+            {
+                PompaToplam = vardiya.PompaToplam,
+                MarketToplam = vardiya.MarketToplam,
+                GenelToplam = vardiya.GenelToplam,
+                ToplamNakit = toplamNakit,
+                ToplamKrediKarti = toplamKrediKarti,
+                ToplamParoPuan = toplamParoPuan,
+                ToplamMobilOdeme = toplamMobilOdeme,
+                PusulaToplam = pusulaToplami,
+                ToplamFark = toplamFark,
+                DurumRenk = Math.Abs(toplamFark) < 10 ? "success" : (toplamFark < 0 ? "danger" : "warn")
+            };
+
+            // 6. Kredi kartı detayları - banka bazlı grupla
+            var krediKartiDetaylari = new Dictionary<string, decimal>();
+            foreach (var pusula in pusulalar)
+            {
+                if (!string.IsNullOrEmpty(pusula.KrediKartiDetay))
+                {
+                    try
+                    {
+                        var detaylar = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, object>>>(pusula.KrediKartiDetay);
+                        if (detaylar != null)
+                        {
+                            foreach (var detay in detaylar)
+                            {
+                                var banka = detay.ContainsKey("banka") ? detay["banka"]?.ToString() ?? "Diğer" : "Diğer";
+                                var tutar = detay.ContainsKey("tutar") ? Convert.ToDecimal(detay["tutar"]) : 0;
+                                if (!krediKartiDetaylari.ContainsKey(banka))
+                                    krediKartiDetaylari[banka] = 0;
+                                krediKartiDetaylari[banka] += tutar;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+            }
+
+            var bankaDetaylari = krediKartiDetaylari.Select(kvp => new { Banka = kvp.Key, Tutar = kvp.Value }).OrderByDescending(x => x.Tutar).ToList();
+
+            stopwatch.Stop();
+            Console.WriteLine($"✅ GetOnayDetay tamamlandı: {stopwatch.ElapsedMilliseconds}ms toplam");
+
+            return Ok(new
+            {
+                Vardiya = vardiya,
+                GenelOzet = genelOzet,
+                FarkAnalizi = farkAnalizi,
+                KrediKartiDetaylari = bankaDetaylari,
+                PersonelSayisi = farkAnalizi.Count,
+                _performanceMs = stopwatch.ElapsedMilliseconds
+            });
+        }
     }
 }
