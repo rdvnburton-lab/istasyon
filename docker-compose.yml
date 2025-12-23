@@ -4,9 +4,11 @@ services:
       context: ./backend/IstasyonDemo.Api
       dockerfile: Dockerfile
     environment:
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres
       - AllowedOrigins__0=http://localhost:4200
       - AllowedOrigins__1=https://istasyon.tiginteknoloji.tr
+      - AllowedOrigins__2=http://istasyon.tiginteknoloji.tr
     depends_on:
       db:
         condition: service_healthy
