@@ -175,7 +175,9 @@ export class OnayBekleyenlerComponent implements OnInit {
                     isSpecial: item.banka === 'Paro Puan' || item.banka === 'Mobil Ödeme',
                     showSeparator: false
                 }));
-                this.toplamKrediKarti = this.pusulaKrediKartiDetaylari.reduce((sum, item) => sum + item.tutar, 0);
+
+                // toplamKrediKarti'yi genelOzet'ten al (daha güvenilir)
+                this.toplamKrediKarti = data.genelOzet.toplamKrediKarti + data.genelOzet.toplamParoPuan + data.genelOzet.toplamMobilOdeme;
 
                 this.loading = false;
                 this.detayVisible = true;
