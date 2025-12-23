@@ -203,20 +203,23 @@
                                 <!-- Giriş butonu: Pusula yoksa ve düzenlenebilirse -->
                                 <p-button
                                     *ngIf="!isPusulaGirildi(personel.personelAdi) && personel.personelAdi !== 'FİLO SATIŞLARI'"
-                                    icon="pi pi-plus" label="Giriş" size="small" (onClick)="personelSec(personel)"
-                                    [disabled]="!isEditable">
+                                    icon="pi pi-plus" [rounded]="true" [text]="true" severity="success"
+                                    (onClick)="personelSec(personel)" [disabled]="!isEditable" pTooltip="Pusula Girişi"
+                                    tooltipPosition="top">
                                 </p-button>
 
-                                <!-- Düzenle butonu: Pusula varsa ve düzenlenebilirse -->
+                                <!-- Düzenle butonu -->
                                 <p-button
                                     *ngIf="isPusulaGirildi(personel.personelAdi) && personel.personelAdi !== 'FİLO SATIŞLARI'"
-                                    icon="pi pi-pencil" label="Düzenle" size="small" severity="warn"
-                                    (onClick)="personelSec(personel)" [disabled]="!isEditable">
+                                    icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warn"
+                                    (onClick)="personelSec(personel)" [disabled]="!isEditable" pTooltip="Düzenle"
+                                    tooltipPosition="top">
                                 </p-button>
 
-                                <!-- Önizleme butonu: Pusula varsa (her zaman görünür) -->
+                                <!-- Önizleme butonu -->
                                 <p-button *ngIf="isPusulaGirildi(personel.personelAdi)" icon="pi pi-eye"
-                                    label="Önizleme" size="small" severity="info" (onClick)="onizle(personel)">
+                                    [rounded]="true" [text]="true" severity="info" (onClick)="onizle(personel)"
+                                    pTooltip="Önizleme" tooltipPosition="top">
                                 </p-button>
                             </div>
                         </td>
