@@ -7,7 +7,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres
+      - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres;TrustServerCertificate=True
       - AllowedOrigins__0=http://localhost:4200
       - AllowedOrigins__1=https://istasyon.tiginteknoloji.tr
       - AllowedOrigins__2=http://istasyon.tiginteknoloji.tr
