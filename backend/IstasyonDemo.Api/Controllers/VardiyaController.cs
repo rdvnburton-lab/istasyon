@@ -600,6 +600,28 @@ namespace IstasyonDemo.Api.Controllers
                 }
             }
 
+            // 4.5. Filo Satışlarını fark analizine ekle (Tabloda görünmesi için)
+            if (filoToplam > 0)
+            {
+                farkAnalizi.Add(new
+                {
+                    PersonelId = -1,
+                    PersonelAdi = "FİLO SATIŞLARI",
+                    OtomasyonToplam = filoToplam,
+                    PusulaToplam = filoToplam, // Filo satışları otomatik mutabık sayılır
+                    Fark = 0m,
+                    FarkDurum = "UYUMLU",
+                    PusulaDokum = new
+                    {
+                        Nakit = 0m,
+                        KrediKarti = 0m,
+                        ParoPuan = 0m,
+                        MobilOdeme = 0m,
+                        KrediKartiDetay = (string)null
+                    }
+                });
+            }
+
             // 5. Genel özet hesapla
             var toplamNakit = pusulalar.Sum(p => p.Nakit);
             var toplamKrediKarti = pusulalar.Sum(p => p.KrediKarti);
