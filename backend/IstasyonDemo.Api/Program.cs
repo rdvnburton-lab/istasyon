@@ -9,7 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
-                         ?? new[] { "http://localhost:4200" };
+                         ?? new[] { 
+                             "http://localhost:4200", 
+                             "https://istasyon.tiginteknoloji.tr",
+                             "http://istasyon.tiginteknoloji.tr" 
+                         };
 
     options.AddPolicy("AllowAngular",
         policy =>
@@ -17,7 +21,8 @@ builder.Services.AddCors(options =>
             policy.WithOrigins(allowedOrigins)
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   .AllowCredentials();
+                   .AllowCredentials()
+                   .SetIsOriginAllowed(origin => true); // Daha esnek eşleşme için
         });
 });
 
@@ -45,9 +50,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting();
 
+// CORS policy must be between UseRouting and UseEndpoints/MapControllers
 app.UseCors("AllowAngular");
+
+// app.UseHttpsRedirection(); // Coolify/Traefik zaten HTTPS yönetiyor, uygulama içinde yönlendirme çakışma yapabilir
 
 app.MapControllers();
 
