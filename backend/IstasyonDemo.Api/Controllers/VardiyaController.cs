@@ -614,22 +614,64 @@ namespace IstasyonDemo.Api.Controllers
                 {
                     try
                     {
-                        var detaylar = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, object>>>(pusula.KrediKartiDetay);
-                        if (detaylar != null)
+                        Console.WriteLine($"📄 Parsing KrediKartiDetay: {pusula.KrediKartiDetay}");
+                        
+                        using var doc = System.Text.Json.JsonDocument.Parse(pusula.KrediKartiDetay);
+                        var detaylar = doc.RootElement;
+                        
+                        if (detaylar.ValueKind == System.Text.Json.JsonValueKind.Array)
                         {
-                            foreach (var detay in detaylar)
+                            foreach (var detay in detaylar.EnumerateArray())
                             {
-                                var banka = detay.ContainsKey("banka") ? detay["banka"]?.ToString() ?? "Diğer" : "Diğer";
-                                var tutar = detay.ContainsKey("tutar") ? Convert.ToDecimal(detay["tutar"]) : 0;
+                                var banka = detay.TryGetProperty("banka", out var bankaEl) ? bankaEl.GetString() ?? "Diğer" : "Diğer";
+                                decimal tutar = 0;
+                                if (detay.TryGetProperty("tutar", out var tutarEl))
+                                {
+                                    if (tutarEl.ValueKind == System.Text.Json.JsonValueKind.Number)
+                                        tutar = tutarEl.GetDecimal();
+                                    else if (tutarEl.ValueKind == System.Text.Json.JsonValueKind.String)
+                                        decimal.TryParse(tutarEl.GetString(), out tutar);
+                                }
+                                
+                                Console.WriteLine($"   → Banka: {banka}, Tutar: {tutar}");
+                                
                                 if (!krediKartiDetaylari.ContainsKey(banka))
                                     krediKartiDetaylari[banka] = 0;
                                 krediKartiDetaylari[banka] += tutar;
                             }
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌ KrediKartiDetay parse hatası: {ex.Message}");
+                    }
                 }
             }
+            
+            Console.WriteLine($"💳 Toplam {krediKartiDetaylari.Count} banka detayı bulundu");
+
+            // Detaysız kredi kartı tutarlarını ekle (banka detayı olmadan girilen)
+            decimal detaysizKrediKarti = 0;
+            foreach (var pusula in pusulalar)
+            {
+                if (pusula.KrediKarti > 0 && string.IsNullOrEmpty(pusula.KrediKartiDetay))
+                {
+                    detaysizKrediKarti += pusula.KrediKarti;
+                }
+            }
+            if (detaysizKrediKarti > 0)
+            {
+                krediKartiDetaylari["Genel / Detaysız"] = detaysizKrediKarti;
+            }
+
+            // Paro Puan ve Mobil Ödeme'yi de ekle
+            var toplamParoPuanDetay = pusulalar.Sum(p => p.ParoPuan);
+            var toplamMobilOdemeDetay = pusulalar.Sum(p => p.MobilOdeme);
+            
+            if (toplamParoPuanDetay > 0)
+                krediKartiDetaylari["Paro Puan"] = toplamParoPuanDetay;
+            if (toplamMobilOdemeDetay > 0)
+                krediKartiDetaylari["Mobil Ödeme"] = toplamMobilOdemeDetay;
 
             var bankaDetaylari = krediKartiDetaylari.Select(kvp => new { Banka = kvp.Key, Tutar = kvp.Value }).OrderByDescending(x => x.Tutar).ToList();
 
