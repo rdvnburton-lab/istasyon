@@ -180,6 +180,7 @@ export interface MarketVardiya {
     toplamTeslimatTutari?: number;   // Günlük Toplam Pusula (Nakit + KK)
     toplamFark?: number;             // Günlük Toplam Fark
     zRaporuTutari?: number;          // Günü kontrol etmek için opsiyonel
+    zRaporuNo?: string;              // Z Raporu Numarası
     onaylayanId?: number;
     onaylayanAdi?: string;
     onayTarihi?: Date;

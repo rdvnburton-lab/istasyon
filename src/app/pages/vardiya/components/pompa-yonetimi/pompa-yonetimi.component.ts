@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
@@ -17,20 +17,20 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { BadgeModule } from 'primeng/badge';
 import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { MessageService } from 'primeng/api';
 
-import { VardiyaService } from '../../services/vardiya.service';
-import {
-    Vardiya,
-    PersonelOtomasyonOzet,
-    PusulaGirisi,
-    PersonelFarkAnalizi,
-    FarkDurum,
-    PompaGider,
-    PompaGiderTuru,
-    PompaOzet
-} from '../../models/vardiya.model';
+import { VardiyaApiService } from '../../services/vardiya-api.service';
+import { PusulaApiService, Pusula, KrediKartiDetay } from '../../../../services/pusula-api.service';
+
+interface PersonelOtomasyonOzet {
+    personelAdi: string;
+    personelId?: number;
+    toplamLitre: number;
+    toplamTutar: number;
+    islemSayisi: number;
+}
 
 @Component({
     selector: 'app-pompa-yonetimi',
@@ -51,163 +51,192 @@ import {
         TooltipModule,
         ProgressBarModule,
         BadgeModule,
-        SelectModule
+        SelectModule,
+        InputTextModule
     ],
     providers: [MessageService],
     templateUrl: './pompa-yonetimi.component.html',
     styleUrls: ['./pompa-yonetimi.component.scss']
 })
 export class PompaYonetimi implements OnInit, OnDestroy {
-    aktifVardiya: Vardiya | null = null;
-    personelOtomasyonlar: PersonelOtomasyonOzet[] = [];
-    pusulalar: PusulaGirisi[] = [];
-    giderler: PompaGider[] = [];
-    farkAnalizleri: PersonelFarkAnalizi[] = [];
-    pompaOzet: PompaOzet | null = null;
+    vardiyaId: number | null = null;
+    vardiya: any = null;
+    pusulalar: Pusula[] = [];
+    personelOzetler: PersonelOtomasyonOzet[] = [];
 
-    // Mutabakat durumu
-    mutabakatTamamlandi = false;
-    eksikPersonelSayisi = 0;
+    // Math nesnesini template'de kullanmak için
+    Math = Math;
 
+    // Dialog states
+    pusulaDialogVisible = false;
+    krediKartiDialogVisible = false;
+    loading = false;
+
+    // Form
     seciliPersonel: PersonelOtomasyonOzet | null = null;
-    pusulaForm: {
-        nakit: number;
-        krediKarti: number;
-        paroPuan: number;
-        mobilOdeme: number;
-        krediKartiDetay: { banka: string; tutar: number }[];
-    } = { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0, krediKartiDetay: [] };
-
-    giderDialogVisible = false;
-    giderTurleri: { label: string; value: PompaGiderTuru }[] = [];
-    giderForm = {
-        giderTuru: null as PompaGiderTuru | null,
-        tutar: 0,
-        aciklama: ''
-    };
+    pusulaForm: Pusula = this.getEmptyPusula();
 
     // Kredi Kartı Detayları
     bankalar = ['Ziraat Bankası', 'Garanti BBVA', 'İş Bankası', 'Yapı Kredi', 'Akbank', 'Halkbank', 'Vakıfbank', 'QNB Finansbank', 'Denizbank'];
-    krediKartiDialogVisible = false;
-    yeniKrediKarti = { banka: '', tutar: 0 };
-    anlikKrediKartiDetaylari: { banka: string; tutar: number }[] = [];
+    yeniKrediKarti: KrediKartiDetay = { banka: '', tutar: 0 };
+    anlikKrediKartiDetaylari: KrediKartiDetay[] = [];
 
-    loading = false;
+    // Özet
+    otomasyonToplam = 0;
+    personelSatisToplam = 0;
+    pusulaToplam = 0;
+    filoToplam = 0;
+    fark = 0;
+
+    // Ödeme Türü Özetleri
+    toplamNakit = 0;
+    toplamKrediKarti = 0;
+    toplamParoPuan = 0;
+    toplamMobilOdeme = 0;
+
+    // Önizleme
+    onizlemeDialogVisible = false;
+    onizlemeData: any = null;
+    currentDate = new Date();
+
+    get isEditable(): boolean {
+        return this.vardiya && (
+            this.vardiya.durum === 'ACIK' ||
+            this.vardiya.durum === 'REDDEDILDI' ||
+            this.vardiya.durum === 0 ||
+            this.vardiya.durum === 3
+        );
+    }
+
     private subscriptions = new Subscription();
 
     constructor(
-        private vardiyaService: VardiyaService,
+        private vardiyaApiService: VardiyaApiService,
+        private pusulaApiService: PusulaApiService,
         private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
-        this.giderTurleri = this.vardiyaService.getPompaGiderTurleri();
-
-        this.subscriptions.add(
-            this.vardiyaService.getAktifVardiya().subscribe(vardiya => {
-                this.aktifVardiya = vardiya;
-                if (vardiya) {
-                    this.loadData(vardiya.id);
-                } else {
-                    this.router.navigate(['/vardiya']);
-                }
-            })
-        );
-
-        this.subscriptions.add(
-            this.vardiyaService.getPusulaGirisleri().subscribe((pusulalar: PusulaGirisi[]) => {
-                this.pusulalar = pusulalar;
-                this.updateOzet();
-            })
-        );
-
-        this.subscriptions.add(
-            this.vardiyaService.getPompaGiderler().subscribe((giderler: PompaGider[]) => {
-                this.giderler = giderler;
-                this.updateOzet();
-            })
-        );
+        // Route'dan vardiyaId al
+        this.route.params.subscribe(params => {
+            const id = params['id'];
+            if (id) {
+                this.vardiyaId = +id;
+                this.loadVardiyaData();
+            } else {
+                this.router.navigate(['/vardiya']);
+            }
+        });
     }
 
     ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
     }
 
-    loadData(vardiyaId: number): void {
-        this.vardiyaService.getPersonelOtomasyonOzet(vardiyaId).subscribe((data: PersonelOtomasyonOzet[]) => {
-            this.personelOtomasyonlar = data;
-            this.updateOzet();
+    loadVardiyaData(): void {
+        if (!this.vardiyaId) return;
+
+        this.loading = true;
+        console.time('⚡ Mutabakat Data Load');
+
+        // OPTIMIZED: Single API call with pre-aggregated data
+        this.vardiyaApiService.getMutabakat(this.vardiyaId).subscribe({
+            next: (data) => {
+                console.timeEnd('⚡ Mutabakat Data Load');
+                console.log(`📊 Performance: ${data._performanceMs}ms (server-side)`);
+
+                // Vardiya bilgilerini al
+                this.vardiya = data.vardiya;
+                this.otomasyonToplam = data.vardiya.genelToplam;
+
+                // Personel özetleri zaten gruplu geliyor
+                this.personelOzetler = (data.personelOzetler || []).map((p: any) => ({
+                    personelAdi: p.personelAdi,
+                    personelId: p.personelId,
+                    toplamLitre: p.toplamLitre,
+                    toplamTutar: p.toplamTutar,
+                    islemSayisi: p.islemSayisi
+                }));
+
+                // Filo Satışları
+                if (data.filoOzet && data.filoOzet.toplamTutar > 0) {
+                    this.filoToplam = data.filoOzet.toplamTutar;
+                    this.personelOzetler.push({
+                        personelAdi: 'FİLO SATIŞLARI',
+                        personelId: -1,
+                        toplamTutar: data.filoOzet.toplamTutar,
+                        toplamLitre: data.filoOzet.toplamLitre,
+                        islemSayisi: data.filoOzet.islemSayisi
+                    });
+
+                    // Filo detaylarını sakla (önizleme için)
+                    this.vardiya.filoDetaylari = data.filoDetaylari;
+                }
+
+                this.personelSatisToplam = this.personelOzetler.reduce((sum, p) => sum + p.toplamTutar, 0);
+
+                // Pusulalar zaten geliyor
+                this.pusulalar = (data.pusulalar || []).map((p: any) => ({
+                    id: p.id,
+                    vardiyaId: this.vardiyaId,
+                    personelAdi: p.personelAdi,
+                    personelId: p.personelId,
+                    nakit: p.nakit,
+                    krediKarti: p.krediKarti,
+                    paroPuan: p.paroPuan,
+                    mobilOdeme: p.mobilOdeme,
+                    krediKartiDetay: p.krediKartiDetay ? JSON.parse(p.krediKartiDetay) : [],
+                    aciklama: p.aciklama,
+                    toplam: p.toplam
+                }));
+
+                this.calculateOzet();
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('❌ Mutabakat yüklenirken hata:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Hata',
+                    detail: 'Vardiya bilgileri yüklenemedi'
+                });
+                this.loading = false;
+            }
         });
     }
 
-    updateOzet(): void {
-        if (this.aktifVardiya) {
-            this.vardiyaService.getPompaOzet(this.aktifVardiya.id).subscribe((ozet: PompaOzet) => {
-                this.pompaOzet = ozet;
-                this.checkMutabakatDurumu();
-            });
-        }
-    }
+    // REMOVED: createPersonelOzetler - no longer needed, data comes pre-aggregated
+    // REMOVED: loadPusulalar - data comes in single getMutabakat call
 
-    checkMutabakatDurumu(): void {
-        const personelIds = this.personelOtomasyonlar.map(p => p.personelId);
-        const pusulaPersonelIds = this.pusulalar.map(p => p.personelId);
-        const eksikPersonelIds = personelIds.filter(id => !pusulaPersonelIds.includes(id));
+    calculateOzet(): void {
+        this.toplamNakit = this.pusulalar.reduce((sum, p) => sum + p.nakit, 0);
+        this.toplamKrediKarti = this.pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
+        this.toplamParoPuan = this.pusulalar.reduce((sum, p) => sum + p.paroPuan, 0);
+        this.toplamMobilOdeme = this.pusulalar.reduce((sum, p) => sum + p.mobilOdeme, 0);
 
-        this.eksikPersonelSayisi = eksikPersonelIds.length;
-        this.mutabakatTamamlandi = eksikPersonelIds.length === 0 && personelIds.length > 0;
-    }
+        this.pusulaToplam = this.toplamNakit + this.toplamKrediKarti + this.toplamParoPuan + this.toplamMobilOdeme;
 
-    async onayaGonder(): Promise<void> {
-        if (!this.aktifVardiya) return;
-
-        if (!this.mutabakatTamamlandi) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Eksik Pusula',
-                detail: `${this.eksikPersonelSayisi} personelin pusula girişi eksik!`
-            });
-            return;
-        }
-
-        try {
-            await this.vardiyaService.vardiyaOnayaGonder(this.aktifVardiya.id);
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Başarılı',
-                detail: 'Vardiya onaya gönderildi!'
-            });
-            this.router.navigate(['/vardiya']);
-        } catch (error) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Hata',
-                detail: 'Onaya gönderme başarısız!'
-            });
-        }
+        // Fark = (Pusula Toplamı + Filo Satışları) - Otomasyon Toplamı
+        this.fark = (this.pusulaToplam + this.filoToplam) - this.otomasyonToplam;
     }
 
     personelSec(personel: PersonelOtomasyonOzet): void {
         this.seciliPersonel = personel;
-        this.onPersonelSec();
-    }
 
-    onPersonelSec(): void {
-        if (this.seciliPersonel) {
-            const mevcutPusula = this.pusulalar.find(p => p.personelId === this.seciliPersonel!.personelId);
-            if (mevcutPusula) {
-                this.pusulaForm = {
-                    nakit: mevcutPusula.nakit,
-                    krediKarti: mevcutPusula.krediKarti,
-                    paroPuan: mevcutPusula.paroPuan,
-                    mobilOdeme: mevcutPusula.mobilOdeme,
-                    krediKartiDetay: mevcutPusula.krediKartiDetay || []
-                };
-            } else {
-                this.pusulaForm = { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0, krediKartiDetay: [] };
-            }
+        // Bu personel için pusula var mı kontrol et
+        const mevcutPusula = this.pusulalar.find(p => p.personelAdi === personel.personelAdi);
+
+        if (mevcutPusula) {
+            this.pusulaForm = { ...mevcutPusula };
+        } else {
+            this.pusulaForm = this.getEmptyPusula();
+            this.pusulaForm.personelAdi = personel.personelAdi;
+            this.pusulaForm.personelId = personel.personelId;
         }
+
+        this.pusulaDialogVisible = true;
     }
 
     getPusulaFormToplam(): number {
@@ -227,60 +256,84 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         return 'text-blue-600';
     }
 
-    async pusulaKaydet(): Promise<void> {
-        if (!this.seciliPersonel || !this.aktifVardiya) return;
+    savePusula(): void {
+        if (!this.vardiyaId || !this.seciliPersonel) return;
 
         this.loading = true;
+        this.pusulaForm.vardiyaId = this.vardiyaId;
 
-        try {
-            await this.vardiyaService.pusulaGirisiEkle({
-                vardiyaId: this.aktifVardiya.id,
-                personelId: this.seciliPersonel.personelId,
-                personelAdi: this.seciliPersonel.personelAdi,
-                nakit: this.pusulaForm.nakit,
-                krediKarti: this.pusulaForm.krediKarti,
-                paroPuan: this.pusulaForm.paroPuan,
-                mobilOdeme: this.pusulaForm.mobilOdeme,
-                krediKartiDetay: this.pusulaForm.krediKartiDetay
+        if (this.pusulaForm.id) {
+            // Güncelleme
+            this.pusulaApiService.update(this.vardiyaId, this.pusulaForm.id, this.pusulaForm).subscribe({
+                next: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Başarılı',
+                        detail: 'Pusula güncellendi'
+                    });
+                    this.loadVardiyaData();
+                    this.hideDialog();
+                },
+                error: (err) => {
+                    console.error('Güncelleme hatası:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Hata',
+                        detail: err.error?.message || 'Pusula güncellenemedi'
+                    });
+                    this.loading = false;
+                }
             });
-
-            this.loading = false;
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Pusula kaydedildi' });
-            this.seciliPersonel = null;
-            this.pusulaForm = { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0, krediKartiDetay: [] };
-        } catch (error) {
-            this.loading = false;
-            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kayıt başarısız' });
+        } else {
+            // Yeni ekleme
+            this.pusulaApiService.create(this.vardiyaId, this.pusulaForm).subscribe({
+                next: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Başarılı',
+                        detail: 'Pusula kaydedildi'
+                    });
+                    this.loadVardiyaData();
+                    this.hideDialog();
+                },
+                error: (err) => {
+                    console.error('Ekleme hatası:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Hata',
+                        detail: err.error?.message || 'Pusula eklenemedi'
+                    });
+                    this.loading = false;
+                }
+            });
         }
     }
 
-    async pusulaSil(personelId: number): Promise<void> {
-        await this.vardiyaService.pusulaGirisiSil(personelId);
-        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Pusula silindi' });
-    }
+    deletePusula(pusula: Pusula): void {
+        if (!pusula.id || !this.vardiyaId) return;
 
-    farkAnaliziYap(): void {
-        if (this.aktifVardiya) {
-            this.vardiyaService.getFarkAnalizi(this.aktifVardiya.id).subscribe((analizler: PersonelFarkAnalizi[]) => {
-                this.farkAnalizleri = analizler;
-            });
+        if (!confirm(`${pusula.personelAdi} için girilen pusulayı silmek istediğinize emin misiniz?`)) {
+            return;
         }
-    }
 
-    getTotalLitre(): number {
-        return this.personelOtomasyonlar.reduce((sum, p) => sum + p.toplamLitre, 0);
-    }
-
-    getPusulaTutar(personelId: number): number {
-        const pusula = this.pusulalar.find(p => p.personelId === personelId);
-        return pusula ? pusula.toplam : 0;
-    }
-
-    getPusulaFark(personelId: number, otomasyonTutar: number): number {
-        const pusulaTutar = this.getPusulaTutar(personelId);
-        // Eğer pusula girişi hiç yoksa farkı 0 veya eksi otomasyon tutarı olarak gösterebiliriz.
-        // Genelde pusula girilmediyse farkın tamamı açık olarak görünür.
-        return pusulaTutar - otomasyonTutar;
+        this.pusulaApiService.delete(this.vardiyaId, pusula.id).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Başarılı',
+                    detail: 'Pusula silindi'
+                });
+                this.loadVardiyaData();
+            },
+            error: (err) => {
+                console.error('Silme hatası:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Hata',
+                    detail: 'Pusula silinemedi'
+                });
+            }
+        });
     }
 
     // Kredi Kartı İşlemleri
@@ -311,84 +364,41 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         this.krediKartiDialogVisible = false;
     }
 
-    // Gider işlemleri
-    giderDialogAc(): void {
-        this.giderForm = { giderTuru: null, tutar: 0, aciklama: '' };
-        this.giderDialogVisible = true;
+    hideDialog(): void {
+        this.pusulaDialogVisible = false;
+        this.seciliPersonel = null;
     }
 
-    async giderEkle(): Promise<void> {
-        if (!this.giderForm.giderTuru || !this.giderForm.tutar || !this.aktifVardiya) return;
-
-        try {
-            await this.vardiyaService.pompaGiderEkle({
-                vardiyaId: this.aktifVardiya.id,
-                giderTuru: this.giderForm.giderTuru,
-                tutar: this.giderForm.tutar,
-                aciklama: this.giderForm.aciklama || this.getGiderTuruLabel(this.giderForm.giderTuru)
-            });
-
-            this.giderDialogVisible = false;
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider eklendi' });
-        } catch (error) {
-            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Gider eklenemedi' });
-        }
-    }
-
-    async giderSil(giderId: number): Promise<void> {
-        try {
-            await this.vardiyaService.pompaGiderSil(giderId);
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider silindi' });
-        } catch (error) {
-            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Gider silinemedi' });
-        }
-    }
-
-    getGiderToplam(): number {
-        return this.giderler.reduce((sum, g) => sum + g.tutar, 0);
-    }
-
-    getGiderTuruLabel(turu: PompaGiderTuru): string {
-        const found = this.giderTurleri.find(t => t.value === turu);
-        return found?.label || turu;
-    }
-
-    // Yardımcı metodlar
-    getFarkCardClass(): string {
-        if (!this.pompaOzet) return 'bg-gradient-to-br from-gray-500 to-gray-600';
-        if (this.pompaOzet.farkDurum === FarkDurum.UYUMLU) return 'bg-gradient-to-br from-green-500 to-green-600';
-        if (this.pompaOzet.farkDurum === FarkDurum.ACIK) return 'bg-gradient-to-br from-red-500 to-red-600';
-        return 'bg-gradient-to-br from-blue-500 to-blue-600';
+    getFarkClass(): string {
+        if (Math.abs(this.fark) < 1) return 'text-green-600';
+        if (this.fark < 0) return 'text-red-600';
+        return 'text-blue-600';
     }
 
     getFarkIcon(): string {
-        if (!this.pompaOzet) return 'pi-minus';
-        if (this.pompaOzet.farkDurum === FarkDurum.UYUMLU) return 'pi-check';
-        if (this.pompaOzet.farkDurum === FarkDurum.ACIK) return 'pi-arrow-down';
+        if (Math.abs(this.fark) < 1) return 'pi-check-circle';
+        if (this.fark < 0) return 'pi-arrow-down';
         return 'pi-arrow-up';
     }
 
-    getFarkAciklama(): string {
-        if (!this.pompaOzet) return 'Veri bekleniyor';
-        if (this.pompaOzet.farkDurum === FarkDurum.UYUMLU) return 'Uyumlu';
-        if (this.pompaOzet.farkDurum === FarkDurum.ACIK) return 'Kasa Açığı!';
-        return 'Kasa Fazlası';
+    isPusulaGirildi(personelAdi: string): boolean {
+        if (personelAdi === 'FİLO SATIŞLARI') return true;
+        return this.pusulalar.some(p => p.personelAdi === personelAdi);
     }
 
-    getFarkBackground(): string {
-        if (!this.pompaOzet) return 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
-        if (this.pompaOzet.farkDurum === FarkDurum.UYUMLU) return 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
-        if (this.pompaOzet.farkDurum === FarkDurum.ACIK) return 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-        return 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+    getPusulaTutar(personelAdi: string): number {
+        if (personelAdi === 'FİLO SATIŞLARI') {
+            const filo = this.personelOzetler.find(p => p.personelAdi === 'FİLO SATIŞLARI');
+            return filo ? filo.toplamTutar : 0;
+        }
+        const pusula = this.pusulalar.find(p => p.personelAdi === personelAdi);
+        return pusula ? (pusula.nakit + pusula.krediKarti + pusula.paroPuan + pusula.mobilOdeme) : 0;
     }
 
-    getFarkShadow(): string {
-        if (!this.pompaOzet) return '0 10px 40px rgba(107, 114, 128, 0.3)';
-        if (this.pompaOzet.farkDurum === FarkDurum.UYUMLU) return '0 10px 40px rgba(34, 197, 94, 0.3)';
-        if (this.pompaOzet.farkDurum === FarkDurum.ACIK) return '0 10px 40px rgba(239, 68, 68, 0.3)';
-        return '0 10px 40px rgba(59, 130, 246, 0.3)';
+    getPusulaFark(personelAdi: string, otomasyonTutar: number): number {
+        const pusulaTutar = this.getPusulaTutar(personelAdi);
+        return pusulaTutar - otomasyonTutar;
     }
-
 
     getPersonelFarkClass(fark: number): string {
         if (Math.abs(fark) < 1) return 'text-green-600';
@@ -396,17 +406,103 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         return 'text-blue-600';
     }
 
-    getFarkDurumLabel(durum: FarkDurum): string {
-        const labels = { [FarkDurum.UYUMLU]: 'Uyumlu', [FarkDurum.ACIK]: 'Açık', [FarkDurum.FAZLA]: 'Fazla' };
-        return labels[durum];
+    private getEmptyPusula(): Pusula {
+        return {
+            vardiyaId: this.vardiyaId || 0,
+            personelAdi: '',
+            nakit: 0,
+            krediKarti: 0,
+            paroPuan: 0,
+            mobilOdeme: 0,
+            krediKartiDetay: []
+        };
     }
 
-    isPusulaGirildi(personelId: number): boolean {
-        return this.pusulalar.some(p => p.personelId === personelId);
+    onizle(personel: PersonelOtomasyonOzet): void {
+        if (personel.personelAdi === 'FİLO SATIŞLARI') {
+            const filoSatislar = this.vardiya.filoSatislar || [];
+            const groups: { [key: string]: number } = {};
+
+            filoSatislar.forEach((s: any) => {
+                let groupName = s.filoKodu;
+                // Eğer filo kodu sayı içeriyorsa 'Otobilim' olarak grupla
+                if (/\d/.test(s.filoKodu)) {
+                    groupName = 'Otobilim';
+                }
+
+                if (!groups[groupName]) groups[groupName] = 0;
+                groups[groupName] += s.tutar;
+            });
+
+            this.onizlemeData = {
+                personel: personel,
+                isFilo: true,
+                filoDetaylari: Object.keys(groups).map(k => ({ ad: k, tutar: groups[k] })),
+                toplamTutar: personel.toplamTutar,
+                pusula: { // Dummy pusula objesi
+                    nakit: 0,
+                    krediKarti: 0,
+                    paroPuan: 0,
+                    mobilOdeme: 0,
+                    aciklama: 'Otomatik Filo Tahsilatı'
+                },
+                fark: 0 // Filo satışlarında fark olmaz (teorik olarak)
+            };
+            this.onizlemeDialogVisible = true;
+            return;
+        }
+
+        const pusula = this.pusulalar.find(p => p.personelAdi === personel.personelAdi);
+        if (!pusula) return;
+
+        const toplamTahsilat = pusula.nakit + pusula.krediKarti + pusula.paroPuan + pusula.mobilOdeme;
+
+        this.onizlemeData = {
+            personel: personel,
+            isFilo: false,
+            pusula: pusula,
+            fark: toplamTahsilat - personel.toplamTutar
+        };
+        this.onizlemeDialogVisible = true;
     }
 
-    getFarkDurumSeverity(durum: FarkDurum): 'success' | 'danger' | 'info' {
-        const severities = { [FarkDurum.UYUMLU]: 'success' as const, [FarkDurum.ACIK]: 'danger' as const, [FarkDurum.FAZLA]: 'info' as const };
-        return severities[durum];
+    onizlemeDuzenle(): void {
+        if (this.onizlemeData) {
+            this.onizlemeDialogVisible = false;
+            this.personelSec(this.onizlemeData.personel);
+        }
+    }
+
+    geriDon(): void {
+        this.router.navigate(['/vardiya']);
+    }
+
+    onayaGonder(): void {
+        if (!this.vardiyaId) return;
+
+        if (!confirm('Mutabakatı tamamlayıp onaya göndermek istediğinize emin misiniz? Bu işlemden sonra değişiklik yapılamaz.')) {
+            return;
+        }
+
+        this.loading = true;
+        this.vardiyaApiService.vardiyaOnayaGonder(this.vardiyaId).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Başarılı',
+                    detail: 'Vardiya onaya gönderildi.'
+                });
+                this.router.navigate(['/vardiya']);
+            },
+            error: (err) => {
+                console.error('Onaya gönderme hatası:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Hata',
+                    detail: err.error?.message || 'Onaya gönderilemedi.'
+                });
+                this.loading = false;
+            }
+        });
     }
 }

@@ -1,0 +1,153 @@
+using IstasyonDemo.Api.Data;
+using IstasyonDemo.Api.Dtos;
+using IstasyonDemo.Api.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace IstasyonDemo.Api.Controllers
+{
+    [ApiController]
+    [Route("api/vardiya/{vardiyaId}/[controller]")]
+    public class PusulaController : ControllerBase
+    {
+        private readonly AppDbContext _context;
+
+        public PusulaController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int vardiyaId)
+        {
+            // OPTIMIZED: Removed redundant FindAsync check
+            // If vardiyaId doesn't exist, we simply return an empty list
+            var pusulalar = await _context.Pusulalar
+                .AsNoTracking()
+                .Where(p => p.VardiyaId == vardiyaId)
+                .OrderBy(p => p.PersonelAdi)
+                .ToListAsync();
+
+            return Ok(pusulalar);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int vardiyaId, int id)
+        {
+            var pusula = await _context.Pusulalar
+                .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
+
+            if (pusula == null)
+                return NotFound();
+
+            return Ok(pusula);
+        }
+
+        [HttpGet("personel/{personelAdi}")]
+        public async Task<IActionResult> GetByPersonel(int vardiyaId, string personelAdi)
+        {
+            var pusula = await _context.Pusulalar
+                .FirstOrDefaultAsync(p => p.VardiyaId == vardiyaId && p.PersonelAdi == personelAdi);
+
+            if (pusula == null)
+                return NotFound();
+
+            return Ok(pusula);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(int vardiyaId, CreatePusulaDto dto)
+        {
+            var vardiya = await _context.Vardiyalar.FindAsync(vardiyaId);
+            if (vardiya == null)
+                return NotFound(new { message = "Vardiya bulunamadı" });
+
+            // Aynı personel için pusula kontrolü
+            var existing = await _context.Pusulalar
+                .FirstOrDefaultAsync(p => p.VardiyaId == vardiyaId && p.PersonelAdi == dto.PersonelAdi);
+
+            if (existing != null)
+                return BadRequest(new { message = "Bu personel için zaten pusula girilmiş" });
+
+            var pusula = new Pusula
+            {
+                VardiyaId = vardiyaId,
+                PersonelAdi = dto.PersonelAdi,
+                PersonelId = dto.PersonelId,
+                Nakit = dto.Nakit,
+                KrediKarti = dto.KrediKarti,
+                ParoPuan = dto.ParoPuan,
+                MobilOdeme = dto.MobilOdeme,
+                KrediKartiDetay = dto.KrediKartiDetay,
+                Aciklama = dto.Aciklama,
+                OlusturmaTarihi = DateTime.UtcNow
+            };
+
+            _context.Pusulalar.Add(pusula);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new { vardiyaId, id = pusula.Id }, pusula);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int vardiyaId, int id, UpdatePusulaDto dto)
+        {
+            var pusula = await _context.Pusulalar
+                .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
+
+            if (pusula == null)
+                return NotFound();
+
+            pusula.Nakit = dto.Nakit;
+            pusula.KrediKarti = dto.KrediKarti;
+            pusula.ParoPuan = dto.ParoPuan;
+            pusula.MobilOdeme = dto.MobilOdeme;
+            pusula.KrediKartiDetay = dto.KrediKartiDetay;
+            pusula.Aciklama = dto.Aciklama;
+            pusula.GuncellemeTarihi = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(pusula);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int vardiyaId, int id)
+        {
+            var pusula = await _context.Pusulalar
+                .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
+
+            if (pusula == null)
+                return NotFound();
+
+            _context.Pusulalar.Remove(pusula);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpGet("ozet")]
+        public async Task<IActionResult> GetOzet(int vardiyaId)
+        {
+            var vardiya = await _context.Vardiyalar.FindAsync(vardiyaId);
+            if (vardiya == null)
+                return NotFound(new { message = "Vardiya bulunamadı" });
+
+            var pusulalar = await _context.Pusulalar
+                .Where(p => p.VardiyaId == vardiyaId)
+                .ToListAsync();
+
+            var ozet = new
+            {
+                toplamPusula = pusulalar.Count,
+                toplamNakit = pusulalar.Sum(p => p.Nakit),
+                toplamKrediKarti = pusulalar.Sum(p => p.KrediKarti),
+                toplamParoPuan = pusulalar.Sum(p => p.ParoPuan),
+                toplamMobilOdeme = pusulalar.Sum(p => p.MobilOdeme),
+                genelToplam = pusulalar.Sum(p => p.Toplam)
+            };
+
+            return Ok(ozet);
+        }
+    }
+}

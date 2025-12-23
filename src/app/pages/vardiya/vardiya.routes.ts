@@ -7,7 +7,7 @@ import { OnayBekleyenlerComponent } from './components/onay-bekleyenler/onay-bek
 
 export default [
     { path: '', component: VardiyaListesi },
-    { path: 'pompa', component: PompaYonetimi },
+    { path: 'pompa/:id', component: PompaYonetimi },
     { path: 'market', component: MarketYonetimi },
     { path: 'karsilastirma', component: Karsilastirma },
     { path: 'onay-bekleyenler', component: OnayBekleyenlerComponent },

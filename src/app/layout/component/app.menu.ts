@@ -29,11 +29,6 @@ export class AppMenu {
                         routerLink: ['/vardiya']
                     },
                     {
-                        label: 'Pompa Mutabakatı',
-                        icon: 'pi pi-fw pi-box',
-                        routerLink: ['/vardiya/pompa']
-                    },
-                    {
                         label: 'Market Mutabakatı',
                         icon: 'pi pi-fw pi-shopping-bag',
                         routerLink: ['/vardiya/market']

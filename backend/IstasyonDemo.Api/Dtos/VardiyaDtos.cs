@@ -1,0 +1,54 @@
+using IstasyonDemo.Api.Models;
+
+namespace IstasyonDemo.Api.Dtos
+{
+    public class CreateVardiyaDto
+    {
+        public int IstasyonId { get; set; }
+        public DateTime BaslangicTarihi { get; set; }
+        public DateTime? BitisTarihi { get; set; }
+        public string? DosyaAdi { get; set; }
+        public string? DosyaIcerik { get; set; }
+        
+        public List<CreateOtomasyonSatisDto> OtomasyonSatislar { get; set; } = new();
+        public List<CreateFiloSatisDto> FiloSatislar { get; set; } = new();
+    }
+
+    public class CreateOtomasyonSatisDto
+    {
+        public string? PersonelAdi { get; set; }
+        public string? PersonelKeyId { get; set; }
+        public int PompaNo { get; set; }
+        public YakitTuru YakitTuru { get; set; }
+        public decimal Litre { get; set; }
+        public decimal BirimFiyat { get; set; }
+        public decimal ToplamTutar { get; set; }
+        public DateTime SatisTarihi { get; set; }
+        public int? FisNo { get; set; }
+        public string? Plaka { get; set; }
+    }
+
+    public class CreateFiloSatisDto
+    {
+        public DateTime Tarih { get; set; }
+        public string FiloKodu { get; set; } = string.Empty;
+        public string Plaka { get; set; } = string.Empty;
+        public YakitTuru YakitTuru { get; set; }
+        public decimal Litre { get; set; }
+        public decimal Tutar { get; set; }
+        public int PompaNo { get; set; }
+        public int FisNo { get; set; }
+    }
+    public class OnayDto
+    {
+        public int OnaylayanId { get; set; }
+        public string OnaylayanAdi { get; set; } = string.Empty;
+    }
+
+    public class RedDto
+    {
+        public int OnaylayanId { get; set; }
+        public string OnaylayanAdi { get; set; } = string.Empty;
+        public string RedNedeni { get; set; } = string.Empty;
+    }
+}

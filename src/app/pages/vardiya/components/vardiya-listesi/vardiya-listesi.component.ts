@@ -15,6 +15,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { MessageService } from 'primeng/api';
 
 import { VardiyaService } from '../../services/vardiya.service';
+import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { TxtParserService, ParseSonuc } from '../../services/txt-parser.service';
 import { VardiyaDurum, OtomasyonSatis, Vardiya } from '../../models/vardiya.model';
 import { DbService } from '../../services/db.service';
@@ -70,6 +71,7 @@ export class VardiyaListesi implements OnInit {
 
     constructor(
         private vardiyaService: VardiyaService,
+        private vardiyaApiService: VardiyaApiService,
         private txtParser: TxtParserService,
         private messageService: MessageService,
         private router: Router,
@@ -80,23 +82,35 @@ export class VardiyaListesi implements OnInit {
         this.vardiyalariYukle();
     }
 
-    async vardiyalariYukle(): Promise<void> {
-        const dbVardiyalar = await this.dbService.tumVardiyalariGetir();
-        this.vardiyalar = dbVardiyalar.map(v => ({
-            id: v.id!,
-            dosyaAdi: v.dosyaAdi,
-            yuklemeTarihi: v.yuklemeTarihi,
-            baslangicTarih: v.baslangicTarih,
-            bitisTarih: v.bitisTarih,
-            personelSayisi: v.personelSayisi,
-            islemSayisi: v.islemSayisi,
-            toplamTutar: v.toplamTutar,
-            durum: v.durum === 'ACIK' ? VardiyaDurum.ACIK :
-                v.durum === 'ONAY_BEKLIYOR' ? VardiyaDurum.ONAY_BEKLIYOR :
-                    v.durum === 'ONAYLANDI' ? VardiyaDurum.ONAYLANDI : VardiyaDurum.REDDEDILDI,
-            redNedeni: v.redNedeni,
-            satislar: [] // Listede satış detayına gerek yok
-        }));
+    vardiyalariYukle(): void {
+        this.vardiyaApiService.getVardiyalar().subscribe({
+            next: (data) => {
+                this.vardiyalar = data.map(v => ({
+                    id: v.id,
+                    dosyaAdi: v.dosyaAdi,
+                    yuklemeTarihi: new Date(v.olusturmaTarihi),
+                    baslangicTarih: new Date(v.baslangicTarihi),
+                    bitisTarih: v.bitisTarihi ? new Date(v.bitisTarihi) : null,
+                    personelSayisi: new Set(v.otomasyonSatislar?.map((s: OtomasyonSatis) => s.personelAdi)).size || 0,
+                    islemSayisi: v.otomasyonSatislar?.length || 0,
+                    toplamTutar: v.genelToplam,
+                    durum: (v.durum === 'ACIK' || v.durum === 0) ? VardiyaDurum.ACIK :
+                        (v.durum === 'ONAY_BEKLIYOR' || v.durum === 1) ? VardiyaDurum.ONAY_BEKLIYOR :
+                            (v.durum === 'ONAYLANDI' || v.durum === 2) ? VardiyaDurum.ONAYLANDI :
+                                (v.durum === 'REDDEDILDI' || v.durum === 3) ? VardiyaDurum.REDDEDILDI : VardiyaDurum.ACIK,
+                    redNedeni: '',
+                    satislar: v.otomasyonSatislar || []
+                }));
+            },
+            error: (err) => {
+                console.error('Vardiyalar yüklenirken hata:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Hata',
+                    detail: 'Vardiya listesi yüklenemedi!'
+                });
+            }
+        });
     }
 
     dosyaDialogAc(): void {
@@ -215,12 +229,11 @@ export class VardiyaListesi implements OnInit {
         reader.readAsText(this.secilenDosya, 'windows-1254');
     }
 
-    async dosyaYukle(): Promise<void> {
+    dosyaYukle(): void {
         if (!this.parseSonuc?.basarili || !this.secilenDosya) return;
 
-        // Mükerrer dosya kontrolü
-        const mevcutDosyalar = await this.dbService.tumVardiyalariGetir();
-        const dosyaVar = mevcutDosyalar.some(v => v.dosyaAdi === this.secilenDosya!.name);
+        // Mükerrer dosya kontrolü (Basit kontrol)
+        const dosyaVar = this.vardiyalar.some(v => v.dosyaAdi === this.secilenDosya!.name);
 
         if (dosyaVar) {
             this.messageService.add({
@@ -249,64 +262,67 @@ export class VardiyaListesi implements OnInit {
             kilitli: false
         };
 
-        try {
-            await this.vardiyaService.vardiyaEkle(yeniVardiya, this.parseSonuc.satislar, this.parseSonuc.filoSatislari);
+        // Dosya içeriğini oku
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dosyaIcerik = e.target?.result as string; // Data URL olarak gelecek
 
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Başarılı',
-                detail: `${this.parseSonuc.kayitSayisi} kayıt veritabanına yüklendi`
-            });
+            // Sadece Backend'e kaydet
+            this.vardiyaApiService.createVardiya(yeniVardiya, this.parseSonuc!.satislar, this.parseSonuc!.filoSatislari, dosyaIcerik)
+                .subscribe({
+                    next: (response) => {
+                        console.log('Backend kaydı başarılı:', response);
 
-            await this.vardiyalariYukle();
-            this.dosyaDialogKapat();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Başarılı',
+                            detail: `${this.parseSonuc?.kayitSayisi} kayıt veritabanına yüklendi`
+                        });
 
-        } catch (error) {
-            console.error('Kayıt hatası:', error);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Hata',
-                detail: 'Veritabanına kayıt sırasında hata oluştu!'
-            });
-        }
+                        this.vardiyalariYukle();
+                        this.dosyaDialogKapat();
+                    },
+                    error: (err) => {
+                        console.error('Backend kayıt hatası:', err);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Hata',
+                            detail: 'Sunucuya kayıt yapılırken hata oluştu!'
+                        });
+                    }
+                });
+        };
+        reader.readAsDataURL(this.secilenDosya); // Base64 okuma
     }
 
-    async vardiyaSil(vardiya: YuklenenVardiya): Promise<void> {
-        try {
-            await this.dbService.vardiyaSil(vardiya.id);
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Silindi',
-                detail: 'Vardiya verisi silindi'
-            });
-            await this.vardiyalariYukle();
-        } catch (error) {
-            console.error('Silme hatası:', error);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Hata',
-                detail: 'Silme işlemi başarısız oldu'
-            });
-        }
+    vardiyaSil(vardiya: YuklenenVardiya): void {
+        this.vardiyaApiService.deleteVardiya(vardiya.id).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Silindi',
+                    detail: 'Vardiya verisi silindi'
+                });
+                this.vardiyalariYukle();
+            },
+            error: (err) => {
+                console.error('Silme hatası:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Hata',
+                    detail: 'Silme işlemi başarısız oldu'
+                });
+            }
+        });
     }
 
-    async mutabakatYap(vardiya: YuklenenVardiya): Promise<void> {
-        console.log('Mutabakat başlatılıyor...', vardiya);
+    dosyaIndir(vardiya: YuklenenVardiya): void {
+        this.vardiyaApiService.downloadDosya(vardiya.id);
+    }
 
-        try {
-            // Aktif vardiyayı ve satışları veritabanından yükle
-            await this.vardiyaService.setAktifVardiyaById(vardiya.id);
-
-            console.log('Pompa sayfasına yönlendiriliyor...');
-            this.router.navigate(['/vardiya/pompa']);
-        } catch (error) {
-            console.error('Mutabakat başlatma hatası:', error);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Hata',
-                detail: 'Vardiya detayları yüklenemedi!'
-            });
-        }
+    mutabakatYap(vardiya: YuklenenVardiya): void {
+        console.log('Mutabakat başlatılıyor, vardiya ID:', vardiya.id);
+        this.router.navigate(['/vardiya/pompa', vardiya.id]);
     }
 
     getMutabakatBekleyenSayisi(): number {
