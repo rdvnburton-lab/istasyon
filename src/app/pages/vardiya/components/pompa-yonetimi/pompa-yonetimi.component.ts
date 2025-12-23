@@ -175,7 +175,10 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     this.vardiya.filoDetaylari = data.filoDetaylari;
                 }
 
-                this.personelSatisToplam = this.personelOzetler.reduce((sum, p) => sum + p.toplamTutar, 0);
+                // Pompacı satış toplamı = Personel satışları (Filo hariç)
+                this.personelSatisToplam = this.personelOzetler
+                    .filter(p => p.personelAdi !== 'FİLO SATIŞLARI')
+                    .reduce((sum, p) => sum + p.toplamTutar, 0);
 
                 // Pusulalar zaten geliyor
                 this.pusulalar = (data.pusulalar || []).map((p: any) => ({
