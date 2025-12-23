@@ -522,6 +522,22 @@ namespace IstasyonDemo.Api.Controllers
 
             Console.WriteLine($"⏱️ Pusulalar: {stopwatch.ElapsedMilliseconds}ms");
 
+            // 3.5. Filo Satışları özeti
+            var filoOzet = await _context.FiloSatislar
+                .AsNoTracking()
+                .Where(f => f.VardiyaId == id)
+                .GroupBy(f => 1)
+                .Select(g => new
+                {
+                    ToplamTutar = g.Sum(f => f.Tutar),
+                    ToplamLitre = g.Sum(f => f.Litre),
+                    IslemSayisi = g.Count()
+                })
+                .FirstOrDefaultAsync();
+
+            var filoToplam = filoOzet?.ToplamTutar ?? 0;
+            Console.WriteLine($"⏱️ Filo özeti: {stopwatch.ElapsedMilliseconds}ms, Toplam: {filoToplam}");
+
             // 4. Sunucu tarafında fark analizi hesapla
             var farkAnalizi = new List<object>();
             var processedPersonel = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -590,7 +606,10 @@ namespace IstasyonDemo.Api.Controllers
             var toplamParoPuan = pusulalar.Sum(p => p.ParoPuan);
             var toplamMobilOdeme = pusulalar.Sum(p => p.MobilOdeme);
             var pusulaToplami = toplamNakit + toplamKrediKarti + toplamParoPuan + toplamMobilOdeme;
-            var toplamFark = pusulaToplami - vardiya.PompaToplam;
+            
+            // Fark = (Pusula Toplamı + Filo Satışları) - Pompa Toplamı
+            var toplamFark = (pusulaToplami + filoToplam) - vardiya.PompaToplam;
+            Console.WriteLine($"📊 Fark Hesabı: ({pusulaToplami} + {filoToplam}) - {vardiya.PompaToplam} = {toplamFark}");
 
             var genelOzet = new
             {
@@ -602,6 +621,7 @@ namespace IstasyonDemo.Api.Controllers
                 ToplamParoPuan = toplamParoPuan,
                 ToplamMobilOdeme = toplamMobilOdeme,
                 PusulaToplam = pusulaToplami,
+                FiloToplam = filoToplam,
                 ToplamFark = toplamFark,
                 DurumRenk = Math.Abs(toplamFark) < 10 ? "success" : (toplamFark < 0 ? "danger" : "warn")
             };
