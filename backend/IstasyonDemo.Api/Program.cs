@@ -51,7 +51,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        context.Database.Migrate();
+        // Migration dosyalari olmasa bile tablolari sifirdan olusturur
+        context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
