@@ -17,3 +17,24 @@
 :host ::ng-deep .dark .row-selected {
     background-color: rgba(30, 58, 138, 0.5) !important;
 }
+
+// Compact action buttons in table
+:host ::ng-deep .p-datatable td .p-button.p-button-sm {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+}
+
+:host ::ng-deep .p-datatable td .p-button.p-button-sm .p-button-label {
+    font-size: 0.75rem;
+}
+
+// Hide button labels on mobile, show only icons
+@media (max-width: 768px) {
+    :host ::ng-deep .p-datatable td .p-button.p-button-sm .p-button-label {
+        display: none;
+    }
+
+    :host ::ng-deep .p-datatable td .p-button.p-button-sm {
+        padding: 0.5rem;
+    }
+}
