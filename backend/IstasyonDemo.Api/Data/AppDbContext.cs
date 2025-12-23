@@ -62,6 +62,15 @@ namespace IstasyonDemo.Api.Data
             modelBuilder.Entity<Vardiya>()
                 .HasIndex(v => v.Durum)
                 .HasDatabaseName("IX_Vardiyalar_Durum");
+
+            // Index on PersonelId for faster personnel reports
+            modelBuilder.Entity<OtomasyonSatis>()
+                .HasIndex(o => o.PersonelId)
+                .HasDatabaseName("IX_OtomasyonSatislar_PersonelId");
+
+            modelBuilder.Entity<Pusula>()
+                .HasIndex(p => p.PersonelId)
+                .HasDatabaseName("IX_Pusulalar_PersonelId");
         }
     }
 }

@@ -431,6 +431,7 @@ export interface KarsilastirmaSonuc {
     farkYuzde: number;
     detaylar: KarsilastirmaDetay[];
     durum: KarsilastirmaDurum;
+    pompaSatislari: any[];
 }
 
 export interface KarsilastirmaDetay {
@@ -465,6 +466,7 @@ export interface PompaSatis {
     litre: number;
     birimFiyat: number;
     toplamTutar: number;
+    islemSayisi?: number;
     satisTarihi: Date;
 }
 

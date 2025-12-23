@@ -3,8 +3,8 @@
         <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="flex flex-col gap-2">
                 <label class="font-bold">Personel Seçimi</label>
-                <p-select [options]="personeller" [(ngModel)]="secilenPersonel" optionLabel="tamAd"
-                    placeholder="Personel Seçiniz" [filter]="true" filterBy="tamAd" styleClass="w-full"
+                <p-select [options]="personeller" [(ngModel)]="secilenPersonel" optionLabel="adSoyad"
+                    placeholder="Personel Seçiniz" [filter]="true" filterBy="adSoyad" styleClass="w-full"
                     (onChange)="raporGoster = false"></p-select>
             </div>
             <div class="flex flex-col gap-2">

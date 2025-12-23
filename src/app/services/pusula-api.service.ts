@@ -33,11 +33,13 @@ export interface PusulaOzet {
     genelToplam: number;
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class PusulaApiService {
-    private baseUrl = 'http://localhost:5133/api/vardiya';
+    private baseUrl = `${environment.apiUrl}/vardiya`;
 
     constructor(private http: HttpClient) { }
 

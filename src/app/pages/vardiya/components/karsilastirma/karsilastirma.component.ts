@@ -14,18 +14,18 @@ import { ToastModule } from 'primeng/toast';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
 import { PanelModule } from 'primeng/panel';
+import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 
 import { MessageService } from 'primeng/api';
 
+import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { VardiyaService } from '../../services/vardiya.service';
 import {
     Vardiya,
     KarsilastirmaSonuc,
-    KarsilastirmaDurum,
-    KarsilastirmaDetay,
-    OdemeYontemi,
-    PompaSatis,
-    YakitTuru
+    PompaSatis
 } from '../../models/vardiya.model';
 
 @Component({
@@ -44,28 +44,48 @@ import {
         ToastModule,
         SkeletonModule,
         TooltipModule,
-        PanelModule
+        PanelModule,
+        DatePickerModule,
+        SelectModule,
+        FormsModule
     ],
     providers: [MessageService],
     templateUrl: './karsilastirma.component.html',
     styleUrls: ['./karsilastirma.component.scss']
 })
 export class Karsilastirma implements OnInit, OnDestroy {
-    aktifVardiya: Vardiya | null = null;
     sonuc: KarsilastirmaSonuc | null = null;
-    pompaSatislari: PompaSatis[] = [];
-    gruplanmisPompaSatislari: { pompaNo: number; toplamTutar: number; toplamLitre: number; aracSayisi: number; satislar: PompaSatis[] }[] = [];
+    gruplanmisPompaSatislari: any[] = [];
     enYogunAkaryakitPompaNo: number | null = null;
     enYogunLpgPompaNo: number | null = null;
 
     loading = false;
+    vardiyalarLoading = false;
 
     karsilastirmaChartData: any;
     chartOptions: any;
 
+    baslangicTarihi: Date = new Date();
+    secilenVardiya: any = null;
+    vardiyalar: any[] = [];
+
+    // Kıyaslama Özellikleri
+    karsilastirmaModu = false;
+    baslangicTarihi2: Date = new Date();
+    secilenVardiya2: any = null;
+    vardiyalar2: any[] = [];
+    sonuc2: KarsilastirmaSonuc | null = null;
+    loading2 = false;
+    vardiyalarLoading2 = false;
+    gruplanmisPompaSatislari2: any[] = [];
+    enYogunAkaryakitPompaNo2: number | null = null;
+    enYogunLpgPompaNo2: number | null = null;
+    karsilastirmaChartData2: any;
+
     private subscriptions = new Subscription();
 
     constructor(
+        private vardiyaApiService: VardiyaApiService,
         private vardiyaService: VardiyaService,
         private messageService: MessageService,
         private router: Router
@@ -73,13 +93,13 @@ export class Karsilastirma implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.initChart();
+        this.vardiyalariYukle();
 
         this.subscriptions.add(
             this.vardiyaService.getAktifVardiya().subscribe(vardiya => {
-                this.aktifVardiya = vardiya;
-                if (vardiya) {
+                if (vardiya && !this.secilenVardiya) {
+                    this.secilenVardiya = vardiya;
                     this.karsilastirmaYap();
-                    this.loadPompaSatislari(vardiya.id);
                 }
             })
         );
@@ -109,291 +129,261 @@ export class Karsilastirma implements OnInit, OnDestroy {
         };
     }
 
+    vardiyalariYukle(): void {
+        this.vardiyalarLoading = true;
+        const start = new Date(this.baslangicTarihi);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(this.baslangicTarihi);
+        end.setHours(23, 59, 59, 999);
+
+        this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
+            next: (res) => {
+                this.vardiyalar = res.vardiyalar;
+                this.vardiyalarLoading = false;
+                if (this.vardiyalar.length > 0 && !this.secilenVardiya) {
+                    this.secilenVardiya = this.vardiyalar[0];
+                    this.karsilastirmaYap();
+                }
+            },
+            error: () => {
+                this.vardiyalarLoading = false;
+            }
+        });
+    }
+
+    onTarihChange(): void {
+        this.secilenVardiya = null;
+        this.sonuc = null;
+        this.gruplanmisPompaSatislari = [];
+        this.vardiyalariYukle();
+    }
+
     karsilastirmaYap(): void {
-        if (!this.aktifVardiya) return;
-
+        if (!this.secilenVardiya) return;
         this.loading = true;
-
-        this.vardiyaService.karsilastirmaYap(this.aktifVardiya.id).subscribe({
+        this.vardiyaApiService.getKarsilastirma(this.secilenVardiya.id).subscribe({
             next: (sonuc) => {
                 this.sonuc = sonuc;
                 this.updateChart(sonuc);
+                this.gruplaPompaSatislari(sonuc.pompaSatislari);
                 this.loading = false;
             },
-            error: (err) => {
+            error: () => {
                 this.loading = false;
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Hata',
-                    detail: 'Karşılaştırma yapılırken hata oluştu'
-                });
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Karşılaştırma yapılamadı' });
             }
         });
     }
 
-    loadPompaSatislari(vardiyaId: number): void {
-        this.vardiyaService.getPompaSatislari(vardiyaId).subscribe({
-            next: (satislar) => {
-                this.pompaSatislari = satislar;
-                this.gruplaPompaSatislari();
+    karsilastirmaModuAc(): void {
+        this.karsilastirmaModu = !this.karsilastirmaModu;
+        if (this.karsilastirmaModu && this.vardiyalar2.length === 0) {
+            this.vardiyalariYukle2();
+        }
+    }
+
+    vardiyalariYukle2(): void {
+        this.vardiyalarLoading2 = true;
+        const start = new Date(this.baslangicTarihi2);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(this.baslangicTarihi2);
+        end.setHours(23, 59, 59, 999);
+
+        this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
+            next: (res) => {
+                this.vardiyalar2 = res.vardiyalar;
+                this.vardiyalarLoading2 = false;
+                if (this.vardiyalar2.length > 0 && !this.secilenVardiya2) {
+                    this.secilenVardiya2 = this.vardiyalar2[0];
+                    this.karsilastirmaYap2();
+                }
+            },
+            error: () => {
+                this.vardiyalarLoading2 = false;
             }
         });
     }
 
-    gruplaPompaSatislari(): void {
-        const gruplar = new Map<number, { pompaNo: number; toplamTutar: number; toplamLitre: number; aracSayisi: number; satislar: PompaSatis[] }>();
+    onTarihChange2(): void {
+        this.secilenVardiya2 = null;
+        this.sonuc2 = null;
+        this.gruplanmisPompaSatislari2 = [];
+        this.vardiyalariYukle2();
+    }
 
-        this.pompaSatislari.forEach(satis => {
+    karsilastirmaYap2(): void {
+        if (!this.secilenVardiya2) return;
+        this.loading2 = true;
+        this.vardiyaApiService.getKarsilastirma(this.secilenVardiya2.id).subscribe({
+            next: (sonuc) => {
+                this.sonuc2 = sonuc;
+                this.updateChart2(sonuc);
+                this.gruplaPompaSatislari2(sonuc.pompaSatislari);
+                this.loading2 = false;
+            },
+            error: () => {
+                this.loading2 = false;
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kıyaslama yapılamadı' });
+            }
+        });
+    }
+
+    gruplaPompaSatislari(satislar: any[]): void {
+        const gruplar = this.processPompaSatislari(satislar);
+        this.gruplanmisPompaSatislari = gruplar.sorted;
+        this.enYogunAkaryakitPompaNo = gruplar.enYogunAkaryakit;
+        this.enYogunLpgPompaNo = gruplar.enYogunLpg;
+    }
+
+    gruplaPompaSatislari2(satislar: any[]): void {
+        const gruplar = this.processPompaSatislari(satislar);
+        this.gruplanmisPompaSatislari2 = gruplar.sorted;
+        this.enYogunAkaryakitPompaNo2 = gruplar.enYogunAkaryakit;
+        this.enYogunLpgPompaNo2 = gruplar.enYogunLpg;
+    }
+
+    private processPompaSatislari(satislar: any[]) {
+        const gruplar = new Map<number, any>();
+        satislar.forEach(satis => {
             if (!gruplar.has(satis.pompaNo)) {
-                gruplar.set(satis.pompaNo, {
-                    pompaNo: satis.pompaNo,
-                    toplamTutar: 0,
-                    toplamLitre: 0,
-                    aracSayisi: 0,
-                    satislar: []
-                });
+                gruplar.set(satis.pompaNo, { pompaNo: satis.pompaNo, toplamTutar: 0, toplamLitre: 0, aracSayisi: 0, satislar: [] });
             }
-            const grup = gruplar.get(satis.pompaNo)!;
+            const grup = gruplar.get(satis.pompaNo);
             grup.toplamTutar += satis.toplamTutar;
             grup.toplamLitre += satis.litre;
-            grup.aracSayisi += 1;
-
-            // Yakıt türüne göre grupla
-            const existingSatis = grup.satislar.find(s => s.yakitTuru === satis.yakitTuru);
-            if (existingSatis) {
-                existingSatis.toplamTutar += satis.toplamTutar;
-                existingSatis.litre += satis.litre;
-            } else {
-                // Orijinal veriyi bozmamak için kopyasını ekle
-                grup.satislar.push({ ...satis });
-            }
+            grup.aracSayisi += (satis.islemSayisi || 0);
+            grup.satislar.push(satis);
         });
 
+        const sorted = Array.from(gruplar.values()).sort((a, b) => a.pompaNo - b.pompaNo);
+        let maxAkaryakitTutar = 0, maxLpgTutar = 0, enYogunAkaryakit = null, enYogunLpg = null;
 
-
-        this.gruplanmisPompaSatislari = Array.from(gruplar.values()).sort((a, b) => a.pompaNo - b.pompaNo);
-
-        // En yoğun pompaları bul (Akaryakıt ve LPG ayrı ayrı)
-        let maxAkaryakitTutar = 0;
-        let maxLpgTutar = 0;
-        this.enYogunAkaryakitPompaNo = null;
-        this.enYogunLpgPompaNo = null;
-
-        this.gruplanmisPompaSatislari.forEach(grup => {
-            let akaryakitTutar = 0;
-            let lpgTutar = 0;
-
-            grup.satislar.forEach(s => {
-                if (s.yakitTuru === YakitTuru.LPG) {
-                    lpgTutar += s.toplamTutar;
-                } else {
-                    akaryakitTutar += s.toplamTutar;
-                }
-            });
-
-            if (akaryakitTutar > maxAkaryakitTutar) {
-                maxAkaryakitTutar = akaryakitTutar;
-                this.enYogunAkaryakitPompaNo = grup.pompaNo;
-            }
-
-            if (lpgTutar > maxLpgTutar) {
-                maxLpgTutar = lpgTutar;
-                this.enYogunLpgPompaNo = grup.pompaNo;
-            }
+        sorted.forEach(grup => {
+            let akaryakit = 0, lpg = 0;
+            grup.satislar.forEach((s: any) => s.yakitTuru === 'LPG' ? lpg += s.toplamTutar : akaryakit += s.toplamTutar);
+            if (akaryakit > maxAkaryakitTutar) { maxAkaryakitTutar = akaryakit; enYogunAkaryakit = grup.pompaNo; }
+            if (lpg > maxLpgTutar) { maxLpgTutar = lpg; enYogunLpg = grup.pompaNo; }
         });
-    }
 
-    getPompaHeaderClass(pompaNo: number): string {
-        if (pompaNo === this.enYogunAkaryakitPompaNo && pompaNo === this.enYogunLpgPompaNo) {
-            return 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200';
-        } else if (pompaNo === this.enYogunAkaryakitPompaNo) {
-            return 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200';
-        } else if (pompaNo === this.enYogunLpgPompaNo) {
-            return 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200';
-        }
-        return 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-200';
-    }
-
-    getPompaIconClass(pompaNo: number): string {
-        if (pompaNo === this.enYogunAkaryakitPompaNo && pompaNo === this.enYogunLpgPompaNo) {
-            return 'text-purple-600 dark:text-purple-300';
-        } else if (pompaNo === this.enYogunAkaryakitPompaNo) {
-            return 'text-orange-600 dark:text-orange-300';
-        } else if (pompaNo === this.enYogunLpgPompaNo) {
-            return 'text-blue-600 dark:text-blue-300';
-        }
-        return 'text-surface-500';
+        return { sorted, enYogunAkaryakit, enYogunLpg };
     }
 
     updateChart(sonuc: KarsilastirmaSonuc): void {
-        const labels = sonuc.detaylar.map(d => this.getOdemeLabel(d.odemeYontemi));
-        const sistemData = sonuc.detaylar.map(d => d.sistemTutar);
-        const tahsilatData = sonuc.detaylar.map(d => d.tahsilatTutar);
+        this.karsilastirmaChartData = this.prepareChartData(sonuc);
+    }
 
-        this.karsilastirmaChartData = {
-            labels,
+    updateChart2(sonuc: KarsilastirmaSonuc): void {
+        this.karsilastirmaChartData2 = this.prepareChartData(sonuc);
+    }
+
+    private prepareChartData(sonuc: KarsilastirmaSonuc) {
+        return {
+            labels: sonuc.detaylar.map(d => this.getOdemeLabel(d.odemeYontemi)),
             datasets: [
-                {
-                    label: 'Sistem',
-                    data: sistemData,
-                    backgroundColor: '#3B82F6'
-                },
-                {
-                    label: 'Tahsilat',
-                    data: tahsilatData,
-                    backgroundColor: '#10B981'
-                }
+                { label: 'Sistem', data: sonuc.detaylar.map(d => d.sistemTutar), backgroundColor: '#3B82F6' },
+                { label: 'Tahsilat', data: sonuc.detaylar.map(d => d.tahsilatTutar), backgroundColor: '#10B981' }
             ]
         };
     }
 
-    getOdemeLabel(yontem: OdemeYontemi): string {
-        const labels: Record<OdemeYontemi, string> = {
-            [OdemeYontemi.NAKIT]: 'Nakit',
-            [OdemeYontemi.KREDI_KARTI]: 'Kredi Kartı',
-            [OdemeYontemi.PARO_PUAN]: 'Paro Puan',
-            [OdemeYontemi.MOBIL_ODEME]: 'Mobil Ödeme',
-        };
+    getOdemeLabel(yontem: any): string {
+        const labels: any = { 'NAKIT': 'Nakit', 'KREDI_KARTI': 'Kredi Kartı', 'PARO_PUAN': 'Paro Puan', 'MOBIL_ODEME': 'Mobil Ödeme', 'FILO': 'Filo' };
         return labels[yontem] || yontem;
     }
 
-    getOdemeIcon(yontem: OdemeYontemi): string {
-        const icons: Record<OdemeYontemi, string> = {
-            [OdemeYontemi.NAKIT]: 'pi pi-money-bill text-green-500',
-            [OdemeYontemi.KREDI_KARTI]: 'pi pi-credit-card text-blue-500',
-            [OdemeYontemi.PARO_PUAN]: 'pi pi-ticket text-yellow-500',
-            [OdemeYontemi.MOBIL_ODEME]: 'pi pi-mobile text-purple-500',
-        };
+    getOdemeIcon(yontem: any): string {
+        const icons: any = { 'NAKIT': 'pi pi-money-bill text-green-500', 'KREDI_KARTI': 'pi pi-credit-card text-blue-500', 'PARO_PUAN': 'pi pi-ticket text-yellow-500', 'MOBIL_ODEME': 'pi pi-mobile text-purple-500', 'FILO': 'pi pi-car text-orange-500' };
         return icons[yontem] || 'pi pi-circle';
     }
 
-    getYakitLabel(yakit: YakitTuru): string {
-        const labels: Record<YakitTuru, string> = {
-            [YakitTuru.BENZIN]: 'Benzin',
-            [YakitTuru.MOTORIN]: 'Motorin',
-            [YakitTuru.LPG]: 'LPG',
-            [YakitTuru.EURO_DIESEL]: 'Euro Diesel'
-        };
+    getYakitLabel(yakit: any): string {
+        const labels: any = { 'BENZIN': 'Benzin', 'MOTORIN': 'Motorin', 'LPG': 'LPG', 'EURO_DIESEL': 'Euro Diesel' };
         return labels[yakit] || yakit;
     }
 
-    getYakitBgClass(yakit: YakitTuru): string {
-        const classes: Record<YakitTuru, string> = {
-            [YakitTuru.BENZIN]: 'bg-blue-500',
-            [YakitTuru.MOTORIN]: 'bg-green-600',
-            [YakitTuru.LPG]: 'bg-yellow-500',
-            [YakitTuru.EURO_DIESEL]: 'bg-indigo-500'
-        };
+    getYakitBgClass(yakit: any): string {
+        const classes: any = { 'BENZIN': 'bg-blue-500', 'MOTORIN': 'bg-green-600', 'LPG': 'bg-yellow-500', 'EURO_DIESEL': 'bg-indigo-500' };
         return classes[yakit] || 'bg-gray-500';
     }
 
-    getFarkCardBackground(): string {
-        if (!this.sonuc) return 'linear-gradient(135deg, #64748b 0%, #475569 100%)';
-
-        switch (this.sonuc.durum) {
-            case KarsilastirmaDurum.UYUMLU:
-                return 'linear-gradient(135deg, #10b981 0%, #22c55e 50%, #16a34a 100%)';
-            case KarsilastirmaDurum.FARK_VAR:
-                return 'linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ea580c 100%)';
-            case KarsilastirmaDurum.KRITIK_FARK:
-                return 'linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)';
-            default:
-                return 'linear-gradient(135deg, #64748b 0%, #475569 100%)';
+    getFarkCardBackground(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return 'linear-gradient(135deg, #64748b 0%, #475569 100%)';
+        switch (sonuc.durum) {
+            case 'UYUMLU': return 'linear-gradient(135deg, #10b981 0%, #22c55e 50%, #16a34a 100%)';
+            case 'FARK_VAR': return 'linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ea580c 100%)';
+            case 'KRITIK_FARK': return 'linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)';
+            default: return 'linear-gradient(135deg, #64748b 0%, #475569 100%)';
         }
     }
 
-    getFarkCardShadow(): string {
-        if (!this.sonuc) return 'none';
-
-        switch (this.sonuc.durum) {
-            case KarsilastirmaDurum.UYUMLU:
-                return '0 10px 40px rgba(34, 197, 94, 0.3)';
-            case KarsilastirmaDurum.FARK_VAR:
-                return '0 10px 40px rgba(249, 115, 22, 0.3)';
-            case KarsilastirmaDurum.KRITIK_FARK:
-                return '0 10px 40px rgba(220, 38, 38, 0.3)';
-            default:
-                return 'none';
+    getFarkCardShadow(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return 'none';
+        switch (sonuc.durum) {
+            case 'UYUMLU': return '0 10px 40px rgba(34, 197, 94, 0.3)';
+            case 'FARK_VAR': return '0 10px 40px rgba(249, 115, 22, 0.3)';
+            case 'KRITIK_FARK': return '0 10px 40px rgba(220, 38, 38, 0.3)';
+            default: return 'none';
         }
     }
 
-    getFarkIcon(): string {
-        if (!this.sonuc) return 'pi-minus';
+    getFarkIcon(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return 'pi-minus';
+        if (sonuc.fark === 0) return 'pi-check';
+        return sonuc.fark > 0 ? 'pi-arrow-up' : 'pi-arrow-down';
+    }
 
-        if (this.sonuc.fark === 0) return 'pi-check';
-        if (this.sonuc.fark > 0) return 'pi-arrow-up';
-        return 'pi-arrow-down';
+    getDurumLabel(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return 'Belirsiz';
+        const labels: any = { 'UYUMLU': 'Uyumlu', 'FARK_VAR': 'Fark Var', 'KRITIK_FARK': 'Kritik Fark' };
+        return labels[sonuc.durum] || sonuc.durum;
+    }
+
+    getDurumSeverity(sonuc: KarsilastirmaSonuc | null): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {
+        if (!sonuc) return 'secondary';
+        const severities: any = { 'UYUMLU': 'success', 'FARK_VAR': 'warn', 'KRITIK_FARK': 'danger' };
+        return severities[sonuc.durum] || 'info';
     }
 
     getFarkClass(fark: number): string {
         if (fark === 0) return 'text-green-500';
-        if (fark > 0) return 'text-blue-500';
-        return 'text-red-500';
+        return fark > 0 ? 'text-blue-500' : 'text-red-500';
     }
 
     getDetayDurumIcon(fark: number): string {
         if (fark === 0) return 'pi-check-circle text-green-500';
-        if (Math.abs(fark) < 10) return 'pi-exclamation-circle text-yellow-500';
-        return 'pi-times-circle text-red-500';
+        return Math.abs(fark) < 10 ? 'pi-exclamation-circle text-yellow-500' : 'pi-times-circle text-red-500';
     }
 
     getDetayDurumTooltip(fark: number): string {
         if (fark === 0) return 'Uyumlu';
-        if (Math.abs(fark) < 10) return 'Küçük fark';
-        return 'Fark var';
+        return Math.abs(fark) < 10 ? 'Küçük fark' : 'Fark var';
     }
 
-    getDurumLabel(): string {
-        if (!this.sonuc) return 'Belirsiz';
-
-        const labels: Record<KarsilastirmaDurum, string> = {
-            [KarsilastirmaDurum.UYUMLU]: 'Uyumlu',
-            [KarsilastirmaDurum.FARK_VAR]: 'Fark Var',
-            [KarsilastirmaDurum.KRITIK_FARK]: 'Kritik Fark'
-        };
-        return labels[this.sonuc.durum];
+    getFarkAlertClass(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return 'bg-gray-100 text-gray-700';
+        return sonuc.fark > 0 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300';
     }
 
-    getDurumSeverity(): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
-        if (!this.sonuc) return 'secondary';
-
-        const severities: Record<KarsilastirmaDurum, 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast'> = {
-            [KarsilastirmaDurum.UYUMLU]: 'success',
-            [KarsilastirmaDurum.FARK_VAR]: 'warn',
-            [KarsilastirmaDurum.KRITIK_FARK]: 'danger'
-        };
-        return severities[this.sonuc.durum];
+    getFarkBaslik(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return '';
+        return sonuc.fark > 0 ? 'Tahsilat Fazlası' : 'Tahsilat Eksiği';
     }
 
-    getFarkAlertClass(): string {
-        if (!this.sonuc) return 'bg-gray-100 text-gray-700';
-
-        if (this.sonuc.fark > 0) {
-            return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
-        }
-        return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300';
+    getFarkAciklama(sonuc: KarsilastirmaSonuc | null): string {
+        if (!sonuc) return '';
+        const farkAbs = Math.abs(sonuc.fark).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' });
+        return sonuc.fark > 0 ? `Tahsilatlar sistemden ${farkAbs} fazla.` : `Tahsilatlar sistemden ${farkAbs} eksik.`;
     }
 
-    getFarkBaslik(): string {
-        if (!this.sonuc) return '';
-
-        if (this.sonuc.fark > 0) {
-            return 'Tahsilat Fazlası Tespit Edildi';
-        }
-        return 'Tahsilat Eksiği Tespit Edildi';
+    getPompaHeaderClass(pompaNo: number, enYogunAkaryakit: number | null, enYogunLpg: number | null): string {
+        if (pompaNo === enYogunAkaryakit && pompaNo === enYogunLpg) return 'bg-purple-600 text-white';
+        if (pompaNo === enYogunAkaryakit) return 'bg-orange-500 text-white';
+        if (pompaNo === enYogunLpg) return 'bg-blue-500 text-white';
+        return 'bg-surface-700 text-white';
     }
 
-    getFarkAciklama(): string {
-        if (!this.sonuc) return '';
-
-        const farkAbs = Math.abs(this.sonuc.fark);
-
-        if (this.sonuc.fark > 0) {
-            return `Girilen tahsilatlar, sistem verilerinden ${farkAbs.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })} fazla. 
-                    Lütfen fazla ödeme kaynaklarını kontrol edin.`;
-        }
-        return `Girilen tahsilatlar, sistem verilerinden ${farkAbs.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })} eksik. 
-                Lütfen eksik tahsilatları kontrol edin veya açıklama ekleyin.`;
+    getPompaIconClass(pompaNo: number, enYogunAkaryakit: number | null, enYogunLpg: number | null): string {
+        return 'text-white/90';
     }
 
     yazdir(): void {

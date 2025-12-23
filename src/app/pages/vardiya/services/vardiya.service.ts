@@ -1418,7 +1418,8 @@ export class VardiyaService {
             fark,
             farkYuzde,
             detaylar,
-            durum
+            durum,
+            pompaSatislari: []
         }).pipe(delay(500));
     }
 

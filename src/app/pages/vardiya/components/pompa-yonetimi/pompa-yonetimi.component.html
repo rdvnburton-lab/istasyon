@@ -135,37 +135,37 @@
             <!-- Kart 5: Fark Durumu -->
             <div class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl border shadow-xl" [ngClass]="{
                 'bg-green-50/60 dark:bg-green-900/20 border-green-200/50 dark:border-green-800/50': Math.abs(fark) < 1,
-                'bg-red-50/60 dark:bg-red-900/20 border-red-200/50 dark:border-red-800/50': fark < -1,
-                'bg-orange-50/60 dark:bg-orange-900/20 border-orange-200/50 dark:border-orange-800/50': fark > 1
+                'bg-red-50/60 dark:bg-red-900/20 border-red-200/50 dark:border-red-800/50': fark <= -1,
+                'bg-orange-50/60 dark:bg-orange-900/20 border-orange-200/50 dark:border-orange-800/50': fark >= 1
             }">
                 <div class="absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl" [ngClass]="{
                     'bg-green-500/20': Math.abs(fark) < 1,
-                    'bg-red-500/20': fark < -1,
-                    'bg-orange-500/20': fark > 1
+                    'bg-red-500/20': fark <= -1,
+                    'bg-orange-500/20': fark >= 1
                 }"></div>
                 <div class="relative z-10">
                     <div class="flex justify-between items-start mb-3">
                         <div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" [ngClass]="{
                             'bg-gradient-to-br from-green-500 to-green-600': Math.abs(fark) < 1,
-                            'bg-gradient-to-br from-red-500 to-red-600': fark < -1,
-                            'bg-gradient-to-br from-orange-500 to-orange-600': fark > 1
+                            'bg-gradient-to-br from-red-500 to-red-600': fark <= -1,
+                            'bg-gradient-to-br from-orange-500 to-orange-600': fark >= 1
                         }">
                             <i class="pi text-white text-lg" [ngClass]="{
                                 'pi-check-circle': Math.abs(fark) < 1,
-                                'pi-exclamation-circle': fark < -1,
-                                'pi-info-circle': fark > 1
+                                'pi-exclamation-circle': fark <= -1,
+                                'pi-info-circle': fark >= 1
                             }"></i>
                         </div>
                         <span class="text-xs font-medium px-2 py-1 rounded-full" [ngClass]="{
                             'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400': Math.abs(fark) < 1,
-                            'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400': fark < -1,
-                            'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400': fark > 1
-                        }">{{ Math.abs(fark) < 1 ? 'Mutabık' : (fark < 0 ? 'Eksik' : 'Fazla' ) }}</span>
+                            'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400': fark <= -1,
+                            'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400': fark >= 1
+                        }">{{ Math.abs(fark) < 1 ? 'Mutabık' : (fark <=-1 ? 'Eksik' : 'Fazla' ) }}</span>
                     </div>
                     <div class="text-2xl font-bold mb-1" [ngClass]="{
                         'text-green-700 dark:text-green-400': Math.abs(fark) < 1,
-                        'text-red-700 dark:text-red-400': fark < -1,
-                        'text-orange-700 dark:text-orange-400': fark > 1
+                        'text-red-700 dark:text-red-400': fark <= -1,
+                        'text-orange-700 dark:text-orange-400': fark >= 1
                     }">{{ fark | number:'1.2-2' }} ₺</div>
                     <div class="text-sm text-surface-500">Fark Durumu</div>
                 </div>
@@ -186,7 +186,7 @@
                         <th class="text-right">Pusula Tutar</th>
                         <th class="text-right">Fark</th>
                         <th class="text-center">Durum</th>
-                        <th class="text-center">İşlem</th>
+                        <th class="text-center action-column">İşlem</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-personel>
@@ -227,7 +227,7 @@
                                 [value]="Math.abs(getPusulaFark(personel.personelAdi, personel.toplamTutar)) < 1 ? 'Mutabık' : (getPusulaFark(personel.personelAdi, personel.toplamTutar) < 0 ? 'Eksik' : 'Fazla')">
                             </p-tag>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center action-column">
                             <div class="flex justify-center gap-2">
                                 <!-- Giriş butonu: Pusula yoksa ve düzenlenebilirse -->
                                 <p-button
@@ -269,77 +269,6 @@
     [(visible)]="pusulaDialogVisible" [modal]="true" [style]="{width: '1100px'}" [breakpoints]="{'960px': '95vw'}">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" *ngIf="seciliPersonel">
         <!-- Sol Kolon: Form -->
-        <div class="flex flex-col gap-4">
-            <!-- Otomasyon Bilgisi -->
-            <div class="p-4 rounded-lg border border-blue-100 bg-blue-50/50 dark:bg-blue-900/10 dark:border-blue-800">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">Otomasyon Tutarı</div>
-                        <div class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ seciliPersonel.toplamTutar |
-                            number:'1.2-2' }} ₺</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm text-blue-600 dark:text-blue-400">{{ seciliPersonel.toplamLitre |
-                            number:'1.2-2' }} Litre</div>
-                        <div class="text-xs text-blue-500">{{ seciliPersonel.islemSayisi }} işlem</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ödeme Türleri -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
-                        <i class="pi pi-money-bill mr-1 text-green-600"></i>Nakit
-                    </label>
-                    <p-inputNumber [(ngModel)]="pusulaForm.nakit" mode="currency" currency="TRY" locale="tr-TR"
-                        styleClass="w-full" [disabled]="loading" inputStyleClass="w-full"></p-inputNumber>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
-                        <i class="pi pi-credit-card mr-1 text-blue-600"></i>Kredi Kartı
-                    </label>
-                    <div class="flex gap-2">
-                        <p-inputNumber [(ngModel)]="pusulaForm.krediKarti" mode="currency" currency="TRY" locale="tr-TR"
-                            styleClass="flex-1" [readonly]="true"
-                            [inputStyle]="{'background-color': 'var(--surface-100)'}"
-                            inputStyleClass="w-full"></p-inputNumber>
-                        <p-button icon="pi pi-list" severity="info" (onClick)="krediKartiDialogAc()"
-                            pTooltip="Banka Detayları"></p-button>
-                    </div>
-                    <small class="text-surface-500"
-                        *ngIf="pusulaForm.krediKartiDetay && pusulaForm.krediKartiDetay.length > 0">
-                        {{ pusulaForm.krediKartiDetay.length }} banka detayı
-                    </small>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
-                        <i class="pi pi-star mr-1 text-yellow-600"></i>Paro Puan
-                    </label>
-                    <p-inputNumber [(ngModel)]="pusulaForm.paroPuan" mode="currency" currency="TRY" locale="tr-TR"
-                        styleClass="w-full" [disabled]="loading" inputStyleClass="w-full"></p-inputNumber>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
-                        <i class="pi pi-mobile mr-1 text-purple-600"></i>Mobil Ödeme
-                    </label>
-                    <p-inputNumber [(ngModel)]="pusulaForm.mobilOdeme" mode="currency" currency="TRY" locale="tr-TR"
-                        styleClass="w-full" [disabled]="loading" inputStyleClass="w-full"></p-inputNumber>
-                </div>
-            </div>
-
-            <!-- Açıklama -->
-            <div>
-                <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">Açıklama</label>
-                <textarea pInputTextarea [(ngModel)]="pusulaForm.aciklama" rows="3" class="w-full"
-                    placeholder="Varsa not ekleyin..." [disabled]="loading"></textarea>
-            </div>
-        </div>
-
-        <!-- Sağ Kolon: Canlı Önizleme -->
         <div
             class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700 relative shadow-sm">
             <div
@@ -432,6 +361,78 @@
                 </div>
             </div>
         </div>
+        <div class="flex flex-col gap-4">
+            <!-- Otomasyon Bilgisi -->
+            <div class="p-4 rounded-lg border border-blue-100 bg-blue-50/50 dark:bg-blue-900/10 dark:border-blue-800">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">Otomasyon Tutarı</div>
+                        <div class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ seciliPersonel.toplamTutar |
+                            number:'1.2-2' }} ₺</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-blue-600 dark:text-blue-400">{{ seciliPersonel.toplamLitre |
+                            number:'1.2-2' }} Litre</div>
+                        <div class="text-xs text-blue-500">{{ seciliPersonel.islemSayisi }} işlem</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ödeme Türleri -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
+                        <i class="pi pi-money-bill mr-1 text-green-600"></i>Nakit
+                    </label>
+                    <p-inputNumber [(ngModel)]="pusulaForm.nakit" mode="currency" currency="TRY" locale="tr-TR"
+                        styleClass="w-full" [disabled]="loading" inputStyleClass="w-full"></p-inputNumber>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
+                        <i class="pi pi-credit-card mr-1 text-blue-600"></i>Kredi Kartı
+                    </label>
+                    <div class="flex gap-2">
+                        <p-inputNumber [(ngModel)]="pusulaForm.krediKarti" mode="currency" currency="TRY" locale="tr-TR"
+                            styleClass="flex-1" [readonly]="true"
+                            [inputStyle]="{'background-color': 'var(--surface-100)'}"
+                            inputStyleClass="w-full"></p-inputNumber>
+                        <p-button icon="pi pi-list" severity="info" (onClick)="krediKartiDialogAc()"
+                            pTooltip="Banka Detayları"></p-button>
+                    </div>
+                    <small class="text-surface-500"
+                        *ngIf="pusulaForm.krediKartiDetay && pusulaForm.krediKartiDetay.length > 0">
+                        {{ pusulaForm.krediKartiDetay.length }} banka detayı
+                    </small>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
+                        <i class="pi pi-star mr-1 text-yellow-600"></i>Paro Puan
+                    </label>
+                    <p-inputNumber [(ngModel)]="pusulaForm.paroPuan" mode="currency" currency="TRY" locale="tr-TR"
+                        styleClass="w-full" [disabled]="loading" inputStyleClass="w-full"></p-inputNumber>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">
+                        <i class="pi pi-mobile mr-1 text-purple-600"></i>Mobil Ödeme
+                    </label>
+                    <p-inputNumber [(ngModel)]="pusulaForm.mobilOdeme" mode="currency" currency="TRY" locale="tr-TR"
+                        styleClass="w-full" [disabled]="loading" inputStyleClass="w-full"></p-inputNumber>
+                </div>
+            </div>
+
+            <!-- Açıklama -->
+            <div>
+                <label class="block text-sm font-medium mb-2 text-surface-700 dark:text-surface-200">Açıklama</label>
+                <textarea pInputTextarea [(ngModel)]="pusulaForm.aciklama" rows="3" class="w-full"
+                    placeholder="Varsa not ekleyin..." [disabled]="loading"></textarea>
+            </div>
+        </div>
+
+        <!-- Sağ Kolon: Canlı Önizleme -->
+
     </div>
 
     <ng-template pTemplate="footer">
@@ -594,8 +595,8 @@
             <!-- Fark Durumu Kartı -->
             <div class="p-4 rounded-xl flex justify-between items-center" [ngClass]="{
                 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': Math.abs(onizlemeData.fark) < 1,
-                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': onizlemeData.fark < -1,
-                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400': onizlemeData.fark > 1
+                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': onizlemeData.fark <= -1,
+                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400': onizlemeData.fark >= 1
             }">
                 <div class="flex flex-col">
                     <span class="text-xs font-bold uppercase opacity-70">Fark Durumu</span>

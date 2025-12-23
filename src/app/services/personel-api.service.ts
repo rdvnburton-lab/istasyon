@@ -12,11 +12,13 @@ export interface Personel {
     aktif: boolean;
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class PersonelApiService {
-    private apiUrl = 'http://localhost:5133/api/personel';
+    private apiUrl = `${environment.apiUrl}/personel`;
 
     constructor(private http: HttpClient) { }
 

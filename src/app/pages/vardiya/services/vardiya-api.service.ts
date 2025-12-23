@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vardiya, OtomasyonSatis, FiloSatis, YakitTuru } from '../models/vardiya.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VardiyaApiService {
-    private apiUrl = 'http://localhost:5133/api/vardiya';
+    private apiUrl = `${environment.apiUrl}/vardiya`;
 
     constructor(private http: HttpClient) { }
 
@@ -69,12 +70,40 @@ export class VardiyaApiService {
         return this.http.get<any>(`${this.apiUrl}/${id}/onay-detay`);
     }
 
+    getVardiyaRaporu(baslangic: Date, bitis: Date): Observable<any> {
+        const params = {
+            baslangic: baslangic.toISOString(),
+            bitis: bitis.toISOString()
+        };
+        return this.http.get<any>(`${this.apiUrl}/rapor`, { params });
+    }
+
+    getFarkRaporu(baslangic: Date, bitis: Date): Observable<any> {
+        const params = {
+            baslangic: baslangic.toISOString(),
+            bitis: bitis.toISOString()
+        };
+        return this.http.get<any>(`${this.apiUrl}/fark-raporu`, { params });
+    }
+
+    getPersonelKarnesi(personelId: number, baslangic: Date, bitis: Date): Observable<any> {
+        const params = {
+            baslangic: baslangic.toISOString(),
+            bitis: bitis.toISOString()
+        };
+        return this.http.get<any>(`${this.apiUrl}/personel-karnesi/${personelId}`, { params });
+    }
+
     deleteVardiya(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }
 
     downloadDosya(id: number): void {
         window.open(`${this.apiUrl}/${id}/dosya`, '_blank');
+    }
+
+    getKarsilastirma(id: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/${id}/karsilastirma`);
     }
 
 

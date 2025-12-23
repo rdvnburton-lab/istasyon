@@ -1,0 +1,30 @@
+:host ::ng-deep {
+    .p-datatable {
+        .p-datatable-thead>tr>th.text-center {
+            text-align: center !important;
+            justify-content: center !important;
+        }
+
+        .p-datatable-tbody>tr>td.text-center {
+            text-align: center !important;
+
+            .flex.justify-center {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                width: 100%;
+            }
+        }
+    }
+}
+
+/* İşlem sütunu için özel genişlik ve hizalama */
+.action-column {
+    width: 140px !important;
+    text-align: center !important;
+    min-width: 140px !important;
+}
+
+.action-column .p-button {
+    margin: 0 !important;
+}

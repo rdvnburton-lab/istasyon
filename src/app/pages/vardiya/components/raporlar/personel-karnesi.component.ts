@@ -8,7 +8,8 @@ import { SelectModule } from 'primeng/select';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
-import { DbService, DBPersonel } from '../../services/db.service';
+import { VardiyaApiService } from '../../services/vardiya-api.service';
+import { PersonelApiService } from '../../services/personel-api.service';
 
 @Component({
     selector: 'app-personel-karnesi',
@@ -30,8 +31,8 @@ import { DbService, DBPersonel } from '../../services/db.service';
 export class PersonelKarnesiComponent implements OnInit {
     baslangicTarihi: Date = new Date();
     bitisTarihi: Date = new Date();
-    secilenPersonel: DBPersonel | null = null;
-    personeller: DBPersonel[] = [];
+    secilenPersonel: any = null;
+    personeller: any[] = [];
 
     ozet = {
         toplamSatis: 0,
@@ -48,34 +49,44 @@ export class PersonelKarnesiComponent implements OnInit {
     loading: boolean = false;
     raporGoster: boolean = false;
 
-    constructor(private dbService: DbService) {
+    constructor(
+        private vardiyaApiService: VardiyaApiService,
+        private personelApiService: PersonelApiService
+    ) {
         const bugun = new Date();
         this.baslangicTarihi = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
         this.bitisTarihi = new Date(bugun.getFullYear(), bugun.getMonth() + 1, 0);
     }
 
-    async ngOnInit() {
-        this.personeller = await this.dbService.getPersoneller();
+    ngOnInit() {
+        this.personelApiService.getPersoneller().subscribe(data => {
+            this.personeller = data;
+        });
     }
 
-    async raporla() {
+    raporla() {
         if (!this.secilenPersonel) return;
 
         this.loading = true;
         this.raporGoster = true;
-        try {
-            const start = new Date(this.baslangicTarihi);
-            start.setHours(0, 0, 0, 0);
 
-            const end = new Date(this.bitisTarihi);
-            end.setHours(23, 59, 59, 999);
+        const start = new Date(this.baslangicTarihi);
+        start.setHours(0, 0, 0, 0);
 
-            const sonuc = await this.dbService.getPersonelKarnesi(this.secilenPersonel.id!, start, end);
-            this.ozet = sonuc.ozet;
-            this.hareketler = sonuc.hareketler;
-        } finally {
-            this.loading = false;
-        }
+        const end = new Date(this.bitisTarihi);
+        end.setHours(23, 59, 59, 999);
+
+        this.vardiyaApiService.getPersonelKarnesi(this.secilenPersonel.id, start, end).subscribe({
+            next: (sonuc) => {
+                this.ozet = sonuc.ozet;
+                this.hareketler = sonuc.hareketler;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Personel karnesi hatası:', err);
+                this.loading = false;
+            }
+        });
     }
     get isPompaci(): boolean {
         if (!this.secilenPersonel) return false;

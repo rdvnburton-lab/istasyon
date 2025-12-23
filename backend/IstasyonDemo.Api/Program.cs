@@ -8,12 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
+                         ?? new[] { "http://localhost:4200" };
+
     options.AddPolicy("AllowAngular",
-        builder =>
+        policy =>
         {
-            builder.WithOrigins("http://localhost:4200")
+            policy.WithOrigins(allowedOrigins)
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowAnyHeader()
+                   .AllowCredentials();
         });
 });
 

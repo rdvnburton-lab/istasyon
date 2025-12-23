@@ -1,23 +1,33 @@
-version: '3.8'
-
 services:
+  backend:
+    build:
+      context: ./backend/IstasyonDemo.Api
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres
+      - AllowedOrigins__0=http://localhost:4200
+      - AllowedOrigins__1=https://istasyon.tiginteknoloji.tr
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
   db:
     image: postgres:15-alpine
-    container_name: istasyon_db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: istasyon_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-
-volumes:
-  postgres_data:
+      - POSTGRES_DB=istasyon
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5

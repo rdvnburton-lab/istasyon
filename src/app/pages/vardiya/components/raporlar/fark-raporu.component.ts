@@ -7,7 +7,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
-import { DbService } from '../../services/db.service';
+import { VardiyaApiService } from '../../services/vardiya-api.service';
 
 @Component({
     selector: 'app-fark-raporu',
@@ -43,7 +43,7 @@ export class FarkRaporuComponent implements OnInit {
     expandedRows: Record<string, boolean> = {};
     Math = Math;
 
-    constructor(private dbService: DbService) {
+    constructor(private vardiyaApiService: VardiyaApiService) {
         const bugun = new Date();
         this.baslangicTarihi = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
         this.bitisTarihi = new Date(bugun.getFullYear(), bugun.getMonth() + 1, 0);
@@ -53,21 +53,26 @@ export class FarkRaporuComponent implements OnInit {
         this.raporla();
     }
 
-    async raporla() {
+    raporla() {
         this.loading = true;
-        try {
-            const start = new Date(this.baslangicTarihi);
-            start.setHours(0, 0, 0, 0);
 
-            const end = new Date(this.bitisTarihi);
-            end.setHours(23, 59, 59, 999);
+        const start = new Date(this.baslangicTarihi);
+        start.setHours(0, 0, 0, 0);
 
-            const sonuc = await this.dbService.getFarkRaporu(start, end);
-            this.ozet = sonuc.ozet;
-            this.vardiyalar = sonuc.vardiyalar;
-        } finally {
-            this.loading = false;
-        }
+        const end = new Date(this.bitisTarihi);
+        end.setHours(23, 59, 59, 999);
+
+        this.vardiyaApiService.getFarkRaporu(start, end).subscribe({
+            next: (sonuc) => {
+                this.ozet = sonuc.ozet;
+                this.vardiyalar = sonuc.vardiyalar;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Fark raporu hatası:', err);
+                this.loading = false;
+            }
+        });
     }
 
     tarihAyarla(tip: 'bugun' | 'dun' | 'buAy' | 'gecenAy') {

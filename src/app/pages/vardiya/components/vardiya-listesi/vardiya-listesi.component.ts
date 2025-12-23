@@ -69,6 +69,12 @@ export class VardiyaListesi implements OnInit {
     gecenSure = 0;
     private parseInterval: any = null;
 
+    summary: any = {
+        toplamCiro: 0,
+        toplamIslem: 0,
+        benzersizPersonelSayisi: 0
+    };
+
     constructor(
         private vardiyaService: VardiyaService,
         private vardiyaApiService: VardiyaApiService,
@@ -84,22 +90,25 @@ export class VardiyaListesi implements OnInit {
 
     vardiyalariYukle(): void {
         this.vardiyaApiService.getVardiyalar().subscribe({
-            next: (data) => {
-                this.vardiyalar = data.map(v => ({
+            next: (response: any) => {
+                const data = response.items || [];
+                this.summary = response.summary || this.summary;
+
+                this.vardiyalar = data.map((v: any) => ({
                     id: v.id,
                     dosyaAdi: v.dosyaAdi,
                     yuklemeTarihi: new Date(v.olusturmaTarihi),
                     baslangicTarih: new Date(v.baslangicTarihi),
                     bitisTarih: v.bitisTarihi ? new Date(v.bitisTarihi) : null,
-                    personelSayisi: new Set(v.otomasyonSatislar?.map((s: OtomasyonSatis) => s.personelAdi)).size || 0,
-                    islemSayisi: v.otomasyonSatislar?.length || 0,
+                    personelSayisi: v.personelSayisi || 0,
+                    islemSayisi: v.islemSayisi || 0,
                     toplamTutar: v.genelToplam,
                     durum: (v.durum === 'ACIK' || v.durum === 0) ? VardiyaDurum.ACIK :
                         (v.durum === 'ONAY_BEKLIYOR' || v.durum === 1) ? VardiyaDurum.ONAY_BEKLIYOR :
                             (v.durum === 'ONAYLANDI' || v.durum === 2) ? VardiyaDurum.ONAYLANDI :
                                 (v.durum === 'REDDEDILDI' || v.durum === 3) ? VardiyaDurum.REDDEDILDI : VardiyaDurum.ACIK,
                     redNedeni: '',
-                    satislar: v.otomasyonSatislar || []
+                    satislar: []
                 }));
             },
             error: (err) => {
@@ -111,6 +120,14 @@ export class VardiyaListesi implements OnInit {
                 });
             }
         });
+    }
+
+    formatShortNumber(value: number): string {
+        return new Intl.NumberFormat('tr-TR', {
+            notation: 'compact',
+            compactDisplay: 'short',
+            maximumFractionDigits: 1
+        }).format(value);
     }
 
     dosyaDialogAc(): void {
@@ -326,16 +343,14 @@ export class VardiyaListesi implements OnInit {
     }
 
     getMutabakatBekleyenSayisi(): number {
-        return this.vardiyalar.filter(v => v.durum === VardiyaDurum.ACIK).length;
+        return this.vardiyalar.filter(v => v.durum === VardiyaDurum.ACIK || v.durum === VardiyaDurum.REDDEDILDI).length;
     }
 
     getTamamlananSayisi(): number {
         return this.vardiyalar.filter(v => v.durum === VardiyaDurum.ONAYLANDI).length;
     }
 
-    getToplamCiro(): number {
-        return this.vardiyalar.reduce((sum, v) => sum + v.toplamTutar, 0);
-    }
+
 
     getDurumLabel(durum: VardiyaDurum): string {
         const labels: Record<VardiyaDurum, string> = {
@@ -362,11 +377,5 @@ export class VardiyaListesi implements OnInit {
         return Math.round((this.getTamamlananSayisi() / this.vardiyalar.length) * 100);
     }
 
-    getToplamIslem(): number {
-        return this.vardiyalar.reduce((sum, v) => sum + v.islemSayisi, 0);
-    }
 
-    getToplamPersonel(): number {
-        return this.vardiyalar.reduce((sum, v) => sum + v.personelSayisi, 0);
-    }
 }

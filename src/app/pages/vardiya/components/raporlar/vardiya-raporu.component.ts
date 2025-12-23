@@ -7,7 +7,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
-import { DbService } from '../../services/db.service';
+import { VardiyaApiService } from '../../services/vardiya-api.service';
 
 @Component({
     selector: 'app-vardiya-raporu',
@@ -40,7 +40,7 @@ export class VardiyaRaporuComponent implements OnInit {
     vardiyalar: any[] = [];
     loading: boolean = false;
 
-    constructor(private dbService: DbService) {
+    constructor(private vardiyaApiService: VardiyaApiService) {
         // Varsayılan olarak bu ayın başı ve sonu
         const bugun = new Date();
         this.baslangicTarihi = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
@@ -51,22 +51,27 @@ export class VardiyaRaporuComponent implements OnInit {
         this.raporla();
     }
 
-    async raporla() {
+    raporla() {
         this.loading = true;
-        try {
-            // Saat ayarları: Başlangıç 00:00:00, Bitiş 23:59:59
-            const start = new Date(this.baslangicTarihi);
-            start.setHours(0, 0, 0, 0);
 
-            const end = new Date(this.bitisTarihi);
-            end.setHours(23, 59, 59, 999);
+        // Saat ayarları: Başlangıç 00:00:00, Bitiş 23:59:59
+        const start = new Date(this.baslangicTarihi);
+        start.setHours(0, 0, 0, 0);
 
-            const sonuc = await this.dbService.getVardiyaRaporu(start, end);
-            this.ozet = sonuc.ozet;
-            this.vardiyalar = sonuc.vardiyalar;
-        } finally {
-            this.loading = false;
-        }
+        const end = new Date(this.bitisTarihi);
+        end.setHours(23, 59, 59, 999);
+
+        this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
+            next: (sonuc) => {
+                this.ozet = sonuc.ozet;
+                this.vardiyalar = sonuc.vardiyalar;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Rapor hatası:', err);
+                this.loading = false;
+            }
+        });
     }
 
     tarihAyarla(tip: 'bugun' | 'dun' | 'buAy' | 'gecenAy') {

@@ -1,0 +1,17 @@
+﻿  Geri y├╝klenecek projeler belirleniyor...
+  Geri y├╝kleme i├ğin t├╝m projeler g├╝ncel.
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(75,39): warning CS8601: Olas─▒ null ba┼şvuru atamas─▒. [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(76,41): warning CS8601: Olas─▒ null ba┼şvuru atamas─▒. [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(291,105): error CS1061: 'Pusula' bir 'PersonelKeyId' tan─▒m─▒ i├ğermiyor ve 'Pusula' t├╝r├╝nde bir ilk ba─ş─▒ms─▒z de─şi┼şken kabul eden hi├ğbir eri┼şilebilir 'PersonelKeyId' geni┼şletme y├Ântemi bulunamad─▒ (bir kullanma y├Ânergeniz veya derleme ba┼şvurunuz eksik olabilir mi?) [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(848,43): warning CS8600: Null sabit de─şeri veya olas─▒ null de─şeri, bo┼ş de─şer atanamaz t├╝re d├Ân├╝┼şt├╝r├╝l├╝yor. [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+
+Olu┼şturma BA┼ŞARISIZ OLDU.
+
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(75,39): warning CS8601: Olas─▒ null ba┼şvuru atamas─▒. [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(76,41): warning CS8601: Olas─▒ null ba┼şvuru atamas─▒. [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(848,43): warning CS8600: Null sabit de─şeri veya olas─▒ null de─şeri, bo┼ş de─şer atanamaz t├╝re d├Ân├╝┼şt├╝r├╝l├╝yor. [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs(291,105): error CS1061: 'Pusula' bir 'PersonelKeyId' tan─▒m─▒ i├ğermiyor ve 'Pusula' t├╝r├╝nde bir ilk ba─ş─▒ms─▒z de─şi┼şken kabul eden hi├ğbir eri┼şilebilir 'PersonelKeyId' geni┼şletme y├Ântemi bulunamad─▒ (bir kullanma y├Ânergeniz veya derleme ba┼şvurunuz eksik olabilir mi?) [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+    3 Uyar─▒
+    1 Hata
+
+Ge├ğen S├╝re 00:00:01.23
