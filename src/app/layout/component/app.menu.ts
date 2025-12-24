@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-menu',
@@ -18,21 +19,36 @@ import { AppMenuitem } from './app.menuitem';
 export class AppMenu {
     model: MenuItem[] = [];
 
+    constructor(private authService: AuthService) { }
+
     ngOnInit() {
+        const user = this.authService.getCurrentUser();
+        const isAdminOrPatron = user?.role === 'admin' || user?.role === 'patron';
+
         this.model = [
+            {
+                label: 'Ana Menü',
+                items: [
+                    {
+                        label: 'Anasayfa',
+                        icon: 'pi pi-fw pi-home',
+                        routerLink: ['/dashboard']
+                    }
+                ]
+            },
             {
                 label: 'Vardiya Yönetimi',
                 items: [
-                    {
+                    ...(user?.role !== 'market_sorumlusu' ? [{
                         label: 'Vardiya Listesi',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/vardiya']
-                    },
-                    {
+                    }] : []),
+                    ...(user?.role !== 'vardiya_sorumlusu' ? [{
                         label: 'Market Mutabakatı',
                         icon: 'pi pi-fw pi-shopping-bag',
                         routerLink: ['/vardiya/market']
-                    },
+                    }] : []),
                     {
                         label: 'Karşılaştırma Raporu',
                         icon: 'pi pi-fw pi-chart-bar',
@@ -48,41 +64,44 @@ export class AppMenu {
                         icon: 'pi pi-fw pi-file',
                         routerLink: ['/vardiya/raporlar/vardiya']
                     },
-                    {
-                        label: 'Personel Karnesi',
-                        icon: 'pi pi-fw pi-users',
-                        routerLink: ['/vardiya/raporlar/personel']
-                    },
-                    {
-                        label: 'Fark Raporu',
-                        icon: 'pi pi-fw pi-exclamation-triangle',
-                        routerLink: ['/vardiya/raporlar/fark']
-                    }
+                    ...(user?.role !== 'market_sorumlusu' ? [
+                        {
+                            label: 'Personel Karnesi',
+                            icon: 'pi pi-fw pi-users',
+                            routerLink: ['/vardiya/raporlar/personel']
+                        },
+                        {
+                            label: 'Fark Raporu',
+                            icon: 'pi pi-fw pi-exclamation-triangle',
+                            routerLink: ['/vardiya/raporlar/fark']
+                        }
+                    ] : [])
                 ]
             },
             {
                 label: 'Yönetim',
                 items: [
+                    ...(isAdminOrPatron ? [
+                        {
+                            label: 'İşlem Geçmişi',
+                            icon: 'pi pi-fw pi-history',
+                            routerLink: ['/vardiya/loglar']
+                        },
+                        {
+                            label: 'Onay Bekleyenler',
+                            icon: 'pi pi-fw pi-check-circle',
+                            routerLink: ['/vardiya/onay-bekleyenler']
+                        },
+                        {
+                            label: 'Kullanıcı Yönetimi',
+                            icon: 'pi pi-fw pi-users',
+                            routerLink: ['/yonetim/kullanici']
+                        }
+                    ] : []),
                     {
-                        label: 'Onay Bekleyenler',
-                        icon: 'pi pi-fw pi-check-circle',
-                        routerLink: ['/vardiya/onay-bekleyenler']
-                    },
-                    {
-                        label: 'Tanımlamalar',
-                        icon: 'pi pi-fw pi-cog',
-                        items: [
-                            {
-                                label: 'İstasyon Tanımları',
-                                icon: 'pi pi-fw pi-building',
-                                routerLink: ['/vardiya/tanimlamalar/istasyon']
-                            },
-                            {
-                                label: 'Personel Tanımları',
-                                icon: 'pi pi-fw pi-user',
-                                routerLink: ['/vardiya/tanimlamalar/personel']
-                            }
-                        ]
+                        label: 'Personel Tanımları',
+                        icon: 'pi pi-fw pi-user',
+                        routerLink: ['/vardiya/tanimlamalar/personel']
                     }
                 ]
             },
@@ -97,5 +116,18 @@ export class AppMenu {
                 ]
             }
         ];
+
+        if (isAdminOrPatron) {
+            this.model.splice(3, 0, {
+                label: 'Admin Paneli',
+                items: [
+                    {
+                        label: 'İstasyon Yönetimi',
+                        icon: 'pi pi-fw pi-building',
+                        routerLink: ['/admin/istasyonlar']
+                    }
+                ]
+            });
+        }
     }
 }

@@ -27,6 +27,9 @@ namespace IstasyonDemo.Api.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
+
+            // Insert Default Station manually to satisfy FK constraints
+            migrationBuilder.Sql("INSERT INTO \"Istasyonlar\" (\"Id\", \"Ad\", \"Aktif\") VALUES (1, 'Merkez İstasyon', true) ON CONFLICT (\"Id\") DO NOTHING;");
         }
 
         /// <inheritdoc />

@@ -1,12 +1,15 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace IstasyonDemo.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PersonelController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -19,27 +22,88 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var personeller = await _context.Personeller
-                .OrderBy(p => p.OtomasyonAdi)
-                .ToListAsync();
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
+            IQueryable<Personel> query = _context.Personeller.Include(p => p.Istasyon);
+
+            if (userRole == "admin")
+            {
+                // Admin sees all
+            }
+            else if (userRole == "patron")
+            {
+                query = query.Where(p => p.Istasyon != null && p.Istasyon.PatronId == userId);
+            }
+            else
+            {
+                // Vardiya Sorumlusu sees their station's personnel
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != null)
+                {
+                    query = query.Where(p => p.IstasyonId == user.IstasyonId);
+                }
+                else
+                {
+                    return Ok(new List<Personel>());
+                }
+            }
+
+            var personeller = await query.OrderBy(p => p.OtomasyonAdi).ToListAsync();
             return Ok(personeller);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var personel = await _context.Personeller.FindAsync(id);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var personel = await _context.Personeller.Include(p => p.Istasyon).FirstOrDefaultAsync(p => p.Id == id);
             
             if (personel == null)
                 return NotFound();
+
+            // Authorization Check
+            if (userRole == "patron" && personel.Istasyon?.PatronId != userId) return Forbid();
+            if (userRole != "admin" && userRole != "patron")
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != personel.IstasyonId) return Forbid();
+            }
 
             return Ok(personel);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(Personel personel)
         {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            // Authorization
+            // Authorization
+            if (userRole == "patron")
+            {
+                var istasyon = await _context.Istasyonlar.FindAsync(personel.IstasyonId);
+                if (istasyon == null || istasyon.PatronId != userId)
+                {
+                    return BadRequest("Geçersiz istasyon. Bu istasyonun sahibi değilsiniz.");
+                }
+            }
+            else if (userRole != "admin")
+            {
+                // Vardiya Sorumlusu etc.
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId == null)
+                {
+                    return Forbid("Bir istasyona bağlı değilsiniz.");
+                }
+                // Force IstasyonId
+                personel.IstasyonId = user.IstasyonId.Value;
+            }
+
             // KeyId benzersizlik kontrolü
             if (!string.IsNullOrEmpty(personel.KeyId))
             {
@@ -62,9 +126,21 @@ namespace IstasyonDemo.Api.Controllers
             if (id != personel.Id)
                 return BadRequest();
 
-            var existing = await _context.Personeller.FindAsync(id);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var existing = await _context.Personeller.Include(p => p.Istasyon).FirstOrDefaultAsync(p => p.Id == id);
             if (existing == null)
                 return NotFound();
+
+            // Authorization Check
+            if (userRole == "patron" && existing.Istasyon?.PatronId != userId) return Forbid();
+            if (userRole != "admin" && userRole != "patron")
+            {
+                // Vardiya Sorumlusu can update names
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != existing.IstasyonId) return Forbid();
+            }
 
             // KeyId benzersizlik kontrolü
             if (!string.IsNullOrEmpty(personel.KeyId))
@@ -76,11 +152,14 @@ namespace IstasyonDemo.Api.Controllers
                     return BadRequest(new { message = "Bu KeyId zaten kullanılıyor." });
             }
 
+            // Update allowed fields
             existing.OtomasyonAdi = personel.OtomasyonAdi;
             existing.AdSoyad = personel.AdSoyad;
             existing.KeyId = personel.KeyId;
             existing.Rol = personel.Rol;
             existing.Aktif = personel.Aktif;
+            existing.Telefon = personel.Telefon;
+            // IstasyonId change logic if needed, usually not allowed for Vardiya Sorumlusu
 
             await _context.SaveChangesAsync();
 
@@ -88,12 +167,19 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> Delete(int id)
         {
-            var personel = await _context.Personeller.FindAsync(id);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var personel = await _context.Personeller.Include(p => p.Istasyon).FirstOrDefaultAsync(p => p.Id == id);
             
             if (personel == null)
                 return NotFound();
+
+            // Authorization Check
+            if (userRole == "patron" && personel.Istasyon?.PatronId != userId) return Forbid();
 
             // Satışları olan personeli silmeyi engelle
             var hasSales = await _context.OtomasyonSatislar
@@ -111,10 +197,21 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPatch("{id}/toggle-aktif")]
         public async Task<IActionResult> ToggleAktif(int id)
         {
-            var personel = await _context.Personeller.FindAsync(id);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var personel = await _context.Personeller.Include(p => p.Istasyon).FirstOrDefaultAsync(p => p.Id == id);
             
             if (personel == null)
                 return NotFound();
+
+            // Authorization Check
+            if (userRole == "patron" && personel.Istasyon?.PatronId != userId) return Forbid();
+            if (userRole != "admin" && userRole != "patron")
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != personel.IstasyonId) return Forbid();
+            }
 
             personel.Aktif = !personel.Aktif;
             await _context.SaveChangesAsync();

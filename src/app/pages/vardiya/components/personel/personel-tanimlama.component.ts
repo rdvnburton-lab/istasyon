@@ -12,6 +12,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
 import { PersonelApiService, Personel } from '../../../../services/personel-api.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
     selector: 'app-personel-tanimlama',
@@ -38,36 +39,73 @@ export class PersonelTanimlamaComponent implements OnInit {
     dialogVisible = false;
     editMode = false;
     loading = false;
+    isMarketSorumlusu = false;
+    filterFields: string[] = ['otomasyonAdi', 'adSoyad', 'keyId'];
 
     currentPersonel: Personel = {
         otomasyonAdi: '',
         adSoyad: '',
         keyId: '',
         rol: 'POMPACI',
-        aktif: true
+        aktif: true,
+        telefon: ''
     };
 
     roller = [
         { label: 'Pompacı', value: 'POMPACI' },
         { label: 'Market Görevlisi', value: 'MARKET_GOREVLISI' },
+        { label: 'Market Sorumlusu', value: 'MARKET_SORUMLUSU' },
         { label: 'Vardiya Sorumlusu', value: 'VARDIYA_SORUMLUSU' },
         { label: 'Patron', value: 'PATRON' }
     ];
 
     constructor(
         private personelService: PersonelApiService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
+        const user = this.authService.getCurrentUser();
+        const role = user?.role?.toLowerCase();
+        this.isMarketSorumlusu = role === 'market_sorumlusu';
+
+        if (this.isMarketSorumlusu) {
+            this.filterFields = ['adSoyad', 'telefon'];
+        }
+
         this.loadPersoneller();
+        this.filterRoles();
+    }
+
+    filterRoles(): void {
+        const user = this.authService.getCurrentUser();
+        const role = user?.role?.toLowerCase();
+        const isAdminOrPatron = role === 'admin' || role === 'patron';
+
+        if (role === 'market_sorumlusu') {
+            this.roller = this.roller.filter(r => r.value === 'MARKET_GOREVLISI' || r.value === 'MARKET_SORUMLUSU');
+        } else if (role === 'vardiya_sorumlusu') {
+            this.roller = this.roller.filter(r => r.value === 'POMPACI' || r.value === 'VARDIYA_SORUMLUSU');
+        } else if (!isAdminOrPatron && role !== 'istasyon_sorumlusu') {
+            this.roller = this.roller.filter(r => r.value === 'POMPACI' || r.value === 'MARKET_GOREVLISI');
+        }
     }
 
     loadPersoneller(): void {
         this.loading = true;
+        const user = this.authService.getCurrentUser();
+
         this.personelService.getAll().subscribe({
             next: (data) => {
-                this.personeller = data;
+                const role = user?.role?.toLowerCase();
+                if (role === 'market_sorumlusu') {
+                    this.personeller = data.filter(p => p.rol && p.rol.includes('MARKET'));
+                } else if (role === 'vardiya_sorumlusu') {
+                    this.personeller = data.filter(p => p.rol === 'POMPACI' || p.rol === 'VARDIYA_SORUMLUSU');
+                } else {
+                    this.personeller = data;
+                }
                 this.loading = false;
             },
             error: (err) => {
@@ -83,12 +121,15 @@ export class PersonelTanimlamaComponent implements OnInit {
     }
 
     openNew(): void {
+        const user = this.authService.getCurrentUser();
+        const role = user?.role?.toLowerCase();
         this.currentPersonel = {
             otomasyonAdi: '',
             adSoyad: '',
             keyId: '',
-            rol: 'POMPACI',
-            aktif: true
+            rol: role === 'market_sorumlusu' ? 'MARKET_GOREVLISI' : 'POMPACI',
+            aktif: true,
+            telefon: ''
         };
         this.editMode = false;
         this.dialogVisible = true;
@@ -101,11 +142,23 @@ export class PersonelTanimlamaComponent implements OnInit {
     }
 
     savePersonel(): void {
-        if (!this.currentPersonel.otomasyonAdi || !this.currentPersonel.adSoyad) {
+        if (this.currentPersonel.rol === 'MARKET_GOREVLISI') {
+            // Market personeli için otomasyon adı ad soyad ile aynı olsun (backend zorunlu kıldığı için)
+            this.currentPersonel.otomasyonAdi = this.currentPersonel.adSoyad;
+        } else if (!this.currentPersonel.otomasyonAdi) {
             this.messageService.add({
                 severity: 'warn',
                 summary: 'Uyarı',
-                detail: 'Otomasyon Adı ve Ad Soyad alanları zorunludur'
+                detail: 'Otomasyon Adı alanı zorunludur'
+            });
+            return;
+        }
+
+        if (!this.currentPersonel.adSoyad) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Uyarı',
+                detail: 'Ad Soyad alanı zorunludur'
             });
             return;
         }
@@ -210,6 +263,17 @@ export class PersonelTanimlamaComponent implements OnInit {
     getRolLabel(rol: string): string {
         const rolObj = this.roller.find(r => r.value === rol);
         return rolObj ? rolObj.label : rol;
+    }
+
+    getRolSeverity(rol: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {
+        switch (rol) {
+            case 'PATRON': return 'danger';
+            case 'VARDIYA_SORUMLUSU': return 'warn';
+            case 'MARKET_SORUMLUSU': return 'warn';
+            case 'MARKET_GOREVLISI': return 'info';
+            case 'POMPACI': return 'success';
+            default: return 'secondary';
+        }
     }
 
     hideDialog(): void {

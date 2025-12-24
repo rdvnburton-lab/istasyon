@@ -1,0 +1,80 @@
+<div class="card">
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">{{ isAdmin ? 'Firma ve İstasyon Yönetimi' : 'İstasyon Yönetimi' }}</h2>
+        <p-button [label]="isAdmin ? 'Yeni Firma Ekle' : 'Yeni İstasyon Ekle'" icon="pi pi-plus"
+            (onClick)="showDialog(false)"></p-button>
+    </div>
+
+    <p-treeTable [value]="istasyonlar" [columns]="cols" selectionMode="single" styleClass="p-treetable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns">
+                    {{col.header}}
+                </th>
+                <th style="width: 8rem">İşlemler</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns; let i = index">
+                    <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
+                    {{rowData[col.field]}}
+                </td>
+                <td>
+                    <div class="flex gap-2">
+                        <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text p-button-warning"
+                            (onClick)="showDialog(true, rowData)"></p-button>
+                        <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger"
+                            (onClick)="deleteIstasyon(rowData)"></p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-treeTable>
+
+    <p-dialog [(visible)]="displayDialog" [header]="dialogHeader" [modal]="true" [style]="{width: '450px'}"
+        styleClass="p-fluid">
+        <div class="field mb-4">
+            <label for="ad" class="block mb-2 font-medium">{{ isAdmin && !selectedParent ? 'Firma Adı' : 'İstasyon Adı'
+                }}</label>
+            <input type="text" pInputText id="ad" [(ngModel)]="istasyonAd" required autofocus />
+        </div>
+        <div class="field mb-4">
+            <label for="adres" class="block mb-2 font-medium">Adres</label>
+            <input type="text" pInputText id="adres" [(ngModel)]="istasyonAdres" />
+        </div>
+
+        <div class="field mb-4" *ngIf="!isAdmin && !isEditMode">
+            <label for="parent" class="block mb-2 font-medium">Bağlı Olduğu Firma</label>
+            <p-select [options]="parentOptions" [(ngModel)]="selectedParent" optionLabel="label" optionValue="value"
+                placeholder="Seçiniz" [disabled]="true"></p-select>
+        </div>
+
+        <div class="field mb-4" *ngIf="isAdmin && !isEditMode">
+            <label for="patron" class="block mb-2 font-medium">Firma Sahibi (Patron)</label>
+            <p-select [options]="patronOptions" [(ngModel)]="selectedPatron" optionLabel="label" optionValue="value"
+                placeholder="Seçiniz" [showClear]="true"></p-select>
+            <small class="block mt-1 text-gray-500">Sadece "patron" rolündeki kullanıcılar listelenir.</small>
+        </div>
+
+        <!-- İstasyon Sorumlusu Seçimi (Sadece İstasyonlar için, Firmalar için değil) -->
+        <!-- Eğer selectedParent varsa veya Patron ekliyorsa (ki patron hep istasyon ekler) -->
+        <div class="field mb-4"
+            *ngIf="selectedParent || (!isAdmin && !isEditMode) || (isEditMode && selectedIstasyon?.parentIstasyonId)">
+            <label for="sorumlu" class="block mb-2 font-medium">İstasyon Sorumlusu</label>
+            <p-select [options]="sorumluOptions" [(ngModel)]="selectedSorumlu" optionLabel="label" optionValue="value"
+                placeholder="Seçiniz" [showClear]="true"></p-select>
+            <small class="block mt-1 text-gray-500">Sadece "vardiya_sorumlusu" rolündeki kullanıcılar
+                listelenir.</small>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <p-button label="İptal" icon="pi pi-times" (onClick)="displayDialog = false"
+                styleClass="p-button-text"></p-button>
+            <p-button label="Kaydet" icon="pi pi-check" (onClick)="saveIstasyon()"></p-button>
+        </ng-template>
+    </p-dialog>
+</div>

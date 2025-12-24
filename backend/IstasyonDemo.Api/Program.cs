@@ -79,16 +79,42 @@ using (var scope = app.Services.CreateScope())
         // Migration dosyalari olmasa bile tablolari sifirdan olusturur
         context.Database.EnsureCreated();
 
-        // Seed Users
-        if (!context.Users.Any())
+        // Seed Default Station
+        if (!context.Istasyonlar.Any())
         {
-            var users = new List<User>
-            {
-                new User { Username = "admin", Role = "admin", PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") },
-                new User { Username = "vardiya", Role = "vardiya sorumlusu", PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") },
-                new User { Username = "patron", Role = "patron", PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") }
-            };
-            context.Users.AddRange(users);
+            context.Istasyonlar.Add(new Istasyon { Ad = "Merkez İstasyon", Adres = "Merkez", Aktif = true });
+            context.SaveChanges();
+        }
+
+        // Seed Users
+        // Admin
+        if (!context.Users.Any(u => u.Username == "admin"))
+        {
+            context.Users.Add(new User { Username = "admin", Role = "admin", PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") });
+            context.SaveChanges();
+        }
+
+        // Vardiya Sorumlusu (Demo)
+        if (!context.Users.Any(u => u.Username == "vardiya"))
+        {
+            context.Users.Add(new User { Username = "vardiya", Role = "vardiya sorumlusu", PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") });
+            context.SaveChanges();
+        }
+
+        // Patron (Demo)
+        if (!context.Users.Any(u => u.Username == "patron"))
+        {
+            context.Users.Add(new User { Username = "patron", Role = "patron", PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") });
+            context.SaveChanges();
+        }
+
+        // Ensure Patron owns Merkez Istasyon
+        var patronUser = context.Users.FirstOrDefault(u => u.Username == "patron");
+        var merkezIstasyon = context.Istasyonlar.FirstOrDefault(u => u.Ad == "Merkez İstasyon");
+
+        if (patronUser != null && merkezIstasyon != null && merkezIstasyon.PatronId == null)
+        {
+            merkezIstasyon.PatronId = patronUser.Id;
             context.SaveChanges();
         }
     }

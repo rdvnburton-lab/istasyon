@@ -1,0 +1,277 @@
+<div class="patron-dashboard p-4">
+    <!-- Header -->
+    <div class="dashboard-header mb-6">
+        <div class="header-content flex justify-between items-center">
+            <div class="header-text">
+                <h1 class="dashboard-title text-2xl font-bold flex items-center gap-2">
+                    <i class="pi pi-chart-bar text-primary"></i>
+                    Patron Dashboard
+                </h1>
+                <p class="dashboard-subtitle text-sm text-surface-500">İşletmenizin gerçek zamanlı performans metrikleri
+                </p>
+            </div>
+            <button pButton pRipple icon="pi pi-refresh" class="p-button-rounded p-button-text refresh-btn"
+                (click)="loadDashboard()" [loading]="loading" pTooltip="Yenile" tooltipPosition="left"></button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" *ngIf="loading">
+        <div *ngFor="let i of [1,2,3,4]">
+            <div class="stat-card">
+                <p-skeleton height="120px"></p-skeleton>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <ng-container *ngIf="!loading && dashboard">
+        <!-- Stat Cards Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="stat-card stat-card-blue">
+                <div class="stat-icon-wrapper">
+                    <i class="pi pi-chart-line stat-icon"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Bugünkü Ciro</span>
+                    <div class="stat-value">
+                        {{ dashboard.ozet.bugunToplamCiro | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                    </div>
+                    <div class="stat-footer flex items-center gap-1">
+                        <i class="pi pi-calendar"></i>
+                        <span>{{ dashboard.ozet.bugunVardiyaSayisi }} vardiya</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-green">
+                <div class="stat-icon-wrapper">
+                    <i class="pi pi-dollar stat-icon"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Aylık Ciro</span>
+                    <div class="stat-value">
+                        {{ dashboard.ozet.buAyToplamCiro | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                    </div>
+                    <div class="stat-footer flex items-center gap-1"
+                        [class.text-green-500]="dashboard.ozet.buyumeOrani >= 0"
+                        [class.text-red-500]="dashboard.ozet.buyumeOrani < 0">
+                        <i class="pi" [ngClass]="dashboard.ozet.buyumeOrani >= 0 ? 'pi-arrow-up' : 'pi-arrow-down'"></i>
+                        <span>{{ dashboard.ozet.buyumeOrani | number:'1.1-1' }}% geçen aya göre</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-orange clickable relative" (click)="navigateToOnayBekleyenler()">
+                <div class="stat-icon-wrapper">
+                    <i class="pi pi-clock stat-icon"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Onay Bekleyenler</span>
+                    <div class="stat-value">
+                        {{ dashboard.onayBekleyenler.toplamSayi }}
+                    </div>
+                    <div class="stat-footer flex items-center gap-1">
+                        <i class="pi pi-info-circle"></i>
+                        <span>{{ dashboard.onayBekleyenler.vardiyaOnayi }} vardiya, {{
+                            dashboard.onayBekleyenler.silmeOnayi }} silme</span>
+                    </div>
+                </div>
+                <div class="click-indicator absolute top-4 right-4">
+                    <i class="pi pi-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-purple">
+                <div class="stat-icon-wrapper">
+                    <i class="pi pi-building stat-icon"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Aktif Kaynaklar</span>
+                    <div class="stat-value">
+                        {{ dashboard.ozet.istasyonSayisi }}
+                    </div>
+                    <div class="stat-footer flex items-center gap-1">
+                        <i class="pi pi-users"></i>
+                        <span>{{ dashboard.ozet.personelSayisi }} personel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
+            <div class="lg:col-span-8">
+                <div class="chart-card h-full">
+                    <div class="chart-header flex justify-between items-start mb-4 pb-4 border-b border-surface-200">
+                        <div>
+                            <h3 class="chart-title text-lg font-bold">Son 7 Gün Ciro Trendi</h3>
+                            <p class="chart-subtitle text-sm text-surface-500">Günlük performans analizi</p>
+                        </div>
+                        <i class="pi pi-chart-line text-2xl text-primary opacity-50"></i>
+                    </div>
+                    <div class="chart-content">
+                        <p-chart type="line" [data]="trendChartData" [options]="trendChartOptions"
+                            height="320px"></p-chart>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4">
+                <div class="chart-card h-full">
+                    <div class="chart-header flex justify-between items-start mb-4 pb-4 border-b border-surface-200">
+                        <div>
+                            <h3 class="chart-title text-lg font-bold">Vardiya Durumları</h3>
+                            <p class="chart-subtitle text-sm text-surface-500">Aylık dağılım</p>
+                        </div>
+                        <i class="pi pi-chart-pie text-2xl text-primary opacity-50"></i>
+                    </div>
+                    <div class="chart-content">
+                        <p-chart type="doughnut" [data]="durumChartData" [options]="durumChartOptions"
+                            height="320px"></p-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+            <div class="info-card">
+                <div
+                    class="info-card-header flex justify-between items-center p-4 bg-surface-50 border-b border-surface-200">
+                    <div class="info-card-title flex items-center gap-2 font-bold">
+                        <i class="pi pi-trophy text-yellow-500"></i>
+                        <span>En Çok Ciro Yapan İstasyonlar</span>
+                    </div>
+                </div>
+                <div class="info-card-content p-4">
+                    <div class="top-station-item flex items-center gap-4 p-3 bg-surface-50 rounded-lg mb-3 last:mb-0"
+                        *ngFor="let istasyon of dashboard.topIstasyonlar; let i = index">
+                        <div class="station-rank w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white shrink-0"
+                            [ngClass]="{
+                            'bg-yellow-500': i === 0,
+                            'bg-slate-400': i === 1,
+                            'bg-amber-700': i === 2,
+                            'bg-primary': i > 2
+                        }">
+                            {{ i + 1 }}
+                        </div>
+                        <div class="station-info flex-1">
+                            <div class="station-name font-semibold">{{ istasyon.istasyonAdi }}</div>
+                            <div class="station-meta flex items-center gap-1 text-sm text-surface-500">
+                                <i class="pi pi-calendar text-xs"></i>
+                                <span>{{ istasyon.vardiyaSayisi }} vardiya</span>
+                            </div>
+                        </div>
+                        <div class="station-revenue font-bold text-primary">
+                            {{ istasyon.toplamCiro | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                        </div>
+                    </div>
+                    <div class="empty-state text-center py-8 text-surface-500"
+                        *ngIf="dashboard.topIstasyonlar.length === 0">
+                        <i class="pi pi-inbox text-4xl mb-2 opacity-50"></i>
+                        <p>Henüz veri bulunmuyor</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div
+                    class="info-card-header flex justify-between items-center p-4 bg-surface-50 border-b border-surface-200">
+                    <div class="info-card-title flex items-center gap-2 font-bold">
+                        <i class="pi pi-history text-primary"></i>
+                        <span>Son İşlemler</span>
+                    </div>
+                    <button pButton pRipple label="Tümünü Gör" class="p-button-text p-button-sm"
+                        (click)="navigateToLoglar()"></button>
+                </div>
+                <div class="info-card-content p-4">
+                    <div class="activity-item flex items-center gap-4 p-3 rounded-lg mb-2 last:mb-0 hover:bg-surface-50 transition-colors"
+                        *ngFor="let islem of dashboard.sonIslemler">
+                        <div class="activity-icon w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-white"
+                            [ngClass]="{
+                            'bg-green-500': getIslemClass(islem.islem) === 'success',
+                            'bg-red-500': getIslemClass(islem.islem) === 'danger',
+                            'bg-blue-500': getIslemClass(islem.islem) === 'info',
+                            'bg-yellow-500': getIslemClass(islem.islem) === 'warning'
+                        }">
+                            <i class="pi" [ngClass]="getIslemIcon(islem.islem)"></i>
+                        </div>
+                        <div class="activity-info flex-1 min-w-0">
+                            <div class="activity-title font-semibold truncate">{{ islem.vardiyaDosyaAdi }}</div>
+                            <div class="activity-meta flex items-center gap-2 text-sm text-surface-500">
+                                <span class="truncate">{{ islem.istasyonAdi }}</span>
+                                <span class="opacity-50">•</span>
+                                <span class="truncate">{{ islem.kullaniciAdi }}</span>
+                            </div>
+                        </div>
+                        <div class="activity-time text-xs text-surface-400 whitespace-nowrap">
+                            {{ islem.islemTarihi | date:'dd.MM HH:mm' }}
+                        </div>
+                    </div>
+                    <div class="empty-state text-center py-8 text-surface-500"
+                        *ngIf="dashboard.sonIslemler.length === 0">
+                        <i class="pi pi-inbox text-4xl mb-2 opacity-50"></i>
+                        <p>Henüz işlem bulunmuyor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Approvals Table -->
+        <div class="grid grid-cols-1 gap-4" *ngIf="dashboard.onayBekleyenler.liste.length > 0">
+            <div class="col-span-1">
+                <div class="table-card bg-surface-card rounded-lg shadow-sm overflow-hidden">
+                    <div
+                        class="table-card-header flex justify-between items-center p-4 bg-surface-50 border-b border-surface-200">
+                        <div class="table-card-title flex items-center gap-2 font-bold">
+                            <i class="pi pi-exclamation-circle text-yellow-500"></i>
+                            <span>Acil Onay Bekleyenler</span>
+                        </div>
+                        <p-tag [value]="dashboard.onayBekleyenler.toplamSayi.toString()" severity="warning"
+                            [rounded]="true"></p-tag>
+                    </div>
+                    <div class="p-4">
+                        <p-table [value]="dashboard.onayBekleyenler.liste" styleClass="p-datatable-sm"
+                            [paginator]="false">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Dosya Adı</th>
+                                    <th>İstasyon</th>
+                                    <th>Durum</th>
+                                    <th>Tutar</th>
+                                    <th>Tarih</th>
+                                    <th style="width: 80px"></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-vardiya>
+                                <tr class="hover:bg-surface-50 transition-colors">
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <i class="pi pi-file-pdf text-red-500"></i>
+                                            <span>{{ vardiya.dosyaAdi }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ vardiya.istasyonAdi }}</td>
+                                    <td>
+                                        <p-tag [value]="getDurumLabel(vardiya.durum)"
+                                            [severity]="getDurumSeverity(vardiya.durum)"></p-tag>
+                                    </td>
+                                    <td class="font-bold">{{ vardiya.genelToplam |
+                                        currency:'TRY':'symbol-narrow':'1.0-0' }}
+                                    </td>
+                                    <td>{{ vardiya.olusturmaTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
+                                    <td>
+                                        <button pButton pRipple icon="pi pi-arrow-right"
+                                            class="p-button-rounded p-button-text p-button-sm"
+                                            (click)="navigateToOnayBekleyenler()" pTooltip="İncele"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

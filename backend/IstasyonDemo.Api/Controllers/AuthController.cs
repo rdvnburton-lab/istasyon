@@ -1,6 +1,7 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,6 +45,59 @@ namespace IstasyonDemo.Api.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Kullanıcı başarıyla oluşturuldu." });
+        }
+
+        [HttpPost("create-user")]
+        [Authorize(Roles = "admin,patron")]
+        public async Task<ActionResult<User>> CreateUser(CreateUserDto request)
+        {
+            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
+            {
+                return BadRequest("Kullanıcı adı zaten mevcut.");
+            }
+
+            // Role validation
+            if (currentUserRole == "patron")
+            {
+                if (request.Role == "admin" || request.Role == "patron")
+                {
+                    return Forbid("Patronlar sadece çalışan hesabı oluşturabilir.");
+                }
+
+                // Station validation
+                if (request.IstasyonId.HasValue)
+                {
+                    var istasyon = await _context.Istasyonlar.FindAsync(request.IstasyonId.Value);
+                    if (istasyon == null || istasyon.PatronId != currentUserId)
+                    {
+                        return BadRequest("Geçersiz istasyon. Bu istasyonun sahibi değilsiniz.");
+                    }
+                }
+                else
+                {
+                    return BadRequest("İstasyon ID zorunludur.");
+                }
+            }
+
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            var user = new User
+            {
+                Username = request.Username,
+                PasswordHash = passwordHash,
+                Role = request.Role,
+                IstasyonId = request.IstasyonId,
+                AdSoyad = request.AdSoyad,
+                Telefon = request.Telefon
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Kullanıcı başarıyla oluşturuldu.", userId = user.Id });
         }
 
         [HttpPost("login")]
@@ -98,7 +152,7 @@ namespace IstasyonDemo.Api.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds
             );
 

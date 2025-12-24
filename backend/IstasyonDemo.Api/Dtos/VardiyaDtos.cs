@@ -51,4 +51,9 @@ namespace IstasyonDemo.Api.Dtos
         public string OnaylayanAdi { get; set; } = string.Empty;
         public string RedNedeni { get; set; } = string.Empty;
     }
+
+    public class SilmeTalebiDto
+    {
+        public string Nedeni { get; set; } = string.Empty;
+    }
 }

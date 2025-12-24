@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
@@ -11,14 +12,16 @@ import { TooltipModule } from 'primeng/tooltip';
 import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { TabsModule } from 'primeng/tabs';
 
 import { MessageService } from 'primeng/api';
 
 import { VardiyaService } from '../../services/vardiya.service';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { TxtParserService, ParseSonuc } from '../../services/txt-parser.service';
-import { VardiyaDurum, OtomasyonSatis, Vardiya } from '../../models/vardiya.model';
+import { VardiyaDurum, OtomasyonSatis, Vardiya, PersonelFarkAnalizi, MarketOzet, GenelOzet, VardiyaOzet, FarkDurum } from '../../models/vardiya.model';
 import { DbService } from '../../services/db.service';
+import { AuthService } from '../../../../services/auth.service';
 
 interface YuklenenVardiya {
     id: number;
@@ -39,6 +42,7 @@ interface YuklenenVardiya {
     standalone: true,
     imports: [
         CommonModule,
+        FormsModule,
         RouterModule,
         ButtonModule,
         CardModule,
@@ -48,7 +52,8 @@ interface YuklenenVardiya {
         TooltipModule,
         FileUploadModule,
         DialogModule,
-        ProgressBarModule
+        ProgressBarModule,
+        TabsModule
     ],
     providers: [MessageService],
     templateUrl: './vardiya-listesi.component.html',
@@ -75,16 +80,40 @@ export class VardiyaListesi implements OnInit {
         benzersizPersonelSayisi: 0
     };
 
+    // Silme Talebi Dialog
+    silmeTalebiDialogVisible = false;
+    secilenVardiya: YuklenenVardiya | null = null;
+    silmeNedeni = '';
+    userRole: string | null = null;
+
+    // Detay Modalı İçin
+    detayVisible = false;
+    seciliVardiyaDetay: any = null;
+    genelOzet: GenelOzet | null = null;
+    farkAnalizi: PersonelFarkAnalizi[] = [];
+    marketOzet: MarketOzet | null = null;
+    vardiyaOzet: VardiyaOzet | null = null;
+    activeTab = '0';
+    pusulaKrediKartiDetaylari: any[] = [];
+    toplamKrediKarti = 0;
+    pompaciSatisTutar = 0;
+    pompaciNakitToplam = 0;
+    pompaFark = 0;
+    pompaFarkDurumRenk: 'success' | 'warn' | 'danger' = 'success';
+    Math = Math;
+
     constructor(
         private vardiyaService: VardiyaService,
         private vardiyaApiService: VardiyaApiService,
         private txtParser: TxtParserService,
         private messageService: MessageService,
         private router: Router,
-        private dbService: DbService
+        private dbService: DbService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
+        this.userRole = this.authService.getCurrentUser()?.role || null;
         this.vardiyalariYukle();
     }
 
@@ -106,10 +135,14 @@ export class VardiyaListesi implements OnInit {
                     durum: (v.durum === 'ACIK' || v.durum === 0) ? VardiyaDurum.ACIK :
                         (v.durum === 'ONAY_BEKLIYOR' || v.durum === 1) ? VardiyaDurum.ONAY_BEKLIYOR :
                             (v.durum === 'ONAYLANDI' || v.durum === 2) ? VardiyaDurum.ONAYLANDI :
-                                (v.durum === 'REDDEDILDI' || v.durum === 3) ? VardiyaDurum.REDDEDILDI : VardiyaDurum.ACIK,
+                                (v.durum === 'REDDEDILDI' || v.durum === 3) ? VardiyaDurum.REDDEDILDI :
+                                    (v.durum === 'SILINME_ONAYI_BEKLIYOR' || v.durum === 4) ? VardiyaDurum.SILINME_ONAYI_BEKLIYOR :
+                                        (v.durum === 'SILINDI' || v.durum === 5) ? VardiyaDurum.SILINDI : VardiyaDurum.ACIK,
                     redNedeni: '',
                     satislar: []
-                }));
+                }))
+                    // Silinmiş vardiyaları listeden çıkar
+                    .filter((v: YuklenenVardiya) => v.durum !== VardiyaDurum.SILINDI);
             },
             error: (err) => {
                 console.error('Vardiyalar yüklenirken hata:', err);
@@ -313,21 +346,45 @@ export class VardiyaListesi implements OnInit {
     }
 
     vardiyaSil(vardiya: YuklenenVardiya): void {
-        this.vardiyaApiService.deleteVardiya(vardiya.id).subscribe({
-            next: () => {
+        this.secilenVardiya = vardiya;
+        this.silmeNedeni = '';
+        this.silmeTalebiDialogVisible = true;
+    }
+
+    silmeTalebiDialogKapat(): void {
+        this.silmeTalebiDialogVisible = false;
+        this.secilenVardiya = null;
+        this.silmeNedeni = '';
+    }
+
+    silmeTalebiGonder(): void {
+        if (!this.secilenVardiya || !this.silmeNedeni || this.silmeNedeni.trim().length < 10) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Uyarı',
+                detail: 'Lütfen en az 10 karakter uzunluğunda bir silme nedeni giriniz.'
+            });
+            return;
+        }
+
+        this.vardiyaApiService.vardiyaSilmeTalebi(this.secilenVardiya.id, this.silmeNedeni).subscribe({
+            next: (response: any) => {
+                const message = response?.message || 'Silme talebi gönderildi';
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Silindi',
-                    detail: 'Vardiya verisi silindi'
+                    summary: 'Başarılı',
+                    detail: message
                 });
+                this.silmeTalebiDialogKapat();
                 this.vardiyalariYukle();
             },
             error: (err) => {
-                console.error('Silme hatası:', err);
+                console.error('Silme talebi hatası:', err);
+                const errorMsg = err.error?.message || 'Silme talebi gönderilemedi';
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Hata',
-                    detail: 'Silme işlemi başarısız oldu'
+                    detail: errorMsg
                 });
             }
         });
@@ -340,6 +397,81 @@ export class VardiyaListesi implements OnInit {
     mutabakatYap(vardiya: YuklenenVardiya): void {
         console.log('Mutabakat başlatılıyor, vardiya ID:', vardiya.id);
         this.router.navigate(['/vardiya/pompa', vardiya.id]);
+    }
+
+    incele(vardiya: YuklenenVardiya): void {
+        if (this.yukleniyor) return;
+
+        this.yukleniyor = true;
+        this.seciliVardiyaDetay = vardiya;
+        this.messageService.add({ severity: 'info', summary: 'Lütfen Bekleyiniz', detail: 'Vardiya detayları yükleniyor...', life: 2000 });
+
+        this.vardiyaApiService.getOnayDetay(vardiya.id).subscribe({
+            next: (data) => {
+                // 1. Genel Özet
+                this.genelOzet = {
+                    pompaToplam: data.genelOzet.pompaToplam,
+                    marketToplam: data.genelOzet.marketToplam,
+                    genelToplam: data.genelOzet.genelToplam,
+                    toplamNakit: data.genelOzet.toplamNakit,
+                    toplamKrediKarti: data.genelOzet.toplamKrediKarti,
+                    toplamParoPuan: data.genelOzet.toplamParoPuan,
+                    toplamMobilOdeme: data.genelOzet.toplamMobilOdeme,
+                    toplamGider: 0,
+                    toplamFark: data.genelOzet.toplamFark,
+                    durumRenk: data.genelOzet.durumRenk
+                };
+
+                // 2. Fark Analizi
+                this.farkAnalizi = (data.farkAnalizi || []).map((item: any) => ({
+                    personelId: item.personelId,
+                    personelAdi: item.personelAdi,
+                    otomasyonToplam: item.otomasyonToplam,
+                    pusulaToplam: item.pusulaToplam,
+                    fark: item.fark,
+                    farkDurum: item.farkDurum === 'UYUMLU' ? FarkDurum.UYUMLU :
+                        (item.farkDurum === 'ACIK' ? FarkDurum.ACIK : FarkDurum.FAZLA),
+                    pusulaDokum: item.pusulaDokum || { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0 }
+                }));
+
+                // 3. İstatistikler
+                this.pompaciNakitToplam = this.farkAnalizi.reduce((sum, item) => sum + (item.pusulaDokum?.nakit || 0), 0);
+                this.pompaciSatisTutar = this.farkAnalizi
+                    .filter(item => item.personelAdi?.toUpperCase() !== 'OTOMASYON')
+                    .reduce((sum, item) => sum + (item.otomasyonToplam || 0), 0);
+                this.pompaFark = data.genelOzet.toplamFark;
+
+                if (Math.abs(this.pompaFark) < 10) {
+                    this.pompaFarkDurumRenk = 'success';
+                } else if (this.pompaFark < 0) {
+                    this.pompaFarkDurumRenk = 'danger';
+                } else {
+                    this.pompaFarkDurumRenk = 'warn';
+                }
+
+                // 4. Kredi Kartı Detayları
+                this.pusulaKrediKartiDetaylari = (data.krediKartiDetaylari || []).map((item: any) => ({
+                    banka: item.banka,
+                    tutar: item.tutar,
+                    isSpecial: item.banka === 'Paro Puan' || item.banka === 'Mobil Ödeme',
+                    showSeparator: false
+                }));
+
+                this.toplamKrediKarti = data.genelOzet.toplamKrediKarti + data.genelOzet.toplamParoPuan + data.genelOzet.toplamMobilOdeme;
+
+                this.yukleniyor = false;
+                this.detayVisible = true;
+            },
+            error: (err) => {
+                this.yukleniyor = false;
+                console.error('Detay yüklenemedi:', err);
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Vardiya detayları yüklenemedi.' });
+            }
+        });
+    }
+
+    openKrediKartiDetay() {
+        this.activeTab = '1';
     }
 
     getMutabakatBekleyenSayisi(): number {
@@ -357,7 +489,9 @@ export class VardiyaListesi implements OnInit {
             [VardiyaDurum.ACIK]: 'Mutabakat Bekliyor',
             [VardiyaDurum.ONAY_BEKLIYOR]: 'Onay Bekliyor',
             [VardiyaDurum.ONAYLANDI]: 'Tamamlandı',
-            [VardiyaDurum.REDDEDILDI]: 'Reddedildi'
+            [VardiyaDurum.REDDEDILDI]: 'Reddedildi',
+            [VardiyaDurum.SILINME_ONAYI_BEKLIYOR]: 'Silinme Onayı Bekliyor',
+            [VardiyaDurum.SILINDI]: 'Silindi'
         };
         return labels[durum];
     }
@@ -367,7 +501,9 @@ export class VardiyaListesi implements OnInit {
             [VardiyaDurum.ACIK]: 'warn',
             [VardiyaDurum.ONAY_BEKLIYOR]: 'info',
             [VardiyaDurum.ONAYLANDI]: 'success',
-            [VardiyaDurum.REDDEDILDI]: 'danger'
+            [VardiyaDurum.REDDEDILDI]: 'danger',
+            [VardiyaDurum.SILINME_ONAYI_BEKLIYOR]: 'danger',
+            [VardiyaDurum.SILINDI]: 'secondary'
         };
         return severities[durum];
     }

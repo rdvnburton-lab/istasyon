@@ -25,7 +25,7 @@
     <div class="col-span-12">
         <div class="card">
             <p-table [value]="personeller" [loading]="loading" [paginator]="personeller.length > 10" [rows]="10"
-                styleClass="p-datatable-striped" [globalFilterFields]="['otomasyonAdi', 'adSoyad', 'keyId']" #dt>
+                styleClass="p-datatable-striped" [globalFilterFields]="filterFields" #dt>
 
                 <ng-template pTemplate="caption">
                     <div class="flex justify-between items-center">
@@ -40,9 +40,10 @@
 
                 <ng-template pTemplate="header">
                     <tr class="text-sm">
-                        <th>Otomasyon Adı</th>
+                        <th *ngIf="!isMarketSorumlusu">Otomasyon Adı</th>
                         <th>Ad Soyad</th>
-                        <th>Key ID</th>
+                        <th>Telefon</th>
+                        <th *ngIf="!isMarketSorumlusu">Key ID</th>
                         <th class="text-center">Rol</th>
                         <th class="text-center">Durum</th>
                         <th class="text-center">İşlemler</th>
@@ -51,8 +52,8 @@
 
                 <ng-template pTemplate="body" let-personel>
                     <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td>
-                            <div class="flex items-center gap-3">
+                        <td *ngIf="!isMarketSorumlusu">
+                            <div class="flex items-center gap-3" *ngIf="personel.rol !== 'MARKET_GOREVLISI'">
                                 <div class="w-10 h-10 rounded-full flex items-center justify-center"
                                     [style.background]="'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)'">
                                     <span class="text-white font-bold text-sm">{{ personel.otomasyonAdi.substring(0,
@@ -61,17 +62,22 @@
                                 <span class="font-bold text-surface-800 dark:text-surface-100">{{ personel.otomasyonAdi
                                     }}</span>
                             </div>
+                            <span *ngIf="personel.rol === 'MARKET_GOREVLISI'" class="text-surface-400 italic">N/A</span>
                         </td>
                         <td>
                             <span class="text-surface-800 dark:text-surface-100">{{ personel.adSoyad }}</span>
                         </td>
                         <td>
-                            <span class="text-surface-600 dark:text-surface-400 font-mono">{{ personel.keyId || '-'
+                            <span class="text-surface-800 dark:text-surface-100">{{ personel.telefon || '-' }}</span>
+                        </td>
+                        <td *ngIf="!isMarketSorumlusu">
+                            <span class="text-surface-600 dark:text-surface-400 font-mono"
+                                *ngIf="personel.rol !== 'MARKET_GOREVLISI'">{{ personel.keyId || '-'
                                 }}</span>
+                            <span *ngIf="personel.rol === 'MARKET_GOREVLISI'" class="text-surface-400 italic">N/A</span>
                         </td>
                         <td class="text-center">
-                            <p-tag [value]="getRolLabel(personel.rol)"
-                                [severity]="personel.rol === 'PATRON' ? 'danger' : personel.rol === 'VARDIYA_SORUMLUSU' ? 'warning' : personel.rol === 'MARKET_GOREVLISI' ? 'info' : 'success'">
+                            <p-tag [value]="getRolLabel(personel.rol)" [severity]="getRolSeverity(personel.rol)">
                             </p-tag>
                         </td>
                         <td class="text-center">
@@ -97,7 +103,7 @@
 
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6" class="text-center py-12">
+                        <td colspan="7" class="text-center py-12">
                             <div class="flex flex-col items-center">
                                 <div
                                     class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
@@ -121,7 +127,7 @@
     [style]="{width: '500px'}">
 
     <div class="flex flex-col gap-4">
-        <div>
+        <div *ngIf="currentPersonel.rol !== 'MARKET_GOREVLISI'">
             <label for="otomasyonAdi" class="block text-sm font-medium mb-2">Otomasyon Adı <span
                     class="text-red-500">*</span></label>
             <input pInputText id="otomasyonAdi" [(ngModel)]="currentPersonel.otomasyonAdi" class="w-full"
@@ -142,6 +148,12 @@
         </div>
 
         <div>
+            <label for="telefon" class="block text-sm font-medium mb-2">Telefon</label>
+            <input pInputText id="telefon" [(ngModel)]="currentPersonel.telefon" class="w-full"
+                placeholder="İletişim numarası" [disabled]="loading" />
+        </div>
+
+        <div *ngIf="currentPersonel.rol !== 'MARKET_GOREVLISI'">
             <label for="keyId" class="block text-sm font-medium mb-2">Key ID</label>
             <input pInputText id="keyId" [(ngModel)]="currentPersonel.keyId" class="w-full"
                 placeholder="Otomasyon Key ID (opsiyonel)" [disabled]="loading" />

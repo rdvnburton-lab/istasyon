@@ -23,10 +23,12 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { VardiyaService } from '../../services/vardiya.service';
+import { MarketApiService } from '../../services/market-api.service';
 import {
     Vardiya, // Re-added
     MarketVardiya,
     MarketVardiyaPersonel,
+    PersonelRol,
     MarketZRaporu,
     MarketTahsilat,
     MarketGider,
@@ -35,6 +37,8 @@ import {
     GelirTuru,
     MarketOzet
 } from '../../models/vardiya.model';
+import { PersonelApiService, Personel } from '../../../../services/personel-api.service';
+import { AuthService, User } from '../../../../services/auth.service';
 
 @Component({
     selector: 'app-market-yonetimi',
@@ -83,6 +87,11 @@ export class MarketYonetimi implements OnInit, OnDestroy {
 
     marketPersonelleri: { label: string; value: number }[] = [];
 
+    currentUser: User | null = null;
+    redDialogVisible: boolean = false;
+    redNedeni: string = '';
+    reddedilecekVardiyaId: number | null = null;
+
     mutabakatBaslat(): void {
         if (!this.secilenTarih) {
             this.messageService.add({
@@ -108,12 +117,14 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             acceptLabel: 'Evet, Gönder',
             rejectLabel: 'Vazgeç',
             accept: () => {
-                this.vardiyaService.marketVardiyaOnayaGonder(vardiya.id).then(() => {
-                    this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Mutabakat onaya gönderildi' });
-                    // Durumu manuel güncelle veya listeyi dinle
-                    // List subscription handles update
-                }).catch((err: any) => {
-                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'İşlem sırasında bir hata oluştu' });
+                this.marketApiService.onayaGonder(vardiya.id).subscribe({
+                    next: () => {
+                        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Mutabakat onaya gönderildi' });
+                        this.loadMarketVardiyalar();
+                    },
+                    error: (err) => {
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'İşlem sırasında bir hata oluştu' });
+                    }
                 });
             }
         });
@@ -141,35 +152,39 @@ export class MarketYonetimi implements OnInit, OnDestroy {
 
     constructor(
         private vardiyaService: VardiyaService,
+        private marketApiService: MarketApiService,
+        private personelApiService: PersonelApiService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
-        private router: Router
+        private router: Router,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
         this.giderTurleri = this.vardiyaService.getGiderTurleri();
         this.gelirTurleri = this.vardiyaService.getGelirTurleri();
 
-        // Market personellerini yükle
-        this.vardiyaService.getMarketPersonelleri().subscribe(personeller => {
-            this.marketPersonelleri = personeller;
+        this.authService.currentUser$.subscribe(user => {
+            this.currentUser = user;
         });
 
-        // Market vardiyalarını dinle
-        this.subscriptions.add(
-            this.vardiyaService.getMarketVardiyalar().subscribe(list => {
-                this.marketVardiyalar = list;
-            })
-        );
+        // Market personellerini yükle (API üzerinden)
+        this.personelApiService.getAll().subscribe((personeller: Personel[]) => {
+            this.marketPersonelleri = personeller
+                .filter((p: Personel) => p.rol === 'MARKET_GOREVLISI' || p.rol === 'MARKET_SORUMLUSU')
+                .map((p: Personel) => ({
+                    label: p.adSoyad,
+                    value: p.id!
+                }));
+        });
 
-        this.subscriptions.add(
-            this.vardiyaService.getMarketGelirler(0).subscribe(list => { // Initial empty or dummy
-                this.gelirler = list;
-            })
-        );
+        this.loadMarketVardiyalar();
+    }
 
-        // Diğer abonelikleri şimdilik pasife alıyoruz veya seçili vardiyaya göre tekrar aktif edeceğiz
-        // Mevcut yapıyı korumak için, seciliMarketVardiya değiştiğinde bu verileri güncelleyeceğiz
+    loadMarketVardiyalar(): void {
+        this.marketApiService.getMarketVardiyalar().subscribe(list => {
+            this.marketVardiyalar = list;
+        });
     }
 
     listeyeDon(): void {
@@ -193,32 +208,26 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             return;
         }
 
-        // Aynı tarih kontrolü
-        const secilenTarih = new Date(this.yeniVardiyaForm.tarih);
-        secilenTarih.setHours(0, 0, 0, 0);
-
-        const mevcutVardiya = this.marketVardiyalar.find(v => {
-            const vTarih = new Date(v.tarih);
-            vTarih.setHours(0, 0, 0, 0);
-            return vTarih.getTime() === secilenTarih.getTime();
-        });
-
-        if (mevcutVardiya) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Kayıt Mevcut',
-                detail: 'Bu tarih için zaten bir vardiya kaydı bulunmaktadır.'
-            });
+        // Aynı tarihte vardiya var mı kontrol et
+        const secilenTarihStr = this.yeniVardiyaForm.tarih.toDateString();
+        const mevcut = this.marketVardiyalar.some(v => new Date(v.tarih).toDateString() === secilenTarihStr);
+        if (mevcut) {
+            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bu tarih için zaten bir vardiya mevcut!' });
             return;
         }
 
-        this.vardiyaService.marketVardiyaBaslat({
+        this.marketApiService.createMarketVardiya({
             tarih: this.yeniVardiyaForm.tarih
-        }).subscribe(yeniVardiya => {
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Yeni market vardiyası oluşturuldu' });
-            this.yeniVardiyaForm = { tarih: new Date() };
+        }).subscribe({
+            next: (response) => {
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Yeni market vardiyası oluşturuldu' });
+                this.loadMarketVardiyalar();
+                this.yeniVardiyaForm = { tarih: new Date() };
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: err.error?.message || 'Vardiya oluşturulamadı' });
+            }
         });
-        this.zRaporu = null;
     }
 
     isVardiyaSecili(vardiya: any): boolean {
@@ -226,28 +235,27 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     }
 
     vardiyaSec(vardiya: MarketVardiya): void {
-        this.seciliMarketVardiya = vardiya;
-        this.secilenTarih = new Date(vardiya.tarih);
+        this.marketApiService.getMarketVardiyaDetay(vardiya.id).subscribe(data => {
+            this.seciliMarketVardiya = data;
+            this.secilenTarih = new Date(data.tarih);
 
-        // Personel Listesini veritabanından çek
-        // this.getMarketVardiyaPersonelList(vardiya.id); // Assuming this method will be added later or is a placeholder
+            this.yonetilenPersoneller = data.tahsilatlar.map((t: any) => ({
+                id: t.id,
+                vardiyaId: t.marketVardiyaId,
+                personelId: t.personelId,
+                personelAdi: t.personel?.adSoyad || t.personel?.otomasyonAdi || 'Bilinmiyor',
+                sistemSatisTutari: t.sistemSatisTutari || 0,
+                nakit: t.nakit,
+                krediKarti: t.krediKarti,
+                gider: 0,
+                toplamTeslimat: t.toplam,
+                fark: (t.sistemSatisTutari || 0) - t.toplam,
+                olusturmaTarihi: t.olusturmaTarihi
+            }));
 
-        // Z Raporunu veritabanından çek
-        // this.getMarketZRaporu(vardiya.id); // Assuming this method will be added later or is a placeholder
-
-        // Giderleri çek
-        // this.getMarketGiderleri(vardiya.id); // Assuming this method will be added later or is a placeholder
-
-        // Original logic for loading data, kept for now as helper methods are not defined
-        // Personel listesini yükle
-        this.vardiyaService.getMarketVardiyaPersonelList(vardiya.id).subscribe(
-            list => this.yonetilenPersoneller = list
-        );
-
-        // Z Raporunu yükle
-        this.vardiyaService.getMarketZRaporu(vardiya.id).subscribe(z => {
-            this.zRaporu = z;
-            if (z) {
+            if (data.zRaporlari && data.zRaporlari.length > 0) {
+                const z = data.zRaporlari[0];
+                this.zRaporu = z;
                 this.zRaporuForm = {
                     genelToplam: z.genelToplam,
                     kdv0: z.kdv0,
@@ -256,26 +264,41 @@ export class MarketYonetimi implements OnInit, OnDestroy {
                     kdv20: z.kdv20
                 };
             } else {
+                this.zRaporu = null;
                 this.zRaporuForm = { genelToplam: 0, kdv0: 0, kdv1: 0, kdv10: 0, kdv20: 0 };
             }
+
+            this.giderler = data.giderler;
+            this.gelirler = data.gelirler;
+
+            this.marketOzet = {
+                zRaporuToplam: data.toplamSatisTutari,
+                tahsilatToplam: data.tahsilatlar.reduce((sum: number, t: any) => sum + t.toplam, 0),
+                giderToplam: data.giderler.reduce((sum: number, g: any) => sum + g.tutar, 0),
+                gelirToplam: data.gelirler.reduce((sum: number, g: any) => sum + g.tutar, 0),
+                netKasa: data.toplamTeslimatTutari,
+                fark: data.toplamFark,
+                tahsilatNakit: data.tahsilatlar.reduce((sum: number, t: any) => sum + t.nakit, 0),
+                tahsilatKrediKarti: data.tahsilatlar.reduce((sum: number, t: any) => sum + t.krediKarti, 0),
+                tahsilatParoPuan: data.tahsilatlar.reduce((sum: number, t: any) => sum + t.paroPuan, 0),
+                kdvDokum: {
+                    kdv0: this.zRaporu?.kdv0 || 0,
+                    kdv1: this.zRaporu?.kdv1 || 0,
+                    kdv10: this.zRaporu?.kdv10 || 0,
+                    kdv20: this.zRaporu?.kdv20 || 0,
+                    toplam: (this.zRaporu?.kdv0 || 0) + (this.zRaporu?.kdv1 || 0) + (this.zRaporu?.kdv10 || 0) + (this.zRaporu?.kdv20 || 0)
+                }
+            };
+
+            this.messageService.add({ severity: 'info', summary: 'Seçildi', detail: 'Vardiya detayları yüklendi' });
+
+            setTimeout(() => {
+                const element = document.getElementById('detay-formu');
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
         });
-
-        // Gelirleri dinle/yükle
-        this.subscriptions.add(
-            this.vardiyaService.getMarketGelirler(vardiya.id).subscribe(list => {
-                this.gelirler = list;
-            })
-        );
-
-        this.messageService.add({ severity: 'info', summary: 'Seçildi', detail: 'Vardiya detayları görüntülüyor' });
-
-        // Alt forma scroll ol
-        setTimeout(() => {
-            const element = document.getElementById('detay-formu');
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 100);
     }
 
     ngOnDestroy(): void {
@@ -339,18 +362,21 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     zRaporuKaydet(): void {
         if (!this.seciliMarketVardiya) return;
 
-        this.vardiyaService.marketZRaporuKaydet({
-            vardiyaId: this.seciliMarketVardiya.id,
-            tarih: this.secilenTarih,
+        const data = {
             genelToplam: this.zRaporuForm.genelToplam,
             kdv0: this.zRaporuForm.kdv0,
             kdv1: this.zRaporuForm.kdv1,
             kdv10: this.zRaporuForm.kdv10,
-            kdv20: this.zRaporuForm.kdv20
-        }).subscribe(z => {
+            kdv20: this.zRaporuForm.kdv20,
+            kdvToplam: this.getKdvToplam(),
+            kdvHaricToplam: this.getKdvHaric()
+        };
+
+        this.marketApiService.saveZRaporu(this.seciliMarketVardiya.id, data).subscribe(z => {
             this.zRaporu = z;
             this.zRaporuDialogVisible = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Z Raporu güncellendi' });
+            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
     }
 
@@ -361,19 +387,18 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             return;
         }
 
-        const personel = this.marketPersonelleri.find(p => p.value === this.personelIslemForm.personelId);
-
-        this.vardiyaService.marketPersonelIslemKaydet({
-            vardiyaId: this.seciliMarketVardiya.id,
+        const data = {
             personelId: this.personelIslemForm.personelId,
-            personelAdi: personel?.label || 'Bilinmiyor',
             sistemSatisTutari: this.personelIslemForm.sistemSatisTutari,
             nakit: this.personelIslemForm.nakit,
             krediKarti: this.personelIslemForm.krediKarti,
-            gider: this.personelIslemForm.gider
-        }).subscribe(() => {
+            paroPuan: 0, // Şimdilik 0
+            toplam: this.getPersonelIslemToplam(),
+            aciklama: ''
+        };
+
+        this.marketApiService.saveTahsilat(this.seciliMarketVardiya.id, data).subscribe(() => {
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Personel verisi kaydedildi' });
-            // Formu sıfırla veya yeni kayıt için hazırla
             this.personelIslemForm = {
                 personelId: null,
                 sistemSatisTutari: 0,
@@ -381,6 +406,7 @@ export class MarketYonetimi implements OnInit, OnDestroy {
                 krediKarti: 0,
                 gider: 0
             };
+            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
     }
 
@@ -412,21 +438,21 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     giderEkle(): void {
         if (!this.giderForm.giderTuru || !this.giderForm.tutar || !this.seciliMarketVardiya) return;
 
-        this.vardiyaService.marketGiderEkle({
-            vardiyaId: this.seciliMarketVardiya.id,
-            tarih: this.secilenTarih,
+        this.marketApiService.addGider(this.seciliMarketVardiya.id, {
             giderTuru: this.giderForm.giderTuru,
             tutar: this.giderForm.tutar,
             aciklama: this.giderForm.aciklama || this.getGiderTuruLabel(this.giderForm.giderTuru)
         }).subscribe(() => {
             this.giderDialogVisible = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider eklendi' });
+            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
     }
 
     giderSil(giderId: number): void {
-        this.vardiyaService.marketGiderSil(giderId).subscribe(() => {
+        this.marketApiService.deleteGider(giderId).subscribe(() => {
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider silindi' });
+            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
     }
 
@@ -444,21 +470,21 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     gelirEkle(): void {
         if (!this.gelirForm.gelirTuru || !this.gelirForm.tutar || !this.seciliMarketVardiya) return;
 
-        this.vardiyaService.marketGelirEkle({
-            vardiyaId: this.seciliMarketVardiya.id,
-            tarih: this.secilenTarih,
+        this.marketApiService.addGelir(this.seciliMarketVardiya.id, {
             gelirTuru: this.gelirForm.gelirTuru,
             tutar: this.gelirForm.tutar,
             aciklama: this.gelirForm.aciklama || this.getGelirTuruLabel(this.gelirForm.gelirTuru)
         }).subscribe(() => {
             this.gelirDialogVisible = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir eklendi' });
+            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
     }
 
     gelirSil(gelirId: number): void {
-        this.vardiyaService.marketGelirSil(gelirId).subscribe(() => {
+        this.marketApiService.deleteGelir(gelirId).subscribe(() => {
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir silindi' });
+            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
     }
 
@@ -469,6 +495,30 @@ export class MarketYonetimi implements OnInit, OnDestroy {
 
     getGelirToplam(): number {
         return this.gelirler.reduce((sum, g) => sum + g.tutar, 0);
+    }
+
+    getDurumLabel(durum: string): string {
+        switch (durum) {
+            case 'ACIK': return 'Açık';
+            case 'ONAY_BEKLIYOR': return 'Onay Bekliyor';
+            case 'ONAYLANDI': return 'Onaylandı';
+            case 'REDDEDILDI': return 'Reddedildi';
+            case 'SILINME_ONAYI_BEKLIYOR': return 'Silinme Onayı Bekliyor';
+            case 'SILINDI': return 'Silindi';
+            default: return durum;
+        }
+    }
+
+    getDurumSeverity(durum: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
+        switch (durum) {
+            case 'ACIK': return 'info';
+            case 'ONAY_BEKLIYOR': return 'warn';
+            case 'ONAYLANDI': return 'success';
+            case 'REDDEDILDI': return 'danger';
+            case 'SILINME_ONAYI_BEKLIYOR': return 'warn';
+            case 'SILINDI': return 'danger';
+            default: return 'secondary';
+        }
     }
 
     getFarkCardClass(): string {
@@ -512,5 +562,51 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             return 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
         }
         return 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)';
+    }
+
+    // Onay İşlemleri
+    onayla(vardiya: MarketVardiya): void {
+        this.confirmationService.confirm({
+            message: 'Bu vardiyayı onaylamak istediğinize emin misiniz?',
+            header: 'Onay',
+            icon: 'pi pi-check-circle',
+            acceptLabel: 'Evet, Onayla',
+            rejectLabel: 'Vazgeç',
+            accept: () => {
+                this.marketApiService.onayla(vardiya.id).subscribe({
+                    next: () => {
+                        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Vardiya onaylandı' });
+                        this.loadMarketVardiyalar();
+                    },
+                    error: (err) => {
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Onay işlemi başarısız' });
+                    }
+                });
+            }
+        });
+    }
+
+    reddetDialogAc(vardiya: MarketVardiya): void {
+        this.reddedilecekVardiyaId = vardiya.id;
+        this.redNedeni = '';
+        this.redDialogVisible = true;
+    }
+
+    reddetOnayla(): void {
+        if (!this.reddedilecekVardiyaId || !this.redNedeni.trim()) {
+            this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Lütfen ret nedeni giriniz' });
+            return;
+        }
+
+        this.marketApiService.reddet(this.reddedilecekVardiyaId, this.redNedeni).subscribe({
+            next: () => {
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Vardiya reddedildi' });
+                this.redDialogVisible = false;
+                this.loadMarketVardiyalar();
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Ret işlemi başarısız' });
+            }
+        });
     }
 }

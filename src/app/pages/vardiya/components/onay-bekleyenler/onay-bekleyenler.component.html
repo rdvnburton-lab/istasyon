@@ -21,6 +21,14 @@
                         *ngIf="marketVardiyalar.length > 0"></p-tag>
                 </div>
             </p-tab>
+            <p-tab value="2">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-trash"></i>
+                    <span>Silinme Talepleri</span>
+                    <p-tag [value]="silinmeTalepleri.length.toString()" severity="danger"
+                        *ngIf="silinmeTalepleri.length > 0"></p-tag>
+                </div>
+            </p-tab>
         </p-tablist>
         <p-tabpanels>
             <p-tabpanel value="0">
@@ -113,6 +121,58 @@
                                 <div class="flex flex-col items-center gap-4 text-muted-color opacity-60">
                                     <i class="pi pi-check-circle text-6xl"></i>
                                     <span class="font-medium text-xl">Bekleyen market onayı bulunmuyor.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabpanel>
+            <p-tabpanel value="2">
+                <p-table [value]="silinmeTalepleri" [tableStyle]="{ 'min-width': '50rem' }" [rows]="10"
+                    [paginator]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Dosya Adı</th>
+                            <th>Toplam Tutar</th>
+                            <th>İstasyon</th>
+                            <th>Silme Nedeni</th>
+                            <th>Talep Eden</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vardiya>
+                        <tr>
+                            <td><span class="text-muted-color">#</span>{{ vardiya.id }}</td>
+                            <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
+                            <td class="font-medium">{{ vardiya.dosyaAdi }}</td>
+                            <td class="font-bold text-lg">{{ vardiya.genelToplam |
+                                currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                            <td>{{ vardiya.istasyon?.ad }}</td>
+                            <td>
+                                <span class="text-sm text-surface-600 dark:text-surface-300">{{
+                                    vardiya.silinmeTalebiNedeni }}</span>
+                            </td>
+                            <td>
+                                <span class="text-sm">{{ vardiya.silinmeTalebiOlusturanAdi }}</span>
+                            </td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <p-button icon="pi pi-search" label="İncele" severity="info" [rounded]="true"
+                                        [outlined]="true" tooltipPosition="top" pTooltip="Detayları İncele"
+                                        [loading]="loading && seciliVardiya?.id === vardiya.id" [disabled]="loading"
+                                        (onClick)="incele(vardiya)"></p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8" class="text-center p-8">
+                                <div class="flex flex-col items-center gap-4 text-muted-color opacity-60">
+                                    <i class="pi pi-check-circle text-6xl"></i>
+                                    <span class="font-medium text-xl">Bekleyen silme talebi bulunmuyor.</span>
                                 </div>
                             </td>
                         </tr>
@@ -495,11 +555,38 @@
                 </div>
             </div>
 
-            <div class="flex justify-end mt-6 pt-6 border-t border-surface-200">
-                <p-button label="Kapat" icon="pi pi-times" [outlined]="true"
-                    (onClick)="marketDetayVisible = false"></p-button>
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-surface-200">
+                <div class="text-sm text-muted-color">
+                    Onaya gönderen: Sistem<br>
+                    Tarih: {{ seciliMarketVardiya.tarih | date:'dd.MM.yyyy' }}
+                </div>
+                <div class="flex gap-3">
+                    <p-button label="Reddet" icon="pi pi-times" severity="danger" [outlined]="true"
+                        (onClick)="marketReddetDialogAc(seciliMarketVardiya)"></p-button>
+                    <p-button label="Onayla ve Kapat" icon="pi pi-check" severity="success"
+                        (onClick)="marketOnayla(seciliMarketVardiya)"></p-button>
+                </div>
             </div>
         </div>
+    </p-dialog>
+
+    <!-- Market Reddetme Dialog -->
+    <p-dialog header="Market Vardiya Red İşlemi" [(visible)]="marketRedDialogVisible" [modal]="true"
+        [style]="{width: '450px'}">
+        <div class="flex flex-col gap-4">
+            <p class="text-muted-color mb-2">Bu market vardiyasını reddetmek üzeresiniz. Lütfen aşağıya işlemin nedenini
+                açıklayan bir not giriniz.</p>
+            <div class="flex flex-col gap-2">
+                <label for="marketRedNeden" class="font-bold">Red Nedeni</label>
+                <textarea pInputTextarea id="marketRedNeden" [(ngModel)]="marketRedNedeni" rows="4" class="w-full"
+                    placeholder="Örn: Kasa sayımında eksik var..."></textarea>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button label="İptal" icon="pi pi-times" [text]="true"
+                (onClick)="marketRedDialogVisible = false"></p-button>
+            <p-button label="Reddet" icon="pi pi-check" severity="danger" (onClick)="marketReddetIslemi()"></p-button>
+        </ng-template>
     </p-dialog>
 </div>
 

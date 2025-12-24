@@ -15,5 +15,6 @@ export default [
     { path: 'tanimlamalar/personel', loadComponent: () => import('./components/personel/personel-tanimlama.component').then(m => m.PersonelTanimlamaComponent) },
     { path: 'raporlar/vardiya', loadComponent: () => import('./components/raporlar/vardiya-raporu.component').then(m => m.VardiyaRaporuComponent) },
     { path: 'raporlar/personel', loadComponent: () => import('./components/raporlar/personel-karnesi.component').then(m => m.PersonelKarnesiComponent) },
-    { path: 'raporlar/fark', loadComponent: () => import('./components/raporlar/fark-raporu.component').then(m => m.FarkRaporuComponent) }
+    { path: 'raporlar/fark', loadComponent: () => import('./components/raporlar/fark-raporu.component').then(m => m.FarkRaporuComponent) },
+    { path: 'loglar', loadComponent: () => import('./components/vardiya-loglar/vardiya-loglar.component').then(m => m.VardiyaLoglarComponent) }
 ] as Routes;

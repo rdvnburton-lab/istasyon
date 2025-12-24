@@ -5,6 +5,8 @@ using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace IstasyonDemo.Api.Controllers
 {
@@ -20,8 +22,32 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CreateVardiyaDto dto)
         {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userIstasyonId = 0;
+
+            if (userRole != "admin")
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId == null)
+                {
+                    return BadRequest("Kullanıcının istasyonu tanımlı değil.");
+                }
+                userIstasyonId = user.IstasyonId.Value;
+                
+                // Force IstasyonId to be user's station
+                dto.IstasyonId = userIstasyonId;
+            }
+            else
+            {
+                // Admin can specify station, otherwise use default or error
+                if (dto.IstasyonId == 0) return BadRequest("İstasyon ID zorunludur.");
+            }
+
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -48,8 +74,9 @@ namespace IstasyonDemo.Api.Controllers
                 // 2. Otomasyon Satışlarını Ekle
                 foreach (var satisDto in dto.OtomasyonSatislar)
                 {
-                    // Personel kontrolü (KeyId veya İsimden bulmaya çalış)
+                    // Personel kontrolü (KeyId veya İsimden bulmaya çalış) - Sadece bu istasyondakiler
                     var personel = await _context.Personeller
+                        .Where(p => p.IstasyonId == vardiya.IstasyonId)
                         .FirstOrDefaultAsync(p => 
                             (satisDto.PersonelKeyId != null && p.KeyId == satisDto.PersonelKeyId) || 
                             (p.AdSoyad == satisDto.PersonelAdi) || 
@@ -64,7 +91,8 @@ namespace IstasyonDemo.Api.Controllers
                             AdSoyad = satisDto.PersonelAdi.Trim(), // İlk başta aynı, sonra düzenlenebilir
                             KeyId = satisDto.PersonelKeyId,
                             Rol = PersonelRol.POMPACI, // Varsayılan rol
-                            Aktif = true
+                            Aktif = true,
+                            IstasyonId = vardiya.IstasyonId // İstasyona bağla
                         };
                         _context.Personeller.Add(personel);
                         await _context.SaveChangesAsync(); // ID oluşması için kaydet
@@ -74,8 +102,8 @@ namespace IstasyonDemo.Api.Controllers
                     {
                         VardiyaId = vardiya.Id,
                         PersonelId = personel?.Id,
-                        PersonelAdi = satisDto.PersonelAdi,
-                        PersonelKeyId = satisDto.PersonelKeyId,
+                        PersonelAdi = satisDto.PersonelAdi ?? "",
+                        PersonelKeyId = satisDto.PersonelKeyId ?? "",
                         PompaNo = satisDto.PompaNo,
                         YakitTuru = satisDto.YakitTuru,
                         Litre = satisDto.Litre,
@@ -107,6 +135,19 @@ namespace IstasyonDemo.Api.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+                
+                // Log: Vardiya oluşturuldu
+                await LogVardiyaIslem(
+                    vardiya.Id, 
+                    "OLUSTURULDU", 
+                    $"Vardiya dosyası yüklendi: {dto.DosyaAdi}", 
+                    userId, 
+                    userName, 
+                    userRole, 
+                    null, 
+                    VardiyaDurum.ACIK.ToString()
+                );
+                
                 await transaction.CommitAsync();
 
                 return CreatedAtAction(nameof(GetById), new { id = vardiya.Id }, vardiya);
@@ -217,8 +258,31 @@ namespace IstasyonDemo.Api.Controllers
             var start = baslangic.UtcDateTime;
             var end = bitis.UtcDateTime;
 
-            var query = _context.Vardiyalar
-                .Where(v => v.BaslangicTarihi >= start && v.BaslangicTarihi <= end);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var query = _context.Vardiyalar.AsQueryable();
+
+            if (userRole == "admin") { }
+            else if (userRole == "patron")
+            {
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+            }
+            else if (userRole == "market_sorumlusu")
+            {
+                return Ok(new VardiyaRaporuDto { Ozet = new VardiyaRaporOzetDto(), Vardiyalar = new List<VardiyaRaporItemDto>() });
+            }
+            else
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != null)
+                {
+                    query = query.Where(v => v.IstasyonId == user.IstasyonId);
+                }
+                else return Unauthorized();
+            }
+
+            query = query.Where(v => v.BaslangicTarihi >= start && v.BaslangicTarihi <= end && v.Durum != VardiyaDurum.SILINDI);
 
             var vardiyalar = await query
                 .OrderByDescending(v => v.BaslangicTarihi)
@@ -255,8 +319,32 @@ namespace IstasyonDemo.Api.Controllers
             var start = baslangic.UtcDateTime;
             var end = bitis.UtcDateTime;
 
-            var vardiyaOzetleri = await _context.Vardiyalar
-                .Where(v => v.BaslangicTarihi >= start && v.BaslangicTarihi <= end)
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var query = _context.Vardiyalar.AsQueryable();
+
+            if (userRole == "admin") { }
+            else if (userRole == "patron")
+            {
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+            }
+            else if (userRole == "market_sorumlusu")
+            {
+                return Ok(new { Ozet = new { }, Vardiyalar = new List<object>() });
+            }
+            else
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != null)
+                {
+                    query = query.Where(v => v.IstasyonId == user.IstasyonId);
+                }
+                else return Unauthorized();
+            }
+
+            var vardiyaOzetleri = await query
+                .Where(v => v.BaslangicTarihi >= start && v.BaslangicTarihi <= end && v.Durum != VardiyaDurum.SILINDI)
                 .Select(v => new {
                     v.Id,
                     v.BaslangicTarihi,
@@ -351,15 +439,15 @@ namespace IstasyonDemo.Api.Controllers
             var personel = await _context.Personeller.FindAsync(personelId);
             if (personel == null) return NotFound();
 
-            // Sadece bu personele ait satışları ve pusulaları çekiyoruz
+            // Sadece bu personele ait satışları ve pusulaları çekiyoruz (silinmiş vardiyalar hariç)
             var satislar = await _context.OtomasyonSatislar
-                .Where(s => s.PersonelId == personelId && s.Vardiya.BaslangicTarihi >= start && s.Vardiya.BaslangicTarihi <= end)
-                .Select(s => new { s.VardiyaId, s.Vardiya.BaslangicTarihi, s.ToplamTutar, s.Litre, s.YakitTuru })
+                .Where(s => s.PersonelId == personelId && s.Vardiya!.BaslangicTarihi >= start && s.Vardiya!.BaslangicTarihi <= end && s.Vardiya!.Durum != VardiyaDurum.SILINDI)
+                .Select(s => new { s.VardiyaId, s.Vardiya!.BaslangicTarihi, s.ToplamTutar, s.Litre, s.YakitTuru })
                 .ToListAsync();
 
             var pusulalar = await _context.Pusulalar
-                .Where(p => p.PersonelId == personelId && p.Vardiya.BaslangicTarihi >= start && p.Vardiya.BaslangicTarihi <= end)
-                .Select(p => new { p.VardiyaId, p.Nakit, p.KrediKarti, p.ParoPuan, p.MobilOdeme, p.Aciklama, p.Vardiya.BaslangicTarihi })
+                .Where(p => p.PersonelId == personelId && p.Vardiya!.BaslangicTarihi >= start && p.Vardiya!.BaslangicTarihi <= end && p.Vardiya!.Durum != VardiyaDurum.SILINDI)
+                .Select(p => new { p.VardiyaId, p.Nakit, p.KrediKarti, p.ParoPuan, p.MobilOdeme, p.Aciklama, p.Vardiya!.BaslangicTarihi })
                 .ToListAsync();
 
             var hareketler = satislar.GroupBy(s => new { s.VardiyaId, s.BaslangicTarihi })
@@ -536,12 +624,46 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            IQueryable<Vardiya> query = _context.Vardiyalar.AsNoTracking();
+
+            if (userRole == "admin")
+            {
+                // Admin sees all
+            }
+            else if (userRole == "patron")
+            {
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+            }
+            else if (userRole == "market_sorumlusu")
+            {
+                // Market sorumlusu should not see pump shifts
+                return Ok(new { Items = new List<object>(), Summary = new { ToplamCiro = 0, ToplamIslem = 0, BenzersizPersonelSayisi = 0 } });
+            }
+            else
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != null)
+                {
+                    query = query.Where(v => v.IstasyonId == user.IstasyonId);
+                }
+                else
+                {
+                    return Ok(new { Items = new List<object>(), Summary = new { ToplamCiro = 0, ToplamIslem = 0, BenzersizPersonelSayisi = 0 } });
+                }
+            }
+
+            // Silinmiş vardiyaları listeden çıkar
+            query = query.Where(v => v.Durum != VardiyaDurum.SILINDI);
+
             // OPTIMIZED: Removed Include() to prevent loading all sales data
             // Now returns only summary counts for faster response
-            var items = await _context.Vardiyalar
-                .AsNoTracking()
+            var items = await query
                 .OrderByDescending(v => v.BaslangicTarihi)
                 .Select(v => new
                 {
@@ -574,33 +696,50 @@ namespace IstasyonDemo.Api.Controllers
             // Global Summary
             var summary = new
             {
-                ToplamCiro = await _context.Vardiyalar.SumAsync(v => v.GenelToplam),
-                ToplamIslem = await _context.OtomasyonSatislar.CountAsync() + await _context.FiloSatislar.CountAsync(),
-                BenzersizPersonelSayisi = await _context.OtomasyonSatislar.Select(s => s.PersonelAdi).Distinct().CountAsync()
+                ToplamCiro = await query.SumAsync(v => v.GenelToplam),
+                ToplamIslem = await query.SelectMany(v => v.OtomasyonSatislar).CountAsync() + await query.SelectMany(v => v.FiloSatislar).CountAsync(),
+                BenzersizPersonelSayisi = await query.SelectMany(v => v.OtomasyonSatislar).Select(s => s.PersonelAdi).Distinct().CountAsync()
             };
 
             return Ok(new { Items = items, Summary = summary });
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+
+        [HttpGet("onay-bekleyenler")]
+        [Authorize(Roles = "admin,patron")]
+        public async Task<IActionResult> GetOnayBekleyenler()
         {
-            var vardiya = await _context.Vardiyalar.FindAsync(id);
-            if (vardiya == null)
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            IQueryable<Vardiya> query = _context.Vardiyalar
+                .Include(v => v.Istasyon)
+                .Where(v => v.Durum == VardiyaDurum.ONAY_BEKLIYOR || v.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR);
+
+            if (userRole == "patron")
             {
-                return NotFound();
+                query = query.Where(v => v.Istasyon.PatronId == userId);
             }
 
-            _context.Vardiyalar.Remove(vardiya);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var list = await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
+            return Ok(list);
         }
+
         [HttpPost("{id}/onaya-gonder")]
+        [Authorize]
         public async Task<IActionResult> OnayaGonder(int id)
         {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
             var vardiya = await _context.Vardiyalar.FindAsync(id);
             if (vardiya == null) return NotFound();
+
+            if (userRole != "admin")
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             if (vardiya.Durum != VardiyaDurum.ACIK && vardiya.Durum != VardiyaDurum.REDDEDILDI)
             {
@@ -614,26 +753,103 @@ namespace IstasyonDemo.Api.Controllers
             return Ok(new { message = "Vardiya onaya gönderildi." });
         }
 
-        [HttpGet("onay-bekleyenler")]
-        public async Task<IActionResult> GetOnayBekleyenler()
-        {
-            var vardiyalar = await _context.Vardiyalar
-                .Where(v => v.Durum == VardiyaDurum.ONAY_BEKLIYOR)
-                .OrderByDescending(v => v.BaslangicTarihi)
-                .ToListAsync();
 
-            return Ok(vardiyalar);
+
+        [HttpPost("{id}/silme-talebi")]
+        [Authorize]
+        public async Task<IActionResult> SilmeTalebi(int id, [FromBody] SilmeTalebiDto dto)
+        {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).FirstOrDefaultAsync(v => v.Id == id);
+            if (vardiya == null) return NotFound();
+
+            // Authorization
+            if (userRole == "patron" && vardiya.Istasyon?.PatronId != userId) return Forbid();
+            if (userRole != "admin" && userRole != "patron")
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user?.IstasyonId != vardiya.IstasyonId) return Forbid();
+            }
+
+            if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
+            {
+                 return BadRequest("Zaten silinme onayı bekliyor.");
+            }
+
+            // Onaylanmış vardiyalar sorumlular tarafından silinemez
+            if (userRole != "admin" && userRole != "patron" && vardiya.Durum == VardiyaDurum.ONAYLANDI)
+            {
+                return BadRequest("Onaylanmış vardiyalar sorumlular tarafından silinemez.");
+            }
+
+            var eskiDurum = vardiya.Durum.ToString();
+            
+            vardiya.Durum = VardiyaDurum.SILINME_ONAYI_BEKLIYOR;
+            vardiya.SilinmeTalebiNedeni = dto.Nedeni;
+            vardiya.SilinmeTalebiOlusturanId = userId;
+            vardiya.SilinmeTalebiOlusturanAdi = userName;
+            vardiya.GuncellemeTarihi = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            // Log: Silme talebi oluşturuldu
+            await LogVardiyaIslem(
+                vardiya.Id,
+                "SILME_TALEP_EDILDI",
+                $"Silme nedeni: {dto.Nedeni}",
+                userId,
+                userName,
+                userRole,
+                eskiDurum,
+                VardiyaDurum.SILINME_ONAYI_BEKLIYOR.ToString()
+            );
+
+            return Ok(new { message = "Vardiya silinme onayına gönderildi." });
         }
 
         [HttpPost("{id}/onayla")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> Onayla(int id, [FromBody] OnayDto dto)
         {
-            var vardiya = await _context.Vardiyalar.FindAsync(id);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) return NotFound();
+
+            if (userRole == "patron" && vardiya.Istasyon?.PatronId != userId) return Forbid();
+
+            if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
+            {
+                // Soft Delete
+                vardiya.Durum = VardiyaDurum.SILINDI;
+                vardiya.OnaylayanId = dto.OnaylayanId;
+                vardiya.OnaylayanAdi = dto.OnaylayanAdi;
+                vardiya.OnayTarihi = DateTime.UtcNow;
+                vardiya.GuncellemeTarihi = DateTime.UtcNow;
+                
+                await _context.SaveChangesAsync();
+                
+                // Log: Silme onaylandı
+                await LogVardiyaIslem(
+                    vardiya.Id,
+                    "SILINDI",
+                    $"Silme işlemi onaylandı. Onaylayan: {dto.OnaylayanAdi}",
+                    userId,
+                    dto.OnaylayanAdi,
+                    userRole,
+                    VardiyaDurum.SILINME_ONAYI_BEKLIYOR.ToString(),
+                    VardiyaDurum.SILINDI.ToString()
+                );
+                
+                return Ok(new { message = "Vardiya silme işlemi onaylandı ve silindi olarak işaretlendi." });
+            }
 
             if (vardiya.Durum != VardiyaDurum.ONAY_BEKLIYOR)
             {
-                return BadRequest("Sadece ONAY BEKLEYEN vardiyalar onaylanabilir.");
+                return BadRequest("Sadece ONAY BEKLEYEN veya SILINME ONAYI BEKLEYEN vardiyalar onaylanabilir.");
             }
 
             vardiya.Durum = VardiyaDurum.ONAYLANDI;
@@ -643,18 +859,62 @@ namespace IstasyonDemo.Api.Controllers
             vardiya.GuncellemeTarihi = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
+            
+            // Log: Vardiya onaylandı
+            await LogVardiyaIslem(
+                vardiya.Id,
+                "ONAYLANDI",
+                $"Vardiya onaylandı. Onaylayan: {dto.OnaylayanAdi}",
+                userId,
+                dto.OnaylayanAdi,
+                userRole,
+                VardiyaDurum.ONAY_BEKLIYOR.ToString(),
+                VardiyaDurum.ONAYLANDI.ToString()
+            );
+            
             return Ok(new { message = "Vardiya onaylandı." });
         }
 
         [HttpPost("{id}/reddet")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> Reddet(int id, [FromBody] RedDto dto)
         {
-            var vardiya = await _context.Vardiyalar.FindAsync(id);
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) return NotFound();
+
+            if (userRole == "patron" && vardiya.Istasyon?.PatronId != userId) return Forbid();
+
+            if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
+            {
+                // Revert to ACIK so it's not deleted
+                vardiya.Durum = VardiyaDurum.ACIK;
+                vardiya.RedNedeni = dto.RedNedeni;
+                vardiya.OnaylayanId = dto.OnaylayanId;
+                vardiya.OnaylayanAdi = dto.OnaylayanAdi;
+                vardiya.GuncellemeTarihi = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                
+                // Log: Silme reddedildi
+                await LogVardiyaIslem(
+                    vardiya.Id,
+                    "SILME_REDDEDILDI",
+                    $"Silme talebi reddedildi. Red nedeni: {dto.RedNedeni}. Reddeden: {dto.OnaylayanAdi}",
+                    userId,
+                    dto.OnaylayanAdi,
+                    userRole,
+                    VardiyaDurum.SILINME_ONAYI_BEKLIYOR.ToString(),
+                    VardiyaDurum.ACIK.ToString()
+                );
+                
+                return Ok(new { message = "Vardiya silme işlemi reddedildi, vardiya tekrar aktif." });
+            }
 
             if (vardiya.Durum != VardiyaDurum.ONAY_BEKLIYOR)
             {
-                return BadRequest("Sadece ONAY BEKLEYEN vardiyalar reddedilebilir.");
+                return BadRequest("Sadece ONAY BEKLEYEN veya SILINME ONAYI BEKLEYEN vardiyalar reddedilebilir.");
             }
 
             vardiya.Durum = VardiyaDurum.REDDEDILDI;
@@ -664,6 +924,19 @@ namespace IstasyonDemo.Api.Controllers
             vardiya.GuncellemeTarihi = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
+            
+            // Log: Vardiya reddedildi
+            await LogVardiyaIslem(
+                vardiya.Id,
+                "REDDEDILDI",
+                $"Vardiya reddedildi. Red nedeni: {dto.RedNedeni}. Reddeden: {dto.OnaylayanAdi}",
+                userId,
+                dto.OnaylayanAdi,
+                userRole,
+                VardiyaDurum.ONAY_BEKLIYOR.ToString(),
+                VardiyaDurum.REDDEDILDI.ToString()
+            );
+            
             return Ok(new { message = "Vardiya reddedildi." });
         }
 
@@ -956,7 +1229,7 @@ namespace IstasyonDemo.Api.Controllers
                         KrediKarti = 0m,
                         ParoPuan = 0m,
                         MobilOdeme = 0m,
-                        KrediKartiDetay = (string)null
+                        KrediKartiDetay = (string?)null
                     }
                 });
             }
@@ -1068,6 +1341,72 @@ namespace IstasyonDemo.Api.Controllers
                 PersonelSayisi = farkAnalizi.Count,
                 _performanceMs = stopwatch.ElapsedMilliseconds
             });
+        }
+
+        // Helper method to create log entries
+        private async Task LogVardiyaIslem(int vardiyaId, string islem, string? aciklama, int? kullaniciId, string? kullaniciAdi, string? kullaniciRol, string? eskiDurum, string? yeniDurum)
+        {
+            var log = new VardiyaLog
+            {
+                VardiyaId = vardiyaId,
+                Islem = islem,
+                Aciklama = aciklama,
+                KullaniciId = kullaniciId,
+                KullaniciAdi = kullaniciAdi,
+                KullaniciRol = kullaniciRol,
+                IslemTarihi = DateTime.UtcNow,
+                EskiDurum = eskiDurum,
+                YeniDurum = yeniDurum
+            };
+
+            _context.VardiyaLoglari.Add(log);
+            await _context.SaveChangesAsync();
+        }
+
+        [HttpGet("loglar")]
+        [Authorize(Roles = "admin,patron")]
+        public async Task<IActionResult> GetVardiyaLoglari([FromQuery] int? vardiyaId, [FromQuery] int? limit = 100)
+        {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            IQueryable<VardiyaLog> query = _context.VardiyaLoglari
+                .Include(vl => vl.Vardiya)
+                    .ThenInclude(v => v!.Istasyon);
+
+            // Patron sadece kendi istasyonlarının loglarını görebilir
+            if (userRole == "patron")
+            {
+                query = query.Where(vl => vl.Vardiya!.Istasyon!.PatronId == userId);
+            }
+
+            // Belirli bir vardiya için filtreleme
+            if (vardiyaId.HasValue)
+            {
+                query = query.Where(vl => vl.VardiyaId == vardiyaId.Value);
+            }
+
+            var loglar = await query
+                .OrderByDescending(vl => vl.IslemTarihi)
+                .Take(limit.Value)
+                .Select(vl => new
+                {
+                    vl.Id,
+                    vl.VardiyaId,
+                    VardiyaDosyaAdi = vl.Vardiya!.DosyaAdi,
+                    IstasyonAdi = vl.Vardiya.Istasyon!.Ad,
+                    vl.Islem,
+                    vl.Aciklama,
+                    vl.KullaniciId,
+                    vl.KullaniciAdi,
+                    vl.KullaniciRol,
+                    vl.IslemTarihi,
+                    vl.EskiDurum,
+                    vl.YeniDurum
+                })
+                .ToListAsync();
+
+            return Ok(loglar);
         }
     }
 }
