@@ -13,7 +13,9 @@ namespace IstasyonDemo.Api.Models
         ACIK,
         ONAY_BEKLIYOR,
         ONAYLANDI,
-        REDDEDILDI
+        REDDEDILDI,
+        SILINME_ONAYI_BEKLIYOR,
+        SILINDI
     }
 
     public enum PersonelRol
@@ -21,7 +23,8 @@ namespace IstasyonDemo.Api.Models
         POMPACI,
         MARKET_GOREVLISI,
         VARDIYA_SORUMLUSU,
-        PATRON
+        PATRON,
+        MARKET_SORUMLUSU
     }
 
     public enum PusulaTuru
@@ -35,5 +38,20 @@ namespace IstasyonDemo.Api.Models
         FARK_EKSIK,         // Eksik para
         MASRAF,             // Masraf pusulası
         DIGER               // Diğer
+    }
+    public enum GiderTuru
+    {
+        EKMEK,
+        TEMIZLIK,
+        PERSONEL,
+        KIRTASIYE,
+        DIGER
+    }
+
+    public enum GelirTuru
+    {
+        KOMISYON,
+        PRIM,
+        DIGER
     }
 }

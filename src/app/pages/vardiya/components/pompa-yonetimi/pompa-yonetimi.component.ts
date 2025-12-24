@@ -22,6 +22,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 
 import { VardiyaApiService } from '../../services/vardiya-api.service';
+import { PersonelApiService } from '../../services/personel-api.service';
+
 import { PusulaApiService, Pusula, KrediKartiDetay } from '../../../../services/pusula-api.service';
 
 interface PersonelOtomasyonOzet {
@@ -108,11 +110,16 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         );
     }
 
+    // Personel Düzenleme
+    personelDuzenleDialogVisible = false;
+    duzenlenecekPersonel: any = {};
+
     private subscriptions = new Subscription();
 
     constructor(
         private vardiyaApiService: VardiyaApiService,
         private pusulaApiService: PusulaApiService,
+        private personelApiService: PersonelApiService,
         private messageService: MessageService,
         private router: Router,
         private route: ActivatedRoute
@@ -504,6 +511,41 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     summary: 'Hata',
                     detail: err.error?.message || 'Onaya gönderilemedi.'
                 });
+                this.loading = false;
+            }
+        });
+    }
+
+
+    personelDuzenle(personel: PersonelOtomasyonOzet): void {
+        if (!personel.personelId || personel.personelId <= 0) return;
+
+        this.loading = true;
+        this.personelApiService.getPersonelById(personel.personelId).subscribe({
+            next: (data) => {
+                this.duzenlenecekPersonel = { ...data };
+                this.personelDuzenleDialogVisible = true;
+                this.loading = false;
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Personel bilgileri alınamadı' });
+                this.loading = false;
+            }
+        });
+    }
+
+    personelKaydet(): void {
+        if (!this.duzenlenecekPersonel.id) return;
+
+        this.loading = true;
+        this.personelApiService.updatePersonel(this.duzenlenecekPersonel.id, this.duzenlenecekPersonel).subscribe({
+            next: () => {
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Personel güncellendi' });
+                this.personelDuzenleDialogVisible = false;
+                this.loadVardiyaData();
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Güncelleme başarısız' });
                 this.loading = false;
             }
         });

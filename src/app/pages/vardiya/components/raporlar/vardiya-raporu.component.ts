@@ -7,7 +7,10 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
+import { MarketApiService } from '../../services/market-api.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
     selector: 'app-vardiya-raporu',
@@ -20,7 +23,8 @@ import { VardiyaApiService } from '../../services/vardiya-api.service';
         DatePickerModule,
         CardModule,
         TagModule,
-        ToolbarModule
+        ToolbarModule,
+        SelectButtonModule
     ],
     templateUrl: './vardiya-raporu.component.html',
     styles: [`:host { display: block; }`]
@@ -29,18 +33,33 @@ export class VardiyaRaporuComponent implements OnInit {
     baslangicTarihi: Date = new Date();
     bitisTarihi: Date = new Date();
 
-    ozet = {
+    ozet: any = {
         toplamVardiya: 0,
         toplamTutar: 0,
         toplamLitre: 0,
         toplamIade: 0,
-        toplamGider: 0
+        toplamGider: 0,
+        toplamSatis: 0,
+        toplamTeslimat: 0,
+        toplamFark: 0
     };
 
     vardiyalar: any[] = [];
     loading: boolean = false;
 
-    constructor(private vardiyaApiService: VardiyaApiService) {
+    raporTuru: 'pompa' | 'market' = 'pompa';
+    raporTurleri = [
+        { label: 'Pompa Raporu', value: 'pompa', icon: 'pi pi-bolt' },
+        { label: 'Market Raporu', value: 'market', icon: 'pi pi-shopping-bag' }
+    ];
+
+    userRole: string = '';
+
+    constructor(
+        private vardiyaApiService: VardiyaApiService,
+        private marketApiService: MarketApiService,
+        private authService: AuthService
+    ) {
         // Varsayılan olarak bu ayın başı ve sonu
         const bugun = new Date();
         this.baslangicTarihi = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
@@ -48,30 +67,51 @@ export class VardiyaRaporuComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.userRole = this.authService.getCurrentUser()?.role || '';
+
+        if (this.userRole === 'market_sorumlusu') {
+            this.raporTuru = 'market';
+        } else {
+            this.raporTuru = 'pompa';
+        }
+
         this.raporla();
     }
 
     raporla() {
         this.loading = true;
 
-        // Saat ayarları: Başlangıç 00:00:00, Bitiş 23:59:59
         const start = new Date(this.baslangicTarihi);
         start.setHours(0, 0, 0, 0);
 
         const end = new Date(this.bitisTarihi);
         end.setHours(23, 59, 59, 999);
 
-        this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
-            next: (sonuc) => {
-                this.ozet = sonuc.ozet;
-                this.vardiyalar = sonuc.vardiyalar;
-                this.loading = false;
-            },
-            error: (err) => {
-                console.error('Rapor hatası:', err);
-                this.loading = false;
-            }
-        });
+        if (this.raporTuru === 'pompa') {
+            this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
+                next: (sonuc) => {
+                    this.ozet = sonuc.ozet;
+                    this.vardiyalar = sonuc.vardiyalar;
+                    this.loading = false;
+                },
+                error: (err) => {
+                    console.error('Pompa raporu hatası:', err);
+                    this.loading = false;
+                }
+            });
+        } else {
+            this.marketApiService.getMarketRaporu(start, end).subscribe({
+                next: (sonuc) => {
+                    this.ozet = sonuc.ozet;
+                    this.vardiyalar = sonuc.vardiyalar;
+                    this.loading = false;
+                },
+                error: (err) => {
+                    console.error('Market raporu hatası:', err);
+                    this.loading = false;
+                }
+            });
+        }
     }
 
     tarihAyarla(tip: 'bugun' | 'dun' | 'buAy' | 'gecenAy') {

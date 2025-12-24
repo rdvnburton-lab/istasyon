@@ -1,59 +1,113 @@
 <div class="card">
-    <div class="flex flex-col md:flex-row gap-4 mb-4 items-end">
+    <div class="flex flex-col md:flex-row gap-4 mb-6 items-center justify-between">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Vardiya Raporu</h2>
+            <p class="text-gray-500 text-sm">İstasyonunuzun vardiya bazlı performans özeti</p>
+        </div>
+
+        <div *ngIf="userRole === 'admin' || userRole === 'patron' || userRole === 'istasyon_sorumlusu'">
+            <p-selectButton [options]="raporTurleri" [(ngModel)]="raporTuru" (onChange)="raporla()" optionLabel="label"
+                optionValue="value">
+                <ng-template let-item pTemplate="item">
+                    <div class="flex items-center gap-2 px-2">
+                        <i [class]="item.icon"></i>
+                        <span>{{item.label}}</span>
+                    </div>
+                </ng-template>
+            </p-selectButton>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 mb-6 items-end">
         <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
-                <label class="font-bold">Başlangıç Tarihi</label>
-                <p-datePicker [(ngModel)]="baslangicTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
-                    inputId="baslangic"></p-datePicker>
+                <label class="font-bold text-sm">Başlangıç Tarihi</label>
+                <p-datePicker [(ngModel)]="baslangicTarihi" dateFormat="dd.mm.yy" [showIcon]="true" inputId="baslangic"
+                    styleClass="w-full"></p-datePicker>
             </div>
             <div class="flex flex-col gap-2">
-                <label class="font-bold">Bitiş Tarihi</label>
-                <p-datePicker [(ngModel)]="bitisTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
-                    inputId="bitis"></p-datePicker>
+                <label class="font-bold text-sm">Bitiş Tarihi</label>
+                <p-datePicker [(ngModel)]="bitisTarihi" dateFormat="dd.mm.yy" [showIcon]="true" inputId="bitis"
+                    styleClass="w-full"></p-datePicker>
             </div>
         </div>
         <div class="flex gap-2">
             <p-button label="Bugün" [text]="true" size="small" (onClick)="tarihAyarla('bugun')"></p-button>
             <p-button label="Dün" [text]="true" size="small" (onClick)="tarihAyarla('dun')"></p-button>
             <p-button label="Bu Ay" [text]="true" size="small" (onClick)="tarihAyarla('buAy')"></p-button>
-            <p-button label="Geçen Ay" [text]="true" size="small" (onClick)="tarihAyarla('gecenAy')"></p-button>
             <p-button label="Raporla" icon="pi pi-search" (onClick)="raporla()" severity="primary"></p-button>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <p-card styleClass="bg-blue-50 border-none shadow-none">
-            <div class="text-blue-600 font-medium mb-2">Toplam Vardiya</div>
-            <div class="text-2xl font-bold text-blue-900">{{ozet.toplamVardiya}}</div>
+    <!-- Pompa Özeti -->
+    <div *ngIf="raporTuru === 'pompa'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <p-card styleClass="bg-blue-50 dark:bg-blue-900/10 border-none shadow-none">
+            <div class="text-blue-600 dark:text-blue-400 font-medium mb-2">Toplam Vardiya</div>
+            <div class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ozet.toplamVardiya}}</div>
         </p-card>
-        <p-card styleClass="bg-green-50 border-none shadow-none">
-            <div class="text-green-600 font-medium mb-2">Toplam Ciro</div>
-            <div class="text-2xl font-bold text-green-900">{{ozet.toplamTutar | currency:'TRY':'symbol-narrow':'1.2-2'}}
-            </div>
-        </p-card>
-        <p-card styleClass="bg-orange-50 border-none shadow-none">
-            <div class="text-orange-600 font-medium mb-2">Toplam Litre</div>
-            <div class="text-2xl font-bold text-orange-900">{{ozet.toplamLitre | number:'1.2-2'}} Lt</div>
-        </p-card>
-        <p-card styleClass="bg-purple-50 border-none shadow-none">
-            <div class="text-purple-600 font-medium mb-2">Toplam Gider</div>
-            <div class="text-2xl font-bold text-purple-900">{{ozet.toplamGider |
+        <p-card styleClass="bg-green-50 dark:bg-green-900/10 border-none shadow-none">
+            <div class="text-green-600 dark:text-green-400 font-medium mb-2">Toplam Ciro</div>
+            <div class="text-2xl font-bold text-green-900 dark:text-green-100">{{ozet.toplamTutar |
                 currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+        </p-card>
+        <p-card styleClass="bg-orange-50 dark:bg-orange-900/10 border-none shadow-none">
+            <div class="text-orange-600 dark:text-orange-400 font-medium mb-2">Toplam Litre</div>
+            <div class="text-2xl font-bold text-orange-900 dark:text-orange-100">{{ozet.toplamLitre | number:'1.2-2'}}
+                Lt</div>
+        </p-card>
+        <p-card styleClass="bg-purple-50 dark:bg-purple-900/10 border-none shadow-none">
+            <div class="text-purple-600 dark:text-purple-400 font-medium mb-2">Toplam Gider</div>
+            <div class="text-2xl font-bold text-purple-900 dark:text-purple-100">{{ozet.toplamGider |
+                currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+        </p-card>
+    </div>
+
+    <!-- Market Özeti -->
+    <div *ngIf="raporTuru === 'market'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <p-card styleClass="bg-blue-50 dark:bg-blue-900/10 border-none shadow-none">
+            <div class="text-blue-600 dark:text-blue-400 font-medium mb-2">Toplam Vardiya</div>
+            <div class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ozet.toplamVardiya}}</div>
+        </p-card>
+        <p-card styleClass="bg-green-50 dark:bg-green-900/10 border-none shadow-none">
+            <div class="text-green-600 dark:text-green-400 font-medium mb-2">Toplam Satış</div>
+            <div class="text-2xl font-bold text-green-900 dark:text-green-100">{{ozet.toplamSatis |
+                currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+        </p-card>
+        <p-card styleClass="bg-indigo-50 dark:bg-indigo-900/10 border-none shadow-none">
+            <div class="text-indigo-600 dark:text-indigo-400 font-medium mb-2">Toplam Teslimat</div>
+            <div class="text-2xl font-bold text-indigo-900 dark:text-indigo-100">{{ozet.toplamTeslimat |
+                currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+        </p-card>
+        <p-card
+            [styleClass]="ozet.toplamFark < 0 ? 'bg-red-50 dark:bg-red-900/10 border-none shadow-none' : 'bg-teal-50 dark:bg-teal-900/10 border-none shadow-none'">
+            <div
+                [class]="ozet.toplamFark < 0 ? 'text-red-600 dark:text-red-400 font-medium mb-2' : 'text-teal-600 dark:text-teal-400 font-medium mb-2'">
+                Toplam Fark</div>
+            <div
+                [class]="ozet.toplamFark < 0 ? 'text-2xl font-bold text-red-900 dark:text-red-100' : 'text-2xl font-bold text-teal-900 dark:text-teal-100'">
+                {{ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
         </p-card>
     </div>
 
     <p-table [value]="vardiyalar" [paginator]="true" [rows]="10" [loading]="loading" styleClass="p-datatable-sm"
         [rowHover]="true">
         <ng-template pTemplate="header">
-            <tr>
+            <tr *ngIf="raporTuru === 'pompa'">
                 <th>Tarih</th>
                 <th>Dosya Adı</th>
                 <th class="text-right">Tutar</th>
                 <th class="text-center">Durum</th>
             </tr>
+            <tr *ngIf="raporTuru === 'market'">
+                <th>Tarih</th>
+                <th class="text-right">Satis Tutari</th>
+                <th class="text-right">Teslimat Tutari</th>
+                <th class="text-right">Fark</th>
+                <th class="text-center">Durum</th>
+            </tr>
         </ng-template>
         <ng-template pTemplate="body" let-vardiya>
-            <tr>
+            <tr *ngIf="raporTuru === 'pompa'">
                 <td>{{vardiya.tarih | date:'dd.MM.yyyy HH:mm'}}</td>
                 <td>{{vardiya.dosyaAdi}}</td>
                 <td class="text-right font-bold">{{vardiya.tutar | currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
@@ -62,10 +116,26 @@
                         [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"></p-tag>
                 </td>
             </tr>
+            <tr *ngIf="raporTuru === 'market'">
+                <td>{{vardiya.tarih | date:'dd.MM.yyyy'}}</td>
+                <td class="text-right font-bold">{{vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.2-2'}}
+                </td>
+                <td class="text-right font-bold text-blue-600">{{vardiya.toplamTeslimatTutari |
+                    currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
+                <td class="text-right font-bold" [class.text-red-600]="vardiya.toplamFark < 0"
+                    [class.text-green-600]="vardiya.toplamFark >= 0">
+                    {{vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2'}}
+                </td>
+                <td class="text-center">
+                    <p-tag [value]="vardiya.durum"
+                        [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"></p-tag>
+                </td>
+            </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr>
-                <td colspan="4" class="text-center p-4">Bu tarih aralığında kayıt bulunamadı.</td>
+                <td [attr.colspan]="raporTuru === 'pompa' ? 4 : 5" class="text-center p-4">Bu tarih aralığında kayıt
+                    bulunamadı.</td>
             </tr>
         </ng-template>
     </p-table>

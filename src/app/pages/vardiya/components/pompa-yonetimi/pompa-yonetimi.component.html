@@ -193,17 +193,14 @@
                     <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
                         <td>
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center"
-                                    style="background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)">
-                                    <span class="text-white font-bold text-sm">{{ personel.personelAdi.substring(0,
-                                        2).toUpperCase() }}</span>
+                                <div
+                                    class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-100 dark:bg-surface-700">
+                                    <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
                                 </div>
-                                <div>
-                                    <div class="font-bold text-surface-800 dark:text-surface-100">{{
-                                        personel.personelAdi }}</div>
-                                    <div class="text-xs text-surface-500">{{ personel.islemSayisi }} işlem • {{
-                                        personel.toplamLitre | number:'1.2-2' }} L</div>
-                                </div>
+                                <span class="font-medium">{{ personel.personelAdi }}</span>
+                                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
+                                    size="small" (onClick)="personelDuzenle(personel)"
+                                    *ngIf="isEditable && personel.personelAdi !== 'FİLO SATIŞLARI'"></p-button>
                             </div>
                         </td>
                         <td class="text-right">
@@ -623,5 +620,21 @@
             <p-button label="Düzenle" icon="pi pi-pencil" severity="info" (onClick)="onizlemeDuzenle()"
                 *ngIf="isEditable && !onizlemeData?.isFilo"></p-button>
         </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Personel Düzenleme Dialog -->
+<p-dialog header="Personel Düzenle" [(visible)]="personelDuzenleDialogVisible" [modal]="true"
+    [style]="{width: '450px'}">
+    <div class="field p-fluid" *ngIf="duzenlenecekPersonel">
+        <label for="adSoyad" class="block mb-2 font-bold">Ad Soyad</label>
+        <input type="text" pInputText id="adSoyad" [(ngModel)]="duzenlenecekPersonel.adSoyad" required autofocus
+            class="w-full" />
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="İptal" icon="pi pi-times" severity="secondary"
+            (onClick)="personelDuzenleDialogVisible = false"></p-button>
+        <p-button label="Kaydet" icon="pi pi-check" severity="success" (onClick)="personelKaydet()"
+            [loading]="loading"></p-button>
     </ng-template>
 </p-dialog>

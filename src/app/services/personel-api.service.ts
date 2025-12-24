@@ -10,6 +10,7 @@ export interface Personel {
     keyId?: string;
     rol: string;
     aktif: boolean;
+    telefon?: string;
 }
 
 import { environment } from '../../environments/environment';
@@ -62,16 +63,18 @@ export class PersonelApiService {
     private mapPersonelToBackend(personel: Personel): any {
         return {
             ...personel,
-            rol: this.mapRolToNumber(personel.rol)
+            rol: personel.rol // Backend handles string enums
         };
     }
 
-    private mapRolToString(rol: number): string {
+    private mapRolToString(rol: any): string {
+        if (typeof rol === 'string') return rol;
         switch (rol) {
             case 0: return 'POMPACI';
             case 1: return 'MARKET_GOREVLISI';
             case 2: return 'VARDIYA_SORUMLUSU';
             case 3: return 'PATRON';
+            case 4: return 'MARKET_SORUMLUSU';
             default: return 'POMPACI';
         }
     }
@@ -82,6 +85,7 @@ export class PersonelApiService {
             case 'MARKET_GOREVLISI': return 1;
             case 'VARDIYA_SORUMLUSU': return 2;
             case 'PATRON': return 3;
+            case 'MARKET_SORUMLUSU': return 4;
             default: return 0;
         }
     }

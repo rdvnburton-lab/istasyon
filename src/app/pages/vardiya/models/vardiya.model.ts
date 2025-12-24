@@ -60,13 +60,20 @@ export interface Vardiya {
     guncellemeTarihi?: Date;
     kilitli: boolean; // Mühürlenmiş mi?
     dosyaAdi?: string;
+
+    // Silme Talebi
+    silinmeTalebiNedeni?: string;
+    silinmeTalebiOlusturanId?: number;
+    silinmeTalebiOlusturanAdi?: string;
 }
 
 export enum VardiyaDurum {
     ACIK = 'ACIK',
     ONAY_BEKLIYOR = 'ONAY_BEKLIYOR',
     ONAYLANDI = 'ONAYLANDI',
-    REDDEDILDI = 'REDDEDILDI'
+    REDDEDILDI = 'REDDEDILDI',
+    SILINME_ONAYI_BEKLIYOR = 'SILINME_ONAYI_BEKLIYOR',
+    SILINDI = 'SILINDI'
 }
 
 // Otomasyon Satış Verisi (Otomatik gelen)
@@ -234,6 +241,7 @@ export interface MarketTahsilat {
     personelAdi: string;
     nakit: number;
     krediKarti: number;
+    paroPuan: number;
     toplam: number;
     aciklama?: string;
     olusturmaTarihi: Date;

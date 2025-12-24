@@ -7,7 +7,8 @@ namespace IstasyonDemo.Api.Models
     {
         public int Id { get; set; }
         
-        public int IstasyonId { get; set; } // Şimdilik sabit veya parametrik olabilir
+        public int IstasyonId { get; set; }
+        public Istasyon? Istasyon { get; set; }
         
         public DateTime BaslangicTarihi { get; set; }
         
@@ -43,6 +44,13 @@ namespace IstasyonDemo.Api.Models
         
         [MaxLength(500)]
         public string? RedNedeni { get; set; }
+
+        // Silme Talebi
+        [MaxLength(500)]
+        public string? SilinmeTalebiNedeni { get; set; }
+        public int? SilinmeTalebiOlusturanId { get; set; }
+        [MaxLength(100)]
+        public string? SilinmeTalebiOlusturanAdi { get; set; }
         
         // Navigation Properties
         public ICollection<OtomasyonSatis> OtomasyonSatislar { get; set; } = new List<OtomasyonSatis>();

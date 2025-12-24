@@ -464,8 +464,8 @@ export class VardiyaService {
         const currentUser = this.authService.getCurrentUser();
 
         // Eğer parametre olarak gelmediyse giriş yapan kullanıcıyı al
-        const finalOnaylayanId = onaylayanId || currentUser?.id || 0;
-        const finalOnaylayanAdi = currentUser ? `${currentUser.ad} ${currentUser.soyad}` : 'Sistem';
+        const finalOnaylayanId = onaylayanId || 0; // Token'dan ID alamıyoruz şimdilik, 0 veya token decode edilmeli
+        const finalOnaylayanAdi = currentUser ? currentUser.username : 'Sistem';
 
         // DB'de güncelle
         return from(this.dbService.onayla(vardiyaId, finalOnaylayanId, finalOnaylayanAdi)).pipe(
@@ -494,8 +494,8 @@ export class VardiyaService {
     vardiyaReddet(vardiyaId: number, redNedeni: string): Observable<Vardiya> {
         const vardiya = this.aktifVardiya.value;
         const currentUser = this.authService.getCurrentUser();
-        const onaylayanId = currentUser?.id || 0;
-        const onaylayanAdi = currentUser ? `${currentUser.ad} ${currentUser.soyad}` : 'Sistem';
+        const onaylayanId = 0; // Token'dan ID alamıyoruz şimdilik
+        const onaylayanAdi = currentUser ? currentUser.username : 'Sistem';
 
         return from(this.dbService.reddet(vardiyaId, onaylayanId, onaylayanAdi, redNedeni)).pipe(
             map(() => {

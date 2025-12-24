@@ -1,6 +1,10 @@
 using IstasyonDemo.Api.Data;
+using IstasyonDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +35,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 
+// JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? "super_secret_key_change_this_in_production_12345";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -53,6 +78,45 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<AppDbContext>();
         // Migration dosyalari olmasa bile tablolari sifirdan olusturur
         context.Database.EnsureCreated();
+
+        // Seed Default Station
+        if (!context.Istasyonlar.Any())
+        {
+            context.Istasyonlar.Add(new Istasyon { Ad = "Merkez İstasyon", Adres = "Merkez", Aktif = true });
+            context.SaveChanges();
+        }
+
+        // Seed Users
+        // Admin
+        if (!context.Users.Any(u => u.Username == "admin"))
+        {
+            context.Users.Add(new User { Username = "admin", Role = "admin", PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") });
+            context.SaveChanges();
+        }
+
+        // Vardiya Sorumlusu (Demo)
+        if (!context.Users.Any(u => u.Username == "vardiya"))
+        {
+            context.Users.Add(new User { Username = "vardiya", Role = "vardiya sorumlusu", PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") });
+            context.SaveChanges();
+        }
+
+        // Patron (Demo)
+        if (!context.Users.Any(u => u.Username == "patron"))
+        {
+            context.Users.Add(new User { Username = "patron", Role = "patron", PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") });
+            context.SaveChanges();
+        }
+
+        // Ensure Patron owns Merkez Istasyon
+        var patronUser = context.Users.FirstOrDefault(u => u.Username == "patron");
+        var merkezIstasyon = context.Istasyonlar.FirstOrDefault(u => u.Ad == "Merkez İstasyon");
+
+        if (patronUser != null && merkezIstasyon != null && merkezIstasyon.PatronId == null)
+        {
+            merkezIstasyon.PatronId = patronUser.Id;
+            context.SaveChanges();
+        }
     }
     catch (Exception ex)
     {
@@ -73,6 +137,10 @@ app.UseRouting();
 app.UseCors("AllowAngular");
 
 // app.UseHttpsRedirection(); // Coolify/Traefik zaten HTTPS yönetiyor, uygulama içinde yönlendirme çakışma yapabilir
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -1,74 +1,89 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from, of } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
-import { Personel, PersonelRol } from '../pages/vardiya/models/vardiya.model';
-import { DbService } from '../pages/vardiya/services/db.service';
+import { Injectable, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap, Subject, Subscription, merge, fromEvent, timer, throttleTime } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+export interface User {
+    id?: number;
+    username: string;
+    role: string;
+    token?: string;
+}
+
+export interface AuthResponse {
+    token: string;
+    username: string;
+    role: string;
+    id?: number;
+}
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private currentUserSubject = new BehaviorSubject<Personel | null>(null);
+    private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
+    private apiUrl = `${environment.apiUrl}/auth`;
 
-    constructor(private dbService: DbService) {
-        // Uygulama açıldığında varsa oturumu yükle (basitçe localStorage'dan)
+    private idleWarningSubject = new Subject<void>();
+    public idleWarning$ = this.idleWarningSubject.asObservable();
+
+    private lastActivity: number = Date.now();
+    private checkInterval: any;
+    private readonly IDLE_LIMIT = 15 * 60 * 1000; // 15 dakika
+    private readonly WARNING_LIMIT = 14 * 60 * 1000; // 14 dakika (Son 1 dakika uyarı)
+    private warningShown = false;
+    private activitySubscription?: Subscription;
+
+    constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {
         this.loadUserFromStorage();
+        if (this.isAuthenticated()) {
+            this.startIdleMonitoring();
+        }
     }
 
     private loadUserFromStorage(): void {
-        const storedUser = localStorage.getItem('currentUser');
+        const storedUser = sessionStorage.getItem('currentUser');
         if (storedUser) {
             try {
                 const user = JSON.parse(storedUser);
                 this.currentUserSubject.next(user);
             } catch (e) {
                 console.error('Kayıtlı kullanıcı yüklenemedi', e);
-                localStorage.removeItem('currentUser');
+                sessionStorage.removeItem('currentUser');
             }
         }
     }
 
-    login(username: string): Observable<boolean> {
-        // Şifre kontrolü yok, sadece kullanıcı adı ile giriş
-        // DB'den kullanıcıyı bul
-        return from(this.dbService.getPersonelByKey(username)).pipe(
-            map(personel => {
-                if (personel) {
-                    // Personel modeline dönüştür
-                    const user: Personel = {
-                        id: personel.id!,
-                        keyId: personel.keyId,
-                        ad: personel.ad,
-                        soyad: personel.soyad,
-                        tamAd: personel.tamAd,
-                        istasyonId: personel.istasyonId,
-                        rol: personel.rol as PersonelRol,
-                        aktif: personel.aktif
-                    };
-                    this.setCurrentUser(user);
-                    return true;
-                }
-                return false;
-            }),
-            catchError(err => {
-                console.error('Giriş hatası:', err);
-                return of(false);
+    login(username: string, password: string): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { username, password }).pipe(
+            tap(response => {
+                const user: User = {
+                    id: this.getUserIdFromToken(response.token),
+                    username: response.username,
+                    role: response.role,
+                    token: response.token
+                };
+                this.setCurrentUser(user);
+                this.startIdleMonitoring();
             })
         );
     }
 
     logout(): void {
-        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('currentUser');
+        this.stopIdleMonitoring();
+        this.router.navigate(['/login']);
         this.currentUserSubject.next(null);
     }
 
-    private setCurrentUser(user: Personel): void {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+    private setCurrentUser(user: User): void {
+        sessionStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
     }
 
-    getCurrentUser(): Personel | null {
+    getCurrentUser(): User | null {
         return this.currentUserSubject.value;
     }
 
@@ -76,8 +91,67 @@ export class AuthService {
         return !!this.currentUserSubject.value;
     }
 
-    hasRole(rol: PersonelRol): boolean {
+    getToken(): string | null {
         const user = this.getCurrentUser();
-        return user ? user.rol === rol : false;
+        return user ? user.token || null : null;
+    }
+    public startIdleMonitoring() {
+        this.lastActivity = Date.now();
+        this.warningShown = false;
+
+        this.ngZone.runOutsideAngular(() => {
+            const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+            const eventStreams = events.map(ev => fromEvent(document, ev));
+
+            this.activitySubscription = merge(...eventStreams).pipe(throttleTime(1000)).subscribe(() => {
+                this.lastActivity = Date.now();
+                if (this.warningShown) {
+                    this.ngZone.run(() => {
+                        this.warningShown = false;
+                        // Kullanıcı geri döndü, uyarıyı kapatmak için bir event fırlatılabilir veya dialog otomatik kapanabilir
+                        // Şimdilik sadece timer resetleniyor, dialog logic'i component'te
+                    });
+                }
+            });
+
+            this.checkInterval = setInterval(() => {
+                const now = Date.now();
+                const idleDuration = now - this.lastActivity;
+
+                if (idleDuration > this.IDLE_LIMIT) {
+                    this.ngZone.run(() => {
+                        this.logout();
+                    });
+                } else if (idleDuration > this.WARNING_LIMIT && !this.warningShown) {
+                    this.ngZone.run(() => {
+                        this.warningShown = true;
+                        this.idleWarningSubject.next();
+                    });
+                }
+            }, 10000); // 10 saniyede bir kontrol et
+        });
+    }
+
+    public stopIdleMonitoring() {
+        if (this.checkInterval) {
+            clearInterval(this.checkInterval);
+        }
+        if (this.activitySubscription) {
+            this.activitySubscription.unsubscribe();
+        }
+    }
+
+    public resetIdle() {
+        this.lastActivity = Date.now();
+        this.warningShown = false;
+    }
+
+    private getUserIdFromToken(token: string): number | undefined {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.id ? parseInt(payload.id, 10) : undefined;
+        } catch (e) {
+            return undefined;
+        }
     }
 }

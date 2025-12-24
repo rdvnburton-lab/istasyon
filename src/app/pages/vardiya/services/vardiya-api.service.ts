@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vardiya, OtomasyonSatis, FiloSatis, YakitTuru } from '../models/vardiya.model';
 import { environment } from '../../../../environments/environment';
@@ -132,5 +132,17 @@ export class VardiyaApiService {
 
     vardiyaReddet(id: number, onaylayanId: number, onaylayanAdi: string, redNedeni: string): Observable<any> {
         return this.http.post(`${this.apiUrl}/${id}/reddet`, { onaylayanId, onaylayanAdi, redNedeni });
+    }
+
+    vardiyaSilmeTalebi(id: number, nedeni: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/${id}/silme-talebi`, { nedeni });
+    }
+
+    getVardiyaLoglari(vardiyaId?: number, limit: number = 100): Observable<any[]> {
+        let params = new HttpParams().set('limit', limit.toString());
+        if (vardiyaId) {
+            params = params.set('vardiyaId', vardiyaId.toString());
+        }
+        return this.http.get<any[]>(`${this.apiUrl}/loglar`, { params });
     }
 }
