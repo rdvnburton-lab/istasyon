@@ -306,7 +306,7 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     }
 
     updateOzet(): void {
-        this.vardiyaService.getMarketOzet().subscribe((ozet: MarketOzet) => {
+        this.vardiyaService.getMarketOzet().subscribe((ozet: MarketOzet | null) => {
             this.marketOzet = ozet;
         });
     }

@@ -1,0 +1,57 @@
+<div class="layout-topbar">
+    <div class="layout-topbar-logo-container">
+        <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
+            <i class="pi pi-bars"></i>
+        </button>
+        <a class="layout-topbar-logo" routerLink="/">
+            <img src="assets/logo.svg" alt="logo" style="height: 35px;">
+            <span>Tigin Teknoloji</span>
+        </a>
+    </div>
+
+    <!-- User Info Section (for non-admin users) -->
+    <div class="layout-topbar-user-info" *ngIf="userInfo && !isAdmin">
+        <div class="user-info-content">
+            <div class="user-name">
+                <i class="pi pi-user"></i>
+                <span>{{userInfo.adSoyad}}</span>
+                <span class="user-role-badge">{{getRoleLabel(userInfo.rol)}}</span>
+            </div>
+            <div class="user-station">
+                <i class="pi pi-building"></i>
+                <span>{{userInfo.istasyonAdi}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout-topbar-actions">
+        <!-- Notifications -->
+        <div class="notification-wrapper">
+            <button type="button" class="layout-topbar-action notification-button"
+                (click)="notificationMenu.toggle($event)">
+                <i class="pi pi-bell" [class.has-notifications]="unreadNotifications > 0"></i>
+                <span class="notification-badge" *ngIf="unreadNotifications > 0">{{unreadNotifications}}</span>
+            </button>
+            <p-menu #notificationMenu [model]="notificationItems" [popup]="true" styleClass="notification-menu">
+                <ng-template pTemplate="start">
+                    <div class="notification-header">
+                        <span class="notification-title">Bildirimler</span>
+                        <button pButton type="button" label="Tümünü Okundu İşaretle" class="p-button-text p-button-sm"
+                            (click)="markAllAsRead()" *ngIf="unreadNotifications > 0"></button>
+                    </div>
+                </ng-template>
+            </p-menu>
+        </div>
+
+        <!-- User Menu -->
+        <div class="layout-topbar-menu">
+            <div class="layout-topbar-menu-content">
+                <button type="button" class="layout-topbar-action" (click)="menu.toggle($event)">
+                    <i class="pi pi-user"></i>
+                    <span>{{currentUser?.username || 'Profil'}}</span>
+                </button>
+                <p-menu #menu [model]="items" [popup]="true"></p-menu>
+            </div>
+        </div>
+    </div>
+</div>

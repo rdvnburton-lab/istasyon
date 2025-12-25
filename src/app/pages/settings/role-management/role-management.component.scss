@@ -1,0 +1,15 @@
+:host ::ng-deep {
+    .p-dialog .p-dialog-content {
+        padding: 1.5rem;
+    }
+
+    .field {
+        margin-bottom: 1.5rem;
+    }
+
+    .field>label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+}

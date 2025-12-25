@@ -40,6 +40,8 @@ export class PersonelTanimlamaComponent implements OnInit {
     editMode = false;
     loading = false;
     isMarketSorumlusu = false;
+    isVardiyaSorumlusu = false;
+    isIstasyonSorumlusu = false;
     filterFields: string[] = ['otomasyonAdi', 'adSoyad', 'keyId'];
 
     currentPersonel: Personel = {
@@ -68,7 +70,9 @@ export class PersonelTanimlamaComponent implements OnInit {
     ngOnInit(): void {
         const user = this.authService.getCurrentUser();
         const role = user?.role?.toLowerCase();
-        this.isMarketSorumlusu = role === 'market_sorumlusu';
+        this.isMarketSorumlusu = role === 'market sorumlusu' || role === 'market_sorumlusu';
+        this.isVardiyaSorumlusu = role === 'vardiya sorumlusu' || role === 'vardiya_sorumlusu';
+        this.isIstasyonSorumlusu = role === 'istasyon sorumlusu' || role === 'istasyon_sorumlusu';
 
         if (this.isMarketSorumlusu) {
             this.filterFields = ['adSoyad', 'telefon'];
@@ -83,27 +87,37 @@ export class PersonelTanimlamaComponent implements OnInit {
         const role = user?.role?.toLowerCase();
         const isAdminOrPatron = role === 'admin' || role === 'patron';
 
-        if (role === 'market_sorumlusu') {
+        if (this.isMarketSorumlusu) {
+            // Market sorumlusu sadece market personeli ekleyebilir
             this.roller = this.roller.filter(r => r.value === 'MARKET_GOREVLISI' || r.value === 'MARKET_SORUMLUSU');
-        } else if (role === 'vardiya_sorumlusu') {
+        } else if (this.isVardiyaSorumlusu) {
+            // Vardiya sorumlusu sadece pompacı/vardiya sorumlusu ekleyebilir
             this.roller = this.roller.filter(r => r.value === 'POMPACI' || r.value === 'VARDIYA_SORUMLUSU');
-        } else if (!isAdminOrPatron && role !== 'istasyon_sorumlusu') {
+        } else if (this.isIstasyonSorumlusu) {
+            // İstasyon sorumlusu tüm rolleri ekleyebilir (patron hariç)
+            this.roller = this.roller.filter(r => r.value !== 'PATRON');
+        } else if (!isAdminOrPatron) {
+            // Diğer roller sadece temel personeli görebilir
             this.roller = this.roller.filter(r => r.value === 'POMPACI' || r.value === 'MARKET_GOREVLISI');
         }
     }
 
     loadPersoneller(): void {
         this.loading = true;
-        const user = this.authService.getCurrentUser();
 
         this.personelService.getAll().subscribe({
             next: (data) => {
-                const role = user?.role?.toLowerCase();
-                if (role === 'market_sorumlusu') {
-                    this.personeller = data.filter(p => p.rol && p.rol.includes('MARKET'));
-                } else if (role === 'vardiya_sorumlusu') {
+                if (this.isMarketSorumlusu) {
+                    // Market sorumlusu sadece market personelini görür
+                    this.personeller = data.filter(p => p.rol && (p.rol === 'MARKET_GOREVLISI' || p.rol === 'MARKET_SORUMLUSU'));
+                } else if (this.isVardiyaSorumlusu) {
+                    // Vardiya sorumlusu sadece pompacı ve vardiya sorumlusunu görür
                     this.personeller = data.filter(p => p.rol === 'POMPACI' || p.rol === 'VARDIYA_SORUMLUSU');
+                } else if (this.isIstasyonSorumlusu) {
+                    // İstasyon sorumlusu tüm personeli görür
+                    this.personeller = data;
                 } else {
+                    // Admin/Patron tüm personeli görür
                     this.personeller = data;
                 }
                 this.loading = false;

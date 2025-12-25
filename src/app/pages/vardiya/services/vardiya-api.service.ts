@@ -106,7 +106,6 @@ export class VardiyaApiService {
         return this.http.get<any>(`${this.apiUrl}/${id}/karsilastirma`);
     }
 
-
     private mapYakitTuru(yakitTuru: string): number {
         // Backend Enum ile eşleştirme
         switch (yakitTuru) {
@@ -127,15 +126,15 @@ export class VardiyaApiService {
     }
 
     vardiyaOnayla(id: number, onaylayanId: number, onaylayanAdi: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/onayla`, { onaylayanId, onaylayanAdi });
+        return this.http.post(`${this.apiUrl}/${id}/onayla`, { OnaylayanId: onaylayanId, OnaylayanAdi: onaylayanAdi });
     }
 
     vardiyaReddet(id: number, onaylayanId: number, onaylayanAdi: string, redNedeni: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/reddet`, { onaylayanId, onaylayanAdi, redNedeni });
+        return this.http.post(`${this.apiUrl}/${id}/reddet`, { OnaylayanId: onaylayanId, OnaylayanAdi: onaylayanAdi, RedNedeni: redNedeni });
     }
 
     vardiyaSilmeTalebi(id: number, nedeni: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/silme-talebi`, { nedeni });
+        return this.http.post(`${this.apiUrl}/${id}/silme-talebi`, { Nedeni: nedeni });
     }
 
     getVardiyaLoglari(vardiyaId?: number, limit: number = 100): Observable<any[]> {
@@ -144,5 +143,13 @@ export class VardiyaApiService {
             params = params.set('vardiyaId', vardiyaId.toString());
         }
         return this.http.get<any[]>(`${this.apiUrl}/loglar`, { params });
+    }
+
+    addPompaGider(vardiyaId: number, gider: any): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${vardiyaId}/gider`, gider);
+    }
+
+    deletePompaGider(vardiyaId: number, giderId: number): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/${vardiyaId}/gider/${giderId}`);
     }
 }

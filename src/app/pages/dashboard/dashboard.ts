@@ -7,15 +7,21 @@ import { BestSellingWidget } from './components/bestsellingwidget';
 import { RevenueStreamWidget } from './components/revenuestreamwidget';
 import { SorumluDashboardComponent } from './components/sorumlu-dashboard.component';
 import { PatronDashboardComponent } from './components/patron-dashboard.component';
+import { AdminDashboardComponent } from './components/admin-dashboard.component';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-dashboard',
-    imports: [CommonModule, StatsWidget, RecentSalesWidget, BestSellingWidget, RevenueStreamWidget, NotificationsWidget, SorumluDashboardComponent, PatronDashboardComponent],
+    imports: [CommonModule, StatsWidget, RecentSalesWidget, BestSellingWidget, RevenueStreamWidget, NotificationsWidget, SorumluDashboardComponent, PatronDashboardComponent, AdminDashboardComponent],
     template: `
-        <div *ngIf="isPatron; else checkSorumlu">
-            <app-patron-dashboard />
+        <div *ngIf="isAdmin; else checkPatron">
+            <app-admin-dashboard />
         </div>
+        <ng-template #checkPatron>
+            <div *ngIf="isPatron; else checkSorumlu">
+                <app-patron-dashboard />
+            </div>
+        </ng-template>
         <ng-template #checkSorumlu>
             <div *ngIf="isSorumlu; else defaultDashboard">
                 <app-sorumlu-dashboard />
@@ -39,12 +45,14 @@ import { AuthService } from '../../services/auth.service';
 export class Dashboard implements OnInit {
     isSorumlu: boolean = false;
     isPatron: boolean = false;
+    isAdmin: boolean = false;
 
     constructor(private authService: AuthService) { }
 
     ngOnInit() {
         const user = this.authService.getCurrentUser();
-        this.isSorumlu = user?.role === 'vardiya_sorumlusu' || user?.role === 'market_sorumlusu';
-        this.isPatron = user?.role === 'patron' || user?.role === 'admin';
+        this.isAdmin = user?.role === 'admin';
+        this.isPatron = user?.role === 'patron';
+        this.isSorumlu = user?.role === 'vardiya sorumlusu' || user?.role === 'market sorumlusu' || user?.role === 'istasyon sorumlusu';
     }
 }

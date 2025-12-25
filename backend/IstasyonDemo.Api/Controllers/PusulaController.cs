@@ -24,6 +24,7 @@ namespace IstasyonDemo.Api.Controllers
             // If vardiyaId doesn't exist, we simply return an empty list
             var pusulalar = await _context.Pusulalar
                 .AsNoTracking()
+                .Include(p => p.KrediKartiDetaylari)
                 .Where(p => p.VardiyaId == vardiyaId)
                 .OrderBy(p => p.PersonelAdi)
                 .ToListAsync();
@@ -35,6 +36,7 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> GetById(int vardiyaId, int id)
         {
             var pusula = await _context.Pusulalar
+                .Include(p => p.KrediKartiDetaylari)
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
 
             if (pusula == null)
@@ -47,6 +49,7 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> GetByPersonel(int vardiyaId, string personelAdi)
         {
             var pusula = await _context.Pusulalar
+                .Include(p => p.KrediKartiDetaylari)
                 .FirstOrDefaultAsync(p => p.VardiyaId == vardiyaId && p.PersonelAdi == personelAdi);
 
             if (pusula == null)
@@ -86,6 +89,23 @@ namespace IstasyonDemo.Api.Controllers
             _context.Pusulalar.Add(pusula);
             await _context.SaveChangesAsync();
 
+            // Kredi Kartı Detaylarını İlişkisel Tabloya Kaydet
+            if (dto.KrediKartiDetayList != null && dto.KrediKartiDetayList.Any())
+            {
+                foreach (var detay in dto.KrediKartiDetayList)
+                {
+                    _context.PusulaKrediKartiDetaylari.Add(new PusulaKrediKartiDetay
+                    {
+                        PusulaId = pusula.Id,
+                        BankaAdi = detay.BankaAdi,
+                        Tutar = detay.Tutar
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+            // Geriye dönük uyumluluk: Eğer JSON string gelmişse ama liste gelmemişse, parse edip kaydetmeye çalışabiliriz
+            // Ancak şimdilik frontend'in yeni yapıyı göndermesini bekleyeceğiz.
+
             return CreatedAtAction(nameof(GetById), new { vardiyaId, id = pusula.Id }, pusula);
         }
 
@@ -107,6 +127,27 @@ namespace IstasyonDemo.Api.Controllers
             pusula.GuncellemeTarihi = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
+
+            // Kredi Kartı Detaylarını Güncelle (Sil ve Yeniden Ekle)
+            if (dto.KrediKartiDetayList != null)
+            {
+                var existingDetails = await _context.PusulaKrediKartiDetaylari
+                    .Where(pk => pk.PusulaId == id)
+                    .ToListAsync();
+                
+                _context.PusulaKrediKartiDetaylari.RemoveRange(existingDetails);
+
+                foreach (var detay in dto.KrediKartiDetayList)
+                {
+                    _context.PusulaKrediKartiDetaylari.Add(new PusulaKrediKartiDetay
+                    {
+                        PusulaId = pusula.Id,
+                        BankaAdi = detay.BankaAdi,
+                        Tutar = detay.Tutar
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
 
             return Ok(pusula);
         }

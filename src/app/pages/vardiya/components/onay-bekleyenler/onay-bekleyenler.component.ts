@@ -273,7 +273,7 @@ export class OnayBekleyenlerComponent implements OnInit {
             acceptButtonStyleClass: acceptButtonStyleClass,
             accept: () => {
                 const currentUser = this.authService.getCurrentUser();
-                const onaylayanId = 0; // Token'dan ID alamıyoruz şimdilik
+                const onaylayanId = currentUser?.id || 1; // Token'dan ID alınıyor
                 const onaylayanAdi = currentUser ? currentUser.username : 'Sistem';
 
                 this.vardiyaApiService.vardiyaOnayla(vardiya.id, onaylayanId, onaylayanAdi).subscribe({
@@ -304,7 +304,7 @@ export class OnayBekleyenlerComponent implements OnInit {
         }
 
         const currentUser = this.authService.getCurrentUser();
-        const onaylayanId = 0; // Token'dan ID alamıyoruz şimdilik
+        const onaylayanId = currentUser?.id || 1; // Token'dan ID alınıyor
         const onaylayanAdi = currentUser ? currentUser.username : 'Sistem';
 
         this.vardiyaApiService.vardiyaReddet(this.seciliVardiya.id, onaylayanId, onaylayanAdi, this.redNedeni).subscribe({

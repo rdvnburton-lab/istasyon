@@ -23,7 +23,9 @@ export class AppMenu {
 
     ngOnInit() {
         const user = this.authService.getCurrentUser();
-        const isAdminOrPatron = user?.role === 'admin' || user?.role === 'patron';
+        const isAdmin = user?.role === 'admin';
+        const isPatron = user?.role === 'patron';
+        const isAdminOrPatron = isAdmin || isPatron;
 
         this.model = [
             {
@@ -35,16 +37,26 @@ export class AppMenu {
                         routerLink: ['/dashboard']
                     }
                 ]
-            },
-            {
+            }
+        ];
+
+        // Vardiya ve Raporlar (Admin görmez)
+        if (!isAdmin) {
+            const isIstasyonSorumlusu = user?.role === 'istasyon sorumlusu';
+            const isVardiyaSorumlusu = user?.role === 'vardiya sorumlusu';
+            const isMarketSorumlusu = user?.role === 'market sorumlusu';
+
+            this.model.push({
                 label: 'Vardiya Yönetimi',
                 items: [
-                    ...(user?.role !== 'market_sorumlusu' ? [{
+                    // İstasyon sorumlusu ve vardiya sorumlusu vardiya listesini görebilir
+                    ...(!isMarketSorumlusu ? [{
                         label: 'Vardiya Listesi',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/vardiya']
                     }] : []),
-                    ...(user?.role !== 'vardiya_sorumlusu' ? [{
+                    // İstasyon sorumlusu ve market sorumlusu market mutabakatını görebilir
+                    ...(!isVardiyaSorumlusu ? [{
                         label: 'Market Mutabakatı',
                         icon: 'pi pi-fw pi-shopping-bag',
                         routerLink: ['/vardiya/market']
@@ -55,8 +67,10 @@ export class AppMenu {
                         routerLink: ['/vardiya/karsilastirma']
                     }
                 ]
-            },
-            {
+            });
+
+
+            this.model.push({
                 label: 'Raporlar',
                 items: [
                     {
@@ -64,7 +78,7 @@ export class AppMenu {
                         icon: 'pi pi-fw pi-file',
                         routerLink: ['/vardiya/raporlar/vardiya']
                     },
-                    ...(user?.role !== 'market_sorumlusu' ? [
+                    ...(!isMarketSorumlusu ? [
                         {
                             label: 'Personel Karnesi',
                             icon: 'pi pi-fw pi-users',
@@ -77,54 +91,74 @@ export class AppMenu {
                         }
                     ] : [])
                 ]
-            },
-            {
-                label: 'Yönetim',
-                items: [
-                    ...(isAdminOrPatron ? [
-                        {
-                            label: 'İşlem Geçmişi',
-                            icon: 'pi pi-fw pi-history',
-                            routerLink: ['/vardiya/loglar']
-                        },
-                        {
-                            label: 'Onay Bekleyenler',
-                            icon: 'pi pi-fw pi-check-circle',
-                            routerLink: ['/vardiya/onay-bekleyenler']
-                        },
-                        {
-                            label: 'Kullanıcı Yönetimi',
-                            icon: 'pi pi-fw pi-users',
-                            routerLink: ['/yonetim/kullanici']
-                        }
-                    ] : []),
-                    {
-                        label: 'Personel Tanımları',
-                        icon: 'pi pi-fw pi-user',
-                        routerLink: ['/vardiya/tanimlamalar/personel']
-                    }
-                ]
-            },
-            {
-                label: 'Sistem',
-                items: [
-                    {
-                        label: 'Ayarlar',
-                        icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/sistem/ayarlar']
-                    }
-                ]
-            }
-        ];
+            });
+        }
 
+        // Yönetim Menüsü
+        const yonetimItems = [];
         if (isAdminOrPatron) {
-            this.model.splice(3, 0, {
-                label: 'Admin Paneli',
+            yonetimItems.push({
+                label: 'İşlem Geçmişi',
+                icon: 'pi pi-fw pi-history',
+                routerLink: ['/vardiya/loglar']
+            });
+
+            if (isPatron) {
+                yonetimItems.push({
+                    label: 'Onay Bekleyenler',
+                    icon: 'pi pi-fw pi-check-circle',
+                    routerLink: ['/vardiya/onay-bekleyenler']
+                });
+            }
+
+            yonetimItems.push({
+                label: 'Kullanıcı Yönetimi',
+                icon: 'pi pi-fw pi-users',
+                routerLink: ['/yonetim/kullanici']
+            });
+        }
+
+        if (!isAdmin) {
+            yonetimItems.push({
+                label: 'Personel Tanımları',
+                icon: 'pi pi-fw pi-user',
+                routerLink: ['/vardiya/tanimlamalar/personel']
+            });
+        }
+
+        if (yonetimItems.length > 0) {
+            this.model.push({
+                label: 'Yönetim',
+                items: yonetimItems
+            });
+        }
+
+        // Admin Paneli (Sadece Admin ve Patron)
+        if (isAdminOrPatron) {
+            this.model.push({
+                label: 'Sistem Yönetimi',
                 items: [
                     {
                         label: 'İstasyon Yönetimi',
                         icon: 'pi pi-fw pi-building',
                         routerLink: ['/admin/istasyonlar']
+                    },
+                    {
+                        label: 'Sistem Sağlığı',
+                        icon: 'pi pi-fw pi-heart-fill',
+                        routerLink: ['/admin/health'],
+                        visible: isAdmin
+                    },
+                    {
+                        label: 'Rol Yönetimi',
+                        icon: 'pi pi-fw pi-id-card',
+                        routerLink: ['/settings/roles'],
+                        visible: isAdmin
+                    },
+                    {
+                        label: 'Ayarlar',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/sistem/ayarlar']
                     }
                 ]
             });

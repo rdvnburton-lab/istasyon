@@ -12,6 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { UserService, UserDto, CreateUserDto, UpdateUserDto } from '../../../services/user.service';
 import { YonetimService, Istasyon } from '../services/yonetim.service';
 import { AuthService } from '../../../services/auth.service';
+import { RoleService, Role } from '../../../services/role.service';
 
 @Component({
     selector: 'app-kullanici-yonetimi',
@@ -84,7 +85,7 @@ import { AuthService } from '../../../services/auth.service';
 
                     <div class="field" *ngIf="!(isPatron && user.id === currentUserId)">
                         <label for="role">Rol</label>
-                        <p-select id="role" [options]="roles" [(ngModel)]="user.role" placeholder="Rol Seçiniz" optionLabel="label" optionValue="value" (onChange)="onRoleChange()"></p-select>
+                        <p-select id="role" [options]="roles" [(ngModel)]="user.roleId" placeholder="Rol Seçiniz" optionLabel="ad" optionValue="id" (onChange)="onRoleChange($event)"></p-select>
                     </div>
 
                     <!-- Patron için Firma Seçimi -->
@@ -130,7 +131,8 @@ export class KullaniciYonetimiComponent implements OnInit {
         private userService: UserService,
         private yonetimService: YonetimService,
         private messageService: MessageService,
-        private authService: AuthService
+        private authService: AuthService,
+        private roleService: RoleService
     ) { }
 
     ngOnInit() {
@@ -139,19 +141,20 @@ export class KullaniciYonetimiComponent implements OnInit {
         this.isPatron = currentUser?.role === 'patron';
         this.currentUserId = currentUser?.id;
 
-        this.roles = [
-            { label: 'Vardiya Sorumlusu', value: 'vardiya_sorumlusu' },
-            { label: 'Market Sorumlusu', value: 'market_sorumlusu' },
-            { label: 'İstasyon Sorumlusu', value: 'istasyon_sorumlusu' }
-        ];
-
-        if (this.isAdmin) {
-            this.roles.push({ label: 'Yönetici', value: 'admin' });
-            this.roles.push({ label: 'Patron', value: 'patron' });
-        }
-
+        this.loadRoles();
         this.loadUsers();
         this.loadIstasyonlar();
+    }
+
+    loadRoles() {
+        this.roleService.getAll().subscribe(data => {
+            if (this.isPatron) {
+                // Patron can only assign non-admin/non-patron roles
+                this.roles = data.filter(r => r.ad !== 'admin' && r.ad !== 'patron');
+            } else {
+                this.roles = data;
+            }
+        });
     }
 
     loadUsers() {
@@ -171,7 +174,7 @@ export class KullaniciYonetimiComponent implements OnInit {
     }
 
     openNew() {
-        this.user = { role: 'vardiya_sorumlusu' }; // Default role
+        this.user = { roleId: null, role: '' };
         this.submitted = false;
         this.changePassword = false;
         this.dialogVisible = true;
@@ -203,8 +206,9 @@ export class KullaniciYonetimiComponent implements OnInit {
         this.submitted = false;
     }
 
-    onRoleChange() {
-        // Rol değiştiğinde istasyon seçimini sıfırla, çünkü farklı listelerden seçim yapılacak
+    onRoleChange(event: any) {
+        const selectedRole = this.roles.find(r => r.id === event.value);
+        this.user.role = selectedRole?.ad;
         this.user.istasyonId = null;
     }
 
@@ -218,7 +222,7 @@ export class KullaniciYonetimiComponent implements OnInit {
             if (this.user.id) {
                 const updateDto: UpdateUserDto = {
                     username: this.user.username,
-                    role: this.user.role,
+                    roleId: this.user.roleId,
                     istasyonId: this.user.istasyonId,
                     adSoyad: this.user.adSoyad,
                     telefon: this.user.telefon
@@ -241,7 +245,7 @@ export class KullaniciYonetimiComponent implements OnInit {
                 const createDto: CreateUserDto = {
                     username: this.user.username,
                     password: this.user.password,
-                    role: this.user.role,
+                    roleId: this.user.roleId,
                     istasyonId: this.user.istasyonId,
                     adSoyad: this.user.adSoyad,
                     telefon: this.user.telefon

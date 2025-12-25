@@ -18,6 +18,7 @@ export interface Pusula {
     paroPuan: number;
     mobilOdeme: number;
     krediKartiDetay?: KrediKartiDetay[];
+    krediKartiDetayList?: KrediKartiDetay[];
     aciklama?: string;
     olusturmaTarihi?: Date;
     guncellemeTarihi?: Date;
@@ -86,7 +87,11 @@ export class PusulaApiService {
     private mapFromBackend(data: any): Pusula {
         return {
             ...data,
-            krediKartiDetay: data.krediKartiDetay ? JSON.parse(data.krediKartiDetay) : [],
+            krediKartiDetay: (data.krediKartiDetayList && data.krediKartiDetayList.length > 0)
+                ? data.krediKartiDetayList.map((d: any) => ({ banka: d.bankaAdi, tutar: d.tutar }))
+                : (data.krediKartiDetaylari && data.krediKartiDetaylari.length > 0)
+                    ? data.krediKartiDetaylari.map((d: any) => ({ banka: d.bankaAdi, tutar: d.tutar }))
+                    : (data.krediKartiDetay ? JSON.parse(data.krediKartiDetay) : []),
             olusturmaTarihi: data.olusturmaTarihi ? new Date(data.olusturmaTarihi) : undefined,
             guncellemeTarihi: data.guncellemeTarihi ? new Date(data.guncellemeTarihi) : undefined
         };
@@ -102,6 +107,7 @@ export class PusulaApiService {
             paroPuan: pusula.paroPuan,
             mobilOdeme: pusula.mobilOdeme,
             krediKartiDetay: pusula.krediKartiDetay ? JSON.stringify(pusula.krediKartiDetay) : null,
+            krediKartiDetayList: pusula.krediKartiDetay ? pusula.krediKartiDetay.map(d => ({ bankaAdi: d.banka, tutar: d.tutar })) : [],
             aciklama: pusula.aciklama
         };
     }

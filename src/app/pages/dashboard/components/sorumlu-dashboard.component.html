@@ -1,0 +1,165 @@
+<div class="sorumlu-dashboard" *ngIf="data && !loading">
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <h1>Hoşgeldiniz, {{data.adSoyad}} 👋</h1>
+                <p>{{ getRoleLabel(data.rol) }} Paneli</p>
+            </div>
+            <div class="banner-info">
+                <div class="info-icon">
+                    <i class="pi pi-building"></i>
+                </div>
+                <div class="info-text">
+                    <div class="info-label">Firma / İstasyon</div>
+                    <div class="info-value">{{data.firmaAdi}} / {{data.istasyonAdi}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="banner-decoration"></div>
+        <div class="banner-decoration-2"></div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <!-- Pompa Vardiyası -->
+        <div class="stat-card stat-card-green" *ngIf="isVardiyaSorumlusu()">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <h3>Pompa Vardiyası</h3>
+            </div>
+            <div class="stat-body">
+                <div class="stat-status" *ngIf="data.aktifVardiyaId; else noActiveShift">
+                    <p-tag severity="success" value="Aktif Vardiya" [rounded]="true"></p-tag>
+                    <span class="stat-id">Vardiya #{{data.aktifVardiyaId}}</span>
+                </div>
+                <ng-template #noActiveShift>
+                    <p-tag severity="secondary" value="Vardiya Yok" [rounded]="true"></p-tag>
+                </ng-template>
+            </div>
+            <div class="stat-footer">
+                <button *ngIf="data.aktifVardiyaId" pButton label="Vardiyaya Git" icon="pi pi-arrow-right"
+                    class="p-button-success p-button-sm" (click)="goToVardiya(data.aktifVardiyaId!)"></button>
+                <button *ngIf="!data.aktifVardiyaId" pButton label="Yeni Vardiya" icon="pi pi-plus"
+                    class="p-button-outlined p-button-success p-button-sm" (click)="startVardiya()"></button>
+            </div>
+        </div>
+
+        <!-- Market Vardiyası -->
+        <div class="stat-card stat-card-blue" *ngIf="isMarketSorumlusu()">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="pi pi-shopping-bag"></i>
+                </div>
+                <h3>Market Vardiyası</h3>
+            </div>
+            <div class="stat-body">
+                <div class="stat-status" *ngIf="data.aktifMarketVardiyaId; else noActiveMarket">
+                    <p-tag severity="info" value="Aktif" [rounded]="true"></p-tag>
+                    <span class="stat-id">Market vardiyası devam ediyor</span>
+                </div>
+                <ng-template #noActiveMarket>
+                    <p-tag severity="secondary" value="Vardiya Yok" [rounded]="true"></p-tag>
+                </ng-template>
+            </div>
+            <div class="stat-footer">
+                <button pButton label="Market Paneli" icon="pi pi-arrow-right" class="p-button-info p-button-sm"
+                    (click)="router.navigate(['/vardiya/market'])"></button>
+            </div>
+        </div>
+
+        <!-- Bekleyen Onaylar -->
+        <div class="stat-card stat-card-orange">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="pi pi-exclamation-circle"></i>
+                </div>
+                <h3>Bekleyen Onaylar</h3>
+            </div>
+            <div class="stat-body">
+                <div class="stat-number">{{getTotalPendingApprovals()}}</div>
+                <p class="stat-description">Onay bekleyen işlem</p>
+            </div>
+            <div class="stat-footer">
+                <button pButton label="Listeyi Gör" icon="pi pi-list"
+                    class="p-button-outlined p-button-warning p-button-sm" (click)="goToPendingApprovals()"></button>
+            </div>
+        </div>
+
+        <!-- Son Vardiya Özeti (Pompa) -->
+        <div class="stat-card stat-card-success" *ngIf="isVardiyaSorumlusu()">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="pi pi-chart-line"></i>
+                </div>
+                <h3>Son Pompa Vardiyası</h3>
+            </div>
+            <div class="stat-body">
+                <div class="stat-amount">{{data.sonVardiyaTutar | currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+                <p class="stat-date" *ngIf="data.sonVardiyaTarihi">
+                    <i class="pi pi-calendar"></i>
+                    {{data.sonVardiyaTarihi | date:'dd.MM.yyyy HH:mm'}}
+                </p>
+                <p class="stat-date" *ngIf="!data.sonVardiyaTarihi">Henüz veri yok</p>
+            </div>
+        </div>
+
+        <!-- Son Market Vardiyası -->
+        <div class="stat-card stat-card-info" *ngIf="isMarketSorumlusu()">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="pi pi-shopping-cart"></i>
+                </div>
+                <h3>Son Market Vardiyası</h3>
+            </div>
+            <div class="stat-body">
+                <div class="stat-amount">{{data.sonMarketVardiyaTutar | currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+                <p class="stat-date" *ngIf="data.sonMarketVardiyaTarihi">
+                    <i class="pi pi-calendar"></i>
+                    {{data.sonMarketVardiyaTarihi | date:'dd.MM.yyyy HH:mm'}}
+                </p>
+                <p class="stat-date" *ngIf="!data.sonMarketVardiyaTarihi">Henüz veri yok</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <p-card header="Hızlı Erişim">
+            <div class="action-grid">
+                <button pButton label="Vardiya Listesi" icon="pi pi-list" class="p-button-outlined"
+                    *ngIf="isVardiyaSorumlusu()" (click)="router.navigate(['/vardiya'])"></button>
+
+                <button pButton label="Market Yönetimi" icon="pi pi-shopping-bag" class="p-button-outlined"
+                    *ngIf="isMarketSorumlusu()" (click)="router.navigate(['/vardiya/market'])"></button>
+
+                <button pButton label="Personel Tanımları" icon="pi pi-users" class="p-button-outlined"
+                    (click)="router.navigate(['/vardiya/tanimlamalar/personel'])"></button>
+
+                <button pButton label="Karşılaştırma Raporu" icon="pi pi-chart-bar" class="p-button-outlined"
+                    (click)="router.navigate(['/vardiya/karsilastirma'])"></button>
+
+                <button pButton label="Vardiya Raporu" icon="pi pi-file" class="p-button-outlined"
+                    (click)="router.navigate(['/vardiya/raporlar/vardiya'])"></button>
+
+                <button pButton label="Personel Karnesi" icon="pi pi-id-card" class="p-button-outlined"
+                    *ngIf="isVardiyaSorumlusu()" (click)="router.navigate(['/vardiya/raporlar/personel'])"></button>
+            </div>
+        </p-card>
+    </div>
+
+    <!-- Performance Chart (for İstasyon Sorumlusu) -->
+    <div class="performance-chart" *ngIf="isIstasyonSorumlusu()">
+        <p-card header="Haftalık Performans">
+            <p-chart type="line" [data]="weeklyChartData" [options]="weeklyChartOptions" height="300px"></p-chart>
+        </p-card>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+    <p>Dashboard yükleniyor...</p>
+</div>

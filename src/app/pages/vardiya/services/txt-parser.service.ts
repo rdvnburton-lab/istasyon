@@ -62,6 +62,11 @@ export class TxtParserService {
                     if (!baslangicTarih || tarih < baslangicTarih) baslangicTarih = tarih;
                     if (!bitisTarih || tarih > bitisTarih) bitisTarih = tarih;
 
+                    if (litre <= 0 || tutar <= 0) {
+                        console.warn(`0 değerli kayıt atlandı: ${temizSatir}`);
+                        continue;
+                    }
+
                     const satis: OtomasyonSatis = {
                         id: fisNo,
                         vardiyaId: 0,
@@ -94,6 +99,11 @@ export class TxtParserService {
                     const fisNo = parseInt(fisNoStr);
                     const pompaNo = parseInt(pompaNoStr);
 
+                    if (litre <= 0 || tutar <= 0) {
+                        console.warn(`0 değerli Otobilim kaydı atlandı: ${temizSatir}`);
+                        continue;
+                    }
+
                     const filo: FiloSatis = {
                         tarih,
                         filoKodu: 'OTOBILIM',
@@ -121,6 +131,11 @@ export class TxtParserService {
                     const fisNo = parseInt(fisNoStr);
                     const pompaNo = parseInt(pompaNoStr);
 
+                    if (litre <= 0 || tutar <= 0) {
+                        console.warn(`0 değerli Özel Satış kaydı atlandı: ${temizSatir}`);
+                        continue;
+                    }
+
                     const filo: FiloSatis = {
                         tarih,
                         filoKodu,
@@ -147,6 +162,11 @@ export class TxtParserService {
                     const tutar = parseInt(tutarStr) / 100;
                     const fisNo = parseInt(fisNoStr);
                     const pompaNo = parseInt(pompaNoStr);
+
+                    if (litre <= 0 || tutar <= 0) {
+                        console.warn(`0 değerli Filo kaydı atlandı: ${temizSatir}`);
+                        continue;
+                    }
 
                     const filo: FiloSatis = {
                         tarih,

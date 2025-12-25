@@ -26,7 +26,9 @@ namespace IstasyonDemo.Api.Controllers
             var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            IQueryable<User> query = _context.Users.Include(u => u.Istasyon);
+            IQueryable<User> query = _context.Users
+                .Include(u => u.Istasyon)
+                .Include(u => u.Role);
 
             if (currentUserRole == "patron")
             {
@@ -49,7 +51,8 @@ namespace IstasyonDemo.Api.Controllers
             {
                 Id = u.Id,
                 Username = u.Username,
-                Role = u.Role,
+                Role = u.Role != null ? u.Role.Ad : "",
+                RoleId = u.RoleId,
                 IstasyonId = u.IstasyonId,
                 IstasyonAdi = u.Istasyon != null ? u.Istasyon.Ad : null,
                 AdSoyad = u.AdSoyad,
@@ -66,18 +69,14 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            var query = _context.Users.Where(u => u.Role == role);
+            var query = _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Istasyon)
+                .Where(u => u.Role != null && u.Role.Ad == role);
 
             if (userRole == "patron")
             {
-                // Patron sadece kendi istasyonlarındaki veya boşta olan kullanıcıları görebilir mi?
-                // Basitlik için: Patron sadece kendi istasyonlarına atanmış kullanıcıları görsün.
-                // Veya tüm vardiya sorumlularını görsün ama atama yapabilsin?
-                // Kullanıcı "ilgili firma yetkisi dahilinde" dedi.
-                // Bu yüzden patronun sahip olduğu istasyonların ID'lerini bulup, kullanıcıların bu istasyonlarda olup olmadığına bakmalıyız.
-                // Ancak henüz atanmamış birini de atamak isteyebilir.
-                // Şimdilik tüm vardiya sorumlularını getiriyoruz, daha detaylı filtreleme gerekirse ekleriz.
-                // TODO: Patron için daha sıkı filtreleme eklenebilir.
+                // Patron için ek filtreleme gerekirse buraya eklenebilir
             }
 
             var users = await query
@@ -85,7 +84,8 @@ namespace IstasyonDemo.Api.Controllers
                 {
                     Id = u.Id,
                     Username = u.Username,
-                    Role = u.Role,
+                    Role = u.Role != null ? u.Role.Ad : "",
+                    RoleId = u.RoleId,
                     IstasyonId = u.IstasyonId,
                     IstasyonAdi = u.Istasyon != null ? u.Istasyon.Ad : null,
                     AdSoyad = u.AdSoyad,
@@ -121,20 +121,29 @@ namespace IstasyonDemo.Api.Controllers
                 {
                     return Forbid("Bu kullanıcıyı düzenleme yetkiniz yok.");
                 }
-
-                // Patron cannot change role to admin or patron
-                if (request.Role == "admin" || request.Role == "patron")
-                {
-                    return BadRequest("Bu rolü atayamazsınız.");
-                }
             }
             else if (currentUserRole != "admin")
             {
                 return Forbid();
             }
 
+            var role = await _context.Roles.FindAsync(request.RoleId);
+            if (role == null)
+            {
+                return BadRequest("Geçersiz rol.");
+            }
+
+            if (currentUserRole == "patron")
+            {
+                // Patron cannot change role to admin or patron
+                if (role.Ad == "admin" || role.Ad == "patron")
+                {
+                    return BadRequest("Bu rolü atayamazsınız.");
+                }
+            }
+
             user.Username = request.Username;
-            user.Role = request.Role;
+            user.RoleId = role.Id;
             user.AdSoyad = request.AdSoyad;
             user.Telefon = request.Telefon;
             

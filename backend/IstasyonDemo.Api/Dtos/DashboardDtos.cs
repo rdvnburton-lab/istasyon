@@ -3,6 +3,7 @@ namespace IstasyonDemo.Api.Dtos
     public class SorumluDashboardDto
     {
         public string KullaniciAdi { get; set; } = string.Empty;
+        public string AdSoyad { get; set; } = string.Empty;
         public string Rol { get; set; } = string.Empty;
         public string FirmaAdi { get; set; } = string.Empty;
         public string IstasyonAdi { get; set; } = string.Empty;

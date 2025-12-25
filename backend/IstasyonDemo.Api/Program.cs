@@ -1,15 +1,36 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using IstasyonDemo.Api.Middleware;
+using IstasyonDemo.Api.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Seq(builder.Configuration["Serilog:SeqServerUrl"] ?? "http://localhost:5341")
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IVardiyaService, VardiyaService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddCors(options =>
 {
     var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
@@ -56,6 +77,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -76,8 +101,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        // Migration dosyalari olmasa bile tablolari sifirdan olusturur
-        context.Database.EnsureCreated();
+        // Migration'ları uygula
+        context.Database.Migrate();
 
         // Seed Default Station
         if (!context.Istasyonlar.Any())
@@ -86,25 +111,41 @@ using (var scope = app.Services.CreateScope())
             context.SaveChanges();
         }
 
+        // Seed Roles
+        if (!context.Roles.Any())
+        {
+            context.Roles.AddRange(
+                new Role { Ad = "admin", Aciklama = "Sistem Yöneticisi", IsSystemRole = true },
+                new Role { Ad = "patron", Aciklama = "İstasyon Sahibi", IsSystemRole = true },
+                new Role { Ad = "vardiya sorumlusu", Aciklama = "Vardiya Sorumlusu", IsSystemRole = true },
+                new Role { Ad = "market sorumlusu", Aciklama = "Market Sorumlusu", IsSystemRole = true }
+            );
+            context.SaveChanges();
+        }
+
+        var adminRole = context.Roles.First(r => r.Ad == "admin");
+        var patronRole = context.Roles.First(r => r.Ad == "patron");
+        var vardiyaRole = context.Roles.First(r => r.Ad == "vardiya sorumlusu");
+
         // Seed Users
         // Admin
         if (!context.Users.Any(u => u.Username == "admin"))
         {
-            context.Users.Add(new User { Username = "admin", Role = "admin", PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") });
+            context.Users.Add(new User { Username = "admin", RoleId = adminRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") });
             context.SaveChanges();
         }
 
         // Vardiya Sorumlusu (Demo)
         if (!context.Users.Any(u => u.Username == "vardiya"))
         {
-            context.Users.Add(new User { Username = "vardiya", Role = "vardiya sorumlusu", PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") });
+            context.Users.Add(new User { Username = "vardiya", RoleId = vardiyaRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") });
             context.SaveChanges();
         }
 
         // Patron (Demo)
         if (!context.Users.Any(u => u.Username == "patron"))
         {
-            context.Users.Add(new User { Username = "patron", Role = "patron", PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") });
+            context.Users.Add(new User { Username = "patron", RoleId = patronRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") });
             context.SaveChanges();
         }
 
@@ -117,6 +158,17 @@ using (var scope = app.Services.CreateScope())
             merkezIstasyon.PatronId = patronUser.Id;
             context.SaveChanges();
         }
+
+        // FIX: Demo kullanıcılarına istasyon ata
+        var usersToFix = context.Users.Where(u => u.IstasyonId == null && u.Username != "admin").ToList();
+        if (usersToFix.Any() && merkezIstasyon != null)
+        {
+            foreach (var user in usersToFix)
+            {
+                user.IstasyonId = merkezIstasyon.Id;
+            }
+            context.SaveChanges();
+        }
     }
     catch (Exception ex)
     {
@@ -125,11 +177,15 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseRouting();
 
@@ -140,6 +196,7 @@ app.UseCors("AllowAngular");
 
 
 app.UseAuthentication();
+app.UseMiddleware<UserActivityMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

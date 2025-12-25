@@ -21,6 +21,20 @@ export const appRoutes: Routes = [
             {
                 path: 'admin/istasyonlar',
                 loadComponent: () => import('./app/pages/admin/istasyon-yonetimi/istasyon-yonetimi.component').then(m => m.IstasyonYonetimiComponent)
+            },
+            {
+                path: 'admin/health',
+                loadComponent: () => import('./app/pages/dashboard/components/system-health/system-health.component').then(m => m.SystemHealthComponent),
+                data: { roles: ['admin'] }
+            },
+            {
+                path: 'settings/roles',
+                loadComponent: () => import('./app/pages/settings/role-management/role-management.component').then(m => m.RoleManagementComponent),
+                data: { roles: ['admin'] }
+            },
+            {
+                path: 'profile',
+                loadComponent: () => import('./app/pages/profile/profile.component').then(m => m.ProfileComponent)
             }
         ]
     },

@@ -193,7 +193,7 @@
                             'bg-green-500': getIslemClass(islem.islem) === 'success',
                             'bg-red-500': getIslemClass(islem.islem) === 'danger',
                             'bg-blue-500': getIslemClass(islem.islem) === 'info',
-                            'bg-yellow-500': getIslemClass(islem.islem) === 'warning'
+                            'bg-yellow-500': getIslemClass(islem.islem) === 'warn'
                         }">
                             <i class="pi" [ngClass]="getIslemIcon(islem.islem)"></i>
                         </div>
@@ -228,7 +228,7 @@
                             <i class="pi pi-exclamation-circle text-yellow-500"></i>
                             <span>Acil Onay Bekleyenler</span>
                         </div>
-                        <p-tag [value]="dashboard.onayBekleyenler.toplamSayi.toString()" severity="warning"
+                        <p-tag [value]="dashboard.onayBekleyenler.toplamSayi.toString()" severity="warn"
                             [rounded]="true"></p-tag>
                     </div>
                     <div class="p-4">
