@@ -101,8 +101,32 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        // Migration'ları uygula
-        context.Database.Migrate();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+
+        // Wait for DB to be ready and apply migrations
+        int retryCount = 0;
+        bool connected = false;
+        while (retryCount < 10 && !connected)
+        {
+            try
+            {
+                logger.LogInformation("Veritabanına bağlanılıyor (Deneme {RetryCount})...", retryCount + 1);
+                context.Database.Migrate();
+                connected = true;
+                logger.LogInformation("Veritabanı migration işlemleri başarıyla tamamlandı.");
+            }
+            catch (Exception ex)
+            {
+                retryCount++;
+                logger.LogWarning("Veritabanı henüz hazır değil veya migration hatası: {Message}. 5 saniye sonra tekrar denenecek...", ex.Message);
+                Thread.Sleep(5000);
+                if (retryCount >= 10)
+                {
+                    logger.LogCritical(ex, "Veritabanı migration işlemi 10 deneme sonunda başarısız oldu. Uygulama durduruluyor.");
+                    throw; // Rethrow to stop the app if migrations fail
+                }
+            }
+        }
 
         // Seed Default Station
         if (!context.Istasyonlar.Any())
@@ -173,7 +197,8 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Veritabanı migration işlemi sırasında bir hata oluştu.");
+        logger.LogCritical(ex, "Veritabanı başlatma işlemi sırasında kritik bir hata oluştu.");
+        throw;
     }
 }
 
