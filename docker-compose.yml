@@ -11,9 +11,12 @@ services:
       - AllowedOrigins__0=http://localhost:4200
       - AllowedOrigins__1=https://istasyon.tiginteknoloji.tr
       - AllowedOrigins__2=http://istasyon.tiginteknoloji.tr
+      - Serilog__SeqServerUrl=http://seq:5341
     depends_on:
       db:
         condition: service_healthy
+      seq:
+        condition: service_started
 
   frontend:
     build:
@@ -35,3 +38,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  seq:
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:80"
+    restart: always

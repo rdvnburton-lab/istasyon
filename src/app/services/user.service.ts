@@ -7,6 +7,7 @@ export interface UserDto {
     id: number;
     username: string;
     role: string;
+    roleId: number;
     istasyonId?: number;
     istasyonAdi?: string;
     adSoyad?: string;
@@ -16,7 +17,7 @@ export interface UserDto {
 export interface CreateUserDto {
     username: string;
     password: string;
-    role: string;
+    roleId: number;
     istasyonId?: number;
     adSoyad?: string;
     telefon?: string;
@@ -25,7 +26,7 @@ export interface CreateUserDto {
 export interface UpdateUserDto {
     username: string;
     password?: string;
-    role: string;
+    roleId: number;
     istasyonId?: number;
     adSoyad?: string;
     telefon?: string;

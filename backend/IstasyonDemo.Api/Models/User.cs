@@ -15,8 +15,8 @@ namespace IstasyonDemo.Api.Models
         public string PasswordHash { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(20)]
-        public string Role { get; set; } = "User"; // Admin, User, etc.
+        public int RoleId { get; set; }
+        public Role? Role { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -28,5 +28,7 @@ namespace IstasyonDemo.Api.Models
 
         public int? IstasyonId { get; set; }
         public Istasyon? Istasyon { get; set; }
+
+        public DateTime? LastActivity { get; set; }
     }
 }

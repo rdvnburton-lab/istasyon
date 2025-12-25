@@ -259,7 +259,7 @@ export class PatronDashboardComponent implements OnInit {
             'OLUSTURULDU': 'info',
             'ONAYLANDI': 'success',
             'REDDEDILDI': 'danger',
-            'SILME_TALEP_EDILDI': 'warning',
+            'SILME_TALEP_EDILDI': 'warn',
             'SILINDI': 'danger',
             'SILME_REDDEDILDI': 'info'
         };

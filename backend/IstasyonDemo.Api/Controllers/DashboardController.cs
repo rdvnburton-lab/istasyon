@@ -26,7 +26,8 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var user = await _context.Users
                 .Include(u => u.Istasyon)
-                .ThenInclude(i => i.ParentIstasyon)
+                .ThenInclude(i => i!.ParentIstasyon)
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
@@ -37,15 +38,16 @@ namespace IstasyonDemo.Api.Controllers
             var dto = new SorumluDashboardDto
             {
                 KullaniciAdi = user.Username,
-                Rol = user.Role,
+                AdSoyad = user.AdSoyad ?? user.Username,
+                Rol = user.Role != null ? user.Role.Ad : "",
                 IstasyonAdi = user.Istasyon?.Ad ?? "-",
                 FirmaAdi = user.Istasyon?.ParentIstasyon?.Ad ?? user.Istasyon?.Ad ?? "-"
             };
 
-            if (user.IstasyonId.HasValue)
+            if (user.IstasyonId.HasValue && user.Role != null)
             {
-                bool isVardiyaSorumlusu = user.Role == "vardiya_sorumlusu" || user.Role == "istasyon_sorumlusu";
-                bool isMarketSorumlusu = user.Role == "market_sorumlusu" || user.Role == "istasyon_sorumlusu";
+                bool isVardiyaSorumlusu = user.Role.Ad == "vardiya sorumlusu" || user.Role.Ad == "istasyon sorumlusu";
+                bool isMarketSorumlusu = user.Role.Ad == "market sorumlusu" || user.Role.Ad == "istasyon sorumlusu";
 
                 if (isVardiyaSorumlusu)
                 {
@@ -298,6 +300,104 @@ namespace IstasyonDemo.Api.Controllers
                     innerError = ex.InnerException?.Message,
                     stackTrace = ex.StackTrace 
                 });
+            }
+        }
+        [HttpGet("admin-dashboard")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAdminDashboard()
+        {
+            try
+            {
+                var totalUsers = await _context.Users.CountAsync();
+                var usersByRole = await _context.Users
+                    .Include(u => u.Role)
+                    .GroupBy(u => u.Role != null ? u.Role.Ad : "Bilinmeyen")
+                    .Select(g => new { Role = g.Key, Count = g.Count() })
+                    .ToListAsync();
+
+                var totalIstasyonlar = await _context.Istasyonlar.CountAsync();
+                var aktifIstasyonlar = await _context.Istasyonlar.CountAsync(i => i.Aktif);
+
+                var totalRoles = await _context.Roles.CountAsync();
+
+                // Online Users (Active in last 15 minutes)
+                var fifteenMinutesAgo = DateTime.UtcNow.AddMinutes(-15);
+                var onlineUsers = await _context.Users
+                    .Include(u => u.Role)
+                    .Where(u => u.LastActivity >= fifteenMinutesAgo)
+                    .Select(u => new
+                    {
+                        u.Id,
+                        u.Username,
+                        u.AdSoyad,
+                        Role = u.Role != null ? u.Role.Ad : "Bilinmeyen",
+                        u.LastActivity
+                    })
+                    .ToListAsync();
+
+                // Database Metrics (PostgreSQL specific)
+                string dbSize = "N/A";
+                int tableCount = 0;
+                try
+                {
+                    using (var command = _context.Database.GetDbConnection().CreateCommand())
+                    {
+                        command.CommandText = "SELECT pg_size_pretty(pg_database_size(current_database()));";
+                        _context.Database.OpenConnection();
+                        dbSize = command.ExecuteScalar()?.ToString() ?? "N/A";
+
+                        command.CommandText = "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';";
+                        tableCount = Convert.ToInt32(command.ExecuteScalar());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"DB Metrics Error: {ex.Message}");
+                }
+
+                var sonSistemLoglari = await _context.VardiyaLoglari
+                    .OrderByDescending(l => l.IslemTarihi)
+                    .Take(20)
+                    .Select(l => new
+                    {
+                        l.Id,
+                        l.Islem,
+                        l.Aciklama,
+                        l.KullaniciAdi,
+                        l.KullaniciRol,
+                        l.IslemTarihi
+                    })
+                    .ToListAsync();
+
+                var tabloIstatistikleri = new
+                {
+                    Vardiyalar = await _context.Vardiyalar.CountAsync(),
+                    MarketVardiyalar = await _context.MarketVardiyalar.CountAsync(),
+                    OtomasyonSatislar = await _context.OtomasyonSatislar.CountAsync(),
+                    Pusulalar = await _context.Pusulalar.CountAsync()
+                };
+
+                return Ok(new
+                {
+                    Ozet = new
+                    {
+                        TotalUsers = totalUsers,
+                        TotalIstasyonlar = totalIstasyonlar,
+                        AktifIstasyonlar = aktifIstasyonlar,
+                        TotalRoles = totalRoles,
+                        OnlineUserCount = onlineUsers.Count,
+                        DbSize = dbSize,
+                        TableCount = tableCount
+                    },
+                    UsersByRole = usersByRole,
+                    OnlineUsers = onlineUsers,
+                    SonSistemLoglari = sonSistemLoglari,
+                    TabloIstatistikleri = tabloIstatistikleri
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
             }
         }
     }

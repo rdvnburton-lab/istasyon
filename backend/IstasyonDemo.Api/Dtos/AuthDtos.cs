@@ -38,7 +38,7 @@ namespace IstasyonDemo.Api.Dtos
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public string Role { get; set; } = "User";
+        public int RoleId { get; set; }
 
         public int? IstasyonId { get; set; }
         public string? AdSoyad { get; set; }
@@ -50,6 +50,7 @@ namespace IstasyonDemo.Api.Dtos
         public int Id { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public int RoleId { get; set; }
         public int? IstasyonId { get; set; }
         public string? IstasyonAdi { get; set; }
         public string? AdSoyad { get; set; }
@@ -60,7 +61,7 @@ namespace IstasyonDemo.Api.Dtos
     {
         public string Username { get; set; } = string.Empty;
         public string? Password { get; set; }
-        public string Role { get; set; } = "User";
+        public int RoleId { get; set; }
         public int? IstasyonId { get; set; }
         public string? AdSoyad { get; set; }
         public string? Telefon { get; set; }

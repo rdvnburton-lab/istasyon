@@ -43,5 +43,7 @@ namespace IstasyonDemo.Api.Models
         // Computed property
         [NotMapped]
         public decimal Toplam => Nakit + KrediKarti + ParoPuan + MobilOdeme;
+
+        public ICollection<PusulaKrediKartiDetay> KrediKartiDetaylari { get; set; } = new List<PusulaKrediKartiDetay>();
     }
 }

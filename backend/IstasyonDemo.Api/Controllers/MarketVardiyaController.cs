@@ -24,7 +24,7 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<ActionResult<IEnumerable<MarketVardiyaDto>>> GetMarketVardiyalar()
         {
             var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var user = await _context.Users.FindAsync(currentUserId);
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == currentUserId);
             
             if (user == null) return Unauthorized();
 
@@ -32,13 +32,13 @@ namespace IstasyonDemo.Api.Controllers
                 .Include(m => m.Istasyon)
                 .Include(m => m.Sorumlu);
 
-            if (user.Role != "admin")
+            if (user.Role?.Ad != "admin")
             {
-                if (user.Role == "patron")
+                if (user.Role?.Ad == "patron")
                 {
                     query = query.Where(m => m.Istasyon!.PatronId == currentUserId);
                 }
-                else if (user.Role == "vardiya_sorumlusu")
+                else if (user.Role?.Ad == "vardiya_sorumlusu")
                 {
                     // Vardiya sorumlusu should not see market shifts
                     return Ok(new List<MarketVardiyaDto>());
@@ -365,7 +365,7 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> GetMarketRaporu([FromQuery] DateTimeOffset baslangic, [FromQuery] DateTimeOffset bitis)
         {
             var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var user = await _context.Users.FindAsync(currentUserId);
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == currentUserId);
             if (user == null) return Unauthorized();
 
             var start = baslangic.UtcDateTime;
@@ -375,9 +375,9 @@ namespace IstasyonDemo.Api.Controllers
                 .Include(m => m.Istasyon)
                 .Where(m => m.Tarih >= start && m.Tarih <= end && m.Durum != VardiyaDurum.SILINDI);
 
-            if (user.Role != "admin")
+            if (user.Role?.Ad != "admin")
             {
-                if (user.Role == "patron")
+                if (user.Role?.Ad == "patron")
                 {
                     query = query.Where(m => m.Istasyon!.PatronId == currentUserId);
                 }

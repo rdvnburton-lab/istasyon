@@ -17,7 +17,7 @@
                 <div class="flex items-center gap-2">
                     <i class="pi pi-shopping-cart"></i>
                     <span>Market Vardiyaları</span>
-                    <p-tag [value]="marketVardiyalar.length.toString()" severity="warning"
+                    <p-tag [value]="marketVardiyalar.length.toString()" severity="warn"
                         *ngIf="marketVardiyalar.length > 0"></p-tag>
                 </div>
             </p-tab>
@@ -53,7 +53,7 @@
                                 currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
                             <td>{{ vardiya.istasyonAdi }}</td>
                             <td>
-                                <p-tag [value]="'Onay Bekliyor'" severity="warning" icon="pi pi-clock"></p-tag>
+                                <p-tag [value]="'Onay Bekliyor'" severity="warn" icon="pi pi-clock"></p-tag>
                             </td>
                             <td>
                                 <div class="flex gap-2">
@@ -104,7 +104,7 @@
                                 [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0, 'text-blue-500': (vardiya.toplamFark || 0) > 0}">
                                 {{ vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
                             <td>
-                                <p-tag [value]="'Onay Bekliyor'" severity="warning" icon="pi pi-clock"></p-tag>
+                                <p-tag [value]="'Onay Bekliyor'" severity="warn" icon="pi pi-clock"></p-tag>
                             </td>
                             <td>
                                 <div class="flex gap-2">
@@ -305,7 +305,7 @@
                                             <p-tag *ngIf="item.farkDurum === 'ACIK'" value="Açık"
                                                 severity="danger"></p-tag>
                                             <p-tag *ngIf="item.farkDurum === 'FAZLA'" value="Fazla"
-                                                severity="warning"></p-tag>
+                                                severity="warn"></p-tag>
                                         </td>
                                     </tr>
                                 </ng-template>

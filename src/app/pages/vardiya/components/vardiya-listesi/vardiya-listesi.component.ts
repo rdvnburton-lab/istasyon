@@ -20,7 +20,7 @@ import { VardiyaService } from '../../services/vardiya.service';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { TxtParserService, ParseSonuc } from '../../services/txt-parser.service';
 import { VardiyaDurum, OtomasyonSatis, Vardiya, PersonelFarkAnalizi, MarketOzet, GenelOzet, VardiyaOzet, FarkDurum } from '../../models/vardiya.model';
-import { DbService } from '../../services/db.service';
+
 import { AuthService } from '../../../../services/auth.service';
 
 interface YuklenenVardiya {
@@ -108,7 +108,7 @@ export class VardiyaListesi implements OnInit {
         private txtParser: TxtParserService,
         private messageService: MessageService,
         private router: Router,
-        private dbService: DbService,
+
         private authService: AuthService
     ) { }
 
@@ -334,10 +334,29 @@ export class VardiyaListesi implements OnInit {
                     },
                     error: (err) => {
                         console.error('Backend kayıt hatası:', err);
+
+                        let detailMsg = 'Sunucuya kayıt yapılırken hata oluştu!';
+                        if (err.error) {
+                            if (typeof err.error === 'string') {
+                                detailMsg = err.error;
+                            } else if (err.error.message) {
+                                detailMsg = err.error.message;
+                            } else if (err.error.title) {
+                                detailMsg = err.error.title; // Validation errors often have 'title'
+                            }
+
+                            // Validation errors details
+                            if (err.error.errors) {
+                                const errors = Object.values(err.error.errors).flat().join(', ');
+                                if (errors) detailMsg += ` (${errors})`;
+                            }
+                        }
+
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Hata',
-                            detail: 'Sunucuya kayıt yapılırken hata oluştu!'
+                            detail: detailMsg,
+                            life: 5000
                         });
                     }
                 });

@@ -1,5 +1,6 @@
 export interface SorumluDashboardDto {
     kullaniciAdi: string;
+    adSoyad: string;
     rol: string;
     firmaAdi: string;
     istasyonAdi: string;

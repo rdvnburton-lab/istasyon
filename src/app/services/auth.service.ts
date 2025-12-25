@@ -74,7 +74,7 @@ export class AuthService {
     logout(): void {
         sessionStorage.removeItem('currentUser');
         this.stopIdleMonitoring();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
         this.currentUserSubject.next(null);
     }
 

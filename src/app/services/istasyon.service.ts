@@ -11,6 +11,9 @@ export interface Istasyon {
     parentIstasyonId?: number;
     patronId?: number;
     sorumluId?: number;
+    kod?: string;
+    pompaSayisi?: number;
+    marketVar?: boolean;
 }
 
 export interface CreateIstasyonDto {

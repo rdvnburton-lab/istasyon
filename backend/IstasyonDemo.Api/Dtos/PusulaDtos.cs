@@ -10,6 +10,7 @@ namespace IstasyonDemo.Api.Dtos
         public decimal ParoPuan { get; set; }
         public decimal MobilOdeme { get; set; }
         public string? KrediKartiDetay { get; set; }
+        public List<PusulaKrediKartiDetayDto>? KrediKartiDetayList { get; set; }
         public string? Aciklama { get; set; }
     }
 
@@ -20,6 +21,13 @@ namespace IstasyonDemo.Api.Dtos
         public decimal ParoPuan { get; set; }
         public decimal MobilOdeme { get; set; }
         public string? KrediKartiDetay { get; set; }
+        public List<PusulaKrediKartiDetayDto>? KrediKartiDetayList { get; set; }
         public string? Aciklama { get; set; }
+    }
+
+    public class PusulaKrediKartiDetayDto
+    {
+        public string BankaAdi { get; set; } = string.Empty;
+        public decimal Tutar { get; set; }
     }
 }

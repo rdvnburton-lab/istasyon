@@ -1,0 +1,678 @@
+<div class="system-health-container animate-fadein">
+    <p-toast></p-toast>
+
+    <!-- Premium Header Section -->
+    <div class="header-section flex flex-column md:flex-row md:align-items-center md:justify-content-between gap-4">
+        <div class="flex align-items-center gap-4">
+            <div class="header-icon-container">
+                <i class="pi pi-shield"></i>
+            </div>
+            <div>
+                <h2>Sistem Sağlık Paneli</h2>
+                <p class="m-0 mt-2 flex align-items-center gap-2">
+                    <i class="pi pi-chart-line"></i>
+                    Operasyonel durum ve güvenlik izleme merkezi
+                </p>
+            </div>
+        </div>
+        <div class="flex align-items-center gap-4 flex-wrap">
+            <button pButton icon="pi pi-refresh" label="Verileri Güncelle" (click)="loadHealth()" [loading]="loading"
+                class="refresh-btn"></button>
+            <div class="status-badge flex align-items-center gap-3"
+                [ngClass]="health?.status?.databaseStatus === 'Healthy' ? 'status-healthy' : 'status-unhealthy'">
+                <div class="status-dot"
+                    [ngClass]="health?.status?.databaseStatus === 'Healthy' ? 'bg-green-500' : 'bg-red-500'"></div>
+                <span>{{health?.status?.databaseStatus === 'Healthy' ? 'SİSTEM AKTİF' : 'HATA MEVCUT'}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Stats Grid -->
+    <div class="stats-grid">
+        <!-- DB Status -->
+        <div class="stat-card card-blue">
+            <div class="flex justify-content-between align-items-start mb-3">
+                <span class="stat-label">Veritabanı</span>
+                <div class="stat-icon">
+                    <i class="pi pi-database"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{health?.status?.databaseStatus || '...'}}</div>
+            <div class="stat-meta success">
+                <i class="pi pi-users"></i>
+                <span>{{health?.metrics?.connectionCount || 0}} Aktif Bağlantı</span>
+            </div>
+        </div>
+
+        <!-- RAM Usage -->
+        <div class="stat-card card-teal">
+            <div class="flex justify-content-between align-items-start mb-3">
+                <span class="stat-label">Bellek (RAM)</span>
+                <div class="stat-icon">
+                    <i class="pi pi-microchip"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{health?.resources?.memoryUsage || '0 MB'}}</div>
+            <div class="stat-meta neutral">
+                <i class="pi pi-chart-bar"></i>
+                <span>Uygulama Tüketimi</span>
+            </div>
+        </div>
+
+        <!-- Security -->
+        <div class="stat-card card-red">
+            <div class="flex justify-content-between align-items-start mb-3">
+                <span class="stat-label">Güvenlik</span>
+                <div class="stat-icon">
+                    <i class="pi pi-lock"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{health?.security?.failedLoginsLast24h || 0}}</div>
+            <div class="stat-meta danger">
+                <i class="pi pi-exclamation-triangle"></i>
+                <span>Hatalı Giriş (24s)</span>
+            </div>
+        </div>
+
+        <!-- Uptime -->
+        <div class="stat-card card-cyan">
+            <div class="flex justify-content-between align-items-start mb-3">
+                <span class="stat-label">Çalışma Süresi</span>
+                <div class="stat-icon">
+                    <i class="pi pi-clock"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{health?.status?.uptimeDays || 0}} Gün</div>
+            <div class="stat-meta success">
+                <i class="pi pi-check-circle"></i>
+                <span>Kesintisiz Hizmet</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Tabs Section -->
+    <div class="tabs-container">
+        <p-tabs value="0">
+            <p-tablist styleClass="overflow-auto">
+                <p-tab value="0">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-heart-fill" style="color: #f87171;"></i>
+                        <span>Genel Sağlık</span>
+                    </div>
+                </p-tab>
+                <p-tab value="1">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-bolt" style="color: #fbbf24;"></i>
+                        <span>API & Servisler</span>
+                    </div>
+                </p-tab>
+                <p-tab value="2">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-database" style="color: #60a5fa;"></i>
+                        <span>Veritabanı</span>
+                    </div>
+                </p-tab>
+                <p-tab value="3">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-shield" style="color: #fb923c;"></i>
+                        <span>Güvenlik & Oturum</span>
+                    </div>
+                </p-tab>
+                <p-tab value="4">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-cog" style="color: #c084fc;"></i>
+                        <span>Sistem & Görevler</span>
+                    </div>
+                </p-tab>
+                <p-tab value="5" (click)="loadBackups()">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-save" style="color: #34d399;"></i>
+                        <span>Yedekleme</span>
+                    </div>
+                </p-tab>
+                <p-tab value="6" (click)="loadAdvancedLogs()">
+                    <div class="tab-content whitespace-nowrap">
+                        <i class="pi pi-list" style="color: #22d3ee;"></i>
+                        <span>Gelişmiş Log</span>
+                    </div>
+                </p-tab>
+            </p-tablist>
+
+            <p-tabpanels>
+                <!-- Tab 0: Genel Sağlık -->
+                <p-tabpanel value="0">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem;">
+                        <!-- Anomalies Card -->
+                        <div class="section-card card-warning">
+                            <div class="section-header">
+                                <div class="section-header-icon warning">
+                                    <i class="pi pi-exclamation-triangle"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Veri Bütünlüğü ve Anomaliler</h3>
+                                    <p>Tespit edilen veri tutarsızlıkları</p>
+                                </div>
+                            </div>
+                            <p-table [value]="health?.anomalies || []" responsiveLayout="scroll"
+                                styleClass="p-datatable-sm custom-table">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Tür</th>
+                                        <th>Önem</th>
+                                        <th>Açıklama</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-anomaly>
+                                    <tr>
+                                        <td><span class="font-bold">{{anomaly.type}}</span></td>
+                                        <td><p-tag [value]="anomaly.severity"
+                                                [severity]="getSeverity(anomaly.severity)"></p-tag></td>
+                                        <td>{{anomaly.description}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon success">
+                                                    <i class="pi pi-check-circle"></i>
+                                                </div>
+                                                <h4>Her Şey Yolunda!</h4>
+                                                <p>Anomali bulunamadı. Sistem sağlıklı çalışıyor.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+
+                        <!-- Recent Errors Card -->
+                        <div class="section-card card-danger">
+                            <div class="section-header">
+                                <div class="section-header-icon danger">
+                                    <i class="pi pi-times-circle"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Son Hatalar</h3>
+                                    <p>Son 24 saatte oluşan hatalar</p>
+                                </div>
+                            </div>
+                            <div class="error-timeline-container" *ngIf="health?.recentErrors?.length">
+                                <p-timeline [value]="health?.recentErrors || []">
+                                    <ng-template pTemplate="content" let-error>
+                                        <div class="error-card">
+                                            <div class="flex justify-content-between align-items-center">
+                                                <small class="timestamp">{{error.timestamp | date:'HH:mm:ss'}}</small>
+                                                <p-tag [value]="error.level" severity="danger"
+                                                    styleClass="text-xs"></p-tag>
+                                            </div>
+                                            <div class="message">{{error.message}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-timeline>
+                            </div>
+                            <div *ngIf="!health?.recentErrors?.length" class="empty-state">
+                                <div class="empty-state-icon success">
+                                    <i class="pi pi-check-circle"></i>
+                                </div>
+                                <h4>Hata Yok!</h4>
+                                <p>Son 24 saatte hiç hata kaydı oluşmadı.</p>
+                            </div>
+                        </div>
+                    </div>
+                </p-tabpanel>
+
+                <!-- Tab 1: API & Servisler -->
+                <p-tabpanel value="1">
+                    <div class="section-card card-primary">
+                        <div class="section-header">
+                            <div class="section-header-icon primary">
+                                <i class="pi pi-server"></i>
+                            </div>
+                            <div class="section-header-text">
+                                <h3>API Endpoint Durumları</h3>
+                                <p>Tüm servislerin gerçek zamanlı sağlık durumu</p>
+                            </div>
+                        </div>
+                        <p-table [value]="health?.endpoints || []" responsiveLayout="scroll"
+                            styleClass="p-datatable-striped custom-table">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Servis</th>
+                                    <th>Endpoint</th>
+                                    <th>Durum</th>
+                                    <th>Yanıt Süresi</th>
+                                    <th>Son Kontrol</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-ep>
+                                <tr>
+                                    <td class="font-bold">{{ep.name}}</td>
+                                    <td><code>{{ep.path}}</code></td>
+                                    <td><p-tag [value]="ep.status"
+                                            [severity]="ep.status === 'Healthy' ? 'success' : 'danger'"></p-tag></td>
+                                    <td>
+                                        <span [style.color]="ep.responseTimeMs > 500 ? '#f87171' : '#34d399'"
+                                            class="font-bold">
+                                            <i class="pi pi-clock mr-1" style="font-size: 0.75rem;"></i>
+                                            {{ep.responseTimeMs}}ms
+                                        </span>
+                                    </td>
+                                    <td style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">{{ep.lastChecked}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <div class="empty-state-icon info">
+                                                <i class="pi pi-info-circle"></i>
+                                            </div>
+                                            <h4>Endpoint Bulunamadı</h4>
+                                            <p>Henüz izlenen bir endpoint yok.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-tabpanel>
+
+                <!-- Tab 2: Veritabanı -->
+                <p-tabpanel value="2">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.5rem;">
+                        <!-- Storage Card -->
+                        <div class="section-card card-primary">
+                            <div class="section-header">
+                                <div class="section-header-icon primary">
+                                    <i class="pi pi-chart-pie"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Depolama Analizi</h3>
+                                    <p>Veritabanı disk kullanımı</p>
+                                </div>
+                            </div>
+                            <div class="storage-box">
+                                <h4>Kullanılan Alan</h4>
+                                <div class="flex justify-content-between align-items-end mb-4">
+                                    <span class="storage-value">{{health?.metrics?.totalSize}}</span>
+                                    <span class="storage-label">/ {{getDbTotalCapacity()}}</span>
+                                </div>
+                                <p-progressBar [value]="getDbUsagePercent()" [showValue]="false"
+                                    styleClass="mb-4"></p-progressBar>
+                                <div class="flex justify-content-between"
+                                    style="color: rgba(255,255,255,0.55); font-size: 0.9rem;">
+                                    <span><i class="pi pi-percentage mr-2"></i>%{{getDbUsagePercent()}}
+                                        kullanımda</span>
+                                    <span><i class="pi pi-list mr-2"></i>{{health?.metrics?.totalRows || 0 | number}}
+                                        satır</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Stats Card -->
+                        <div class="section-card card-purple">
+                            <div class="section-header">
+                                <div class="section-header-icon purple">
+                                    <i class="pi pi-table"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Tablo İstatistikleri</h3>
+                                    <p>Tablo bazlı veri dağılımı</p>
+                                </div>
+                            </div>
+                            <p-table [value]="health?.tableStats || []" [rows]="6" [paginator]="true"
+                                styleClass="p-datatable-sm custom-table">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Tablo</th>
+                                        <th>Satır</th>
+                                        <th>Boyut</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-stat>
+                                    <tr>
+                                        <td class="font-mono" style="font-size: 0.8rem;">{{stat.tableName}}</td>
+                                        <td class="font-bold">{{stat.rowCount | number}}</td>
+                                        <td><p-tag [value]="stat.size" severity="secondary"></p-tag></td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </p-tabpanel>
+
+                <!-- Tab 3: Güvenlik & Oturum -->
+                <p-tabpanel value="3">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem;">
+                        <!-- Active Sessions Card -->
+                        <div class="section-card card-primary">
+                            <div class="section-header">
+                                <div class="section-header-icon primary">
+                                    <i class="pi pi-users"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Aktif Kullanıcılar</h3>
+                                    <p>Şu an sisteme bağlı kullanıcılar</p>
+                                </div>
+                            </div>
+                            <p-table [value]="health?.activeSessions || []" styleClass="p-datatable-sm custom-table">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Kullanıcı</th>
+                                        <th>Rol</th>
+                                        <th>Son Aktivite</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-session>
+                                    <tr>
+                                        <td class="font-bold">
+                                            <i class="pi pi-user mr-2" style="color: #818cf8;"></i>
+                                            {{session.username}}
+                                        </td>
+                                        <td><p-tag [value]="session.role" severity="info"></p-tag></td>
+                                        <td style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">
+                                            {{session.lastActivity}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon info">
+                                                    <i class="pi pi-users"></i>
+                                                </div>
+                                                <h4>Aktif Oturum Yok</h4>
+                                                <p>Şu an sistemde aktif kullanıcı bulunmuyor.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+
+                        <!-- Security Events Card -->
+                        <div class="section-card card-danger">
+                            <div class="section-header">
+                                <div class="section-header-icon danger">
+                                    <i class="pi pi-shield"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Güvenlik Olayları</h3>
+                                    <p>Dikkat gerektiren güvenlik uyarıları</p>
+                                </div>
+                            </div>
+                            <div style="max-height: 350px; overflow-y: auto;">
+                                <div *ngFor="let event of health?.security?.recentEvents" class="security-event">
+                                    <div>
+                                        <div class="event-type">{{event.eventType}}</div>
+                                        <div class="event-desc">{{event.description}}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div class="event-time">{{event.timestamp | date:'HH:mm'}}</div>
+                                        <div class="event-ip">{{event.ipAddress}}</div>
+                                    </div>
+                                </div>
+                                <div *ngIf="!health?.security?.recentEvents?.length" class="empty-state">
+                                    <div class="empty-state-icon success">
+                                        <i class="pi pi-shield"></i>
+                                    </div>
+                                    <h4>Güvende!</h4>
+                                    <p>Dikkat gerektiren bir güvenlik olayı yok.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p-tabpanel>
+
+                <!-- Tab 4: Sistem & Görevler -->
+                <p-tabpanel value="4">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                        <!-- Environment Card -->
+                        <div class="section-card card-purple">
+                            <div class="section-header">
+                                <div class="section-header-icon purple">
+                                    <i class="pi pi-info-circle"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Çevresel Bilgiler</h3>
+                                    <p>Sunucu ve uygulama ortam bilgileri</p>
+                                </div>
+                            </div>
+                            <div class="info-list">
+                                <div class="info-row">
+                                    <span class="label"><i class="pi pi-desktop mr-2"></i>İşletim Sistemi</span>
+                                    <span class="value">{{health?.environment?.osVersion}}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label"><i class="pi pi-code mr-2"></i>Runtime</span>
+                                    <span class="value">{{health?.environment?.runtimeVersion}}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label"><i class="pi pi-server mr-2"></i>Makine Adı</span>
+                                    <span class="value">{{health?.environment?.machineName}}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label"><i class="pi pi-microchip mr-2"></i>İşlemci Sayısı</span>
+                                    <span class="value" style="color: #34d399;">{{health?.environment?.processorCount}}
+                                        Çekirdek</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="label"><i class="pi pi-flag mr-2"></i>Mod</span>
+                                    <span class="value">
+                                        <p-tag [value]="health?.environment?.deploymentMode"
+                                            [severity]="health?.environment?.deploymentMode === 'Production' ? 'success' : 'info'"></p-tag>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Background Tasks Card -->
+                        <div class="section-card card-info">
+                            <div class="section-header">
+                                <div class="section-header-icon info">
+                                    <i class="pi pi-sync"></i>
+                                </div>
+                                <div class="section-header-text">
+                                    <h3>Arka Plan Görevleri</h3>
+                                    <p>Zamanlanmış işler ve durumları</p>
+                                </div>
+                            </div>
+                            <p-table [value]="health?.backgroundTasks || []" styleClass="p-datatable-sm custom-table">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Görev Adı</th>
+                                        <th>Durum</th>
+                                        <th>Son Çalışma</th>
+                                        <th>Sıradaki</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-task>
+                                    <tr>
+                                        <td class="font-bold">{{task.name}}</td>
+                                        <td><p-tag [value]="task.status"
+                                                [severity]="task.status === 'Running' ? 'success' : 'info'"></p-tag>
+                                        </td>
+                                        <td style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">{{task.lastRun}}
+                                        </td>
+                                        <td style="color: #60a5fa;" class="font-bold">{{task.nextRun}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon info">
+                                                    <i class="pi pi-cog"></i>
+                                                </div>
+                                                <h4>Görev Bulunamadı</h4>
+                                                <p>Zamanlanmış arka plan görevi yok.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </p-tabpanel>
+
+                <!-- Tab 5: Yedekleme -->
+                <p-tabpanel value="5">
+                    <div class="section-card card-success">
+                        <div class="section-header" style="margin-bottom: 1.5rem;">
+                            <div class="section-header-icon success">
+                                <i class="pi pi-database"></i>
+                            </div>
+                            <div class="section-header-text" style="flex: 1;">
+                                <h3>Veritabanı Yedekleri</h3>
+                                <p>Manuel ve otomatik yedekleme dosyaları</p>
+                            </div>
+                            <button pButton icon="pi pi-plus" label="Yeni Yedek Al" (click)="createBackup()"
+                                [loading]="loadingBackups" class="p-button-success"></button>
+                        </div>
+                        <p-table [value]="backups" [loading]="loadingBackups" responsiveLayout="scroll"
+                            styleClass="p-datatable-striped custom-table">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Dosya Adı</th>
+                                    <th>Boyut</th>
+                                    <th>Tarih</th>
+                                    <th style="width: 140px;">İşlemler</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-backup>
+                                <tr>
+                                    <td class="font-mono" style="font-size: 0.85rem;">
+                                        <i class="pi pi-file mr-2" style="color: #34d399;"></i>
+                                        {{backup.fileName}}
+                                    </td>
+                                    <td><p-tag [value]="backup.sizePretty" severity="secondary"></p-tag></td>
+                                    <td style="color: rgba(255,255,255,0.6);">{{backup.createdAt | date:'dd.MM.yyyy
+                                        HH:mm'}}</td>
+                                    <td>
+                                        <div class="flex gap-2">
+                                            <button pButton icon="pi pi-download" class="p-button-text p-button-rounded"
+                                                (click)="downloadBackup(backup.fileName)" pTooltip="İndir"
+                                                style="color: #60a5fa;"></button>
+                                            <button pButton icon="pi pi-trash"
+                                                class="p-button-text p-button-danger p-button-rounded"
+                                                (click)="deleteBackup(backup.fileName)" pTooltip="Sil"></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="empty-state-icon info">
+                                                <i class="pi pi-inbox"></i>
+                                            </div>
+                                            <h4>Yedek Bulunamadı</h4>
+                                            <p>Henüz yedek dosyası oluşturulmamış.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-tabpanel>
+
+                <!-- Tab 6: Gelişmiş Log -->
+                <p-tabpanel value="6">
+                    <div class="section-card card-info">
+                        <div class="section-header">
+                            <div class="section-header-icon info">
+                                <i class="pi pi-list"></i>
+                            </div>
+                            <div class="section-header-text">
+                                <h3>Gelişmiş Log Görüntüleyici</h3>
+                                <p>Uygulama loglarını filtrele ve incele</p>
+                            </div>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="log-filters flex flex-column md:flex-row gap-4 align-items-end mb-4">
+                            <div class="flex-1">
+                                <label>Log Seviyesi</label>
+                                <p-select
+                                    [options]="[{label: 'Tümü', value: ''}, {label: 'Hata (ERR)', value: 'ERR'}, {label: 'Bilgi (INF)', value: 'INF'}, {label: 'Uyarı (WRN)', value: 'WRN'}]"
+                                    [(ngModel)]="logQuery.level" optionLabel="label" optionValue="value"
+                                    styleClass="w-full" placeholder="Seviye Seçin"></p-select>
+                            </div>
+                            <div class="flex-3">
+                                <label>Mesajda Ara</label>
+                                <div class="p-inputgroup">
+                                    <input type="text" pInputText [(ngModel)]="logQuery.searchTerm"
+                                        placeholder="Hata mesajı, endpoint veya kullanıcı adı..." class="w-full"
+                                        (keyup.enter)="loadAdvancedLogs()" />
+                                    <button type="button" pButton icon="pi pi-search" (click)="loadAdvancedLogs()"
+                                        class="p-button-primary"></button>
+                                </div>
+                            </div>
+                            <div class="flex-none">
+                                <button pButton icon="pi pi-refresh" label="Logları Tazele" (click)="loadAdvancedLogs()"
+                                    [loading]="loadingLogs" class="refresh-btn w-full md:w-auto"></button>
+                            </div>
+                        </div>
+
+                        <!-- Log Table -->
+                        <div style="border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+                            <p-table [value]="advancedLogs" [loading]="loadingLogs" responsiveLayout="scroll"
+                                styleClass="p-datatable-sm custom-table custom-log-table">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 180px">Zaman Damgası</th>
+                                        <th style="width: 100px">Seviye</th>
+                                        <th>Mesaj İçeriği</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-log>
+                                    <tr [ngClass]="{'log-error': log.level === 'ERR', 'log-warn': log.level === 'WRN'}">
+                                        <td class="font-mono"
+                                            style="font-size: 0.75rem; color: rgba(255,255,255,0.45);">
+                                            {{log.timestamp | date:'dd.MM.yyyy HH:mm:ss.SSS'}}
+                                        </td>
+                                        <td>
+                                            <p-tag [value]="log.level"
+                                                [severity]="log.level === 'ERR' ? 'danger' : (log.level === 'WRN' ? 'warn' : 'info')"
+                                                styleClass="text-xs font-bold"></p-tag>
+                                        </td>
+                                        <td class="font-mono"
+                                            style="font-size: 0.8rem; word-break: break-all; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                                            {{log.message}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon info">
+                                                    <i class="pi pi-search"></i>
+                                                </div>
+                                                <h4>Log Bulunamadı</h4>
+                                                <p>Kriterlere uygun log kaydı bulunamadı.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+
+                        <div class="flex justify-content-center mt-4">
+                            <p-paginator [rows]="logQuery.pageSize" [totalRecords]="totalLogs"
+                                [rowsPerPageOptions]="[20, 50, 100]"
+                                (onPageChange)="onLogPageChange($event)"></p-paginator>
+                        </div>
+                    </div>
+                </p-tabpanel>
+            </p-tabpanels>
+        </p-tabs>
+    </div>
+</div>

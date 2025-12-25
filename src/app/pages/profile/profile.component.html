@@ -1,0 +1,96 @@
+<div class="profile-page" *ngIf="!loading">
+    <p-toast></p-toast>
+
+    <!-- Header -->
+    <div class="profile-header">
+        <div class="header-content">
+            <div class="user-avatar">
+                <i class="pi pi-user"></i>
+            </div>
+            <div class="header-info">
+                <h1>{{userInfo?.adSoyad || currentUser?.username}}</h1>
+                <p class="role-badge">{{getRoleLabel(userInfo?.rol || currentUser?.role || '')}}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Information -->
+    <div class="profile-content">
+        <div class="cards-container">
+            <!-- User Information Card -->
+            <div class="card-wrapper">
+                <p-card header="Kullanıcı Bilgileri">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label><i class="pi pi-user"></i> Ad Soyad</label>
+                            <div class="info-value">{{userInfo?.adSoyad || '-'}}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label><i class="pi pi-at"></i> Kullanıcı Adı</label>
+                            <div class="info-value">{{currentUser?.username || '-'}}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label><i class="pi pi-id-card"></i> Rol</label>
+                            <div class="info-value">{{getRoleLabel(userInfo?.rol || currentUser?.role || '')}}</div>
+                        </div>
+
+                        <div class="info-item" *ngIf="userInfo?.istasyonAdi">
+                            <label><i class="pi pi-building"></i> İstasyon</label>
+                            <div class="info-value">{{userInfo?.istasyonAdi}}</div>
+                        </div>
+
+                        <div class="info-item" *ngIf="userInfo?.firmaAdi">
+                            <label><i class="pi pi-briefcase"></i> Firma</label>
+                            <div class="info-value">{{userInfo?.firmaAdi}}</div>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+
+            <!-- Change Password Card -->
+            <div class="card-wrapper">
+                <p-card header="Şifre Değiştir">
+                    <form (ngSubmit)="changePassword()" class="password-form">
+                        <div class="field">
+                            <label for="currentPassword">Mevcut Şifre</label>
+                            <p-password id="currentPassword" [(ngModel)]="passwordForm.currentPassword"
+                                name="currentPassword" [feedback]="false" [toggleMask]="true"
+                                placeholder="Mevcut şifrenizi girin" styleClass="w-full">
+                            </p-password>
+                        </div>
+
+                        <div class="field">
+                            <label for="newPassword">Yeni Şifre</label>
+                            <p-password id="newPassword" [(ngModel)]="passwordForm.newPassword" name="newPassword"
+                                [toggleMask]="true" placeholder="Yeni şifrenizi girin" styleClass="w-full"
+                                [strongRegex]="'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'" promptLabel="Şifre girin"
+                                weakLabel="Zayıf" mediumLabel="Orta" strongLabel="Güçlü">
+                            </p-password>
+                        </div>
+
+                        <div class="field">
+                            <label for="confirmPassword">Yeni Şifre (Tekrar)</label>
+                            <p-password id="confirmPassword" [(ngModel)]="passwordForm.confirmPassword"
+                                name="confirmPassword" [feedback]="false" [toggleMask]="true"
+                                placeholder="Yeni şifrenizi tekrar girin" styleClass="w-full">
+                            </p-password>
+                        </div>
+
+                        <div class="form-actions">
+                            <button pButton type="submit" label="Şifreyi Değiştir" icon="pi pi-check"
+                                class="p-button-primary"></button>
+                        </div>
+                    </form>
+                </p-card>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+    <p>Profil yükleniyor...</p>
+</div>

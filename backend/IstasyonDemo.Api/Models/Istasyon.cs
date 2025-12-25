@@ -26,6 +26,7 @@ namespace IstasyonDemo.Api.Models
         public User? Patron { get; set; }
 
         public int? SorumluId { get; set; }
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("SorumluId")]
         public User? Sorumlu { get; set; }
 
         // Relations

@@ -17,6 +17,8 @@
 }
 
 .p-toast {
+    z-index: 9999 !important;
+
     &.p-toast-top-right,
     &.p-toast-top-left,
     &.p-toast-top-center {

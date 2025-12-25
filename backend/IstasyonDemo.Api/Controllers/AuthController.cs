@@ -32,13 +32,19 @@ namespace IstasyonDemo.Api.Controllers
                 return BadRequest("Kullanıcı adı zaten mevcut.");
             }
 
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Ad == request.Role);
+            if (role == null)
+            {
+                return BadRequest("Geçersiz rol.");
+            }
+
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             var user = new User
             {
                 Username = request.Username,
                 PasswordHash = passwordHash,
-                Role = request.Role
+                RoleId = role.Id
             };
 
             _context.Users.Add(user);
@@ -59,10 +65,16 @@ namespace IstasyonDemo.Api.Controllers
                 return BadRequest("Kullanıcı adı zaten mevcut.");
             }
 
+            var role = await _context.Roles.FindAsync(request.RoleId);
+            if (role == null)
+            {
+                return BadRequest("Geçersiz rol.");
+            }
+
             // Role validation
             if (currentUserRole == "patron")
             {
-                if (request.Role == "admin" || request.Role == "patron")
+                if (role.Ad == "admin" || role.Ad == "patron")
                 {
                     return Forbid("Patronlar sadece çalışan hesabı oluşturabilir.");
                 }
@@ -88,7 +100,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 Username = request.Username,
                 PasswordHash = passwordHash,
-                Role = request.Role,
+                RoleId = role.Id,
                 IstasyonId = request.IstasyonId,
                 AdSoyad = request.AdSoyad,
                 Telefon = request.Telefon
@@ -105,7 +117,9 @@ namespace IstasyonDemo.Api.Controllers
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+                var user = await _context.Users
+                    .Include(u => u.Role)
+                    .FirstOrDefaultAsync(u => u.Username == request.Username);
 
                 if (user == null)
                 {
@@ -117,13 +131,16 @@ namespace IstasyonDemo.Api.Controllers
                     return BadRequest("Yanlış şifre.");
                 }
 
+                user.LastActivity = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+
                 string token = CreateToken(user);
 
                 return Ok(new AuthResponseDto
                 {
                     Token = token,
                     Username = user.Username,
-                    Role = user.Role
+                    Role = user.Role?.Ad ?? "User"
                 });
             }
             catch (Exception ex)
@@ -143,7 +160,7 @@ namespace IstasyonDemo.Api.Controllers
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Role, user.Role?.Ad ?? "User"),
                 new Claim("id", user.Id.ToString())
             };
 
