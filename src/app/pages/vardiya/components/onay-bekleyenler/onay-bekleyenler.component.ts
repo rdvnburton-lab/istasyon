@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
+import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { VardiyaService } from '../../services/vardiya.service';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
@@ -29,7 +30,8 @@ import { Vardiya, VardiyaOzet, PersonelFarkAnalizi, MarketOzet, GenelOzet, Marke
         DialogModule,
         ConfirmDialogModule,
         TabsModule,
-        TextareaModule
+        TextareaModule,
+        ToastModule
     ],
     templateUrl: './onay-bekleyenler.component.html',
     styleUrls: ['./onay-bekleyenler.component.scss'],

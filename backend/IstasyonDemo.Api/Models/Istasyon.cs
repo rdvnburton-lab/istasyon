@@ -15,23 +15,29 @@ namespace IstasyonDemo.Api.Models
         public string? Adres { get; set; }
 
         public bool Aktif { get; set; } = true;
+        
+        [MaxLength(100)]
+        public string? ApiKey { get; set; }
 
-        // Hierarchy
-        public int? ParentIstasyonId { get; set; }
-        public Istasyon? ParentIstasyon { get; set; }
-        public ICollection<Istasyon> AltIstasyonlar { get; set; } = new List<Istasyon>();
+        // Relation to Firma
+        public int FirmaId { get; set; }
+        public Firma? Firma { get; set; }
 
-        // Ownership (Patron)
-        public int? PatronId { get; set; }
-        public User? Patron { get; set; }
+        // 3 ayrı sorumlu tipi
+        public int? IstasyonSorumluId { get; set; }
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("IstasyonSorumluId")]
+        public User? IstasyonSorumlu { get; set; }
 
-        public int? SorumluId { get; set; }
-        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("SorumluId")]
-        public User? Sorumlu { get; set; }
+        public int? VardiyaSorumluId { get; set; }
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("VardiyaSorumluId")]
+        public User? VardiyaSorumlu { get; set; }
+
+        public int? MarketSorumluId { get; set; }
+        [System.ComponentModel.DataAnnotations.Schema.ForeignKey("MarketSorumluId")]
+        public User? MarketSorumlu { get; set; }
 
         // Relations
-        // Relations
-        public ICollection<User> Kullanicilar { get; set; } = new List<User>(); // Renamed from Personeller to avoid confusion
+        public ICollection<User> Kullanicilar { get; set; } = new List<User>();
         public ICollection<Personel> Calisanlar { get; set; } = new List<Personel>();
         public ICollection<Vardiya> Vardiyalar { get; set; } = new List<Vardiya>();
     }

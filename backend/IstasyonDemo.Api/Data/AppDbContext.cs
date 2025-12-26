@@ -13,6 +13,7 @@ namespace IstasyonDemo.Api.Data
         public DbSet<Pusula> Pusulalar { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Firma> Firmalar { get; set; }
         public DbSet<Istasyon> Istasyonlar { get; set; }
         public DbSet<VardiyaLog> VardiyaLoglari { get; set; }
         public DbSet<MarketVardiya> MarketVardiyalar { get; set; }
@@ -22,6 +23,7 @@ namespace IstasyonDemo.Api.Data
         public DbSet<MarketGelir> MarketGelirler { get; set; }
         public DbSet<PusulaKrediKartiDetay> PusulaKrediKartiDetaylari { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<OtomatikDosya> OtomatikDosyalar { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -30,35 +32,6 @@ namespace IstasyonDemo.Api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // Global Query Filter
-            // Patron sadece kendi istasyonuna ait verileri görebilir
-            // Bu filtre, veritabanı sorgularına otomatik olarak "Where(x => x.Istasyon.PatronId == currentUserId)" ekler.
-            // Ancak EF Core'da navigation property üzerinden filtreleme sınırlıdır.
-            // Bu yüzden genellikle TenantId (burada IstasyonId veya PatronId) her tabloya eklenir.
-            // Mevcut yapıda IstasyonId üzerinden gidilebilir.
-            
-            // Not: Dinamik filtreleme için Expression tree kullanmak gerekir veya her entity için ayrı ayrı tanımlanır.
-            // Basitlik adına burada manuel kontrolü controller seviyesinde tutup,
-            // sadece kritik tablolar için sabit filtre ekleyebiliriz.
-            // Ancak HttpContext'e erişim DbContext oluşturulurken olduğu için,
-            // burada dinamik bir filtre tanımlamak karmaşıktır.
-            // Alternatif olarak, "Soft Delete" filtresi gibi statik filtreler buraya eklenir.
-            // Patron filtresi için en iyi yöntem, Repository katmanında veya Controller'da
-            // "User.FindFirst("id")" ile alınan ID'yi sorguya eklemektir.
-            // İstenilen "Global Query Filter" özelliği için her entity'de "PatronId" olması gerekirdi.
-            // Mevcut yapıda (Join gerektirdiği için) Global Query Filter performans sorunu yaratabilir.
-            // Yine de istenildiği üzere, Istasyon tablosu için bir örnek ekleyelim:
-
-            // Bu kısım dinamik parametre alamadığı için (EF Core limitation in OnModelCreating),
-            // Global Query Filter genellikle "IsDeleted" gibi statik alanlar için kullanılır.
-            // Multi-tenancy için ise genellikle bir "TenantId" kolonu eklenir ve o kolon üzerinden filtreleme yapılır.
-            // Bizim yapımızda "IstasyonId" var. Kullanıcının yetkili olduğu istasyonları filtrelemek için
-            // Global Query Filter yerine, Controller seviyesinde "Service Filter" kullanmak daha güvenlidir.
-            // Ancak talep üzerine, Istasyon tablosuna "Aktif" filtresi ekleyelim:
-            // Global Query Filter removed to avoid required relationship issues
-            // modelBuilder.Entity<Istasyon>().HasQueryFilter(i => i.Aktif);
-            // modelBuilder.Entity<Personel>().HasQueryFilter(p => p.Aktif);
 
             // İlişkileri ve kısıtlamaları burada tanımlayabiliriz
             modelBuilder.Entity<OtomasyonSatis>()
@@ -87,7 +60,6 @@ namespace IstasyonDemo.Api.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // PERFORMANCE INDEXES
-            // Index on VardiyaId for faster lookups
             modelBuilder.Entity<OtomasyonSatis>()
                 .HasIndex(o => o.VardiyaId)
                 .HasDatabaseName("IX_OtomasyonSatislar_VardiyaId");
@@ -100,18 +72,15 @@ namespace IstasyonDemo.Api.Data
                 .HasIndex(p => p.VardiyaId)
                 .HasDatabaseName("IX_Pusulalar_VardiyaId");
 
-            // Index on Vardiya.BaslangicTarihi for faster ordering
             modelBuilder.Entity<Vardiya>()
                 .HasIndex(v => v.BaslangicTarihi)
                 .HasDatabaseName("IX_Vardiyalar_BaslangicTarihi")
                 .IsDescending();
 
-            // Index on Vardiya.Durum for filtered queries
             modelBuilder.Entity<Vardiya>()
                 .HasIndex(v => v.Durum)
                 .HasDatabaseName("IX_Vardiyalar_Durum");
 
-            // Index on PersonelId for faster personnel reports
             modelBuilder.Entity<OtomasyonSatis>()
                 .HasIndex(o => o.PersonelId)
                 .HasDatabaseName("IX_OtomasyonSatislar_PersonelId");
@@ -120,23 +89,23 @@ namespace IstasyonDemo.Api.Data
                 .HasIndex(p => p.PersonelId)
                 .HasDatabaseName("IX_Pusulalar_PersonelId");
             
-            // Personel.IstasyonId Index (İstenilen Geliştirme)
             modelBuilder.Entity<Personel>()
                 .HasIndex(p => p.IstasyonId)
                 .HasDatabaseName("IX_Personeller_IstasyonId");
 
+            // Firma Relations
+            modelBuilder.Entity<Firma>()
+                .HasOne(f => f.Patron)
+                .WithMany()
+                .HasForeignKey(f => f.PatronId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Istasyon Relations
             modelBuilder.Entity<Istasyon>()
-                .HasOne(i => i.ParentIstasyon)
-                .WithMany(i => i.AltIstasyonlar)
-                .HasForeignKey(i => i.ParentIstasyonId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Istasyon>()
-                .HasOne(i => i.Patron)
-                .WithMany()
-                .HasForeignKey(i => i.PatronId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .HasOne(i => i.Firma)
+                .WithMany(f => f.Istasyonlar)
+                .HasForeignKey(i => i.FirmaId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
@@ -168,7 +137,6 @@ namespace IstasyonDemo.Api.Data
                 .HasForeignKey(vl => vl.VardiyaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Index on VardiyaLog for faster queries
             modelBuilder.Entity<VardiyaLog>()
                 .HasIndex(vl => vl.VardiyaId)
                 .HasDatabaseName("IX_VardiyaLoglari_VardiyaId");
@@ -263,6 +231,13 @@ namespace IstasyonDemo.Api.Data
                 .HasIndex(n => n.CreatedAt)
                 .HasDatabaseName("IX_Notifications_CreatedAt")
                 .IsDescending();
+
+            // OtomatikDosya Relations
+            modelBuilder.Entity<OtomatikDosya>()
+                .HasOne(o => o.Istasyon)
+                .WithMany()
+                .HasForeignKey(o => o.IstasyonId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

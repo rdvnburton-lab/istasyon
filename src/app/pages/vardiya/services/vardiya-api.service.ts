@@ -152,4 +152,17 @@ export class VardiyaApiService {
     deletePompaGider(vardiyaId: number, giderId: number): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}/${vardiyaId}/gider/${giderId}`);
     }
+
+    // Otomatik Dosya İşlemleri
+    getPendingAutomaticFiles(): Observable<any[]> {
+        return this.http.get<any[]>(`${environment.apiUrl}/FileTransfer/pending`);
+    }
+
+    getAutomaticFileContent(id: number): Observable<any> {
+        return this.http.get<any>(`${environment.apiUrl}/FileTransfer/${id}/content`);
+    }
+
+    markAsProcessed(id: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/FileTransfer/${id}/processed`, {});
+    }
 }

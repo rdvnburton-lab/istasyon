@@ -209,7 +209,7 @@
             </div>
 
             <!-- Pompa Satışları -->
-            <div class="col-span-12">
+            <div class="col-span-12" *ngIf="!isMarketSorumlusu">
                 <div class="card">
                     <h5 class="font-semibold mb-4"><i class="pi pi-box mr-2"></i>Pompa Satışları (Sistem)</h5>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

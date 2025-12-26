@@ -9,9 +9,12 @@ export interface UserDto {
     role: string;
     roleId: number;
     istasyonId?: number;
+    firmaId?: number;
     istasyonAdi?: string;
+    firmaAdi?: string;
     adSoyad?: string;
     telefon?: string;
+    fotografData?: string;
 }
 
 export interface CreateUserDto {
@@ -19,8 +22,10 @@ export interface CreateUserDto {
     password: string;
     roleId: number;
     istasyonId?: number;
+    firmaId?: number;
     adSoyad?: string;
     telefon?: string;
+    fotografData?: string;
 }
 
 export interface UpdateUserDto {
@@ -28,8 +33,10 @@ export interface UpdateUserDto {
     password?: string;
     roleId: number;
     istasyonId?: number;
+    firmaId?: number;
     adSoyad?: string;
     telefon?: string;
+    fotografData?: string;
 }
 
 @Injectable({
@@ -45,8 +52,8 @@ export class UserService {
         return this.http.get<UserDto[]>(this.apiUrl);
     }
 
-    createUser(user: CreateUserDto): Observable<any> {
-        return this.http.post(`${this.authUrl}/create-user`, user);
+    createUser(user: CreateUserDto): Observable<UserDto> {
+        return this.http.post<UserDto>(`${this.authUrl}/create-user`, user);
     }
 
     updateUser(id: number, user: UpdateUserDto): Observable<any> {

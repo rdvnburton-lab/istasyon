@@ -1,0 +1,134 @@
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using IstasyonDemo.Api.Data;
+using IstasyonDemo.Api.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace IstasyonDemo.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class FileTransferController : ControllerBase
+{
+    private readonly ILogger<FileTransferController> _logger;
+    private readonly AppDbContext _context;
+
+    public FileTransferController(ILogger<FileTransferController> logger, AppDbContext context)
+    {
+        _logger = logger;
+        _context = context;
+    }
+
+    [HttpPost("upload")]
+    public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string originalHash, [FromForm] int? istasyonId, [FromHeader(Name = "X-Api-Key")] string apiKey)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("Dosya seçilmedi.");
+        }
+
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            return Unauthorized("API Key eksik.");
+        }
+
+        try
+        {
+            // API Key ve İstasyon Doğrulama
+            var istasyon = await _context.Istasyonlar.FirstOrDefaultAsync(i => i.Id == istasyonId && i.ApiKey == apiKey && i.Aktif);
+            if (istasyon == null)
+            {
+                _logger.LogWarning("Yetkisiz erişim denemesi. IstasyonId: {IstasyonId}, ApiKey: {ApiKey}", istasyonId, apiKey);
+                return Unauthorized("Geçersiz API Key veya İstasyon ID.");
+            }
+
+            // Dosya içeriğini byte array olarak oku
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+            byte[] fileBytes = ms.ToArray();
+
+            // Bütünlük kontrolü (Hash doğrulama)
+            string calculatedHash = CalculateHash(fileBytes);
+
+            if (calculatedHash != originalHash)
+            {
+                _logger.LogWarning("Dosya bütünlük hatası: {FileName}. Beklenen: {Original}, Hesaplanan: {Calculated}", file.FileName, originalHash, calculatedHash);
+                return BadRequest("Dosya bütünlük kontrolü başarısız oldu. Hash uyuşmuyor.");
+            }
+
+            // Veritabanına kaydet
+            var otomatikDosya = new OtomatikDosya
+            {
+                DosyaAdi = file.FileName,
+                DosyaIcerigi = fileBytes,
+                Hash = calculatedHash,
+                YuklemeTarihi = DateTime.UtcNow,
+                Islendi = false,
+                IstasyonId = istasyonId
+            };
+
+            _context.OtomatikDosyalar.Add(otomatikDosya);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Dosya başarıyla veritabanına kaydedildi: {FileName} (İstasyon: {IstasyonAd})", file.FileName, istasyon.Ad);
+            return Ok(new { message = "Dosya başarıyla alındı ve veritabanına kaydedildi.", id = otomatikDosya.Id });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Dosya yükleme sırasında hata oluştu.");
+            return StatusCode(500, $"Sunucu hatası: {ex.Message}");
+        }
+    }
+
+    [HttpGet("pending")]
+    public async Task<IActionResult> GetPendingFiles()
+    {
+        var files = await _context.OtomatikDosyalar
+            .Include(f => f.Istasyon)
+            .Where(f => !f.Islendi)
+            .Select(f => new { 
+                f.Id, 
+                f.DosyaAdi, 
+                f.YuklemeTarihi, 
+                f.Hash,
+                IstasyonAd = f.Istasyon != null ? f.Istasyon.Ad : "Bilinmiyor"
+            })
+            .OrderByDescending(f => f.YuklemeTarihi)
+            .ToListAsync();
+            
+        return Ok(files);
+    }
+
+    [HttpGet("{id}/content")]
+    public async Task<IActionResult> GetFileContent(int id)
+    {
+        var file = await _context.OtomatikDosyalar.FindAsync(id);
+        if (file == null) return NotFound();
+        
+        return Ok(new { 
+            id = file.Id, 
+            dosyaAdi = file.DosyaAdi, 
+            icerik = Convert.ToBase64String(file.DosyaIcerigi) 
+        });
+    }
+
+    [HttpPost("{id}/processed")]
+    public async Task<IActionResult> MarkAsProcessed(int id)
+    {
+        var file = await _context.OtomatikDosyalar.FindAsync(id);
+        if (file == null) return NotFound();
+        
+        file.Islendi = true;
+        file.IslenmeTarihi = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        
+        return Ok();
+    }
+
+    private string CalculateHash(byte[] data)
+    {
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(data);
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+    }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,8 @@ import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 
 import { VardiyaApiService } from '../../services/vardiya-api.service';
+import { MarketApiService } from '../../services/market-api.service';
+import { AuthService } from '../../../../services/auth.service';
 import { VardiyaService } from '../../services/vardiya.service';
 import {
     Vardiya,
@@ -82,16 +84,25 @@ export class Karsilastirma implements OnInit, OnDestroy {
     enYogunLpgPompaNo2: number | null = null;
     karsilastirmaChartData2: any;
 
+    isMarketSorumlusu = false;
+
     private subscriptions = new Subscription();
 
     constructor(
         private vardiyaApiService: VardiyaApiService,
+        private marketApiService: MarketApiService,
+        private authService: AuthService,
         private vardiyaService: VardiyaService,
         private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
+        const user = this.authService.getCurrentUser();
+        const role = user?.role?.toLowerCase() || '';
+        this.isMarketSorumlusu = role.includes('market');
+
         this.initChart();
         this.vardiyalariYukle();
 
@@ -136,19 +147,43 @@ export class Karsilastirma implements OnInit, OnDestroy {
         const end = new Date(this.baslangicTarihi);
         end.setHours(23, 59, 59, 999);
 
-        this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
-            next: (res) => {
-                this.vardiyalar = res.vardiyalar;
-                this.vardiyalarLoading = false;
-                if (this.vardiyalar.length > 0 && !this.secilenVardiya) {
-                    this.secilenVardiya = this.vardiyalar[0];
-                    this.karsilastirmaYap();
+        if (this.isMarketSorumlusu) {
+            this.marketApiService.getMarketRaporu(start, end).subscribe({
+                next: (res) => {
+                    const vardiyalarData = res.vardiyalar || res.Vardiyalar || [];
+                    this.vardiyalar = vardiyalarData.map((v: any) => ({
+                        ...v,
+                        vardiyaId: v.id || v.Id,
+                        tarih: v.tarih || v.Tarih,
+                        dosyaAdi: `Vardiya ${v.vardiyaNo || v.VardiyaNo || ''} - ${new Date(v.tarih || v.Tarih).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+                    }));
+                    this.vardiyalarLoading = false;
+                    if (this.vardiyalar.length > 0 && !this.secilenVardiya) {
+                        this.secilenVardiya = this.vardiyalar[0];
+                        this.karsilastirmaYap();
+                    }
+                    this.cdr.detectChanges();
+                },
+                error: () => {
+                    this.vardiyalarLoading = false;
+                    this.cdr.detectChanges();
                 }
-            },
-            error: () => {
-                this.vardiyalarLoading = false;
-            }
-        });
+            });
+        } else {
+            this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
+                next: (res) => {
+                    this.vardiyalar = res.vardiyalar;
+                    this.vardiyalarLoading = false;
+                    if (this.vardiyalar.length > 0 && !this.secilenVardiya) {
+                        this.secilenVardiya = this.vardiyalar[0];
+                        this.karsilastirmaYap();
+                    }
+                },
+                error: () => {
+                    this.vardiyalarLoading = false;
+                }
+            });
+        }
     }
 
     onTarihChange(): void {
@@ -161,18 +196,66 @@ export class Karsilastirma implements OnInit, OnDestroy {
     karsilastirmaYap(): void {
         if (!this.secilenVardiya) return;
         this.loading = true;
-        this.vardiyaApiService.getKarsilastirma(this.secilenVardiya.id).subscribe({
-            next: (sonuc) => {
-                this.sonuc = sonuc;
-                this.updateChart(sonuc);
-                this.gruplaPompaSatislari(sonuc.pompaSatislari);
-                this.loading = false;
-            },
-            error: () => {
-                this.loading = false;
-                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Karşılaştırma yapılamadı' });
-            }
-        });
+
+        if (this.isMarketSorumlusu) {
+            const id = this.secilenVardiya.vardiyaId || this.secilenVardiya.id || this.secilenVardiya.Id;
+            this.marketApiService.getMarketVardiyaDetay(id).subscribe({
+                next: (vardiya) => {
+                    const sistemToplam = vardiya.toplamSatisTutari || vardiya.ToplamSatisTutari || 0;
+                    const tahsilatToplam = vardiya.toplamTeslimatTutari || vardiya.ToplamTeslimatTutari || 0;
+                    const fark = vardiya.toplamFark !== undefined ? vardiya.toplamFark : vardiya.ToplamFark;
+
+                    let durum = 'UYUMLU';
+                    if (Math.abs(fark) > 10) durum = 'KRITIK_FARK';
+                    else if (Math.abs(fark) > 0.1) durum = 'FARK_VAR';
+
+                    const chartDetaylar: any[] = [{
+                        odemeYontemi: 'GENEL_TOPLAM',
+                        sistemTutar: sistemToplam,
+                        tahsilatTutar: tahsilatToplam,
+                        fark: fark
+                    }];
+
+                    const farkYuzde = sistemToplam !== 0 ? (fark / sistemToplam) * 100 : 0;
+
+                    this.sonuc = {
+                        vardiyaId: id,
+                        sistemToplam,
+                        tahsilatToplam,
+                        fark,
+                        farkYuzde,
+                        durum: durum as any,
+                        detaylar: chartDetaylar as any,
+                        pompaSatislari: []
+                    };
+
+                    if (this.sonuc) {
+                        this.updateChart(this.sonuc);
+                    }
+                    this.gruplaPompaSatislari([]);
+                    this.loading = false;
+                    this.cdr.detectChanges();
+                },
+                error: () => {
+                    this.loading = false;
+                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Karşılaştırma yapılamadı' });
+                    this.cdr.detectChanges();
+                }
+            });
+        } else {
+            this.vardiyaApiService.getKarsilastirma(this.secilenVardiya.id).subscribe({
+                next: (sonuc) => {
+                    this.sonuc = sonuc;
+                    this.updateChart(sonuc);
+                    this.gruplaPompaSatislari(sonuc.pompaSatislari);
+                    this.loading = false;
+                },
+                error: () => {
+                    this.loading = false;
+                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Karşılaştırma yapılamadı' });
+                }
+            });
+        }
     }
 
     karsilastirmaModuAc(): void {
@@ -189,19 +272,43 @@ export class Karsilastirma implements OnInit, OnDestroy {
         const end = new Date(this.baslangicTarihi2);
         end.setHours(23, 59, 59, 999);
 
-        this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
-            next: (res) => {
-                this.vardiyalar2 = res.vardiyalar;
-                this.vardiyalarLoading2 = false;
-                if (this.vardiyalar2.length > 0 && !this.secilenVardiya2) {
-                    this.secilenVardiya2 = this.vardiyalar2[0];
-                    this.karsilastirmaYap2();
+        if (this.isMarketSorumlusu) {
+            this.marketApiService.getMarketRaporu(start, end).subscribe({
+                next: (res) => {
+                    const vardiyalarData = res.vardiyalar || res.Vardiyalar || [];
+                    this.vardiyalar2 = vardiyalarData.map((v: any) => ({
+                        ...v,
+                        vardiyaId: v.id || v.Id,
+                        tarih: v.tarih || v.Tarih,
+                        dosyaAdi: `Vardiya ${v.vardiyaNo || v.VardiyaNo || ''} - ${new Date(v.tarih || v.Tarih).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+                    }));
+                    this.vardiyalarLoading2 = false;
+                    if (this.vardiyalar2.length > 0 && !this.secilenVardiya2) {
+                        this.secilenVardiya2 = this.vardiyalar2[0];
+                        this.karsilastirmaYap2();
+                    }
+                    this.cdr.detectChanges();
+                },
+                error: () => {
+                    this.vardiyalarLoading2 = false;
+                    this.cdr.detectChanges();
                 }
-            },
-            error: () => {
-                this.vardiyalarLoading2 = false;
-            }
-        });
+            });
+        } else {
+            this.vardiyaApiService.getVardiyaRaporu(start, end).subscribe({
+                next: (res) => {
+                    this.vardiyalar2 = res.vardiyalar;
+                    this.vardiyalarLoading2 = false;
+                    if (this.vardiyalar2.length > 0 && !this.secilenVardiya2) {
+                        this.secilenVardiya2 = this.vardiyalar2[0];
+                        this.karsilastirmaYap2();
+                    }
+                },
+                error: () => {
+                    this.vardiyalarLoading2 = false;
+                }
+            });
+        }
     }
 
     onTarihChange2(): void {
@@ -214,18 +321,66 @@ export class Karsilastirma implements OnInit, OnDestroy {
     karsilastirmaYap2(): void {
         if (!this.secilenVardiya2) return;
         this.loading2 = true;
-        this.vardiyaApiService.getKarsilastirma(this.secilenVardiya2.id).subscribe({
-            next: (sonuc) => {
-                this.sonuc2 = sonuc;
-                this.updateChart2(sonuc);
-                this.gruplaPompaSatislari2(sonuc.pompaSatislari);
-                this.loading2 = false;
-            },
-            error: () => {
-                this.loading2 = false;
-                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kıyaslama yapılamadı' });
-            }
-        });
+
+        if (this.isMarketSorumlusu) {
+            const id = this.secilenVardiya2.vardiyaId || this.secilenVardiya2.id || this.secilenVardiya2.Id;
+            this.marketApiService.getMarketVardiyaDetay(id).subscribe({
+                next: (vardiya) => {
+                    const sistemToplam = vardiya.toplamSatisTutari || vardiya.ToplamSatisTutari || 0;
+                    const tahsilatToplam = vardiya.toplamTeslimatTutari || vardiya.ToplamTeslimatTutari || 0;
+                    const fark = vardiya.toplamFark !== undefined ? vardiya.toplamFark : vardiya.ToplamFark;
+
+                    let durum = 'UYUMLU';
+                    if (Math.abs(fark) > 10) durum = 'KRITIK_FARK';
+                    else if (Math.abs(fark) > 0.1) durum = 'FARK_VAR';
+
+                    const chartDetaylar: any[] = [{
+                        odemeYontemi: 'GENEL_TOPLAM',
+                        sistemTutar: sistemToplam,
+                        tahsilatTutar: tahsilatToplam,
+                        fark: fark
+                    }];
+
+                    const farkYuzde = sistemToplam !== 0 ? (fark / sistemToplam) * 100 : 0;
+
+                    this.sonuc2 = {
+                        vardiyaId: id,
+                        sistemToplam,
+                        tahsilatToplam,
+                        fark,
+                        farkYuzde,
+                        durum: durum as any,
+                        detaylar: chartDetaylar as any,
+                        pompaSatislari: []
+                    };
+
+                    if (this.sonuc2) {
+                        this.updateChart2(this.sonuc2);
+                    }
+                    this.gruplaPompaSatislari2([]);
+                    this.loading2 = false;
+                    this.cdr.detectChanges();
+                },
+                error: () => {
+                    this.loading2 = false;
+                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kıyaslama yapılamadı' });
+                    this.cdr.detectChanges();
+                }
+            });
+        } else {
+            this.vardiyaApiService.getKarsilastirma(this.secilenVardiya2.id).subscribe({
+                next: (sonuc) => {
+                    this.sonuc2 = sonuc;
+                    this.updateChart2(sonuc);
+                    this.gruplaPompaSatislari2(sonuc.pompaSatislari);
+                    this.loading2 = false;
+                },
+                error: () => {
+                    this.loading2 = false;
+                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kıyaslama yapılamadı' });
+                }
+            });
+        }
     }
 
     gruplaPompaSatislari(satislar: any[]): void {
@@ -287,12 +442,12 @@ export class Karsilastirma implements OnInit, OnDestroy {
     }
 
     getOdemeLabel(yontem: any): string {
-        const labels: any = { 'NAKIT': 'Nakit', 'KREDI_KARTI': 'Kredi Kartı', 'PARO_PUAN': 'Paro Puan', 'MOBIL_ODEME': 'Mobil Ödeme', 'FILO': 'Filo' };
+        const labels: any = { 'NAKIT': 'Nakit', 'KREDI_KARTI': 'Kredi Kartı', 'PARO_PUAN': 'Paro Puan', 'MOBIL_ODEME': 'Mobil Ödeme', 'FILO': 'Filo', 'GENEL_TOPLAM': 'Genel Toplam' };
         return labels[yontem] || yontem;
     }
 
     getOdemeIcon(yontem: any): string {
-        const icons: any = { 'NAKIT': 'pi pi-money-bill text-green-500', 'KREDI_KARTI': 'pi pi-credit-card text-blue-500', 'PARO_PUAN': 'pi pi-ticket text-yellow-500', 'MOBIL_ODEME': 'pi pi-mobile text-purple-500', 'FILO': 'pi pi-car text-orange-500' };
+        const icons: any = { 'NAKIT': 'pi pi-money-bill text-green-500', 'KREDI_KARTI': 'pi pi-credit-card text-blue-500', 'PARO_PUAN': 'pi pi-ticket text-yellow-500', 'MOBIL_ODEME': 'pi pi-mobile text-purple-500', 'FILO': 'pi pi-car text-orange-500', 'GENEL_TOPLAM': 'pi pi-chart-bar text-blue-500' };
         return icons[yontem] || 'pi pi-circle';
     }
 

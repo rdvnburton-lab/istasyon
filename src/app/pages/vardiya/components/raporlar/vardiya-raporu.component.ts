@@ -67,10 +67,16 @@ export class VardiyaRaporuComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.userRole = this.authService.getCurrentUser()?.role || '';
+        const user = this.authService.getCurrentUser();
+        this.userRole = user?.role?.toLowerCase() || '';
 
-        if (this.userRole === 'market_sorumlusu') {
+        const isMarketSorumlusu = this.userRole === 'market sorumlusu' || this.userRole === 'market_sorumlusu';
+
+        if (isMarketSorumlusu) {
             this.raporTuru = 'market';
+            this.raporTurleri = [
+                { label: 'Market Raporu', value: 'market', icon: 'pi pi-shopping-bag' }
+            ];
         } else {
             this.raporTuru = 'pompa';
         }

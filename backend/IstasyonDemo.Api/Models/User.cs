@@ -26,6 +26,8 @@ namespace IstasyonDemo.Api.Models
         [MaxLength(20)]
         public string? Telefon { get; set; }
 
+        public string? FotografData { get; set; }
+
         public int? IstasyonId { get; set; }
         public Istasyon? Istasyon { get; set; }
 

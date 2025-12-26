@@ -130,7 +130,7 @@ namespace IstasyonDemo.Api.Services
 
             if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
             }
 
             return await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
@@ -179,10 +179,10 @@ namespace IstasyonDemo.Api.Services
 
         public async Task SilmeTalebiOlusturAsync(int id, SilmeTalebiDto dto, int userId, string? userRole, string? userName)
         {
-            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).FirstOrDefaultAsync(v => v.Id == id);
+            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
-            if (userRole == "patron" && vardiya.Istasyon?.PatronId != userId) throw new UnauthorizedAccessException();
+            if (userRole == "patron" && vardiya.Istasyon?.Firma.PatronId != userId) throw new UnauthorizedAccessException();
             if (userRole != "admin" && userRole != "patron")
             {
                 var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == userId);
@@ -241,10 +241,10 @@ namespace IstasyonDemo.Api.Services
 
         public async Task OnaylaAsync(int id, OnayDto dto, int userId, string? userRole)
         {
-            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).FirstOrDefaultAsync(v => v.Id == id);
+            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
-            if (userRole == "patron" && vardiya.Istasyon?.PatronId != userId) throw new UnauthorizedAccessException();
+            if (userRole == "patron" && vardiya.Istasyon?.Firma.PatronId != userId) throw new UnauthorizedAccessException();
 
             if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
             {
@@ -328,10 +328,10 @@ namespace IstasyonDemo.Api.Services
 
         public async Task ReddetAsync(int id, RedDto dto, int userId, string? userRole)
         {
-            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).FirstOrDefaultAsync(v => v.Id == id);
+            var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
-            if (userRole == "patron" && vardiya.Istasyon?.PatronId != userId) throw new UnauthorizedAccessException();
+            if (userRole == "patron" && vardiya.Istasyon?.Firma.PatronId != userId) throw new UnauthorizedAccessException();
 
             if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
             {

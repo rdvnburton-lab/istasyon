@@ -369,7 +369,7 @@ namespace IstasyonDemo.Api.Controllers
 
             // Check 3: Stations without Patron
             var orphanedStations = await _context.Istasyonlar
-                .Where(i => i.PatronId == null && i.Aktif)
+                .Where(i => i.FirmaId == 0 && i.Aktif)
                 .ToListAsync();
 
             foreach (var i in orphanedStations)

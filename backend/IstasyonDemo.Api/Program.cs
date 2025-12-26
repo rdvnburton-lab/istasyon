@@ -128,19 +128,13 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        // Seed Default Station
-        if (!context.Istasyonlar.Any())
-        {
-            context.Istasyonlar.Add(new Istasyon { Ad = "Merkez İstasyon", Adres = "Merkez", Aktif = true });
-            context.SaveChanges();
-        }
-
-        // Seed Roles
+        // 1. Seed Roles
         if (!context.Roles.Any())
         {
             context.Roles.AddRange(
                 new Role { Ad = "admin", Aciklama = "Sistem Yöneticisi", IsSystemRole = true },
                 new Role { Ad = "patron", Aciklama = "İstasyon Sahibi", IsSystemRole = true },
+                new Role { Ad = "istasyon sorumlusu", Aciklama = "İstasyon Sorumlusu", IsSystemRole = true },
                 new Role { Ad = "vardiya sorumlusu", Aciklama = "Vardiya Sorumlusu", IsSystemRole = true },
                 new Role { Ad = "market sorumlusu", Aciklama = "Market Sorumlusu", IsSystemRole = true }
             );
@@ -148,49 +142,12 @@ using (var scope = app.Services.CreateScope())
         }
 
         var adminRole = context.Roles.First(r => r.Ad == "admin");
-        var patronRole = context.Roles.First(r => r.Ad == "patron");
-        var vardiyaRole = context.Roles.First(r => r.Ad == "vardiya sorumlusu");
 
-        // Seed Users
+        // 2. Seed Users
         // Admin
         if (!context.Users.Any(u => u.Username == "admin"))
         {
             context.Users.Add(new User { Username = "admin", RoleId = adminRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") });
-            context.SaveChanges();
-        }
-
-        // Vardiya Sorumlusu (Demo)
-        if (!context.Users.Any(u => u.Username == "vardiya"))
-        {
-            context.Users.Add(new User { Username = "vardiya", RoleId = vardiyaRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("vardiya123") });
-            context.SaveChanges();
-        }
-
-        // Patron (Demo)
-        if (!context.Users.Any(u => u.Username == "patron"))
-        {
-            context.Users.Add(new User { Username = "patron", RoleId = patronRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("patron123") });
-            context.SaveChanges();
-        }
-
-        // Ensure Patron owns Merkez Istasyon
-        var patronUser = context.Users.FirstOrDefault(u => u.Username == "patron");
-        var merkezIstasyon = context.Istasyonlar.FirstOrDefault(u => u.Ad == "Merkez İstasyon");
-
-        if (patronUser != null && merkezIstasyon != null && merkezIstasyon.PatronId == null)
-        {
-            merkezIstasyon.PatronId = patronUser.Id;
-            context.SaveChanges();
-        }
-
-        // FIX: Demo kullanıcılarına istasyon ata
-        var usersToFix = context.Users.Where(u => u.IstasyonId == null && u.Username != "admin").ToList();
-        if (usersToFix.Any() && merkezIstasyon != null)
-        {
-            foreach (var user in usersToFix)
-            {
-                user.IstasyonId = merkezIstasyon.Id;
-            }
             context.SaveChanges();
         }
     }

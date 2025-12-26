@@ -46,8 +46,8 @@ namespace IstasyonDemo.Api.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
-            // Insert Default Station manually to satisfy FK constraints
-            migrationBuilder.Sql("INSERT INTO \"Istasyonlar\" (\"Id\", \"Ad\", \"Aktif\") VALUES (1, 'Merkez İstasyon', true) ON CONFLICT (\"Id\") DO NOTHING;");
+            // Insert Default Station manually to satisfy FK constraints (REMOVED for clean DB)
+            // migrationBuilder.Sql("INSERT INTO \"Istasyonlar\" (\"Id\", \"Ad\", \"Aktif\") VALUES (1, 'Merkez İstasyon', true) ON CONFLICT (\"Id\") DO NOTHING;");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vardiyalar_IstasyonId",

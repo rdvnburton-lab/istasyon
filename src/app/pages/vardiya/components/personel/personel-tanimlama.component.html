@@ -92,7 +92,7 @@
                                     class="p-button-rounded p-button-text p-button-info"
                                     (click)="editPersonel(personel)" pTooltip="Düzenle" tooltipPosition="top">
                                 </button>
-                                <button pButton pRipple icon="pi pi-trash"
+                                <button *ngIf="!isVardiyaSorumlusu" pButton pRipple icon="pi pi-trash"
                                     class="p-button-rounded p-button-text p-button-danger"
                                     (click)="deletePersonel(personel)" pTooltip="Sil" tooltipPosition="top">
                                 </button>
@@ -160,7 +160,7 @@
             <small class="text-surface-500">El terminali veya otomasyon sistemindeki personel kodu</small>
         </div>
 
-        <div>
+        <div *ngIf="!isVardiyaSorumlusu && !isMarketSorumlusu">
             <label for="rol" class="block text-sm font-medium mb-2">Rol <span class="text-red-500">*</span></label>
             <p-select id="rol" [(ngModel)]="currentPersonel.rol" [options]="roller" optionLabel="label"
                 optionValue="value" placeholder="Rol seçin" styleClass="w-full" [disabled]="loading" appendTo="body">

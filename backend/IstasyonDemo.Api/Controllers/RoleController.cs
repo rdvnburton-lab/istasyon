@@ -7,7 +7,7 @@ namespace IstasyonDemo.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,patron")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
