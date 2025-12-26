@@ -8,27 +8,42 @@ export interface Istasyon {
     ad: string;
     adres?: string;
     aktif: boolean;
-    parentIstasyonId?: number;
-    patronId?: number;
-    sorumluId?: number;
+    firmaId: number;
+
+    // 3 ayrı sorumlu ID
+    istasyonSorumluId?: number;
+    vardiyaSorumluId?: number;
+    marketSorumluId?: number;
+
+    apiKey?: string;
     kod?: string;
     pompaSayisi?: number;
     marketVar?: boolean;
+
+    // Backend'den gelen hazır sorumlu adları
+    istasyonSorumlusu?: string;
+    vardiyaSorumlusu?: string;
+    marketSorumlusu?: string;
 }
 
 export interface CreateIstasyonDto {
     ad: string;
     adres?: string;
-    parentIstasyonId?: number;
-    patronId?: number;
-    sorumluId?: number;
+    firmaId: number;
+    istasyonSorumluId?: number;
+    vardiyaSorumluId?: number;
+    marketSorumluId?: number;
+    apiKey?: string;
 }
 
 export interface UpdateIstasyonDto {
     ad: string;
     adres?: string;
     aktif: boolean;
-    sorumluId?: number;
+    istasyonSorumluId?: number;
+    vardiyaSorumluId?: number;
+    marketSorumluId?: number;
+    apiKey?: string;
 }
 
 @Injectable({

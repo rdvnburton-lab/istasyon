@@ -26,7 +26,10 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            IQueryable<Istasyon> query = _context.Istasyonlar;
+            IQueryable<Istasyon> query = _context.Istasyonlar
+                .Include(i => i.IstasyonSorumlu).ThenInclude(s => s!.Role)
+                .Include(i => i.VardiyaSorumlu).ThenInclude(s => s!.Role)
+                .Include(i => i.MarketSorumlu).ThenInclude(s => s!.Role);
 
             if (userRole == "admin")
             {
@@ -34,13 +37,12 @@ namespace IstasyonDemo.Api.Controllers
             }
             else if (userRole == "patron")
             {
-                // Patron sees stations they own OR stations where they are assigned (if any logic exists for that)
-                // Assuming PatronId is linked to User.Id
-                query = query.Where(i => i.PatronId == userId || (i.ParentIstasyon != null && i.ParentIstasyon.PatronId == userId));
+                // Patron sees stations belonging to their firms
+                query = query.Where(i => i.Firma.PatronId == userId);
             }
             else
             {
-                // Regular users (Vardiya Sorumlusu, Pompaci) see their assigned station
+                // Regular users see their assigned station
                 var user = await _context.Users.FindAsync(userId);
                 if (user?.IstasyonId != null)
                 {
@@ -58,9 +60,27 @@ namespace IstasyonDemo.Api.Controllers
                 Ad = i.Ad,
                 Adres = i.Adres,
                 Aktif = i.Aktif,
-                ParentIstasyonId = i.ParentIstasyonId,
-                PatronId = i.PatronId,
-                SorumluId = i.SorumluId
+                FirmaId = i.FirmaId,
+                
+                // 3 ayrı sorumlu ID
+                IstasyonSorumluId = i.IstasyonSorumluId,
+                VardiyaSorumluId = i.VardiyaSorumluId,
+                MarketSorumluId = i.MarketSorumluId,
+                
+                ApiKey = userRole == "admin" ? i.ApiKey : null,
+                
+                // Her sorumlu sadece kendi kolonunda görünsün
+                IstasyonSorumlusu = i.IstasyonSorumlu != null 
+                    ? (i.IstasyonSorumlu.AdSoyad ?? i.IstasyonSorumlu.Username) 
+                    : null,
+                    
+                VardiyaSorumlusu = i.VardiyaSorumlu != null 
+                    ? (i.VardiyaSorumlu.AdSoyad ?? i.VardiyaSorumlu.Username)
+                    : null,
+                    
+                MarketSorumlusu = i.MarketSorumlu != null 
+                    ? (i.MarketSorumlu.AdSoyad ?? i.MarketSorumlu.Username)
+                    : null
             }).ToListAsync();
 
             return Ok(istasyonlar);
@@ -73,45 +93,67 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            // If Patron, ensure they are creating a sub-station or they are setting themselves as owner?
-            // For simplicity, if Patron creates a station, they are the owner.
+            // Ensure the firma exists and the user has access to it
+            var firma = await _context.Firmalar.FindAsync(request.FirmaId);
+            if (firma == null)
+            {
+                return BadRequest("Geçersiz firma.");
+            }
+
+            if (userRole == "patron" && firma.PatronId != userId)
+            {
+                return Forbid();
+            }
+
+            // Sorumluların başka istasyonda olup olmadığını kontrol et
+            var sorumluHatalari = new List<string>();
             
+            if (request.IstasyonSorumluId.HasValue)
+            {
+                var mevcutIstasyon = await _context.Istasyonlar
+                    .AnyAsync(i => i.IstasyonSorumluId == request.IstasyonSorumluId || 
+                                   i.VardiyaSorumluId == request.IstasyonSorumluId || 
+                                   i.MarketSorumluId == request.IstasyonSorumluId);
+                if (mevcutIstasyon)
+                    sorumluHatalari.Add("İstasyon sorumlusu başka bir istasyonda zaten görevli.");
+            }
+            
+            if (request.VardiyaSorumluId.HasValue)
+            {
+                var mevcutIstasyon = await _context.Istasyonlar
+                    .AnyAsync(i => i.IstasyonSorumluId == request.VardiyaSorumluId || 
+                                   i.VardiyaSorumluId == request.VardiyaSorumluId || 
+                                   i.MarketSorumluId == request.VardiyaSorumluId);
+                if (mevcutIstasyon)
+                    sorumluHatalari.Add("Vardiya sorumlusu başka bir istasyonda zaten görevli.");
+            }
+            
+            if (request.MarketSorumluId.HasValue)
+            {
+                var mevcutIstasyon = await _context.Istasyonlar
+                    .AnyAsync(i => i.IstasyonSorumluId == request.MarketSorumluId || 
+                                   i.VardiyaSorumluId == request.MarketSorumluId || 
+                                   i.MarketSorumluId == request.MarketSorumluId);
+                if (mevcutIstasyon)
+                    sorumluHatalari.Add("Market sorumlusu başka bir istasyonda zaten görevli.");
+            }
+            
+            if (sorumluHatalari.Any())
+            {
+                return BadRequest(string.Join(" ", sorumluHatalari));
+            }
+
             var istasyon = new Istasyon
             {
                 Ad = request.Ad,
                 Adres = request.Adres,
-                ParentIstasyonId = request.ParentIstasyonId,
+                FirmaId = request.FirmaId,
                 Aktif = true,
-                SorumluId = request.SorumluId
+                IstasyonSorumluId = request.IstasyonSorumluId,
+                VardiyaSorumluId = request.VardiyaSorumluId,
+                MarketSorumluId = request.MarketSorumluId,
+                ApiKey = userRole == "admin" ? request.ApiKey : null
             };
-
-            if (userRole == "patron")
-            {
-                if (!request.ParentIstasyonId.HasValue)
-                {
-                    return BadRequest("Patronlar ana istasyon oluşturamaz, sadece mevcut istasyonlarına alt istasyon ekleyebilir.");
-                }
-
-                istasyon.PatronId = userId;
-                
-                // If ParentIstasyonId is provided, ensure Patron owns the parent
-                if (request.ParentIstasyonId.HasValue)
-                {
-                    var parent = await _context.Istasyonlar.FindAsync(request.ParentIstasyonId.Value);
-                    if (parent == null || parent.PatronId != userId)
-                    {
-                        return BadRequest("Geçersiz üst istasyon. Bu istasyonun sahibi değilsiniz.");
-                    }
-                }
-            }
-            else if (userRole == "admin")
-            {
-                // Admin can assign a patron
-                if (request.PatronId.HasValue)
-                {
-                    istasyon.PatronId = request.PatronId;
-                }
-            }
 
             _context.Istasyonlar.Add(istasyon);
             await _context.SaveChangesAsync();
@@ -122,9 +164,11 @@ namespace IstasyonDemo.Api.Controllers
                 Ad = istasyon.Ad,
                 Adres = istasyon.Adres,
                 Aktif = istasyon.Aktif,
-                ParentIstasyonId = istasyon.ParentIstasyonId,
-                PatronId = istasyon.PatronId,
-                SorumluId = istasyon.SorumluId
+                FirmaId = istasyon.FirmaId,
+                IstasyonSorumluId = istasyon.IstasyonSorumluId,
+                VardiyaSorumluId = istasyon.VardiyaSorumluId,
+                MarketSorumluId = istasyon.MarketSorumluId,
+                ApiKey = userRole == "admin" ? istasyon.ApiKey : null
             });
         }
 
@@ -135,22 +179,69 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            var istasyon = await _context.Istasyonlar.FindAsync(id);
+            var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == id);
 
             if (istasyon == null)
             {
                 return NotFound();
             }
 
-            if (userRole == "patron" && istasyon.PatronId != userId)
+            if (userRole == "patron" && istasyon.Firma.PatronId != userId)
             {
                 return Forbid();
+            }
+
+            // Sorumluların başka istasyonda olup olmadığını kontrol et (kendi istasyonu hariç)
+            var sorumluHatalari = new List<string>();
+            
+            if (request.IstasyonSorumluId.HasValue)
+            {
+                var mevcutIstasyon = await _context.Istasyonlar
+                    .AnyAsync(i => i.Id != id && 
+                                   (i.IstasyonSorumluId == request.IstasyonSorumluId || 
+                                    i.VardiyaSorumluId == request.IstasyonSorumluId || 
+                                    i.MarketSorumluId == request.IstasyonSorumluId));
+                if (mevcutIstasyon)
+                    sorumluHatalari.Add("İstasyon sorumlusu başka bir istasyonda zaten görevli.");
+            }
+            
+            if (request.VardiyaSorumluId.HasValue)
+            {
+                var mevcutIstasyon = await _context.Istasyonlar
+                    .AnyAsync(i => i.Id != id && 
+                                   (i.IstasyonSorumluId == request.VardiyaSorumluId || 
+                                    i.VardiyaSorumluId == request.VardiyaSorumluId || 
+                                    i.MarketSorumluId == request.VardiyaSorumluId));
+                if (mevcutIstasyon)
+                    sorumluHatalari.Add("Vardiya sorumlusu başka bir istasyonda zaten görevli.");
+            }
+            
+            if (request.MarketSorumluId.HasValue)
+            {
+                var mevcutIstasyon = await _context.Istasyonlar
+                    .AnyAsync(i => i.Id != id && 
+                                   (i.IstasyonSorumluId == request.MarketSorumluId || 
+                                    i.VardiyaSorumluId == request.MarketSorumluId || 
+                                    i.MarketSorumluId == request.MarketSorumluId));
+                if (mevcutIstasyon)
+                    sorumluHatalari.Add("Market sorumlusu başka bir istasyonda zaten görevli.");
+            }
+            
+            if (sorumluHatalari.Any())
+            {
+                return BadRequest(string.Join(" ", sorumluHatalari));
             }
 
             istasyon.Ad = request.Ad;
             istasyon.Adres = request.Adres;
             istasyon.Aktif = request.Aktif;
-            istasyon.SorumluId = request.SorumluId;
+            istasyon.IstasyonSorumluId = request.IstasyonSorumluId;
+            istasyon.VardiyaSorumluId = request.VardiyaSorumluId;
+            istasyon.MarketSorumluId = request.MarketSorumluId;
+            if (userRole == "admin")
+            {
+                istasyon.ApiKey = request.ApiKey;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -164,14 +255,14 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            var istasyon = await _context.Istasyonlar.FindAsync(id);
+            var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == id);
 
             if (istasyon == null)
             {
                 return NotFound();
             }
 
-            if (userRole == "patron" && istasyon.PatronId != userId)
+            if (userRole == "patron" && istasyon.Firma.PatronId != userId)
             {
                 return Forbid();
             }

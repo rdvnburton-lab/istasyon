@@ -82,8 +82,8 @@ namespace IstasyonDemo.Api.Controllers
                 // Station validation
                 if (request.IstasyonId.HasValue)
                 {
-                    var istasyon = await _context.Istasyonlar.FindAsync(request.IstasyonId.Value);
-                    if (istasyon == null || istasyon.PatronId != currentUserId)
+                    var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == request.IstasyonId.Value);
+                    if (istasyon == null || istasyon.Firma.PatronId != currentUserId)
                     {
                         return BadRequest("Geçersiz istasyon. Bu istasyonun sahibi değilsiniz.");
                     }
@@ -103,11 +103,28 @@ namespace IstasyonDemo.Api.Controllers
                 RoleId = role.Id,
                 IstasyonId = request.IstasyonId,
                 AdSoyad = request.AdSoyad,
-                Telefon = request.Telefon
+                Telefon = request.Telefon,
+                FotografData = request.FotografData
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            // Handle Firma assignment for Patron
+            if (role.Ad == "patron" && request.FirmaId.HasValue)
+            {
+                if (currentUserRole != "admin")
+                {
+                    return Forbid("Sadece yöneticiler patron atayabilir.");
+                }
+
+                var firma = await _context.Firmalar.FindAsync(request.FirmaId.Value);
+                if (firma != null)
+                {
+                    firma.PatronId = user.Id;
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             return Ok(new { message = "Kullanıcı başarıyla oluşturuldu.", userId = user.Id });
         }
@@ -136,12 +153,38 @@ namespace IstasyonDemo.Api.Controllers
 
                 string token = CreateToken(user);
 
-                return Ok(new AuthResponseDto
+                var response = new AuthResponseDto
                 {
                     Token = token,
                     Username = user.Username,
                     Role = user.Role?.Ad ?? "User"
-                });
+                };
+
+                if (response.Role == "patron")
+                {
+                    var firma = await _context.Firmalar
+                        .Include(f => f.Istasyonlar)
+                        .FirstOrDefaultAsync(f => f.PatronId == user.Id);
+
+                    if (firma != null)
+                    {
+                        response.FirmaAdi = firma.Ad;
+                        response.Istasyonlar = firma.Istasyonlar
+                            .Where(i => i.Aktif)
+                            .Select(i => new SimpleIstasyonDto { Id = i.Id, Ad = i.Ad })
+                            .ToList();
+                    }
+                }
+                else if (user.IstasyonId.HasValue)
+                {
+                     var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
+                     if (istasyon != null)
+                     {
+                         response.Istasyonlar.Add(new SimpleIstasyonDto { Id = istasyon.Id, Ad = istasyon.Ad });
+                     }
+                }
+
+                return Ok(response);
             }
             catch (Exception ex)
             {

@@ -29,14 +29,14 @@ namespace IstasyonDemo.Api.Controllers
             if (user == null) return Unauthorized();
 
             IQueryable<MarketVardiya> query = _context.MarketVardiyalar
-                .Include(m => m.Istasyon)
+                .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
                 .Include(m => m.Sorumlu);
 
             if (user.Role?.Ad != "admin")
             {
                 if (user.Role?.Ad == "patron")
                 {
-                    query = query.Where(m => m.Istasyon!.PatronId == currentUserId);
+                    query = query.Where(m => m.Istasyon!.Firma.PatronId == currentUserId);
                 }
                 else if (user.Role?.Ad == "vardiya_sorumlusu")
                 {
@@ -372,14 +372,14 @@ namespace IstasyonDemo.Api.Controllers
             var end = bitis.UtcDateTime;
 
             var query = _context.MarketVardiyalar
-                .Include(m => m.Istasyon)
+                .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
                 .Where(m => m.Tarih >= start && m.Tarih <= end && m.Durum != VardiyaDurum.SILINDI);
 
             if (user.Role?.Ad != "admin")
             {
                 if (user.Role?.Ad == "patron")
                 {
-                    query = query.Where(m => m.Istasyon!.PatronId == currentUserId);
+                    query = query.Where(m => m.Istasyon!.Firma.PatronId == currentUserId);
                 }
                 else
                 {

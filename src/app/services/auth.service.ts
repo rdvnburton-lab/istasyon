@@ -4,11 +4,19 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, Subject, Subscription, merge, fromEvent, timer, throttleTime } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface SimpleIstasyon {
+    id: number;
+    ad: string;
+}
+
 export interface User {
     id?: number;
     username: string;
     role: string;
     token?: string;
+    firmaAdi?: string;
+    istasyonlar?: SimpleIstasyon[];
+    selectedIstasyonId?: number;
 }
 
 export interface AuthResponse {
@@ -16,6 +24,8 @@ export interface AuthResponse {
     username: string;
     role: string;
     id?: number;
+    firmaAdi?: string;
+    istasyonlar?: SimpleIstasyon[];
 }
 
 @Injectable({
@@ -24,6 +34,10 @@ export interface AuthResponse {
 export class AuthService {
     private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
+
+    private selectedIstasyonSubject = new BehaviorSubject<SimpleIstasyon | null>(null);
+    public selectedIstasyon$ = this.selectedIstasyonSubject.asObservable();
+
     private apiUrl = `${environment.apiUrl}/auth`;
 
     private idleWarningSubject = new Subject<void>();
@@ -49,6 +63,13 @@ export class AuthService {
             try {
                 const user = JSON.parse(storedUser);
                 this.currentUserSubject.next(user);
+
+                // Restore selected station or default to first
+                if (user.istasyonlar && user.istasyonlar.length > 0) {
+                    const savedStationId = sessionStorage.getItem('selectedIstasyonId');
+                    const station = user.istasyonlar.find((i: SimpleIstasyon) => i.id === Number(savedStationId)) || user.istasyonlar[0];
+                    this.selectedIstasyonSubject.next(station);
+                }
             } catch (e) {
                 console.error('Kayıtlı kullanıcı yüklenemedi', e);
                 sessionStorage.removeItem('currentUser');
@@ -63,9 +84,17 @@ export class AuthService {
                     id: this.getUserIdFromToken(response.token),
                     username: response.username,
                     role: response.role,
-                    token: response.token
+                    token: response.token,
+                    firmaAdi: response.firmaAdi,
+                    istasyonlar: response.istasyonlar
                 };
                 this.setCurrentUser(user);
+
+                // Set initial station
+                if (user.istasyonlar && user.istasyonlar.length > 0) {
+                    this.setSelectedIstasyon(user.istasyonlar[0]);
+                }
+
                 this.startIdleMonitoring();
             })
         );
@@ -73,14 +102,28 @@ export class AuthService {
 
     logout(): void {
         sessionStorage.removeItem('currentUser');
+        sessionStorage.removeItem('selectedIstasyonId');
         this.stopIdleMonitoring();
         this.router.navigate(['/auth/login']);
         this.currentUserSubject.next(null);
+        this.selectedIstasyonSubject.next(null);
     }
 
     private setCurrentUser(user: User): void {
         sessionStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
+    }
+
+    public setSelectedIstasyon(istasyon: SimpleIstasyon) {
+        sessionStorage.setItem('selectedIstasyonId', istasyon.id.toString());
+        this.selectedIstasyonSubject.next(istasyon);
+
+        // Update current user state with selected station ID if needed
+        const currentUser = this.currentUserSubject.value;
+        if (currentUser) {
+            currentUser.selectedIstasyonId = istasyon.id;
+            this.setCurrentUser(currentUser);
+        }
     }
 
     getCurrentUser(): User | null {

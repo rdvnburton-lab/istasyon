@@ -1,91 +1,131 @@
-<div class="card">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h2 class="text-3xl font-bold m-0">Vardiya İşlem Geçmişi</h2>
-            <p class="text-surface-500 mt-2">Tüm vardiya işlemlerinin detaylı kaydı</p>
+<p-toast></p-toast>
+
+<div class="grid grid-cols-12 gap-6">
+    <!-- Başlık -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                        <i class="pi pi-history mr-2 text-purple-500"></i>Vardiya İşlem Geçmişi
+                    </h2>
+                    <p class="text-surface-500 mt-2">
+                        Tüm vardiya işlemlerinin detaylı kaydı ve log takibi
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <p-button icon="pi pi-refresh" label="Yenile" severity="secondary" [text]="true"
+                        (onClick)="loglariYukle()">
+                    </p-button>
+                </div>
+            </div>
         </div>
-        <p-button icon="pi pi-refresh" label="Yenile" [text]="true" (onClick)="loglariYukle()"></p-button>
     </div>
 
-    <p-table [value]="loglar" [loading]="loading" [paginator]="true" [rows]="20"
-        [rowsPerPageOptions]="[10, 20, 50, 100]" [tableStyle]="{ 'min-width': '70rem' }"
-        styleClass="p-datatable-sm p-datatable-striped">
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="width: 80px">ID</th>
-                <th>Vardiya</th>
-                <th>İstasyon</th>
-                <th style="width: 180px">İşlem</th>
-                <th>Açıklama</th>
-                <th style="width: 150px">Kullanıcı</th>
-                <th style="width: 100px">Rol</th>
-                <th style="width: 120px">Durum Değişimi</th>
-                <th style="width: 180px">Tarih</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-log>
-            <tr>
-                <td><span class="text-muted-color">#</span>{{ log.vardiyaId }}</td>
-                <td>
-                    <div class="flex items-center gap-2">
-                        <i class="pi pi-file text-primary"></i>
-                        <span class="font-medium">{{ log.vardiyaDosyaAdi }}</span>
+    <!-- İşlem Geçmişi Tablosu -->
+    <div class="col-span-12">
+        <div class="card">
+            <p-table [value]="loglar" [loading]="loading" [paginator]="loglar.length > 20" [rows]="20"
+                [rowsPerPageOptions]="[10, 20, 50, 100]" styleClass="p-datatable-striped"
+                [globalFilterFields]="['vardiyaDosyaAdi', 'istasyonAdi', 'kullaniciAdi', 'aciklama']" #dt>
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-bold">İşlem Kayıtları ({{ loglar.length }})</span>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" placeholder="Ara..."
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+                        </span>
                     </div>
-                </td>
-                <td>
-                    <span class="text-sm">{{ log.istasyonAdi }}</span>
-                </td>
-                <td>
-                    <p-tag [value]="getIslemLabel(log.islem)" [severity]="getIslemSeverity(log.islem)"
-                        [icon]="getIslemIcon(log.islem)" styleClass="text-sm px-3 py-1">
-                    </p-tag>
-                </td>
-                <td>
-                    <span class="text-sm text-surface-600 dark:text-surface-300" [pTooltip]="log.aciklama"
-                        tooltipPosition="top" *ngIf="log.aciklama">
-                        {{ log.aciklama.length > 50 ? (log.aciklama | slice:0:50) + '...' : log.aciklama }}
-                    </span>
-                    <span class="text-surface-400" *ngIf="!log.aciklama">-</span>
-                </td>
-                <td>
-                    <div class="flex items-center gap-2" *ngIf="log.kullaniciAdi">
-                        <i class="pi pi-user text-xs text-surface-400"></i>
-                        <span class="text-sm font-medium">{{ log.kullaniciAdi }}</span>
-                    </div>
-                    <span class="text-surface-400" *ngIf="!log.kullaniciAdi">-</span>
-                </td>
-                <td>
-                    <p-tag [value]="log.kullaniciRol || '-'"
-                        [severity]="log.kullaniciRol === 'admin' ? 'danger' : log.kullaniciRol === 'patron' ? 'warn' : 'info'"
-                        styleClass="text-xs" *ngIf="log.kullaniciRol">
-                    </p-tag>
-                    <span class="text-surface-400" *ngIf="!log.kullaniciRol">-</span>
-                </td>
-                <td>
-                    <div class="flex items-center gap-1 text-xs" *ngIf="log.eskiDurum && log.yeniDurum">
-                        <span class="text-surface-500">{{ log.eskiDurum }}</span>
-                        <i class="pi pi-arrow-right text-surface-400"></i>
-                        <span class="text-primary font-medium">{{ log.yeniDurum }}</span>
-                    </div>
-                    <span class="text-surface-400" *ngIf="!log.eskiDurum || !log.yeniDurum">-</span>
-                </td>
-                <td>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-medium">{{ log.islemTarihi | date:'dd.MM.yyyy' }}</span>
-                        <span class="text-xs text-surface-500">{{ log.islemTarihi | date:'HH:mm:ss' }}</span>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="9" class="text-center p-8">
-                    <div class="flex flex-col items-center gap-4 text-muted-color opacity-60">
-                        <i class="pi pi-history text-6xl"></i>
-                        <span class="font-medium text-xl">Henüz işlem kaydı bulunmuyor</span>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr class="text-sm">
+                        <th style="width: 80px">ID</th>
+                        <th>Vardiya</th>
+                        <th>İstasyon</th>
+                        <th class="text-center" style="width: 180px">İşlem</th>
+                        <th>Açıklama</th>
+                        <th style="width: 150px">Kullanıcı</th>
+                        <th class="text-center" style="width: 100px">Rol</th>
+                        <th style="width: 140px">Durum Değişimi</th>
+                        <th class="text-center" style="width: 180px">Tarih</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-log>
+                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                        <td><span class="text-surface-600">#</span><span class="font-bold">{{ log.vardiyaId }}</span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <i class="pi pi-file text-primary"></i>
+                                <span class="font-bold text-surface-800 dark:text-surface-100">{{ log.vardiyaDosyaAdi
+                                    }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-surface-800 dark:text-surface-100">{{ log.istasyonAdi }}</span>
+                        </td>
+                        <td class="text-center">
+                            <p-tag [value]="getIslemLabel(log.islem)" [severity]="getIslemSeverity(log.islem)"
+                                [icon]="getIslemIcon(log.islem)"></p-tag>
+                        </td>
+                        <td>
+                            <span class="text-sm text-surface-600 dark:text-surface-300" [pTooltip]="log.aciklama"
+                                tooltipPosition="top" *ngIf="log.aciklama">
+                                {{ log.aciklama.length > 60 ? (log.aciklama | slice:0:60) + '...' : log.aciklama }}
+                            </span>
+                            <span class="text-surface-400" *ngIf="!log.aciklama">-</span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-2" *ngIf="log.kullaniciAdi">
+                                <i class="pi pi-user text-xs text-surface-400"></i>
+                                <span class="text-sm font-medium">{{ log.kullaniciAdi }}</span>
+                            </div>
+                            <span class="text-surface-400" *ngIf="!log.kullaniciAdi">-</span>
+                        </td>
+                        <td class="text-center">
+                            <p-tag [value]="log.kullaniciRol || '-'"
+                                [severity]="log.kullaniciRol === 'admin' ? 'danger' : log.kullaniciRol === 'patron' ? 'warn' : 'info'"
+                                *ngIf="log.kullaniciRol"></p-tag>
+                            <span class="text-surface-400" *ngIf="!log.kullaniciRol">-</span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-1 text-xs" *ngIf="log.eskiDurum && log.yeniDurum">
+                                <span class="text-surface-500">{{ log.eskiDurum }}</span>
+                                <i class="pi pi-arrow-right text-surface-400"></i>
+                                <span class="text-primary font-medium">{{ log.yeniDurum }}</span>
+                            </div>
+                            <span class="text-surface-400" *ngIf="!log.eskiDurum || !log.yeniDurum">-</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-medium">{{ log.islemTarihi | date:'dd.MM.yyyy' }}</span>
+                                <span class="text-xs text-surface-500">{{ log.islemTarihi | date:'HH:mm:ss' }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="9" class="text-center py-12">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
+                                    <i class="pi pi-history text-4xl text-surface-400"></i>
+                                </div>
+                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz işlem kaydı bulunmuyor</h4>
+                                <p class="text-surface-400 text-sm m-0 mt-2">
+                                    Vardiya işlemleri gerçekleştiğinde burada görünecektir
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
 </div>

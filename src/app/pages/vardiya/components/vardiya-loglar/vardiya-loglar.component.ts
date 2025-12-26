@@ -5,6 +5,9 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageService } from 'primeng/api';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { VardiyaLog } from '../../models/vardiya-log.model';
 
@@ -17,8 +20,11 @@ import { VardiyaLog } from '../../models/vardiya-log.model';
         TagModule,
         ButtonModule,
         CardModule,
-        TooltipModule
+        TooltipModule,
+        ToastModule,
+        InputTextModule
     ],
+    providers: [MessageService],
     templateUrl: './vardiya-loglar.component.html',
     styleUrls: ['./vardiya-loglar.component.scss']
 })

@@ -4,8 +4,10 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 import { LayoutService } from '../service/layout.service';
-import { AuthService, User } from '../../services/auth.service';
+import { AuthService, User, SimpleIstasyon } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { SorumluDashboardDto } from '../../models/dashboard.model';
 import { NotificationService, Notification } from '../../services/notification.service';
@@ -14,7 +16,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, MenuModule, ButtonModule],
+    imports: [RouterModule, CommonModule, MenuModule, ButtonModule, SelectModule, FormsModule],
     template: `
 <div class="layout-topbar">
     <div class="layout-topbar-logo-container">
@@ -27,15 +29,32 @@ import { Subscription } from 'rxjs';
         </a>
     </div>
 
-    <!-- User Info Section (for non-admin users) -->
-    <div class="layout-topbar-user-info" *ngIf="userInfo && !isAdmin">
+    <!-- User Info Section -->
+    <div class="layout-topbar-user-info" *ngIf="currentUser && !isAdmin">
         <div class="user-info-content">
             <div class="user-name">
                 <i class="pi pi-user"></i>
-                <span>{{userInfo.adSoyad}}</span>
-                <span class="user-role-badge">{{getRoleLabel(userInfo.rol)}}</span>
+                <span>{{currentUser.username}}</span>
+                <span class="user-role-badge">{{getRoleLabel(currentUser.role)}}</span>
             </div>
-            <div class="user-station">
+            
+            <!-- Patron View: Firma Name and Station Dropdown -->
+            <div class="user-station" *ngIf="isPatron">
+                <i class="pi pi-building"></i>
+                <span class="mr-2">{{currentUser.firmaAdi || 'Firma'}}</span>
+                <p-select 
+                    [options]="currentUser.istasyonlar || []" 
+                    [(ngModel)]="selectedIstasyon" 
+                    optionLabel="ad" 
+                    placeholder="İstasyon Seçiniz"
+                    (onChange)="onStationChange($event)"
+                    styleClass="station-dropdown"
+                    [style]="{'minWidth':'200px'}">
+                </p-select>
+            </div>
+
+            <!-- Other Roles View: Single Station Name -->
+            <div class="user-station" *ngIf="!isPatron && userInfo">
                 <i class="pi pi-building"></i>
                 <span>{{userInfo.istasyonAdi}}</span>
             </div>
@@ -104,6 +123,8 @@ export class AppTopbar implements OnInit, OnDestroy {
     currentUser: User | null = null;
     userInfo: SorumluDashboardDto | null = null;
     isAdmin: boolean = false;
+    isPatron: boolean = false;
+    selectedIstasyon: SimpleIstasyon | null = null;
 
     // Notifications
     notifications: Notification[] = [];
@@ -131,20 +152,19 @@ export class AppTopbar implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.currentUser = this.authService.getCurrentUser();
-        this.isAdmin = this.currentUser?.role === 'admin';
+        this.authService.currentUser$.subscribe(user => {
+            this.currentUser = user;
+            this.isAdmin = user?.role === 'admin';
+            this.isPatron = user?.role === 'patron';
 
-        // Load user info for non-admin users
-        if (!this.isAdmin && this.currentUser) {
-            this.dashboardService.getSorumluSummary().subscribe({
-                next: (data) => {
-                    this.userInfo = data;
-                },
-                error: (err) => {
-                    console.error('Failed to load user info:', err);
-                }
-            });
-        }
+            if (!this.isAdmin && !this.isPatron && this.currentUser) {
+                this.loadUserInfo();
+            }
+        });
+
+        this.authService.selectedIstasyon$.subscribe(station => {
+            this.selectedIstasyon = station;
+        });
 
         // User menu items
         this.items = [
@@ -175,6 +195,28 @@ export class AppTopbar implements OnInit, OnDestroy {
 
         // Start polling for notifications
         this.notificationService.startPolling();
+    }
+
+    loadUserInfo() {
+        this.dashboardService.getSorumluSummary().subscribe({
+            next: (data) => {
+                this.userInfo = data;
+            },
+            error: (err) => {
+                console.error('Failed to load user info:', err);
+            }
+        });
+    }
+
+    onStationChange(event: any) {
+        if (event.value) {
+            this.authService.setSelectedIstasyon(event.value);
+            // Reload current page or navigate to dashboard to refresh data
+            const currentUrl = this.router.url;
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigate([currentUrl]);
+            });
+        }
     }
 
     ngOnDestroy() {

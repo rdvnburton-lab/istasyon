@@ -109,7 +109,9 @@ export class IstasyonTanimlamaComponent implements OnInit {
                     ad: this.istasyon.ad,
                     adres: this.istasyon.adres,
                     aktif: this.istasyon.aktif,
-                    sorumluId: this.istasyon.sorumluId
+                    istasyonSorumluId: this.istasyon.istasyonSorumluId,
+                    vardiyaSorumluId: this.istasyon.vardiyaSorumluId,
+                    marketSorumluId: this.istasyon.marketSorumluId
                 };
 
                 this.istasyonService.updateIstasyon(this.istasyon.id, updateDto).subscribe({
@@ -127,9 +129,10 @@ export class IstasyonTanimlamaComponent implements OnInit {
                 const createDto: CreateIstasyonDto = {
                     ad: this.istasyon.ad,
                     adres: this.istasyon.adres,
-                    parentIstasyonId: this.istasyon.parentIstasyonId,
-                    patronId: this.istasyon.patronId,
-                    sorumluId: this.istasyon.sorumluId
+                    firmaId: this.istasyon.firmaId,
+                    istasyonSorumluId: this.istasyon.istasyonSorumluId,
+                    vardiyaSorumluId: this.istasyon.vardiyaSorumluId,
+                    marketSorumluId: this.istasyon.marketSorumluId
                 };
 
                 this.istasyonService.createIstasyon(createDto).subscribe({
@@ -152,7 +155,8 @@ export class IstasyonTanimlamaComponent implements OnInit {
             id: 0,
             ad: '',
             adres: '',
-            aktif: true
+            aktif: true,
+            firmaId: 0
         };
     }
 }

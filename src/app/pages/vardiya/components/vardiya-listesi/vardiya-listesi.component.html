@@ -127,6 +127,55 @@
         </div>
     </div>
 
+    <!-- Otomatik Gelen Dosyalar (Kapalı Sistem) -->
+    <div class="col-span-12" *ngIf="otomatikDosyalar.length > 0">
+        <div class="card border-2 border-blue-100 dark:border-blue-900 bg-blue-50/30 dark:bg-blue-900/10">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="font-bold m-0 flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                    <i class="pi pi-bolt text-blue-500"></i>
+                    Otomatik Gelen Dosyalar (İstasyon Bazlı)
+                    <p-tag [value]="otomatikDosyalar.length.toString()" severity="info" styleClass="ml-2"></p-tag>
+                </h5>
+                <span class="text-xs text-blue-600 dark:text-blue-400 italic">
+                    <i class="pi pi-shield mr-1"></i> Bu dosyalar sistem tarafından otomatik olarak aktarılmıştır ve
+                    müdahale edilmemiştir.
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div *ngFor="let file of otomatikDosyalar"
+                    class="p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-white dark:bg-surface-900 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+                    (click)="otomatikDosyaIsle(file)">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:bg-blue-500 transition-colors">
+                            <i class="pi pi-file-import text-blue-600 dark:text-blue-400 group-hover:text-white"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <p class="font-bold m-0 text-surface-800 dark:text-surface-100 truncate">{{ file.dosyaAdi }}
+                            </p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-xs text-surface-500">{{ file.yuklemeTarihi | date:'dd.MM.yyyy HH:mm'
+                                    }}</span>
+                                <span
+                                    class="text-xs px-1.5 py-0.5 rounded bg-blue-100/50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800/50">
+                                    <i class="pi pi-map-marker mr-1 text-[10px]"></i>{{ file.istasyonAd }}
+                                </span>
+                            </div>
+
+
+
+
+
+                        </div>
+                        <button pButton icon="pi pi-arrow-right"
+                            class="p-button-rounded p-button-text p-button-sm"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Vardiya Listesi -->
     <div class="col-span-12">
         <div class="card">
@@ -163,7 +212,8 @@
                                     <i class="pi pi-file text-white text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold m-0 text-surface-800 dark:text-surface-100">{{ vardiya.dosyaAdi
+                                    <p class="font-bold m-0 text-surface-800 dark:text-surface-100">
+                                        {{ vardiya.dosyaAdi
                                         }}</p>
                                     <p class="text-surface-500 text-xs m-0 flex items-center gap-1">
                                         <i class="pi pi-clock text-xs"></i>
@@ -174,11 +224,13 @@
                         </td>
                         <td>
                             <div *ngIf="vardiya.baslangicTarih" class="flex flex-col">
-                                <span class="font-bold text-surface-800 dark:text-surface-100">{{ vardiya.baslangicTarih
+                                <span class="font-bold text-surface-800 dark:text-surface-100">{{
+                                    vardiya.baslangicTarih
                                     | date:'dd MMMM yyyy':'':'tr' }}</span>
                                 <span class="text-sm flex items-center gap-1" style="color: #6366f1;">
                                     <i class="pi pi-clock text-xs"></i>
-                                    {{ vardiya.baslangicTarih | date:'HH:mm' }} - {{ vardiya.bitisTarih | date:'HH:mm'
+                                    {{ vardiya.baslangicTarih | date:'HH:mm' }} - {{
+                                    vardiya.bitisTarih | date:'HH:mm'
                                     }}
                                 </span>
                             </div>
@@ -202,7 +254,8 @@
                         <td class="text-right">
                             <div class="inline-block px-4 py-2 rounded-xl"
                                 style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
-                                <span class="font-bold text-lg text-white">{{ vardiya.toplamTutar |
+                                <span class="font-bold text-lg text-white">{{
+                                    vardiya.toplamTutar |
                                     currency:'TRY':'symbol-narrow':'1.2-2':'tr'
                                     }}</span>
                             </div>
@@ -247,7 +300,8 @@
                                     class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
                                     <i class="pi pi-upload text-4xl text-surface-400"></i>
                                 </div>
-                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz vardiya verisi yok</h4>
+                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz
+                                    vardiya verisi yok</h4>
                                 <p class="text-surface-400 text-sm m-0 mt-2">
                                     Otomasyon TXT dosyasını yükleyerek başlayın
                                 </p>
@@ -264,11 +318,26 @@
 </div>
 
 <!-- Dosya Yükleme Dialog -->
-<p-dialog header="Otomasyon Verisi Yükle" [(visible)]="dosyaDialogVisible" [modal]="true" [style]="{width: '600px'}">
+<p-dialog [header]="isAutomaticFile ? 'Otomatik Veriyi İşle' : 'Otomasyon Verisi Yükle'"
+    [(visible)]="dosyaDialogVisible" [modal]="true" [style]="{width: '600px'}">
 
     <div class="flex flex-col gap-4">
+        <!-- Otomatik Dosya Bilgi Banner -->
+        <div *ngIf="isAutomaticFile" class="p-4 rounded-xl bg-blue-600 text-white shadow-lg mb-2">
+            <div class="flex items-center gap-3">
+                <i class="pi pi-shield text-2xl"></i>
+                <div>
+                    <p class="font-bold m-0 text-lg">Güvenli Otomatik Aktarım</p>
+                    <p class="text-xs m-0 opacity-90">Bu veri istasyondan doğrudan gelmiştir.
+                        İçerik bütünlüğü
+                        doğrulanmıştır.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Dosya Seçme -->
-        <div class="border-2 border-dashed border-surface-300 dark:border-surface-600 rounded-xl p-8 text-center"
+        <div *ngIf="!isAutomaticFile"
+            class="border-2 border-dashed border-surface-300 dark:border-surface-600 rounded-xl p-8 text-center"
             [ngClass]="{'border-green-500 bg-green-50': secilenDosya}">
 
             <input type="file" accept=".txt,.d1a,.d1b,.d1c,.d1d,.d1e,.d1f,.D1A,.D1B,.D1C,.D1D,.D1E,.D1F"
@@ -317,12 +386,14 @@
                     </div>
                     <div class="flex justify-between">
                         <span>Toplam Tutar:</span>
-                        <span class="font-bold">{{ parseSonuc.toplamTutar | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                        <span class="font-bold">{{ parseSonuc.toplamTutar |
+                            currency:'TRY':'symbol-narrow':'1.2-2':'tr'
                             }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span>Tarih:</span>
-                        <span class="font-bold">{{ parseSonuc.baslangicTarih | date:'dd.MM.yyyy' }}</span>
+                        <span class="font-bold">{{ parseSonuc.baslangicTarih | date:'dd.MM.yyyy'
+                            }}</span>
                     </div>
                 </div>
                 <div class="mt-3 pt-3 border-t border-green-300 dark:border-green-700">
@@ -337,7 +408,8 @@
                     <i class="pi pi-times-circle text-xl"></i>
                     <span class="font-semibold">Dosya okunamadı!</span>
                 </div>
-                <p class="text-sm m-0 mt-2">Lütfen geçerli bir otomasyon TXT dosyası yükleyin.</p>
+                <p class="text-sm m-0 mt-2">Lütfen geçerli bir otomasyon TXT dosyası yükleyin.
+                </p>
             </div>
         </div>
 
@@ -346,8 +418,10 @@
             <div class="flex items-center gap-3 mb-3">
                 <i class="pi pi-spin pi-spinner text-2xl text-blue-500"></i>
                 <div>
-                    <p class="font-semibold text-blue-700 dark:text-blue-300 m-0">Dosya İşleniyor...</p>
-                    <p class="text-blue-600 dark:text-blue-400 text-sm m-0">{{ islemDurumu }}</p>
+                    <p class="font-semibold text-blue-700 dark:text-blue-300 m-0">Dosya
+                        İşleniyor...</p>
+                    <p class="text-blue-600 dark:text-blue-400 text-sm m-0">{{ islemDurumu }}
+                    </p>
                 </div>
             </div>
             <p-progressBar [value]="islemYuzdesi" [showValue]="true" [style]="{'height': '8px'}"></p-progressBar>
@@ -369,10 +443,12 @@
     [style]="{width: '500px'}">
     <div class="flex flex-col gap-4">
         <p class="text-surface-600 dark:text-surface-300">
-            <strong>{{ secilenVardiya?.dosyaAdi }}</strong> dosyasını silmek istediğinize emin misiniz?
+            <strong>{{ secilenVardiya?.dosyaAdi }}</strong> dosyasını silmek istediğinize emin
+            misiniz?
         </p>
         <p class="text-sm text-surface-500">
-            Bu işlem onaya gönderilecek ve patron/admin onayından sonra vardiya silinmiş olarak işaretlenecektir.
+            Bu işlem onaya gönderilecek ve patron/admin onayından sonra vardiya silinmiş olarak
+            işaretlenecektir.
         </p>
         <div class="flex flex-col gap-2">
             <label for="silmeNedeni" class="font-bold">Silme Nedeni <span class="text-red-500">*</span></label>
@@ -401,7 +477,8 @@
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
-                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompa Cirosu</span>
+                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompa
+                    Cirosu</span>
                 <span class="text-3xl font-bold text-primary">{{ genelOzet.pompaToplam |
                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
             </div>
@@ -416,7 +493,8 @@
             <!-- Toplam Kredi Kartı Kartı -->
             <div class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-50 transition-colors"
                 (click)="openKrediKartiDetay()">
-                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam K.
+                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam
+                    K.
                     Kartı</span>
                 <span class="text-3xl font-bold text-blue-600">{{ toplamKrediKarti |
                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
@@ -424,13 +502,15 @@
             </div>
             <div
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
-                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam Nakit</span>
+                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam
+                    Nakit</span>
                 <span class="text-3xl font-bold text-red-500">{{ pompaciNakitToplam |
                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
             </div>
             <div
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-800">
-                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Fark Durumu</span>
+                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Fark
+                    Durumu</span>
                 <div class="flex items-center gap-2">
                     <i class="pi pi-circle-fill text-xs"
                         [ngClass]="{'text-green-500': pompaFarkDurumRenk === 'success', 'text-warning-500': pompaFarkDurumRenk === 'warn', 'text-red-500': pompaFarkDurumRenk === 'danger'}"></i>
@@ -486,7 +566,8 @@
                             <ng-template pTemplate="body" let-item>
                                 <tr>
                                     <td class="font-medium">{{ item.personelAdi }}</td>
-                                    <td class="text-right text-muted-color">{{ item.otomasyonToplam |
+                                    <td class="text-right text-muted-color">{{
+                                        item.otomasyonToplam |
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
                                     <td class="text-right">{{ item.pusulaDokum?.nakit |
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
@@ -525,7 +606,8 @@
                             </div>
                             <div class="flex justify-between p-3 rounded">
                                 <span>Kredi Kartı</span>
-                                <span class="font-bold text-blue-600">{{ genelOzet.toplamKrediKarti |
+                                <span class="font-bold text-blue-600">{{
+                                    genelOzet.toplamKrediKarti |
                                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
                             <div class="flex justify-between p-3 bg-surface-50 rounded">
@@ -540,15 +622,18 @@
                             </div>
                             <div class="flex justify-between p-3 bg-green-50 rounded border border-green-100 mt-2">
                                 <span class="font-bold text-green-800">Toplam Tahsilat</span>
-                                <span class="font-bold text-green-800">{{ (genelOzet.toplamNakit +
+                                <span class="font-bold text-green-800">{{ (genelOzet.toplamNakit
+                                    +
                                     genelOzet.toplamKrediKarti + genelOzet.toplamParoPuan +
-                                    genelOzet.toplamMobilOdeme) | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                    genelOzet.toplamMobilOdeme) |
+                                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
                         </div>
 
                         <!-- Sağ: Kredi Kartı Detayları -->
                         <div class="flex flex-col gap-4">
-                            <h3 class="text-lg font-bold border-b pb-2">Kredi Kartı Detayları</h3>
+                            <h3 class="text-lg font-bold border-b pb-2">Kredi Kartı Detayları
+                            </h3>
                             <p-table [value]="pusulaKrediKartiDetaylari" styleClass="p-datatable-sm p-datatable-striped"
                                 [scrollable]="true" scrollHeight="300px">
                                 <ng-template pTemplate="header">
@@ -566,13 +651,15 @@
                                         </td>
                                         <td class="text-right font-bold"
                                             [ngClass]="{'text-purple-600': item.isSpecial}">
-                                            {{item.tutar | currency:'TRY':'symbol-narrow':'1.2-2'}}
+                                            {{item.tutar |
+                                            currency:'TRY':'symbol-narrow':'1.2-2'}}
                                         </td>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="emptymessage">
                                     <tr>
-                                        <td colspan="2" class="text-center p-4 text-muted-color">Kredi kartı detayı
+                                        <td colspan="2" class="text-center p-4 text-muted-color">Kredi kartı
+                                            detayı
                                             bulunamadı.</td>
                                     </tr>
                                 </ng-template>
@@ -585,7 +672,8 @@
                 <p-tabpanel value="2">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4" *ngIf="marketOzet">
                         <div class="flex flex-col gap-4">
-                            <h3 class="text-lg font-bold border-b pb-2">Z-Raporu ve Satışlar</h3>
+                            <h3 class="text-lg font-bold border-b pb-2">Z-Raporu ve Satışlar
+                            </h3>
                             <div class="flex justify-between p-3 bg-surface-50 rounded">
                                 <span>Z Raporu Toplamı</span>
                                 <span class="font-bold">{{ marketOzet.zRaporuToplam |
@@ -593,7 +681,8 @@
                             </div>
                             <div class="flex justify-between p-3 rounded">
                                 <span>Toplam KDV</span>
-                                <span>{{ marketOzet.kdvDokum.toplam | currency:'TRY':'symbol-narrow':'1.2-2'
+                                <span>{{ marketOzet.kdvDokum.toplam |
+                                    currency:'TRY':'symbol-narrow':'1.2-2'
                                     }}</span>
                             </div>
                         </div>
@@ -601,7 +690,8 @@
                             <h3 class="text-lg font-bold border-b pb-2">Kasa Durumu</h3>
                             <div class="flex justify-between p-3 bg-surface-50 rounded">
                                 <span>Toplam Tahsilat (Nakit+KK)</span>
-                                <span class="font-bold text-green-600">{{ marketOzet.tahsilatToplam |
+                                <span class="font-bold text-green-600">{{
+                                    marketOzet.tahsilatToplam |
                                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
                             <div class="flex justify-between p-3 rounded">
@@ -616,7 +706,8 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="!marketOzet" class="text-center p-8 text-muted-color">Market verisi bulunamadı.
+                    <div *ngIf="!marketOzet" class="text-center p-8 text-muted-color">Market
+                        verisi bulunamadı.
                     </div>
                 </p-tabpanel>
             </p-tabpanels>

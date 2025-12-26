@@ -35,7 +35,8 @@ namespace IstasyonDemo.Api.Controllers
                 // Patron can only see users in their stations
                 // Find stations owned by this patron
                 var patronStationIds = await _context.Istasyonlar
-                    .Where(i => i.PatronId == currentUserId)
+                    .Include(i => i.Firma)
+                    .Where(i => i.Firma.PatronId == currentUserId)
                     .Select(i => i.Id)
                     .ToListAsync();
 
@@ -56,7 +57,8 @@ namespace IstasyonDemo.Api.Controllers
                 IstasyonId = u.IstasyonId,
                 IstasyonAdi = u.Istasyon != null ? u.Istasyon.Ad : null,
                 AdSoyad = u.AdSoyad,
-                Telefon = u.Telefon
+                Telefon = u.Telefon,
+                FotografData = u.FotografData
             }).ToListAsync();
 
             return Ok(users);
@@ -89,7 +91,8 @@ namespace IstasyonDemo.Api.Controllers
                     IstasyonId = u.IstasyonId,
                     IstasyonAdi = u.Istasyon != null ? u.Istasyon.Ad : null,
                     AdSoyad = u.AdSoyad,
-                    Telefon = u.Telefon
+                    Telefon = u.Telefon,
+                    FotografData = u.FotografData
                 })
                 .ToListAsync();
 
@@ -116,8 +119,8 @@ namespace IstasyonDemo.Api.Controllers
                     return Forbid("Bu kullanıcıyı düzenleme yetkiniz yok.");
                 }
 
-                var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
-                if (istasyon == null || istasyon.PatronId != currentUserId)
+                var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == user.IstasyonId.Value);
+                if (istasyon == null || istasyon.Firma.PatronId != currentUserId)
                 {
                     return Forbid("Bu kullanıcıyı düzenleme yetkiniz yok.");
                 }
@@ -146,18 +149,36 @@ namespace IstasyonDemo.Api.Controllers
             user.RoleId = role.Id;
             user.AdSoyad = request.AdSoyad;
             user.Telefon = request.Telefon;
+            user.FotografData = request.FotografData;
             
             if (request.IstasyonId.HasValue)
             {
                  if (currentUserRole == "patron")
                  {
-                      var targetIstasyon = await _context.Istasyonlar.FindAsync(request.IstasyonId.Value);
-                      if (targetIstasyon == null || targetIstasyon.PatronId != currentUserId)
+                      var targetIstasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == request.IstasyonId.Value);
+                      if (targetIstasyon == null || targetIstasyon.Firma.PatronId != currentUserId)
                       {
                            return BadRequest("Kullanıcıyı sahip olmadığınız bir istasyona atayamazsınız.");
                       }
                  }
                  user.IstasyonId = request.IstasyonId;
+            }
+
+            if (request.FirmaId.HasValue && currentUserRole == "admin")
+            {
+                // Clear previous firma ownership if any
+                var previousFirmas = await _context.Firmalar.Where(f => f.PatronId == user.Id).ToListAsync();
+                foreach (var f in previousFirmas)
+                {
+                    f.PatronId = null;
+                }
+
+                // Assign new firma
+                var firma = await _context.Firmalar.FindAsync(request.FirmaId.Value);
+                if (firma != null)
+                {
+                    firma.PatronId = user.Id;
+                }
             }
 
             if (!string.IsNullOrEmpty(request.Password))
@@ -189,8 +210,8 @@ namespace IstasyonDemo.Api.Controllers
                     return Forbid("Bu kullanıcıyı silme yetkiniz yok.");
                 }
 
-                var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
-                if (istasyon == null || istasyon.PatronId != currentUserId)
+                var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == user.IstasyonId.Value);
+                if (istasyon == null || istasyon.Firma.PatronId != currentUserId)
                 {
                     return Forbid("Bu kullanıcıyı silme yetkiniz yok.");
                 }

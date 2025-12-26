@@ -66,6 +66,10 @@ export class VardiyaListesi implements OnInit {
     secilenDosya: File | null = null;
     parseSonuc: ParseSonuc | null = null;
     yukleniyor = false;
+    isAutomaticFile: boolean = false;
+    currentAutomaticFileId: number | null = null;
+    currentAutomaticFileContent: string | null = null;
+    otomatikDosyalar: any[] = [];
 
     // İlerleme göstergesi için
     islemDurumu = '';
@@ -115,7 +119,65 @@ export class VardiyaListesi implements OnInit {
     ngOnInit(): void {
         this.userRole = this.authService.getCurrentUser()?.role || null;
         this.vardiyalariYukle();
+        this.otomatikDosyalariYukle();
     }
+
+
+    otomatikDosyalariYukle(): void {
+        this.vardiyaApiService.getPendingAutomaticFiles().subscribe({
+            next: (files) => {
+                this.otomatikDosyalar = files;
+            },
+            error: (err) => console.error('Otomatik dosyalar yüklenemedi:', err)
+        });
+    }
+
+    otomatikDosyaIsle(file: any): void {
+        this.yukleniyor = true;
+        this.islemDurumu = 'Dosya sunucudan alınıyor...';
+
+        this.vardiyaApiService.getAutomaticFileContent(file.id).subscribe({
+            next: (data) => {
+                // Base64 içeriği çöz
+                const binaryString = window.atob(data.icerik);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+
+                // Windows-1254 (Turkish) decoding
+                const decoder = new TextDecoder('windows-1254');
+                const icerik = decoder.decode(bytes);
+
+                this.islemDurumu = 'Dosya parse ediliyor...';
+                const sonuc = this.txtParser.parseOtomasyonDosyasi(icerik);
+
+                if (sonuc.basarili) {
+                    this.parseSonuc = sonuc;
+                    this.secilenDosya = { name: data.dosyaAdi } as File; // Mock file object
+
+                    // Otomatik dosya olduğunu işaretle
+                    this.isAutomaticFile = true;
+                    this.currentAutomaticFileId = data.id;
+                    this.currentAutomaticFileContent = data.icerik;
+
+                    this.dosyaDialogVisible = true;
+                    this.yukleniyor = false;
+                } else {
+                    this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Dosya parse edilemedi!' });
+                    this.yukleniyor = false;
+                }
+            },
+            error: (err) => {
+                console.error('Dosya içeriği alınamadı:', err);
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Dosya içeriği sunucudan alınamadı!' });
+                this.yukleniyor = false;
+            }
+        });
+    }
+
+
+
 
     vardiyalariYukle(): void {
         this.vardiyaApiService.getVardiyalar().subscribe({
@@ -173,6 +235,9 @@ export class VardiyaListesi implements OnInit {
         this.dosyaDialogVisible = false;
         this.secilenDosya = null;
         this.parseSonuc = null;
+        this.isAutomaticFile = false;
+        this.currentAutomaticFileId = null;
+        this.currentAutomaticFileContent = null;
     }
 
     dosyaSec(event: Event): void {
@@ -312,56 +377,67 @@ export class VardiyaListesi implements OnInit {
             kilitli: false
         };
 
-        // Dosya içeriğini oku
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const dosyaIcerik = e.target?.result as string; // Data URL olarak gelecek
-
-            // Sadece Backend'e kaydet
+        const finalizeUpload = (dosyaIcerik?: string) => {
             this.vardiyaApiService.createVardiya(yeniVardiya, this.parseSonuc!.satislar, this.parseSonuc!.filoSatislari, dosyaIcerik)
                 .subscribe({
                     next: (response) => {
-                        console.log('Backend kaydı başarılı:', response);
-
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Başarılı',
                             detail: `${this.parseSonuc?.kayitSayisi} kayıt veritabanına yüklendi`
                         });
 
+                        // Eğer otomatik dosya ise, işlendi olarak işaretle
+                        if (this.isAutomaticFile && this.currentAutomaticFileId) {
+                            this.vardiyaApiService.markAsProcessed(this.currentAutomaticFileId).subscribe(() => {
+                                this.otomatikDosyalariYukle();
+                            });
+                        }
+
                         this.vardiyalariYukle();
                         this.dosyaDialogKapat();
+                        this.isAutomaticFile = false;
+                        this.currentAutomaticFileId = null;
                     },
                     error: (err) => {
                         console.error('Backend kayıt hatası:', err);
+                        let detail = 'Sunucuya kayıt yapılırken hata oluştu!';
 
-                        let detailMsg = 'Sunucuya kayıt yapılırken hata oluştu!';
-                        if (err.error) {
-                            if (typeof err.error === 'string') {
-                                detailMsg = err.error;
-                            } else if (err.error.message) {
-                                detailMsg = err.error.message;
-                            } else if (err.error.title) {
-                                detailMsg = err.error.title; // Validation errors often have 'title'
-                            }
-
-                            // Validation errors details
-                            if (err.error.errors) {
-                                const errors = Object.values(err.error.errors).flat().join(', ');
-                                if (errors) detailMsg += ` (${errors})`;
+                        if (err.error && typeof err.error === 'string') {
+                            detail = err.error;
+                        } else if (err.error && err.error.message) {
+                            detail = err.error.message;
+                        } else if (err.error && err.error.errors) {
+                            // FluentValidation errors
+                            const errors = err.error.errors;
+                            const firstError = Object.values(errors)[0] as string[];
+                            if (firstError && firstError.length > 0) {
+                                detail = firstError[0];
                             }
                         }
 
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Hata',
-                            detail: detailMsg,
-                            life: 5000
+                            detail: detail,
+                            life: 7000
                         });
                     }
                 });
         };
-        reader.readAsDataURL(this.secilenDosya); // Base64 okuma
+
+        if (this.isAutomaticFile && this.currentAutomaticFileContent) {
+            // Otomatik dosyada içeriği sunucuya geri gönderiyoruz (validator zorunlu kılıyor)
+            finalizeUpload(this.currentAutomaticFileContent);
+        } else {
+            // Manuel yüklemede dosyayı oku
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dosyaIcerik = e.target?.result as string;
+                finalizeUpload(dosyaIcerik);
+            };
+            reader.readAsDataURL(this.secilenDosya as any);
+        }
     }
 
     vardiyaSil(vardiya: YuklenenVardiya): void {

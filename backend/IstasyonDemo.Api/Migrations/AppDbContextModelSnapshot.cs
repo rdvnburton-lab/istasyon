@@ -69,6 +69,36 @@ namespace IstasyonDemo.Api.Migrations
                     b.ToTable("FiloSatislar");
                 });
 
+            modelBuilder.Entity("IstasyonDemo.Api.Models.Firma", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Adres")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("Aktif")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("PatronId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatronId");
+
+                    b.ToTable("Firmalar");
+                });
+
             modelBuilder.Entity("IstasyonDemo.Api.Models.Istasyon", b =>
                 {
                     b.Property<int>("Id")
@@ -89,22 +119,31 @@ namespace IstasyonDemo.Api.Migrations
                     b.Property<bool>("Aktif")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("ParentIstasyonId")
+                    b.Property<string>("ApiKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("FirmaId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PatronId")
+                    b.Property<int?>("IstasyonSorumluId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SorumluId")
+                    b.Property<int?>("MarketSorumluId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("VardiyaSorumluId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentIstasyonId");
+                    b.HasIndex("FirmaId");
 
-                    b.HasIndex("PatronId");
+                    b.HasIndex("IstasyonSorumluId");
 
-                    b.HasIndex("SorumluId");
+                    b.HasIndex("MarketSorumluId");
+
+                    b.HasIndex("VardiyaSorumluId");
 
                     b.ToTable("Istasyonlar");
                 });
@@ -457,6 +496,48 @@ namespace IstasyonDemo.Api.Migrations
                     b.ToTable("OtomasyonSatislar");
                 });
 
+            modelBuilder.Entity("IstasyonDemo.Api.Models.OtomatikDosya", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DosyaAdi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("DosyaIcerigi")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HataMesaji")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Islendi")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("IslenmeTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("IstasyonId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("YuklemeTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IstasyonId");
+
+                    b.ToTable("OtomatikDosyalar");
+                });
+
             modelBuilder.Entity("IstasyonDemo.Api.Models.Personel", b =>
                 {
                     b.Property<int>("Id")
@@ -621,6 +702,9 @@ namespace IstasyonDemo.Api.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FotografData")
+                        .HasColumnType("text");
 
                     b.Property<int?>("IstasyonId")
                         .HasColumnType("integer");
@@ -799,27 +883,43 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Vardiya");
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.Istasyon", b =>
+            modelBuilder.Entity("IstasyonDemo.Api.Models.Firma", b =>
                 {
-                    b.HasOne("IstasyonDemo.Api.Models.Istasyon", "ParentIstasyon")
-                        .WithMany("AltIstasyonlar")
-                        .HasForeignKey("ParentIstasyonId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("IstasyonDemo.Api.Models.User", "Patron")
                         .WithMany()
                         .HasForeignKey("PatronId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("IstasyonDemo.Api.Models.User", "Sorumlu")
-                        .WithMany()
-                        .HasForeignKey("SorumluId");
-
-                    b.Navigation("ParentIstasyon");
-
                     b.Navigation("Patron");
+                });
 
-                    b.Navigation("Sorumlu");
+            modelBuilder.Entity("IstasyonDemo.Api.Models.Istasyon", b =>
+                {
+                    b.HasOne("IstasyonDemo.Api.Models.Firma", "Firma")
+                        .WithMany("Istasyonlar")
+                        .HasForeignKey("FirmaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IstasyonDemo.Api.Models.User", "IstasyonSorumlu")
+                        .WithMany()
+                        .HasForeignKey("IstasyonSorumluId");
+
+                    b.HasOne("IstasyonDemo.Api.Models.User", "MarketSorumlu")
+                        .WithMany()
+                        .HasForeignKey("MarketSorumluId");
+
+                    b.HasOne("IstasyonDemo.Api.Models.User", "VardiyaSorumlu")
+                        .WithMany()
+                        .HasForeignKey("VardiyaSorumluId");
+
+                    b.Navigation("Firma");
+
+                    b.Navigation("IstasyonSorumlu");
+
+                    b.Navigation("MarketSorumlu");
+
+                    b.Navigation("VardiyaSorumlu");
                 });
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.MarketGelir", b =>
@@ -935,6 +1035,16 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Vardiya");
                 });
 
+            modelBuilder.Entity("IstasyonDemo.Api.Models.OtomatikDosya", b =>
+                {
+                    b.HasOne("IstasyonDemo.Api.Models.Istasyon", "Istasyon")
+                        .WithMany()
+                        .HasForeignKey("IstasyonId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Istasyon");
+                });
+
             modelBuilder.Entity("IstasyonDemo.Api.Models.Personel", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Istasyon", "Istasyon")
@@ -1008,10 +1118,13 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Vardiya");
                 });
 
+            modelBuilder.Entity("IstasyonDemo.Api.Models.Firma", b =>
+                {
+                    b.Navigation("Istasyonlar");
+                });
+
             modelBuilder.Entity("IstasyonDemo.Api.Models.Istasyon", b =>
                 {
-                    b.Navigation("AltIstasyonlar");
-
                     b.Navigation("Calisanlar");
 
                     b.Navigation("Kullanicilar");

@@ -26,7 +26,7 @@ namespace IstasyonDemo.Api.Controllers
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var user = await _context.Users
                 .Include(u => u.Istasyon)
-                .ThenInclude(i => i!.ParentIstasyon)
+                .ThenInclude(i => i!.Firma)
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -41,7 +41,7 @@ namespace IstasyonDemo.Api.Controllers
                 AdSoyad = user.AdSoyad ?? user.Username,
                 Rol = user.Role != null ? user.Role.Ad : "",
                 IstasyonAdi = user.Istasyon?.Ad ?? "-",
-                FirmaAdi = user.Istasyon?.ParentIstasyon?.Ad ?? user.Istasyon?.Ad ?? "-"
+                FirmaAdi = user.Istasyon?.Firma?.Ad ?? user.Istasyon?.Ad ?? "-"
             };
 
             if (user.IstasyonId.HasValue && user.Role != null)
@@ -129,7 +129,7 @@ namespace IstasyonDemo.Api.Controllers
                 IQueryable<Vardiya> vardiyaQuery = _context.Vardiyalar.Include(v => v.Istasyon);
                 if (userRole == "patron")
                 {
-                    vardiyaQuery = vardiyaQuery.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+                    vardiyaQuery = vardiyaQuery.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
                 }
 
                 // Silinmiş vardiyaları hariç tut
@@ -163,8 +163,8 @@ namespace IstasyonDemo.Api.Controllers
                 }
                 else
                 {
-                    istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.PatronId == userId && i.Aktif);
-                    personelSayisi = await _context.Personeller.CountAsync(p => p.Istasyon != null && p.Istasyon.PatronId == userId && p.Aktif);
+                    istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.Firma.PatronId == userId && i.Aktif);
+                    personelSayisi = await _context.Personeller.CountAsync(p => p.Istasyon != null && p.Istasyon.Firma.PatronId == userId && p.Aktif);
                 }
 
                 // Son 7 günlük trend
@@ -222,7 +222,7 @@ namespace IstasyonDemo.Api.Controllers
 
                     if (userRole == "patron")
                     {
-                        logQuery = logQuery.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.PatronId == userId);
+                        logQuery = logQuery.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma.PatronId == userId);
                     }
 
                     var logs = await logQuery

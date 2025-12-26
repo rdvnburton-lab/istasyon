@@ -179,7 +179,7 @@ namespace IstasyonDemo.Api.Controllers
             if (userRole == "admin") { }
             else if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
             }
             else if (userRole == "market_sorumlusu")
             {
@@ -240,7 +240,7 @@ namespace IstasyonDemo.Api.Controllers
             if (userRole == "admin") { }
             else if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
             }
             else if (userRole == "market_sorumlusu")
             {
@@ -551,7 +551,7 @@ namespace IstasyonDemo.Api.Controllers
             }
             else if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
             }
             else if (userRole == "market_sorumlusu")
             {
@@ -632,7 +632,7 @@ namespace IstasyonDemo.Api.Controllers
 
             if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
             }
 
             var list = await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
@@ -1104,12 +1104,12 @@ namespace IstasyonDemo.Api.Controllers
 
             IQueryable<VardiyaLog> query = _context.VardiyaLoglari
                 .Include(vl => vl.Vardiya)
-                    .ThenInclude(v => v!.Istasyon);
+                    .ThenInclude(v => v!.Istasyon).ThenInclude(i => i!.Firma);
 
             // Patron sadece kendi istasyonlarının loglarını görebilir
             if (userRole == "patron")
             {
-                query = query.Where(vl => vl.Vardiya!.Istasyon!.PatronId == userId);
+                query = query.Where(vl => vl.Vardiya!.Istasyon!.Firma.PatronId == userId);
             }
 
             // Belirli bir vardiya için filtreleme

@@ -135,13 +135,11 @@ export class PersonelTanimlamaComponent implements OnInit {
     }
 
     openNew(): void {
-        const user = this.authService.getCurrentUser();
-        const role = user?.role?.toLowerCase();
         this.currentPersonel = {
             otomasyonAdi: '',
             adSoyad: '',
             keyId: '',
-            rol: role === 'market_sorumlusu' ? 'MARKET_GOREVLISI' : 'POMPACI',
+            rol: this.isMarketSorumlusu ? 'MARKET_GOREVLISI' : 'POMPACI',
             aktif: true,
             telefon: ''
         };
@@ -157,8 +155,11 @@ export class PersonelTanimlamaComponent implements OnInit {
 
     savePersonel(): void {
         if (this.currentPersonel.rol === 'MARKET_GOREVLISI') {
-            // Market personeli için otomasyon adı ad soyad ile aynı olsun (backend zorunlu kıldığı için)
-            this.currentPersonel.otomasyonAdi = this.currentPersonel.adSoyad;
+            // Market personeli için otomatik otomasyon adı üret (örn: MKT-123456)
+            if (!this.currentPersonel.otomasyonAdi) {
+                const uniqueSuffix = Date.now().toString().slice(-6);
+                this.currentPersonel.otomasyonAdi = `MKT-${uniqueSuffix}`;
+            }
         } else if (!this.currentPersonel.otomasyonAdi) {
             this.messageService.add({
                 severity: 'warn',
@@ -226,6 +227,14 @@ export class PersonelTanimlamaComponent implements OnInit {
 
     deletePersonel(personel: Personel): void {
         if (!personel.id) return;
+        if (this.isVardiyaSorumlusu) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Yetkisiz İşlem',
+                detail: 'Vardiya sorumlusu personel silemez.'
+            });
+            return;
+        }
 
         if (!confirm(`${personel.adSoyad} adlı personeli silmek istediğinize emin misiniz?`)) {
             return;

@@ -27,6 +27,14 @@ namespace IstasyonDemo.Api.Dtos
         public string Token { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public string? FirmaAdi { get; set; }
+        public List<SimpleIstasyonDto> Istasyonlar { get; set; } = new();
+    }
+
+    public class SimpleIstasyonDto
+    {
+        public int Id { get; set; }
+        public string Ad { get; set; } = string.Empty;
     }
 
     public class CreateUserDto
@@ -41,8 +49,10 @@ namespace IstasyonDemo.Api.Dtos
         public int RoleId { get; set; }
 
         public int? IstasyonId { get; set; }
+        public int? FirmaId { get; set; }
         public string? AdSoyad { get; set; }
         public string? Telefon { get; set; }
+        public string? FotografData { get; set; }
     }
 
     public class UserDto
@@ -55,6 +65,7 @@ namespace IstasyonDemo.Api.Dtos
         public string? IstasyonAdi { get; set; }
         public string? AdSoyad { get; set; }
         public string? Telefon { get; set; }
+        public string? FotografData { get; set; }
     }
 
     public class UpdateUserDto
@@ -63,7 +74,9 @@ namespace IstasyonDemo.Api.Dtos
         public string? Password { get; set; }
         public int RoleId { get; set; }
         public int? IstasyonId { get; set; }
+        public int? FirmaId { get; set; }
         public string? AdSoyad { get; set; }
         public string? Telefon { get; set; }
+        public string? FotografData { get; set; }
     }
 }

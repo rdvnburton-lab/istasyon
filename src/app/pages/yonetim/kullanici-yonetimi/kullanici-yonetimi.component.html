@@ -1,0 +1,221 @@
+<p-toast></p-toast>
+
+<div class="grid grid-cols-12 gap-6">
+    <!-- Başlık -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                        <i class="pi pi-users mr-2 text-blue-500"></i>Kullanıcı Yönetimi
+                    </h2>
+                    <p class="text-surface-500 mt-2">
+                        Kullanıcı bilgilerini görüntüleyin ve yönetin
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <p-button label="Yeni Kullanıcı" icon="pi pi-plus" severity="success" (onClick)="openNew()">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kullanıcı Listesi -->
+    <div class="col-span-12">
+        <div class="card">
+            <p-table [value]="users" [loading]="loading" [paginator]="users.length > 10" [rows]="10"
+                styleClass="p-datatable-striped" [globalFilterFields]="['username', 'adSoyad', 'telefon', 'role']" #dt>
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-bold">Kullanıcı Listesi ({{ users.length }})</span>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" placeholder="Ara..."
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr class="text-sm">
+                        <th>Fotoğraf</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>Ad Soyad</th>
+                        <th>Telefon</th>
+                        <th class="text-center">Rol</th>
+                        <th>İstasyon / Firma</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-user>
+                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                                    [style.background]="user.fotografData ? 'transparent' : 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)'">
+                                    <img *ngIf="user.fotografData" [src]="user.fotografData" class="w-full h-full"
+                                        style="object-fit: cover;">
+                                    <i *ngIf="!user.fotografData" class="pi pi-user text-white"></i>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="font-bold text-surface-800 dark:text-surface-100">{{ user.username }}</span>
+                        </td>
+                        <td>
+                            <span class="text-surface-800 dark:text-surface-100">{{ user.adSoyad || '-' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-surface-800 dark:text-surface-100">{{ user.telefon || '-' }}</span>
+                        </td>
+                        <td class="text-center">
+                            <p-tag [value]="user.role" [severity]="getRoleSeverity(user.role)"></p-tag>
+                        </td>
+                        <td>
+                            <span class="text-surface-800 dark:text-surface-100">{{ user.istasyonAdi || user.firmaAdi ||
+                                '-' }}</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="flex gap-2 justify-center">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-text p-button-info" (click)="editUser(user)"
+                                    pTooltip="Düzenle" tooltipPosition="top">
+                                </button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                    class="p-button-rounded p-button-text p-button-danger" (click)="deleteUser(user)"
+                                    pTooltip="Sil" tooltipPosition="top">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7" class="text-center py-12">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
+                                    <i class="pi pi-users text-4xl text-surface-400"></i>
+                                </div>
+                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz kullanıcı kaydı yok</h4>
+                                <p class="text-surface-400 text-sm m-0 mt-2">
+                                    Yeni kullanıcı eklemek için "Yeni Kullanıcı" butonuna tıklayın
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- Kullanıcı Ekleme/Düzenleme Dialog -->
+<p-dialog [header]="user.id ? 'Kullanıcı Düzenle' : 'Yeni Kullanıcı'" [(visible)]="dialogVisible" [modal]="true"
+    [style]="{width: '600px'}">
+
+    <div class="flex flex-col gap-4">
+        <!-- Profil Fotoğrafı -->
+        <div class="flex flex-col items-center gap-3 pb-4 border-bottom-1 surface-border">
+            <label class="block text-sm font-medium">Profil Fotoğrafı</label>
+            <div class="relative">
+                <div class="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden surface-100"
+                    [style.border]="'2px solid var(--primary-color)'">
+                    <img *ngIf="user.fotografData" [src]="user.fotografData" class="w-full h-full"
+                        style="object-fit: cover;">
+                    <i *ngIf="!user.fotografData" class="pi pi-user text-4xl text-surface-400"></i>
+                </div>
+                <div class="absolute" style="bottom: 0; right: 0; display: flex; gap: 0.5rem;">
+                    <label for="photoUpload"
+                        class="flex align-items-center justify-content-center cursor-pointer shadow-2"
+                        style="width: 2rem; height: 2rem; background: var(--primary-color); color: white; border-radius: 50%; border: 2px solid var(--surface-card);"
+                        pTooltip="Fotoğraf Yükle" tooltipPosition="top">
+                        <i class="pi pi-camera text-xs"></i>
+                    </label>
+                    <input type="file" id="photoUpload" (change)="onFileSelect($event)" accept="image/*"
+                        style="display: none;" />
+
+                    <button *ngIf="user.fotografData" pButton icon="pi pi-times"
+                        class="p-button-rounded p-button-danger p-button-text"
+                        style="width: 2rem; height: 2rem; padding: 0;" (click)="removePhoto()"
+                        pTooltip="Fotoğrafı Kaldır" tooltipPosition="top"></button>
+                </div>
+            </div>
+            <small class="text-surface-500">JPG, PNG formatında yükleyiniz</small>
+        </div>
+
+        <!-- Kullanıcı Bilgileri -->
+        <div>
+            <label for="username" class="block text-sm font-medium mb-2">Kullanıcı Adı <span
+                    class="text-red-500">*</span></label>
+            <input pInputText id="username" [(ngModel)]="user.username" class="w-full"
+                placeholder="Kullanıcı adı giriniz" [disabled]="loading" />
+            <small class="p-error" *ngIf="submitted && !user.username">Bu alan zorunludur</small>
+        </div>
+
+        <div>
+            <label for="adSoyad" class="block text-sm font-medium mb-2">Ad Soyad</label>
+            <input pInputText id="adSoyad" [(ngModel)]="user.adSoyad" class="w-full" placeholder="Ad ve soyad giriniz"
+                [disabled]="loading" />
+        </div>
+
+        <div>
+            <label for="telefon" class="block text-sm font-medium mb-2">Telefon</label>
+            <input pInputText id="telefon" [(ngModel)]="user.telefon" class="w-full" placeholder="+90 555 123 45 67"
+                [disabled]="loading" />
+        </div>
+
+        <div *ngIf="!(isPatron && user.id === currentUserId)">
+            <label for="role" class="block text-sm font-medium mb-2">Rol <span class="text-red-500">*</span></label>
+            <p-select id="role" [options]="roles" [(ngModel)]="user.roleId" placeholder="Rol seçiniz" optionLabel="ad"
+                optionValue="id" (onChange)="onRoleChange($event)" appendTo="body" styleClass="w-full"
+                [disabled]="loading"></p-select>
+            <small class="p-error" *ngIf="submitted && !user.roleId">Bu alan zorunludur</small>
+        </div>
+
+        <!-- Şifre -->
+        <div *ngIf="!user.id || changePassword">
+            <label for="password" class="block text-sm font-medium mb-2">Şifre <span
+                    class="text-red-500">*</span></label>
+            <p-password id="password" [(ngModel)]="user.password" [toggleMask]="true" [feedback]="false"
+                styleClass="w-full" inputStyleClass="w-full" [disabled]="loading"></p-password>
+            <small class="p-error" *ngIf="submitted && !user.id && !user.password">Bu alan zorunludur</small>
+        </div>
+
+        <div *ngIf="user.id && !changePassword">
+            <button pButton type="button" label="Şifreyi Değiştir" icon="pi pi-key" class="p-button-outlined w-full"
+                (click)="changePassword = true"></button>
+        </div>
+
+        <!-- Firma Seçimi (Patron için) -->
+        <div *ngIf="user.role === 'patron'">
+            <label for="firma" class="block text-sm font-medium mb-2">Firma <span class="text-red-500">*</span></label>
+            <p-select id="firma" [options]="firmalar" [(ngModel)]="user.firmaId" optionLabel="ad" optionValue="id"
+                placeholder="Firma seçiniz" [showClear]="true" appendTo="body" styleClass="w-full"
+                [disabled]="loading"></p-select>
+            <small class="p-error" *ngIf="submitted && !user.firmaId">Bu alan zorunludur</small>
+        </div>
+
+        <!-- İstasyon Seçimi -->
+        <div *ngIf="user.role !== 'patron' && user.role !== 'admin' && !(isPatron && user.id === currentUserId)">
+            <label for="istasyon" class="block text-sm font-medium mb-2">İstasyon <span
+                    class="text-red-500">*</span></label>
+            <p-select id="istasyon" [options]="istasyonlar" [(ngModel)]="user.istasyonId" optionLabel="ad"
+                optionValue="id" placeholder="İstasyon seçiniz" [showClear]="true" appendTo="body" styleClass="w-full"
+                [disabled]="loading"></p-select>
+            <small class="p-error" *ngIf="submitted && !user.istasyonId">Bu alan zorunludur</small>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="İptal" icon="pi pi-times" severity="secondary" (onClick)="hideDialog()" [disabled]="loading">
+        </p-button>
+        <p-button [label]="user.id ? 'Güncelle' : 'Kaydet'" icon="pi pi-check" severity="success" (onClick)="saveUser()"
+            [loading]="loading">
+        </p-button>
+    </ng-template>
+</p-dialog>
