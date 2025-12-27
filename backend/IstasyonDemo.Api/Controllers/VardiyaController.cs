@@ -179,7 +179,7 @@ namespace IstasyonDemo.Api.Controllers
             if (userRole == "admin") { }
             else if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
             }
             else if (userRole == "market_sorumlusu")
             {
@@ -240,7 +240,7 @@ namespace IstasyonDemo.Api.Controllers
             if (userRole == "admin") { }
             else if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
             }
             else if (userRole == "market_sorumlusu")
             {
@@ -551,7 +551,7 @@ namespace IstasyonDemo.Api.Controllers
             }
             else if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
             }
             else if (userRole == "market_sorumlusu")
             {
@@ -632,7 +632,7 @@ namespace IstasyonDemo.Api.Controllers
 
             if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
             }
 
             var list = await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
@@ -1109,7 +1109,7 @@ namespace IstasyonDemo.Api.Controllers
             // Patron sadece kendi istasyonlarının loglarını görebilir
             if (userRole == "patron")
             {
-                query = query.Where(vl => vl.Vardiya!.Istasyon!.Firma.PatronId == userId);
+                query = query.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma != null && vl.Vardiya.Istasyon.Firma.PatronId == userId);
             }
 
             // Belirli bir vardiya için filtreleme

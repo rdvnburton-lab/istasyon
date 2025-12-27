@@ -130,7 +130,7 @@ namespace IstasyonDemo.Api.Services
 
             if (userRole == "patron")
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
             }
 
             return await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
@@ -182,7 +182,7 @@ namespace IstasyonDemo.Api.Services
             var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
-            if (userRole == "patron" && vardiya.Istasyon?.Firma.PatronId != userId) throw new UnauthorizedAccessException();
+            if (userRole == "patron" && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != userId)) throw new UnauthorizedAccessException();
             if (userRole != "admin" && userRole != "patron")
             {
                 var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == userId);
@@ -244,7 +244,7 @@ namespace IstasyonDemo.Api.Services
             var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
-            if (userRole == "patron" && vardiya.Istasyon?.Firma.PatronId != userId) throw new UnauthorizedAccessException();
+            if (userRole == "patron" && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != userId)) throw new UnauthorizedAccessException();
 
             if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
             {
@@ -331,7 +331,7 @@ namespace IstasyonDemo.Api.Services
             var vardiya = await _context.Vardiyalar.Include(v => v.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(v => v.Id == id);
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
-            if (userRole == "patron" && vardiya.Istasyon?.Firma.PatronId != userId) throw new UnauthorizedAccessException();
+            if (userRole == "patron" && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != userId)) throw new UnauthorizedAccessException();
 
             if (vardiya.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR)
             {

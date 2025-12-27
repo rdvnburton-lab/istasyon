@@ -33,7 +33,7 @@ namespace IstasyonDemo.Api.Controllers
             }
             else if (userRole == "patron")
             {
-                query = query.Where(p => p.Istasyon != null && p.Istasyon.Firma.PatronId == userId);
+                query = query.Where(p => p.Istasyon != null && p.Istasyon.Firma != null && p.Istasyon.Firma.PatronId == userId);
             }
             else
             {
@@ -65,7 +65,7 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && personel.Istasyon?.Firma.PatronId != userId) return Forbid();
+            if (userRole == "patron" && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != userId)) return Forbid();
             if (userRole != "admin" && userRole != "patron")
             {
                 var user = await _context.Users.FindAsync(userId);
@@ -87,7 +87,7 @@ namespace IstasyonDemo.Api.Controllers
             if (userRole == "patron")
             {
                 var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == personel.IstasyonId);
-                if (istasyon == null || istasyon.Firma.PatronId != userId)
+                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != userId)
                 {
                     return BadRequest("Geçersiz istasyon. Bu istasyonun sahibi değilsiniz.");
                 }
@@ -134,7 +134,7 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && existing.Istasyon?.Firma.PatronId != userId) return Forbid();
+            if (userRole == "patron" && (existing.Istasyon == null || existing.Istasyon.Firma == null || existing.Istasyon.Firma.PatronId != userId)) return Forbid();
             if (userRole != "admin" && userRole != "patron")
             {
                 // Vardiya Sorumlusu can update names
@@ -179,7 +179,7 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && personel.Istasyon?.Firma.PatronId != userId) return Forbid();
+            if (userRole == "patron" && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != userId)) return Forbid();
 
             // Satışları olan personeli silmeyi engelle
             var hasSales = await _context.OtomasyonSatislar
@@ -206,7 +206,7 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && personel.Istasyon?.Firma.PatronId != userId) return Forbid();
+            if (userRole == "patron" && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != userId)) return Forbid();
             if (userRole != "admin" && userRole != "patron")
             {
                 var user = await _context.Users.FindAsync(userId);

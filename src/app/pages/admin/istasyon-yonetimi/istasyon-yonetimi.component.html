@@ -58,8 +58,9 @@
                                     {{rowData[col.field]}}
                                 </span>
                             </ng-container>
-                            <p-tag [value]="rowData.aktif ? 'Aktif' : 'Pasif'"
-                                [severity]="rowData.aktif ? 'success' : 'danger'"></p-tag>
+                            <ng-container *ngIf="col.field === 'aktif'">
+                                <p-tag [value]="rowData.aktif ? 'Aktif' : 'Pasif'"
+                                    [severity]="rowData.aktif ? 'success' : 'danger'"></p-tag>
                             </ng-container>
 
                             <!-- NEW: Device Lock & Status -->

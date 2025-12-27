@@ -36,7 +36,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 if (user.Role?.Ad == "patron")
                 {
-                    query = query.Where(m => m.Istasyon!.Firma.PatronId == currentUserId);
+                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == currentUserId);
                 }
                 else if (user.Role?.Ad == "vardiya_sorumlusu")
                 {
@@ -379,7 +379,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 if (user.Role?.Ad == "patron")
                 {
-                    query = query.Where(m => m.Istasyon!.Firma.PatronId == currentUserId);
+                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == currentUserId);
                 }
                 else
                 {

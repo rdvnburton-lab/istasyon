@@ -30,7 +30,7 @@ public class FileTransferController : ControllerBase
         var istasyon = await _context.Istasyonlar
             .Include(i => i.IstasyonSorumlu)
             .Include(i => i.VardiyaSorumlu)
-            .Include(i => i.Firma).ThenInclude(f => f.Patron)
+            .Include(i => i.Firma).ThenInclude(f => f!.Patron)
             .FirstOrDefaultAsync(i => i.Id == istasyonId);
 
         if (istasyon == null)

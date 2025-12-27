@@ -38,7 +38,7 @@ namespace IstasyonDemo.Api.Controllers
             else if (userRole == "patron")
             {
                 // Patron sees stations belonging to their firms
-                query = query.Where(i => i.Firma.PatronId == userId);
+                query = query.Where(i => i.Firma != null && i.Firma.PatronId == userId);
             }
             else
             {
@@ -189,7 +189,7 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
             }
 
-            if (userRole == "patron" && istasyon.Firma.PatronId != userId)
+            if (userRole == "patron" && (istasyon.Firma == null || istasyon.Firma.PatronId != userId))
             {
                 return Forbid();
             }
@@ -265,7 +265,7 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
             }
 
-            if (userRole == "patron" && istasyon.Firma.PatronId != userId)
+            if (userRole == "patron" && (istasyon.Firma == null || istasyon.Firma.PatronId != userId))
             {
                 return Forbid();
             }
@@ -286,7 +286,7 @@ namespace IstasyonDemo.Api.Controllers
             
             if (istasyon == null) return NotFound();
             
-            if (userRole == "patron" && istasyon.Firma.PatronId != userId) return Forbid();
+            if (userRole == "patron" && (istasyon.Firma == null || istasyon.Firma.PatronId != userId)) return Forbid();
 
             // Clear the lock
             istasyon.RegisteredDeviceId = null;

@@ -83,7 +83,7 @@ namespace IstasyonDemo.Api.Controllers
                 if (request.IstasyonId.HasValue)
                 {
                     var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == request.IstasyonId.Value);
-                    if (istasyon == null || istasyon.Firma.PatronId != currentUserId)
+                    if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != currentUserId)
                     {
                         return BadRequest("Geçersiz istasyon. Bu istasyonun sahibi değilsiniz.");
                     }

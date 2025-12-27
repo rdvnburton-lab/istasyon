@@ -129,7 +129,7 @@ namespace IstasyonDemo.Api.Controllers
                 IQueryable<Vardiya> vardiyaQuery = _context.Vardiyalar.Include(v => v.Istasyon);
                 if (userRole == "patron")
                 {
-                    vardiyaQuery = vardiyaQuery.Where(v => v.Istasyon != null && v.Istasyon.Firma.PatronId == userId);
+                    vardiyaQuery = vardiyaQuery.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
                 }
 
                 // Silinmiş vardiyaları hariç tut
@@ -163,8 +163,8 @@ namespace IstasyonDemo.Api.Controllers
                 }
                 else
                 {
-                    istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.Firma.PatronId == userId && i.Aktif);
-                    personelSayisi = await _context.Personeller.CountAsync(p => p.Istasyon != null && p.Istasyon.Firma.PatronId == userId && p.Aktif);
+                    istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.Firma != null && i.Firma.PatronId == userId && i.Aktif);
+                    personelSayisi = await _context.Personeller.CountAsync(p => p.Istasyon != null && p.Istasyon.Firma != null && p.Istasyon.Firma.PatronId == userId && p.Aktif);
                 }
 
                 // Son 7 günlük trend
@@ -222,7 +222,7 @@ namespace IstasyonDemo.Api.Controllers
 
                     if (userRole == "patron")
                     {
-                        logQuery = logQuery.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma.PatronId == userId);
+                        logQuery = logQuery.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma != null && vl.Vardiya.Istasyon.Firma.PatronId == userId);
                     }
 
                     var logs = await logQuery

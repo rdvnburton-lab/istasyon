@@ -36,7 +36,7 @@ namespace IstasyonDemo.Api.Controllers
                 // Find stations owned by this patron
                 var patronStationIds = await _context.Istasyonlar
                     .Include(i => i.Firma)
-                    .Where(i => i.Firma.PatronId == currentUserId)
+                    .Where(i => i.Firma != null && i.Firma.PatronId == currentUserId)
                     .Select(i => i.Id)
                     .ToListAsync();
 
@@ -120,7 +120,7 @@ namespace IstasyonDemo.Api.Controllers
                 }
 
                 var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == user.IstasyonId.Value);
-                if (istasyon == null || istasyon.Firma.PatronId != currentUserId)
+                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != currentUserId)
                 {
                     return Forbid("Bu kullanıcıyı düzenleme yetkiniz yok.");
                 }
@@ -156,7 +156,7 @@ namespace IstasyonDemo.Api.Controllers
                  if (currentUserRole == "patron")
                  {
                       var targetIstasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == request.IstasyonId.Value);
-                      if (targetIstasyon == null || targetIstasyon.Firma.PatronId != currentUserId)
+                      if (targetIstasyon == null || targetIstasyon.Firma == null || targetIstasyon.Firma.PatronId != currentUserId)
                       {
                            return BadRequest("Kullanıcıyı sahip olmadığınız bir istasyona atayamazsınız.");
                       }
@@ -211,7 +211,7 @@ namespace IstasyonDemo.Api.Controllers
                 }
 
                 var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == user.IstasyonId.Value);
-                if (istasyon == null || istasyon.Firma.PatronId != currentUserId)
+                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != currentUserId)
                 {
                     return Forbid("Bu kullanıcıyı silme yetkiniz yok.");
                 }
