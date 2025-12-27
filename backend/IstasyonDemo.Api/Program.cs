@@ -42,11 +42,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.WithOrigins(allowedOrigins)
-                   .AllowAnyMethod()
+            policy.AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials()
-                   .SetIsOriginAllowed(origin => true); // Daha esnek eşleşme için
+                   .SetIsOriginAllowed(origin => true); // Allow any origin with credentials
         });
 });
 
