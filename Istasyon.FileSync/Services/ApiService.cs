@@ -32,19 +32,7 @@ public class ApiService
 
 // ... (skip TestConnection) ...
 
-    public async Task<(List<DiagnosticResult> results, StationInfo? info)> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
-    {
-        // ...
-        // IN VerifyConfig Block:
-                var request = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
-                request.Headers.Add("X-Api-Key", apiKey);
-                if(!string.IsNullOrEmpty(_clientUniqueId)) request.Headers.Add("X-Client-Id", _clientUniqueId);
 
-// ... (In UploadFile logic) ...
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
-            if(!string.IsNullOrEmpty(_clientUniqueId)) _httpClient.DefaultRequestHeaders.Add("X-Client-Id", _clientUniqueId);
-// ...
 
     public async Task<(bool success, string message)> TestConnectionAsync(string url)
     {
@@ -210,6 +198,7 @@ public class ApiService
                 
                 var request = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
                 request.Headers.Add("X-Api-Key", apiKey);
+                if (!string.IsNullOrEmpty(_clientUniqueId)) request.Headers.Add("X-Client-Id", _clientUniqueId);
 
                 var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
@@ -280,6 +269,7 @@ public class ApiService
 
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
+            if (!string.IsNullOrEmpty(_clientUniqueId)) _httpClient.DefaultRequestHeaders.Add("X-Client-Id", _clientUniqueId);
 
             var response = await _httpClient.PostAsync(_apiUrl, content);
 
@@ -308,6 +298,29 @@ public class ApiService
             _dbService.SaveLog(log);
             Log.Error(ex, "API gönderim hatası: {FileName}", log.FileName);
             return false;
+        }
+    }
+    public async Task SendHeartbeatAsync()
+    {
+        if (string.IsNullOrEmpty(_apiUrl)) return;
+
+        try
+        {
+            if (Uri.TryCreate(_apiUrl, UriKind.Absolute, out var uri))
+            {
+                var baseAuth = uri.GetLeftPart(UriPartial.Authority);
+                var verifyUrl = $"{baseAuth}/api/FileTransfer/verify?istasyonId={_istasyonId}";
+                
+                var request = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
+                request.Headers.Add("X-Api-Key", _apiKey);
+                if (!string.IsNullOrEmpty(_clientUniqueId)) request.Headers.Add("X-Client-Id", _clientUniqueId);
+
+                await _httpClient.SendAsync(request);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Heartbeat gönderilemedi.");
         }
     }
 }

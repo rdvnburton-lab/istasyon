@@ -13,6 +13,7 @@ public class FileWatcherService
     private readonly DatabaseService _dbService;
     private readonly ApiService _apiService;
     private string _watchPath = string.Empty;
+    private System.Timers.Timer? _heartbeatTimer;
 
     public FileWatcherService(DatabaseService dbService, ApiService apiService)
     {
