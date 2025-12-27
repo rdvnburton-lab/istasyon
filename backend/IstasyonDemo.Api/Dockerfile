@@ -17,4 +17,5 @@ RUN dotnet publish "IstasyonDemo.Api.csproj" -c Release -o /app/publish /p:UseAp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN apt-get update && apt-get install -y curl
 ENTRYPOINT ["dotnet", "IstasyonDemo.Api.dll"]

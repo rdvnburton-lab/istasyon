@@ -6,17 +6,21 @@ services:
     restart: always
     environment:
       - ASPNETCORE_URLS=http://+:80
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres;TrustServerCertificate=True
-      - AllowedOrigins__0=http://localhost:4200
-      - AllowedOrigins__1=https://istasyon.tiginteknoloji.tr
-      - AllowedOrigins__2=http://istasyon.tiginteknoloji.tr
+      - AllowedOrigins__0=https://istasyon.tiginteknoloji.tr
+      - AllowedOrigins__1=https://istasyonapi.tiginteknoloji.tr
       - Serilog__SeqServerUrl=http://seq:5341
     depends_on:
       db:
         condition: service_healthy
       seq:
-        condition: service_started
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   frontend:
     build:
@@ -25,6 +29,11 @@ services:
     restart: always
     depends_on:
       - backend
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   db:
     image: postgres:15-alpine
@@ -43,6 +52,12 @@ services:
     image: datalust/seq:latest
     environment:
       - ACCEPT_EULA=Y
+      - SEQ_API_LISTENURIS=http://+:5341
     ports:
-      - "5341:80"
+      - "5341:5341"
     restart: always
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5341/ || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 3

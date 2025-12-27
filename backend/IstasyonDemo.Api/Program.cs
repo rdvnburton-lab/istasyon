@@ -92,6 +92,8 @@ builder.Services.AddControllers()
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Uygulama başlarken veritabanını otomatik güncelle (Migration)
@@ -201,6 +203,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapHealthChecks("/health");
 
 app.Run();
 
