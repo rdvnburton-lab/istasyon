@@ -17,6 +17,8 @@ public class FileTransferController : ControllerBase
     {
         _logger = logger;
         _context = context;
+    }
+
     [HttpGet("verify")]
     public async Task<IActionResult> VerifyConfig([FromQuery] int istasyonId, [FromHeader(Name = "X-Api-Key")] string apiKey)
     {
@@ -42,7 +44,6 @@ public class FileTransferController : ControllerBase
             return BadRequest("İstasyon pasif durumda.");
         }
 
-        return Ok(new { message = "Konfigürasyon geçerli.", istasyonAdi = istasyon.Ad });
         return Ok(new { message = "Konfigürasyon geçerli.", istasyonAdi = istasyon.Ad });
     }
 
