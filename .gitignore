@@ -48,3 +48,6 @@ obj/
 .vs/
 *.user
 *.lock.json
+
+# Environment Variables
+.env

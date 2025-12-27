@@ -5,16 +5,17 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=postgres;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=${POSTGRES_PASSWORD};TrustServerCertificate=True
       - AllowedOrigins__0=https://istasyon.tiginteknoloji.tr
       - AllowedOrigins__1=https://istasyonapi.tiginteknoloji.tr
+      - JwtSettings__SecretKey=${JWT_SECRET}
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: curl -f http://localhost/health || exit 1
+      test: curl -f http://localhost:8080/health || exit 1
       interval: 10s
       timeout: 5s
       retries: 3
@@ -35,9 +36,9 @@ services:
   db:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_DB=istasyon
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${POSTGRES_DB:-istasyon}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
