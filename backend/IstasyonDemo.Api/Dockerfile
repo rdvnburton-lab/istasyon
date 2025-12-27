@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 # Curl kur, log klasörü oluştur ve yetkileri ayarla
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y curl tzdata && \
     mkdir -p Logs && \
     chown -R app:app /app
 
