@@ -100,9 +100,10 @@ public class ApiService
         }
     }
 
-    public async Task<List<DiagnosticResult>> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
+    public async Task<(List<DiagnosticResult> results, StationInfo? info)> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
     {
         var results = new List<DiagnosticResult>();
+        StationInfo? stationInfo = null;
 
         // 1. İnternet Bağlantısı
         var internetCheck = new DiagnosticResult { CheckName = "İnternet Bağlantısı" };
@@ -117,7 +118,7 @@ public class ApiService
             internetCheck.Message = "İnternet bağlantısı yok.";
         }
         results.Add(internetCheck);
-        if (!internetCheck.IsSuccess) return results; // İnternet yoksa diğerlerine bakma
+        if (!internetCheck.IsSuccess) return (results, null); 
 
         // 2. API Erişilebilirliği
         var apiCheck = new DiagnosticResult { CheckName = "API Sunucusu" };
@@ -158,7 +159,7 @@ public class ApiService
             apiCheck.Message = $"Erişim yok: {ex.Message}";
         }
         results.Add(apiCheck);
-        if (!apiCheck.IsSuccess) return results;
+        if (!apiCheck.IsSuccess) return (results, null);
 
         // 3. Konfigürasyon Doğrulama (İstasyon & Key)
         var configCheck = new DiagnosticResult { CheckName = "İstasyon & Yetki" };
@@ -179,6 +180,19 @@ public class ApiService
                 {
                     configCheck.IsSuccess = true;
                     configCheck.Message = "İstasyon aktif ve yetkili.";
+                    
+                    try 
+                    {
+                        using var doc = System.Text.Json.JsonDocument.Parse(content);
+                        stationInfo = new StationInfo();
+                        if(doc.RootElement.TryGetProperty("istasyonAdi", out var name)) stationInfo.IstasyonAdi = name.GetString() ?? "";
+                        if(doc.RootElement.TryGetProperty("istasyonAdresi", out var adres)) stationInfo.IstasyonAdresi = adres.GetString() ?? "";
+                        if(doc.RootElement.TryGetProperty("firmaAdi", out var firma)) stationInfo.FirmaAdi = firma.GetString() ?? "";
+                        if(doc.RootElement.TryGetProperty("istasyonSorumlusu", out var sorumlu)) stationInfo.IstasyonSorumlusu = sorumlu.GetString() ?? "";
+                        if(doc.RootElement.TryGetProperty("vardiyaSorumlusu", out var vardiya)) stationInfo.VardiyaSorumlusu = vardiya.GetString() ?? "";
+                        if(doc.RootElement.TryGetProperty("companyBoss", out var boss)) stationInfo.PatronAdi = boss.GetString() ?? "";
+                    }
+                    catch { /* Parse error, ignore details */ }
                 }
                 else
                 {
@@ -202,7 +216,6 @@ public class ApiService
                 }
             }
         }
-
         catch (Exception ex)
         {
             configCheck.IsSuccess = false;
@@ -210,7 +223,7 @@ public class ApiService
         }
         results.Add(configCheck);
 
-        return results;
+        return (results, stationInfo);
     }
 
     public async Task<bool> UploadFileAsync(FileLog log)

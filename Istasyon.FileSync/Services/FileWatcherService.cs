@@ -35,7 +35,7 @@ public class FileWatcherService
         return await _apiService.LoginAsync(username, password);
     }
 
-    public async Task<List<DiagnosticResult>> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
+    public async Task<(List<DiagnosticResult> results, StationInfo? info)> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
     {
         return await _apiService.RunDiagnosticsAsync(url, apiKey, istasyonId);
     }

@@ -213,20 +213,26 @@ public partial class MainWindow : Window
         // Use Config for test, as dashboard button is public
         var config = _configService.Config;
         
-        var results = await _fileWatcherService.RunDiagnosticsAsync(config.ApiUrl, config.ApiKey, config.IstasyonId);
+        var (results, info) = await _fileWatcherService.RunDiagnosticsAsync(config.ApiUrl, config.ApiKey, config.IstasyonId);
         IcDiagnostics.ItemsSource = results;
 
         // Try to update Station Name if verify succeeded
         var verifyCheck = results.FirstOrDefault(r => r.CheckName == "İstasyon & Yetki");
-        if (verifyCheck != null && verifyCheck.IsSuccess)
+        if (verifyCheck != null && verifyCheck.IsSuccess && info != null)
         {
-            // The message contains "İstasyon aktif ve yetkili."
-            // We didn't pass the name back clearly in RunDiagnosticsResult.
-            // But we can blindly trust config ID for now or re-fetch name.
-            // For now, let's just leave it or improve VerifyConfig to update a shared state?
-            // Or parsing the verify check message isn't great.
-            // Let's just say "Doğrulandı"
-            TxtDashStationName.Text = $"Doğrulandı (ID: {config.IstasyonId})";
+            TxtDashStationName.Text = info.IstasyonAdi;
+            TxtDashFirmName.Text = info.FirmaAdi;
+            TxtDashAddress.Text = info.IstasyonAdresi;
+            TxtDashStationId.Text = $"ID: {config.IstasyonId}";
+            
+            TxtDashStationManager.Text = info.IstasyonSorumlusu;
+            TxtDashShiftSupervisor.Text = info.VardiyaSorumlusu;
+            TxtDashBoss.Text = info.PatronAdi;
+        }
+        else if (verifyCheck != null && verifyCheck.IsSuccess)
+        {
+             // Info null check fallback
+             TxtDashStationName.Text = $"Doğrulandı (ID: {config.IstasyonId})";
         }
     }
 

@@ -41,9 +41,34 @@
                         <!-- İstasyon Bilgisi -->
                         <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="20" BorderBrush="#E0E0E0" BorderThickness="1">
                             <StackPanel>
-                                <TextBlock Text="Kayıtlı İstasyon" Foreground="#95A5A6" FontWeight="SemiBold"/>
+                                <TextBlock Text="İstasyon Bilgisi" Foreground="#95A5A6" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="TxtDashStationName" Text="Yükleniyor..." FontSize="18" FontWeight="Bold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock x:Name="TxtDashStationId" Text="ID: -" Foreground="#BDC3C7" Margin="0,5,0,0"/>
+                                <TextBlock x:Name="TxtDashFirmName" Text="Firma: -" Foreground="#7F8C8D" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                <TextBlock x:Name="TxtDashAddress" Text="Adres: -" Foreground="#BDC3C7" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap" MaxHeight="40" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="TxtDashStationId" Text="ID: -" Foreground="#BDC3C7" Margin="0,5,0,0" FontSize="10"/>
+
+                                <Separator Margin="0,15" Background="#F0F0F0"/>
+                                
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="İst. Sorumlusu:" Foreground="#95A5A6" FontSize="12" Margin="0,0,10,5"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="TxtDashStationManager" Text="-" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis"/>
+
+                                    <TextBlock Grid.Row="1" Text="Var. Sorumlusu:" Foreground="#95A5A6" FontSize="12" Margin="0,0,10,5"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="TxtDashShiftSupervisor" Text="-" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis"/>
+
+                                    <TextBlock Grid.Row="2" Text="Firma Sahibi:" Foreground="#95A5A6" FontSize="12" Margin="0,0,10,0"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="TxtDashBoss" Text="-" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                                </Grid>
                             </StackPanel>
                         </Border>
 

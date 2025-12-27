@@ -27,7 +27,11 @@ public class FileTransferController : ControllerBase
             return Unauthorized("API Key eksik.");
         }
 
-        var istasyon = await _context.Istasyonlar.FirstOrDefaultAsync(i => i.Id == istasyonId);
+        var istasyon = await _context.Istasyonlar
+            .Include(i => i.IstasyonSorumlu)
+            .Include(i => i.VardiyaSorumlu)
+            .Include(i => i.Firma).ThenInclude(f => f.Patron)
+            .FirstOrDefaultAsync(i => i.Id == istasyonId);
 
         if (istasyon == null)
         {
@@ -44,7 +48,16 @@ public class FileTransferController : ControllerBase
             return BadRequest("İstasyon pasif durumda.");
         }
 
-        return Ok(new { message = "Konfigürasyon geçerli.", istasyonAdi = istasyon.Ad });
+        return Ok(new 
+        { 
+            message = "Konfigürasyon geçerli.", 
+            istasyonAdi = istasyon.Ad,
+            istasyonAdresi = istasyon.Adres ?? "Adres girilmemiş",
+            firmaAdi = istasyon.Firma?.Ad ?? "Firma Belirtilmemiş",
+            istasyonSorumlusu = istasyon.IstasyonSorumlu?.AdSoyad ?? istasyon.IstasyonSorumlu?.Username ?? "Atanmamış",
+            vardiyaSorumlusu = istasyon.VardiyaSorumlu?.AdSoyad ?? istasyon.VardiyaSorumlu?.Username ?? "Atanmamış",
+            companyBoss = istasyon.Firma?.Patron?.AdSoyad ?? istasyon.Firma?.Patron?.Username ?? "Atanmamış" // Patron
+        });
     }
 
     [HttpGet("test")]
