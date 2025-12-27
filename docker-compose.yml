@@ -54,3 +54,11 @@ services:
 
 volumes:
   postgres_data:
+
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+    depends_on:
+      - db
