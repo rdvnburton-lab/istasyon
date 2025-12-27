@@ -8,6 +8,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TabsModule } from 'primeng/tabs';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -30,6 +31,7 @@ import { Vardiya, VardiyaOzet, PersonelFarkAnalizi, MarketOzet, GenelOzet, Marke
         DialogModule,
         ConfirmDialogModule,
         TabsModule,
+        SelectButtonModule,
         TextareaModule,
         ToastModule
     ],
@@ -48,6 +50,14 @@ export class OnayBekleyenlerComponent implements OnInit {
 
     // Silinme Talepleri
     silinmeTalepleri: Vardiya[] = [];
+
+    // Görünüm Kontrolü (Tabs Replacement)
+    activeView: 'pompa' | 'market' | 'silinme' = 'pompa';
+    viewOptions = [
+        { label: 'Pompa Vardiyaları', value: 'pompa', icon: 'pi pi-briefcase' },
+        { label: 'Market Vardiyaları', value: 'market', icon: 'pi pi-shopping-cart' },
+        { label: 'Silinme Talepleri', value: 'silinme', icon: 'pi pi-trash' }
+    ];
 
     // Detay Verileri
     genelOzet: GenelOzet | null = null;
@@ -113,7 +123,7 @@ export class OnayBekleyenlerComponent implements OnInit {
 
         console.time('⚡ Onay Detay Load');
 
-        // OPTIMIZED: Use new endpoint with server-side aggregation
+        // OPTIMIZED: Use new endpoint with server-side aggregation 
         this.vardiyaApiService.getOnayDetay(vardiya.id).subscribe({
             next: (data) => {
                 console.timeEnd('⚡ Onay Detay Load');
