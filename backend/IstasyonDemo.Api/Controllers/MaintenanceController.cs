@@ -57,23 +57,22 @@ namespace IstasyonDemo.Api.Controllers
                 var fileName = $"backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql";
                 var filePath = Path.Combine(_backupFolder, fileName);
                 
-                // Container name for PostgreSQL
-                var containerName = "istasyon_db";
-                var containerBackupPath = $"/tmp/{fileName}";
-
-                // Step 1: Run pg_dump inside the container
+                // Step 1: Run pg_dump directly using installed client
                 var dumpStartInfo = new ProcessStartInfo
                 {
-                    FileName = "docker",
-                    Arguments = $"exec -e PGPASSWORD={pass} {containerName} pg_dump -U {user} -d {db} -f {containerBackupPath}",
+                    FileName = "pg_dump",
+                    Arguments = $"-h db -U {user} -d {db} -f \"{filePath}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
 
+                // Pass password via environment variable for security
+                dumpStartInfo.EnvironmentVariables["PGPASSWORD"] = pass;
+
                 using var dumpProcess = Process.Start(dumpStartInfo);
-                if (dumpProcess == null) return StatusCode(500, "Failed to start docker exec process.");
+                if (dumpProcess == null) return StatusCode(500, "Failed to start pg_dump process.");
 
                 var dumpError = await dumpProcess.StandardError.ReadToEndAsync();
                 await dumpProcess.WaitForExitAsync();
@@ -83,48 +82,40 @@ namespace IstasyonDemo.Api.Controllers
                     return StatusCode(500, $"Backup failed: {dumpError}");
                 }
 
-                // Step 2: Copy the backup file from container to host
-                var copyStartInfo = new ProcessStartInfo
-                {
-                    FileName = "docker",
-                    Arguments = $"cp {containerName}:{containerBackupPath} \"{filePath}\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var copyProcess = Process.Start(copyStartInfo);
-                if (copyProcess == null) return StatusCode(500, "Failed to copy backup file from container.");
-
-                var copyError = await copyProcess.StandardError.ReadToEndAsync();
-                await copyProcess.WaitForExitAsync();
-
-                if (copyProcess.ExitCode != 0)
-                {
-                    return StatusCode(500, $"Failed to copy backup: {copyError}");
-                }
-
-                // Step 3: Clean up the backup file inside the container
-                var cleanupStartInfo = new ProcessStartInfo
-                {
-                    FileName = "docker",
-                    Arguments = $"exec {containerName} rm {containerBackupPath}",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var cleanupProcess = Process.Start(cleanupStartInfo);
-                await cleanupProcess?.WaitForExitAsync()!;
-
                 return Ok(new { message = "Backup created successfully", fileName });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal error: {ex.Message}");
             }
+            finally
+            {
+                // Her halükarda temizlik yap
+                CleanupOldBackups();
+            }
+        }
+
+        private void CleanupOldBackups()
+        {
+            try
+            {
+                var retentionDays = 7; // Son 7 günün yedeğini tut
+                var files = Directory.GetFiles(_backupFolder, "*.sql")
+                                     .Select(f => new FileInfo(f))
+                                     .Where(f => f.CreationTime < DateTime.Now.AddDays(-retentionDays))
+                                     .ToList();
+
+                foreach (var file in files)
+                {
+                    try 
+                    { 
+                        file.Delete(); 
+                        Console.WriteLine($"Eski yedek silindi: {file.Name}");
+                    } 
+                    catch { /* Silinemezse logla ama akışı bozma */ }
+                }
+            }
+            catch { /* Genel hata yutulur */ }
         }
 
         [HttpGet("backups/download/{fileName}")]

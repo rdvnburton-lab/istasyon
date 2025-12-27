@@ -20,6 +20,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    volumes:
+      - backend_backups:/app/Backups
 
   frontend:
     build:
@@ -62,3 +64,4 @@ services:
 
 volumes:
   postgres_data:
+  backend_backups:
