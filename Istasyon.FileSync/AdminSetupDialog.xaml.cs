@@ -8,10 +8,10 @@ namespace Istasyon.FileSync;
 
 public partial class AdminSetupDialog : Window
 {
-    private readonly FileWatcherService _service;
+    private readonly ApiService _service;
     public IstasyonDto? SelectedStation { get; private set; }
 
-    public AdminSetupDialog(FileWatcherService service)
+    public AdminSetupDialog(ApiService service)
     {
         InitializeComponent();
         _service = service;

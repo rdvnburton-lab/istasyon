@@ -77,7 +77,7 @@ namespace IstasyonDemo.Api.Controllers
                 VardiyaSorumluId = i.VardiyaSorumluId,
                 MarketSorumluId = i.MarketSorumluId,
                 
-                ApiKey = userRole == "admin" ? i.ApiKey : null,
+                ApiKey = (userRole == "admin" || userRole == "patron") ? i.ApiKey : null,
                 
                 // Her sorumlu sadece kendi kolonunda görünsün
                 IstasyonSorumlusu = i.IstasyonSorumlu != null 
@@ -165,7 +165,7 @@ namespace IstasyonDemo.Api.Controllers
                 IstasyonSorumluId = request.IstasyonSorumluId,
                 VardiyaSorumluId = request.VardiyaSorumluId,
                 MarketSorumluId = request.MarketSorumluId,
-                ApiKey = userRole == "admin" ? request.ApiKey : null
+                ApiKey = (userRole == "admin" || userRole == "patron") ? request.ApiKey : null
             };
 
             _context.Istasyonlar.Add(istasyon);
@@ -181,7 +181,7 @@ namespace IstasyonDemo.Api.Controllers
                 IstasyonSorumluId = istasyon.IstasyonSorumluId,
                 VardiyaSorumluId = istasyon.VardiyaSorumluId,
                 MarketSorumluId = istasyon.MarketSorumluId,
-                ApiKey = userRole == "admin" ? istasyon.ApiKey : null
+                ApiKey = (userRole == "admin" || userRole == "patron") ? istasyon.ApiKey : null
             });
         }
 

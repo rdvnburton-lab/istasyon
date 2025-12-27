@@ -74,8 +74,24 @@ public partial class MainWindow : Window
                 
                 if (success)
                 {
-                    // Scenario 1: User is explicitly assigned to stations (e.g. Station Manager)
-                    if (stations != null && stations.Count > 0)
+                if (success)
+                {
+                    // Scenario 1: Admin/Patron - ALWAYS select Firm -> Station explicitly
+                    if (role?.ToLower() == "admin" || role?.ToLower() == "patron")
+                    {
+                        var adminSetup = new AdminSetupDialog(apiService);
+                        if (adminSetup.ShowDialog() == true && adminSetup.SelectedStation != null)
+                        {
+                            var selectedStation = adminSetup.SelectedStation;
+                            config = _configService.Config;
+                            config.ApiKey = selectedStation.ApiKey ?? ""; 
+                            config.IstasyonId = selectedStation.Id;
+                            SaveAndRestart(config, selectedStation.Ad);
+                            loginSuccess = true;
+                        }
+                    }
+                    // Scenario 2: User explicitly assigned to stations (e.g. Station Manager)
+                    else if (stations != null && stations.Count > 0)
                     {
                         var selectedStation = stations[0];
                         config = _configService.Config;
@@ -84,20 +100,11 @@ public partial class MainWindow : Window
                         SaveAndRestart(config, selectedStation.Ad);
                         loginSuccess = true;
                     }
-                    // Scenario 2: Admin/Patron - Need to select Firm -> Station
-                    else if (role?.ToLower() == "admin" || role?.ToLower() == "patron")
+                    else
                     {
-                        var adminSetup = new AdminSetupDialog(_fileWatcherService);
-                        if (adminSetup.ShowDialog() == true && adminSetup.SelectedStation != null)
-                        {
-                            var selectedStation = adminSetup.SelectedStation;
-                            config = _configService.Config;
-                            config.ApiKey = selectedStation.ApiKey ?? ""; // Should be there if Admin
-                            config.IstasyonId = selectedStation.Id;
-                            SaveAndRestart(config, selectedStation.Ad);
-                            loginSuccess = true;
-                        }
+                        MessageBox.Show("Bu kullanıcıya tanımlı istasyon bulunamadı ve yetkili değilsiniz.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
+                }
                     else
                     {
                         MessageBox.Show("Bu kullanıcıya tanımlı istasyon bulunamadı ve yetkili değilsiniz.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
