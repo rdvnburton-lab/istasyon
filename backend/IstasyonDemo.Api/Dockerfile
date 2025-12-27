@@ -19,7 +19,7 @@ COPY --from=publish /app/publish .
 # Curl kur, log klasörü oluştur ve yetkileri ayarla
 RUN apt-get update && \
     apt-get install -y curl tzdata postgresql-client && \
-    mkdir -p Logs && \
+    mkdir -p Logs Backups && \
     chown -R app:app /app
 
 # Root olmayan kullanıcıya geç
