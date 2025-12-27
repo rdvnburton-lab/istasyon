@@ -14,6 +14,7 @@ public class ApiService
     private string _apiUrl = string.Empty;
     private string _apiKey = string.Empty;
     private int _istasyonId;
+    private string _clientUniqueId = string.Empty;
 
     public ApiService(DatabaseService dbService)
     {
@@ -21,12 +22,29 @@ public class ApiService
         _dbService = dbService;
     }
 
-    public void Initialize(string apiUrl, string apiKey, int istasyonId)
+    public void Initialize(string apiUrl, string apiKey, int istasyonId, string clientUniqueId)
     {
         _apiUrl = apiUrl;
         _apiKey = apiKey;
         _istasyonId = istasyonId;
+        _clientUniqueId = clientUniqueId;
     }
+
+// ... (skip TestConnection) ...
+
+    public async Task<(List<DiagnosticResult> results, StationInfo? info)> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
+    {
+        // ...
+        // IN VerifyConfig Block:
+                var request = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
+                request.Headers.Add("X-Api-Key", apiKey);
+                if(!string.IsNullOrEmpty(_clientUniqueId)) request.Headers.Add("X-Client-Id", _clientUniqueId);
+
+// ... (In UploadFile logic) ...
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
+            if(!string.IsNullOrEmpty(_clientUniqueId)) _httpClient.DefaultRequestHeaders.Add("X-Client-Id", _clientUniqueId);
+// ...
 
     public async Task<(bool success, string message)> TestConnectionAsync(string url)
     {
@@ -106,16 +124,36 @@ public class ApiService
         StationInfo? stationInfo = null;
 
         // 1. İnternet Bağlantısı
+        // 1. İnternet Bağlantısı
         var internetCheck = new DiagnosticResult { CheckName = "İnternet Bağlantısı" };
+        
         if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
         {
-            internetCheck.IsSuccess = true;
-            internetCheck.Message = "Bağlantı var.";
+            try 
+            {
+                using var ping = new System.Net.NetworkInformation.Ping();
+                var reply = await ping.SendPingAsync("8.8.8.8", 2000);
+                if (reply.Status == System.Net.NetworkInformation.IPStatus.Success)
+                {
+                    internetCheck.IsSuccess = true;
+                    internetCheck.Message = $"Bağlantı var ({reply.RoundtripTime}ms).";
+                }
+                else
+                {
+                    internetCheck.IsSuccess = false;
+                    internetCheck.Message = "İnternet yok (Ping başarısız).";
+                }
+            }
+            catch
+            {
+                internetCheck.IsSuccess = false;
+                internetCheck.Message = "İnternet yok (Ping hatası).";
+            }
         }
         else
         {
             internetCheck.IsSuccess = false;
-            internetCheck.Message = "İnternet bağlantısı yok.";
+            internetCheck.Message = "Ağ bağlantısı yok (Kablo/Wi-Fi kapalı).";
         }
         results.Add(internetCheck);
         if (!internetCheck.IsSuccess) return (results, null); 

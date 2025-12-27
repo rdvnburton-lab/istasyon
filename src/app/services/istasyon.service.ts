@@ -24,6 +24,11 @@ export interface Istasyon {
     istasyonSorumlusu?: string;
     vardiyaSorumlusu?: string;
     marketSorumlusu?: string;
+
+    // Cihaz Kilidi & Sağlık
+    registeredDeviceId?: string;
+    lastConnectionTime?: string; // ISO String from backend
+    isOnline?: boolean;
 }
 
 export interface CreateIstasyonDto {
@@ -68,5 +73,9 @@ export class IstasyonService {
 
     deleteIstasyon(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`);
+    }
+
+    unlockStation(id: number): Observable<any> {
+        return this.http.post(`${this.apiUrl}/${id}/unlock`, {});
     }
 }

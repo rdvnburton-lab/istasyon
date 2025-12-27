@@ -48,6 +48,30 @@ public class FileTransferController : ControllerBase
             return BadRequest("İstasyon pasif durumda.");
         }
 
+        // DEVICE LOCK CHECK
+        // Get ClientId from Header
+        var clientId = Request.Headers["X-Client-Id"].ToString();
+        if (!string.IsNullOrEmpty(clientId))
+        {
+            if (string.IsNullOrEmpty(istasyon.RegisteredDeviceId))
+            {
+                // İlk bağlantı: Cihazı kaydet (Binding)
+                istasyon.RegisteredDeviceId = clientId;
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("İstasyon {Id} için cihaz kilidi oluşturuldu: {ClientId}", istasyon.Id, clientId);
+            }
+            else if (istasyon.RegisteredDeviceId != clientId)
+            {
+                // Kilitli ve farklı cihaz
+                _logger.LogWarning("Yetkisiz cihaz erişimi! İstasyon {Id}. Kayıtlı: {Registered}, Gelen: {Incoming}", istasyon.Id, istasyon.RegisteredDeviceId, clientId);
+                return StatusCode(403, "Bu istasyon başka bir bilgisayara kilitlenmiştir. Lütfen yönetici ile iletişime geçin.");
+            }
+        }
+
+        // Update Last Connection Time
+        istasyon.LastConnectionTime = DateTime.UtcNow;
+        await _context.SaveChangesAsync(); // DeviceId binding already saves, but good to ensure update here if binding didn't happen
+
         return Ok(new 
         { 
             message = "Konfigürasyon geçerli.", 
@@ -103,7 +127,19 @@ public class FileTransferController : ControllerBase
                 return BadRequest("Dosya bütünlük kontrolü başarısız oldu. Hash uyuşmuyor.");
             }
 
+            // DUPLICATE CHECK: Eğer aynı hash ve istasyon ID ile dosya zaten varsa kaydetme, başarılı dön.
+            var existingFile = await _context.OtomatikDosyalar
+                .FirstOrDefaultAsync(f => f.IstasyonId == istasyonId && f.Hash == calculatedHash);
+
+            if (existingFile != null)
+            {
+                _logger.LogInformation("Mükerrer dosya gönderimi fark edildi ve atlandı: {FileName} (Hash: {Hash})", file.FileName, calculatedHash);
+                return Ok(new { message = "Dosya zaten sunucuda mevcut. İşlem başarılı sayıldı.", id = existingFile.Id });
+            }
+
             // Veritabanına kaydet
+            istasyon.LastConnectionTime = DateTime.UtcNow; // Update health logic
+            
             var otomatikDosya = new OtomatikDosya
             {
                 DosyaAdi = file.FileName,

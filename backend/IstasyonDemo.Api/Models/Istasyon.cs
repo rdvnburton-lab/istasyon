@@ -19,6 +19,11 @@ namespace IstasyonDemo.Api.Models
         [MaxLength(100)]
         public string? ApiKey { get; set; }
 
+        [MaxLength(100)]
+        public string? RegisteredDeviceId { get; set; }
+
+        public DateTime? LastConnectionTime { get; set; }
+
         // Relation to Firma
         public int FirmaId { get; set; }
         public Firma? Firma { get; set; }

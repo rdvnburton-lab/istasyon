@@ -23,9 +23,21 @@ public class ConfigService
         if (File.Exists(_configPath))
         {
             var json = File.ReadAllText(_configPath);
-            return JsonConvert.DeserializeObject<AppConfig>(json) ?? new AppConfig();
+            var config = JsonConvert.DeserializeObject<AppConfig>(json) ?? new AppConfig();
+            
+            // Ensure ClientUniqueId exists
+            if (string.IsNullOrEmpty(config.ClientUniqueId))
+            {
+                config.ClientUniqueId = Guid.NewGuid().ToString();
+                SaveConfig(config); // Save immediately
+            }
+            return config;
         }
-        return new AppConfig();
+        
+        var newConfig = new AppConfig();
+        newConfig.ClientUniqueId = Guid.NewGuid().ToString();
+        SaveConfig(newConfig);
+        return newConfig;
     }
 
     public void SaveConfig(AppConfig config)

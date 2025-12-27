@@ -20,9 +20,9 @@ public class FileWatcherService
         _apiService = apiService;
     }
 
-    public void UpdateApiConfig(string url, string apiKey, int istasyonId)
+    public void UpdateApiConfig(string url, string apiKey, int istasyonId, string clientUniqueId)
     {
-        _apiService.Initialize(url, apiKey, istasyonId);
+        _apiService.Initialize(url, apiKey, istasyonId, clientUniqueId);
     }
 
     public async Task<(bool success, string message)> TestConnectionAsync(string url)
@@ -58,6 +58,14 @@ public class FileWatcherService
 
         Log.Information("Klasör izleme başlatıldı: {Path}", _watchPath);
         
+        // Heartbeat Timer Başlat (3 dakikada bir)
+        _heartbeatTimer = new System.Timers.Timer(180000); // 3 dakika
+        _heartbeatTimer.Elapsed += async (s, e) => await _apiService.SendHeartbeatAsync();
+        _heartbeatTimer.Start();
+
+        // Başlangıçta bir kez heartbeat gönder
+        Task.Run(async () => await _apiService.SendHeartbeatAsync());
+        
         // Başlangıçta mevcut dosyaları tara
         Task.Run(() => ScanExistingFiles());
     }
@@ -68,6 +76,12 @@ public class FileWatcherService
         {
             _watcher.EnableRaisingEvents = false;
             _watcher.Dispose();
+        }
+        
+        if (_heartbeatTimer != null)
+        {
+            _heartbeatTimer.Stop();
+            _heartbeatTimer.Dispose();
         }
     }
 

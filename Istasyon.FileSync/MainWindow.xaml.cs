@@ -72,9 +72,20 @@ public partial class MainWindow : Window
         // Or just mask all for total privacy in panel? User requested "starred".
         // Let's hide all but last 3 chars or simply full mask.
         // Simple usage:
-        return new string('●', 10); // Fixed length mask or relative?
-        // Let's do relative but safer.
         return "●●●●●●●●"; 
+    }
+
+    private string MaskUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return string.Empty;
+        if (url.Length <= 10) return new string('*', url.Length);
+        
+        // Keep "http" or "https" visible?
+        // User requested "hidden" (gizleyelim).
+        // Let's use a standard mask like "https://******.com" or just "******************".
+        // To be safe and clean:
+        return "https://******"; // Simple static mask or dynamic length?
+        // Let's do simple.
     }
 
     private void LockSettings()
@@ -85,8 +96,9 @@ public partial class MainWindow : Window
         BtnUnlockSettings.Content = "🔒 Kilidi Aç / Düzenle";
         BtnUnlockSettings.IsEnabled = true;
         
-        // MASK API KEY
+        // MASK API KEY & URL
         TxtApiKey.Text = MaskApiKey(_configService.Config.ApiKey);
+        TxtApiUrl.Text = MaskUrl(_configService.Config.ApiUrl);
     }
 
     private void UnlockSettings()
@@ -97,8 +109,9 @@ public partial class MainWindow : Window
         BtnUnlockSettings.Content = "🔓 Kilit Açık";
         BtnUnlockSettings.IsEnabled = false; 
         
-        // REVEAL API KEY
+        // REVEAL API KEY & URL
         TxtApiKey.Text = _configService.Config.ApiKey;
+        TxtApiUrl.Text = _configService.Config.ApiUrl;
     }
 
     private async void BtnUnlockSettings_Click(object sender, RoutedEventArgs e)
@@ -191,7 +204,7 @@ public partial class MainWindow : Window
 
         _configService.SaveConfig(config);
         StartupService.SetAutoStart(config.AutoStart);
-        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId);
+        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId);
         
         _fileWatcherService.Stop();
         _fileWatcherService.Start(config.WatchFolderPath);
@@ -205,7 +218,7 @@ public partial class MainWindow : Window
         BtnTestConnection_Click(null, null);
     }
 
-    private async void BtnTestConnection_Click(object sender, RoutedEventArgs e)
+    private async void BtnTestConnection_Click(object? sender, RoutedEventArgs? e)
     {
         TxtDiagnosticPlaceholder.Visibility = Visibility.Collapsed;
         IcDiagnostics.ItemsSource = null;

@@ -58,9 +58,34 @@
                                     {{rowData[col.field]}}
                                 </span>
                             </ng-container>
-                            <ng-container *ngIf="col.field === 'aktif'">
-                                <p-tag [value]="rowData.aktif ? 'Aktif' : 'Pasif'"
-                                    [severity]="rowData.aktif ? 'success' : 'danger'"></p-tag>
+                            <p-tag [value]="rowData.aktif ? 'Aktif' : 'Pasif'"
+                                [severity]="rowData.aktif ? 'success' : 'danger'"></p-tag>
+                            </ng-container>
+
+                            <!-- NEW: Device Lock & Status -->
+                            <ng-container *ngIf="col.field === 'durum' && rowData.type === 'istasyon'">
+                                <div class="flex items-center gap-2">
+                                    <i class="pi pi-circle-fill text-xs"
+                                        [ngClass]="rowData.isOnline ? 'text-green-500' : 'text-gray-400'"
+                                        [pTooltip]="rowData.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'"></i>
+                                    <span class="text-xs text-gray-500">{{ rowData.lastConnectionTime | date:'dd.MM
+                                        HH:mm' }}</span>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'kilit' && rowData.type === 'istasyon'">
+                                <div *ngIf="rowData.registeredDeviceId">
+                                    <button pButton icon="pi pi-lock" label="Kilitli"
+                                        class="p-button-danger p-button-xs p-button-outlined"
+                                        style="font-size: 0.75rem; padding: 0.2rem 0.5rem;"
+                                        (click)="unlockStation(rowData)" pTooltip="Kilidi Kaldır (Cihazı Unut)"
+                                        tooltipPosition="top">
+                                    </button>
+                                </div>
+                                <div *ngIf="!rowData.registeredDeviceId">
+                                    <span class="text-green-500 text-xs"><i
+                                            class="pi pi-lock-open mr-1"></i>Serbest</span>
+                                </div>
                             </ng-container>
                         </td>
                         <td class="text-center">

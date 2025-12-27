@@ -19,6 +19,11 @@ namespace IstasyonDemo.Api.Dtos
         public string? IstasyonSorumlusu { get; set; }
         public string? VardiyaSorumlusu { get; set; }
         public string? MarketSorumlusu { get; set; }
+        
+        // Cihaz Kilidi & Sağlık Durumu
+        public string? RegisteredDeviceId { get; set; }
+        public DateTime? LastConnectionTime { get; set; }
+        public bool IsOnline => LastConnectionTime.HasValue && LastConnectionTime.Value > DateTime.UtcNow.AddMinutes(-5);
     }
 
     public class CreateIstasyonDto

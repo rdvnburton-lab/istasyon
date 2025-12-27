@@ -101,6 +101,8 @@ export class IstasyonYonetimiComponent implements OnInit {
             { field: 'istasyonSorumlusu', header: 'İstasyon Sorumlusu' },
             { field: 'vardiyaSorumlusu', header: 'Vardiya Sorumlusu' },
             { field: 'marketSorumlusu', header: 'Market Sorumlusu' },
+            { field: 'durum', header: 'Sağlık / Son Veri' },
+            { field: 'kilit', header: 'Cihaz Kilidi' },
             { field: 'aktif', header: 'Durum' }
         ];
 
@@ -347,6 +349,21 @@ export class IstasyonYonetimiComponent implements OnInit {
             }
         });
     }
+
+    unlockStation(rowData: any) {
+        this.confirmationService.confirm({
+            message: `${rowData.ad} istasyonunun cihaz kilidini kaldırmak istediğinize emin misiniz? (Bu işlemden sonra ilk bağlanan cihaz yeni sahip olacaktır)`,
+            header: 'Kilit Kaldırma Onayı',
+            icon: 'pi pi-unlock',
+            accept: () => {
+                this.istasyonService.unlockStation(rowData.id).subscribe(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Cihaz kilidi kaldırıldı.' });
+                    this.loadData();
+                });
+            }
+        });
+    }
+
 
     generateApiKey() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

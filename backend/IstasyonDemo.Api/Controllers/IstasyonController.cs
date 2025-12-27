@@ -80,7 +80,10 @@ namespace IstasyonDemo.Api.Controllers
                     
                 MarketSorumlusu = i.MarketSorumlu != null 
                     ? (i.MarketSorumlu.AdSoyad ?? i.MarketSorumlu.Username)
-                    : null
+                    : null,
+                    
+                RegisteredDeviceId = i.RegisteredDeviceId,
+                LastConnectionTime = i.LastConnectionTime
             }).ToListAsync();
 
             return Ok(istasyonlar);
@@ -271,6 +274,25 @@ namespace IstasyonDemo.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+        [HttpPost("{id}/unlock")]
+        [Authorize(Roles = "admin,patron")]
+        public async Task<IActionResult> UnlockStation(int id)
+        {
+            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == id);
+            
+            if (istasyon == null) return NotFound();
+            
+            if (userRole == "patron" && istasyon.Firma.PatronId != userId) return Forbid();
+
+            // Clear the lock
+            istasyon.RegisteredDeviceId = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "İstasyon kilidi kaldırıldı.", id = istasyon.Id });
         }
     }
 }
