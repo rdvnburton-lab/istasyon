@@ -30,6 +30,38 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IVardiyaService, VardiyaService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+
+// Proxy arkasında gerçek IP'yi görmek için gerekli (Rate Limiting için kritik)
+builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                             Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear(); // Docker ağları için güvenliği esnetiyoruz
+    options.KnownProxies.Clear();
+});
+
+// Rate Limiting (Hız Sınırlama)
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    
+    // IP Bazlı Sınırlama: Dakikada 300 istek (Saniyede 5 istek)
+    options.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        // IP adresini al, yoksa "unknown" kullan
+        var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        return System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: remoteIp,
+            factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 300,        // Dakikada 300 istek hakkı
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0            // Kuyrukta bekletme, direkt reddet
+            });
+    });
+});
 builder.Services.AddCors(options =>
 {
     var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
@@ -172,7 +204,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseRouting();
 
 // CORS policy must be between UseRouting and UseEndpoints/MapControllers
+// CORS policy must be between UseRouting and UseEndpoints/MapControllers
+app.UseForwardedHeaders(); // En üstte olmalı (IP tespiti için)
 app.UseCors("AllowAngular");
+app.UseRateLimiter(); // CORS'tan sonra çalışmalı
 
 // app.UseHttpsRedirection(); // Coolify/Traefik zaten HTTPS yönetiyor, uygulama içinde yönlendirme çakışma yapabilir
 
