@@ -1,0 +1,23 @@
+<Window x:Class="Istasyon.FileSync.SetupDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="İlk Kurulum" Height="300" Width="500"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Icon="pack://application:,,,/Assets/tigin.png"
+        Background="#F5F5F5">
+    <Grid Margin="20">
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="Hoş Geldiniz" FontSize="24" FontWeight="Bold" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="#333"/>
+            <TextBlock Text="Lütfen sunucu adresini (URL) girerek kuruluma başlayın." Margin="0,0,0,20" TextWrapping="Wrap" HorizontalAlignment="Center" Foreground="#666"/>
+            
+            <TextBlock Text="Sunucu Adresi (URL):" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#444"/>
+            <TextBox x:Name="TxtUrl" Padding="5" FontSize="14" BorderBrush="#CCC" Margin="0,0,0,5"
+                     ToolTip="Örn: https://api.tiginteknoloji.com.tr"/>
+            <TextBlock Text="Örn: https://api.tiginteknoloji.com.tr" FontSize="11" Foreground="#999" Margin="0,0,0,20"/>
+            
+            <Button x:Name="BtnSave" Content="Kaydet ve Başla" Click="BtnSave_Click"
+                    Padding="10,8" Background="#007ACC" Foreground="White" BorderThickness="0"
+                    FontSize="14" Cursor="Hand" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

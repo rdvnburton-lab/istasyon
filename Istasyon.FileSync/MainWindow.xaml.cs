@@ -27,6 +27,75 @@ public partial class MainWindow : Window
         _refreshTimer.Interval = TimeSpan.FromSeconds(5);
         _refreshTimer.Tick += (s, e) => { LoadLogs(); LoadDashboard(); };
 
+        Loaded += Window_Loaded;
+    }
+
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        // INITIAL SETUP & LOGIN CHECK
+        // If ApiUrl, ApiKey, or IstasyonId is missing, force Setup + Login
+        if (string.IsNullOrEmpty(_configService.Config.ApiUrl) || 
+            string.IsNullOrEmpty(_configService.Config.ApiKey) || 
+            _configService.Config.IstasyonId == 0)
+        {
+            // 1. Setup Dialog (Get URL)
+            var setup = new SetupDialog(_configService.Config.ApiUrl);
+            
+            if (setup.ShowDialog() != true)
+            {
+                Application.Current.Shutdown();
+                return;
+            }
+
+            // Save tentative URL so LoginAsync can use it
+            var config = _configService.Config;
+            config.ApiUrl = setup.ServerUrl;
+            _configService.SaveConfig(config);
+            
+            // Reload config public method now accessible
+            _configService.LoadConfig(); 
+            
+            // Re-init ApiService with new URL (but no key yet)
+            var apiService = new ApiService(_databaseService); 
+            apiService.Initialize(config.ApiUrl, "", 0, config.ClientUniqueId);
+
+            // 2. Login Dialog (Get Credentials & Fetch ApiKey)
+            bool loginSuccess = false;
+            while (!loginSuccess)
+            {
+                var login = new LoginDialog();
+                if (login.ShowDialog() != true)
+                {
+                    Application.Current.Shutdown();
+                    return;
+                }
+
+                var (success, msg, role, stations) = await apiService.LoginAsync(login.Username, login.Password);
+                
+                if (success && stations != null && stations.Count > 0)
+                {
+                    var selectedStation = stations[0];
+                    
+                    config = _configService.Config; // refresh ref
+                    config.ApiKey = selectedStation.ApiKey;
+                    config.IstasyonId = selectedStation.Id;
+                    
+                    _configService.SaveConfig(config);
+                    
+                    // Reload to ensure services get new config
+                    _configService.LoadConfig(); // Should update internal state
+                    _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId);
+
+                    MessageBox.Show($"Kurulum Başarılı!\nİstasyon: {selectedStation.Ad}", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
+                    loginSuccess = true;
+                }
+                else
+                {
+                    MessageBox.Show(success ? "Bu kullanıcıya tanımlı istasyon bulunamadı." : msg, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
         LoadSettings();
         LoadDashboard();
         LoadLogs();
@@ -139,7 +208,7 @@ public partial class MainWindow : Window
             // Get URL from text box just in case they need to correct it (but text box is disabled!). 
             // Wait, text box is disabled. So they rely on stored config. 
 
-            var (success, message, role) = await _fileWatcherService.LoginAsync(username, password);
+            var (success, message, role, _) = await _fileWatcherService.LoginAsync(username, password);
 
             if (success)
             {

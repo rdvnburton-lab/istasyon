@@ -171,7 +171,7 @@ namespace IstasyonDemo.Api.Controllers
                         response.FirmaAdi = firma.Ad;
                         response.Istasyonlar = firma.Istasyonlar
                             .Where(i => i.Aktif)
-                            .Select(i => new SimpleIstasyonDto { Id = i.Id, Ad = i.Ad })
+                            .Select(i => new SimpleIstasyonDto { Id = i.Id, Ad = i.Ad, ApiKey = i.ApiKey })
                             .ToList();
                     }
                 }
@@ -180,7 +180,7 @@ namespace IstasyonDemo.Api.Controllers
                      var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
                      if (istasyon != null)
                      {
-                         response.Istasyonlar.Add(new SimpleIstasyonDto { Id = istasyon.Id, Ad = istasyon.Ad });
+                         response.Istasyonlar.Add(new SimpleIstasyonDto { Id = istasyon.Id, Ad = istasyon.Ad, ApiKey = istasyon.ApiKey });
                      }
                 }
 

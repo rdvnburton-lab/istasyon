@@ -31,7 +31,7 @@ public class FileWatcherService
         return await _apiService.TestConnectionAsync(url);
     }
 
-    public async Task<(bool success, string message, string? role)> LoginAsync(string username, string password)
+    public async Task<(bool success, string message, string? role, System.Collections.Generic.List<ApiService.StationLoginDto>? stations)> LoginAsync(string username, string password)
     {
         return await _apiService.LoginAsync(username, password);
     }

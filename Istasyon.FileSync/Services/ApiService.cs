@@ -34,6 +34,16 @@ public class ApiService
 
 
 
+    private string GetBaseUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return "";
+        if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+             return uri.GetLeftPart(UriPartial.Authority);
+        }
+        return url.TrimEnd('/');
+    }
+
     public async Task<(bool success, string message)> TestConnectionAsync(string url)
     {
         if (string.IsNullOrEmpty(url)) return (false, "URL boş olamaz.");
@@ -57,52 +67,60 @@ public class ApiService
         }
     }
 
-    public async Task<(bool success, string message, string? role)> LoginAsync(string username, string password)
+    public class StationLoginDto
+    {
+        public int Id { get; set; }
+        public string Ad { get; set; }
+        public string ApiKey { get; set; }
+    }
+
+    public async Task<(bool success, string message, string? role, System.Collections.Generic.List<StationLoginDto>? stations)> LoginAsync(string username, string password)
     {
         try
         {
             var loginData = new { Username = username, Password = password };
             var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(loginData), System.Text.Encoding.UTF8, "application/json");
 
-            // Güvenli URL oluşturma
-            if (Uri.TryCreate(_apiUrl, UriKind.Absolute, out var uri))
+            var baseUrl = GetBaseUrl(_apiUrl);
+            if (string.IsNullOrEmpty(baseUrl)) return (false, "Geçersiz URL formatı.", null, null);
+
+            var authUrl = $"{baseUrl}/api/Auth/login";
+            
+            var response = await _httpClient.PostAsync(authUrl, content);
+            
+            if (response.IsSuccessStatusCode)
             {
-                // Force base URL (http://localhost:5000) + /api/Auth/login
-                // This prevents issues if _apiUrl contains /api/FileTransfer/test
-                var baseUrl = uri.GetLeftPart(UriPartial.Authority);
-                var authUrl = $"{baseUrl}/api/Auth/login";
+                var responseString = await response.Content.ReadAsStringAsync();
+                using var doc = System.Text.Json.JsonDocument.Parse(responseString);
                 
-                var response = await _httpClient.PostAsync(authUrl, content);
-                
-                if (response.IsSuccessStatusCode)
+                string? role = null;
+                if (doc.RootElement.TryGetProperty("role", out var roleProp) || doc.RootElement.TryGetProperty("Role", out roleProp))
                 {
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    // Case-insensitive deserialization
-                    using var doc = System.Text.Json.JsonDocument.Parse(responseString);
-                    
-                    string? role = null;
-                    if (doc.RootElement.TryGetProperty("role", out var roleProp) || doc.RootElement.TryGetProperty("Role", out roleProp))
-                    {
-                        role = roleProp.GetString();
-                    }
-                    else
-                    {
-                        // JSON içinde 'role' veya 'Role' bulunamadı
-                        return (true, "Giriş başarılı ancak rol bilgisi alınamadı.", null);
-                    }
-                    
-                    return (true, "Giriş başarılı", role);
+                    role = roleProp.GetString();
+                }
+                
+                var stations = new System.Collections.Generic.List<StationLoginDto>();
+                if (doc.RootElement.TryGetProperty("istasyonlar", out var stationsProp))
+                {
+                   foreach(var s in stationsProp.EnumerateArray())
+                   {
+                       stations.Add(new StationLoginDto {
+                           Id = s.GetProperty("id").GetInt32(),
+                           Ad = s.GetProperty("ad").GetString() ?? "",
+                           ApiKey = s.TryGetProperty("apiKey", out var k) ? k.GetString() : ""
+                       });
+                   }
                 }
 
-                var errorMsg = await response.Content.ReadAsStringAsync();
-                return (false, $"Giriş başarısız: {errorMsg}", null);
+                return (true, "Giriş başarılı", role, stations);
             }
-            
-            return (false, "Geçersiz URL formatı.", null);
+
+            var errorMsg = await response.Content.ReadAsStringAsync();
+            return (false, $"Giriş başarısız: {errorMsg}", null, null);
         }
         catch (Exception ex)
         {
-            return (false, $"Giriş hatası: {ex.Message}", null);
+            return (false, $"Giriş hatası: {ex.Message}", null, null);
         }
     }
 
@@ -111,7 +129,6 @@ public class ApiService
         var results = new List<DiagnosticResult>();
         StationInfo? stationInfo = null;
 
-        // 1. İnternet Bağlantısı
         // 1. İnternet Bağlantısı
         var internetCheck = new DiagnosticResult { CheckName = "İnternet Bağlantısı" };
         
@@ -150,13 +167,12 @@ public class ApiService
         var apiCheck = new DiagnosticResult { CheckName = "API Sunucusu" };
         try
         {
-            if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            var baseUrl = GetBaseUrl(url);
+            if (!string.IsNullOrEmpty(baseUrl))
             {
-                var baseAuth = uri.GetLeftPart(UriPartial.Authority);
-                // We added [HttpGet("test")] to FileTransferController
                 // URL: {base}/api/FileTransfer/test
                 using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
-                var testUrl = $"{baseAuth}/api/FileTransfer/test";
+                var testUrl = $"{baseUrl}/api/FileTransfer/test";
                 
                 var response = await _httpClient.GetAsync(testUrl, cts.Token); 
                 
@@ -168,8 +184,6 @@ public class ApiService
                 else
                 {
                      apiCheck.IsSuccess = false;
-                     // If 404, maybe using old backend? Try root verification?
-                     // But for now, just report status
                      apiCheck.Message = $"Sunucu hatası: {response.StatusCode}";
                 }
             }
@@ -191,10 +205,10 @@ public class ApiService
         var configCheck = new DiagnosticResult { CheckName = "İstasyon & Yetki" };
         try
         {
-            if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            var baseUrl = GetBaseUrl(url);
+            if (!string.IsNullOrEmpty(baseUrl))
             {
-                var baseAuth = uri.GetLeftPart(UriPartial.Authority);
-                var verifyUrl = $"{baseAuth}/api/FileTransfer/verify?istasyonId={istasyonId}";
+                var verifyUrl = $"{baseUrl}/api/FileTransfer/verify?istasyonId={istasyonId}";
                 
                 var request = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
                 request.Headers.Add("X-Api-Key", apiKey);
@@ -259,19 +273,26 @@ public class ApiService
 
         try
         {
+            var baseUrl = GetBaseUrl(_apiUrl);
+            var uploadUrl = $"{baseUrl}/api/FileTransfer/upload";
+
             using var content = new MultipartFormDataContent();
-            var fileStream = File.OpenRead(log.FilePath);
-            var fileContent = new StreamContent(fileStream);
+            using var fileStream = File.OpenRead(log.FilePath);
+            using var fileContent = new StreamContent(fileStream);
             
             content.Add(fileContent, "file", log.FileName);
             content.Add(new StringContent(log.Hash), "originalHash");
             content.Add(new StringContent(_istasyonId.ToString()), "istasyonId");
 
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
-            if (!string.IsNullOrEmpty(_clientUniqueId)) _httpClient.DefaultRequestHeaders.Add("X-Client-Id", _clientUniqueId);
+            using var request = new HttpRequestMessage(HttpMethod.Post, uploadUrl);
+            request.Headers.Add("X-Api-Key", _apiKey);
+            if (!string.IsNullOrEmpty(_clientUniqueId))
+            {
+                request.Headers.Add("X-Client-Id", _clientUniqueId);
+            }
+            request.Content = content;
 
-            var response = await _httpClient.PostAsync(_apiUrl, content);
+            var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -283,7 +304,7 @@ public class ApiService
             {
                 log.Status = "Failed";
                 log.ErrorMessage = await response.Content.ReadAsStringAsync();
-                Log.Warning("Dosya gönderimi başarısız: {FileName}, Hata: {Error}", log.FileName, log.ErrorMessage);
+                Log.Warning("Dosya gönderimi başarısız: {FileName}, Hata: {Status} - {Error}", log.FileName, response.StatusCode, log.ErrorMessage);
             }
 
             log.LastAttempt = DateTime.Now;
@@ -306,10 +327,10 @@ public class ApiService
 
         try
         {
-            if (Uri.TryCreate(_apiUrl, UriKind.Absolute, out var uri))
+            var baseUrl = GetBaseUrl(_apiUrl);
+            if (!string.IsNullOrEmpty(baseUrl))
             {
-                var baseAuth = uri.GetLeftPart(UriPartial.Authority);
-                var verifyUrl = $"{baseAuth}/api/FileTransfer/verify?istasyonId={_istasyonId}";
+                var verifyUrl = $"{baseUrl}/api/FileTransfer/verify?istasyonId={_istasyonId}";
                 
                 var request = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
                 request.Headers.Add("X-Api-Key", _apiKey);
