@@ -52,9 +52,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-volumes:
-  postgres_data:
-
   adminer:
     image: adminer
     restart: always
@@ -62,3 +59,6 @@ volumes:
       - ADMINER_DEFAULT_SERVER=db
     depends_on:
       - db
+
+volumes:
+  postgres_data:
