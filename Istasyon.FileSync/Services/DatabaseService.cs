@@ -142,4 +142,28 @@ public class DatabaseService
         }
         return logs;
     }
+
+    public FileLog? GetLastSuccessfulUpload()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT * FROM FileLogs WHERE Status = 'Sent' ORDER BY LastAttempt DESC LIMIT 1";
+
+        using var reader = command.ExecuteReader();
+        if (reader.Read())
+        {
+            return new FileLog
+            {
+                Id = reader.GetInt32(0),
+                FileName = reader.GetString(1),
+                FilePath = reader.GetString(2),
+                Hash = reader.GetString(3),
+                Status = reader.GetString(4),
+                LastAttempt = reader.GetDateTime(5),
+                ErrorMessage = reader.IsDBNull(6) ? null : reader.GetString(6)
+            };
+        }
+        return null;
+    }
 }

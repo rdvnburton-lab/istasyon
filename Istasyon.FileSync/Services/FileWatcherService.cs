@@ -30,6 +30,16 @@ public class FileWatcherService
         return await _apiService.TestConnectionAsync(url);
     }
 
+    public async Task<(bool success, string message, string? role)> LoginAsync(string username, string password)
+    {
+        return await _apiService.LoginAsync(username, password);
+    }
+
+    public async Task<List<DiagnosticResult>> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)
+    {
+        return await _apiService.RunDiagnosticsAsync(url, apiKey, istasyonId);
+    }
+
     public void Start(string path)
     {
         if (string.IsNullOrEmpty(path) || !Directory.Exists(path))

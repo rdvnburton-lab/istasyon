@@ -4,78 +4,97 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="İstasyon FileSync" Height="550" Width="800"
+        Title="İstasyon FileSync" Height="700" Width="1000"
         WindowStartupLocation="CenterScreen"
         Background="#F5F6F7"
         FontFamily="Segoe UI"
         Icon="{StaticResource AppLogo}">
     <Grid>
         <TabControl Background="Transparent" BorderThickness="0,1,0,0" BorderBrush="#DCDDE1">
-            <!-- AYARLAR SEKMESİ -->
-            <TabItem Header="Ayarlar" Padding="20,10">
+            
+            <!-- 1. DASHBOARD / ANA PANEL -->
+            <TabItem Header="Panel" Padding="20,10">
                 <Grid Margin="30">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
-                        <TextBlock Text="Sistem Yapılandırması" FontSize="24" FontWeight="Bold" Foreground="#2C3E50"/>
-                        <TextBlock Text="Klasör izleme ve sunucu bağlantı ayarları." Foreground="#7F8C8D"/>
+                    <!-- Üst Bilgi Başlık -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,30">
+                        <TextBlock Text="İstasyon Durumu" FontSize="28" FontWeight="Bold" Foreground="#2C3E50"/>
+                        <TextBlock Text="Anlık sistem takibi ve bağlantı durumu." Foreground="#7F8C8D" FontSize="16"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="1">
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="İzlenecek Klasör" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="TxtFolderPath" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
-                                <Button Grid.Column="1" Content="Gözat..." Click="BtnBrowse_Click" Padding="15,5" Margin="10,0,0,0" 
-                                        Background="#3498DB" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                            </Grid>
+                    <!-- Dashboard Kartları -->
+                    <Grid Grid.Row="1" Margin="0,0,0,30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- İstasyon Bilgisi -->
+                        <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="20" BorderBrush="#E0E0E0" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Kayıtlı İstasyon" Foreground="#95A5A6" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtDashStationName" Text="Yükleniyor..." FontSize="18" FontWeight="Bold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="TxtDashStationId" Text="ID: -" Foreground="#BDC3C7" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Son Gönderim -->
+                        <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="20" BorderBrush="#E0E0E0" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Son Başarılı Transfer" Foreground="#95A5A6" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtDashLastUploadDate" Text="Henüz yok" FontSize="18" FontWeight="Bold" Margin="0,10,0,0"/>
+                                <TextBlock x:Name="TxtDashLastFileName" Text="-" Foreground="#BDC3C7" Margin="0,5,0,0" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Durum / Test -->
+                         <Border Grid.Column="4" Background="White" CornerRadius="8" Padding="20" BorderBrush="#E0E0E0" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Bağlantı Testi" Foreground="#95A5A6" FontWeight="SemiBold"/>
+                                <Button Content="Sistemi Test Et" Click="BtnTestConnection_Click" Margin="0,10,0,0" Padding="10" 
+                                        Background="#3498DB" Foreground="White" BorderThickness="0" Cursor="Hand" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Diagnostik Listesi (Dashboard'da) -->
+                     <Border Grid.Row="2" Background="White" BorderThickness="1" BorderBrush="#E0E0E0" CornerRadius="8" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Sistem Sağlık Kontrolü" FontWeight="Bold" Margin="0,0,0,15" Foreground="#34495E" FontSize="16"/>
+                            <ItemsControl x:Name="IcDiagnostics">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="35"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Icon}" FontSize="18" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding CheckName}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Message}" Foreground="Gray" FontSize="14" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="TxtDiagnosticPlaceholder" Text="Test başlatmak için yukarıdaki butona tıklayın." 
+                                       FontStyle="Italic" Foreground="Gray" HorizontalAlignment="Center" Margin="0,20"/>
                         </StackPanel>
-
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="Sunucu API URL" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="TxtApiUrl" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
-                                <Button Grid.Column="1" Content="Test Et" Click="BtnTestConnection_Click" Padding="15,5" Margin="10,0,0,0" 
-                                        Background="#3498DB" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                            </Grid>
-                        </StackPanel>
-
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="API Anahtarı (Token)" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                            <TextBox x:Name="TxtApiKey" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
-                        </StackPanel>
-
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="İstasyon ID" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                            <TextBox x:Name="TxtIstasyonId" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
-                        </StackPanel>
-
-                        <CheckBox x:Name="ChkAutoStart" Content="Windows başladığında otomatik çalıştır" Margin="0,10,0,0" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                        <Button Content="Kapat" Click="BtnCancel_Click" Padding="25,10" Margin="0,0,10,0" 
-                                Background="#BDC3C7" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                        <Button Content="Ayarları Kaydet" Click="BtnSave_Click" Padding="25,10" 
-                                Background="#2ECC71" Foreground="White" BorderThickness="0" FontWeight="Bold" Cursor="Hand"/>
-                    </StackPanel>
+                    </Border>
                 </Grid>
             </TabItem>
 
-            <!-- LOG GÖZLEMLEME SEKMESİ -->
-            <TabItem Header="Transfer Logları" Padding="20,10">
+             <!-- 2. LOGLAR -->
+             <TabItem Header="Transfer Logları" Padding="20,10">
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -84,7 +103,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-                        <TextBlock Text="İşlem Geçmişi" FontSize="20" FontWeight="Bold" Foreground="#2C3E50" VerticalAlignment="Center"/>
+                        <TextBlock Text="İşlem Geçmişi" FontSize="24" FontWeight="Bold" Foreground="#2C3E50" VerticalAlignment="Center"/>
                         <Button Content="Yenile" Click="BtnRefreshLogs_Click" Margin="20,0,0,0" Padding="15,5" 
                                 Background="#95A5A6" Foreground="White" BorderThickness="0" Cursor="Hand"/>
                     </StackPanel>
@@ -92,7 +111,7 @@
                     <DataGrid x:Name="DgLogs" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
                               Background="White" BorderThickness="1" BorderBrush="#DCDDE1"
                               RowBackground="White" AlternatingRowBackground="#F9F9F9"
-                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F0F0F0">
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F0F0F0" Padding="10">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Dosya Adı" Binding="{Binding FileName}" Width="2*"/>
                             <DataGridTemplateColumn Header="Durum" Width="100">
@@ -145,6 +164,75 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
+
+            <!-- 3. AYARLAR (KORUMALI) -->
+            <TabItem Header="Ayarlar" Padding="20,10">
+                <Grid Margin="30">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header & Unlock -->
+                    <Grid Grid.Row="0" Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Sistem Yapılandırması" FontSize="24" FontWeight="Bold" Foreground="#2C3E50"/>
+                            <TextBlock Text="Ayarları değiştirmek için yetkili girişi gereklidir." Foreground="#7F8C8D"/>
+                        </StackPanel>
+                        <Button x:Name="BtnUnlockSettings" Grid.Column="1" Content="🔓 Kilidi Aç / Düzenle" Click="BtnUnlockSettings_Click" 
+                                Padding="15,8" Background="#F1C40F" Foreground="Black" FontWeight="Bold" BorderThickness="0" Cursor="Hand" VerticalAlignment="Center"/>
+                        <!-- Kilit Durumu -->
+                    </Grid>
+
+                    <!-- Settings Panel (Disabled by default) -->
+                    <StackPanel x:Name="PnlSettings" Grid.Row="1" IsEnabled="False">
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="İzlenecek Klasör" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="TxtFolderPath" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
+                                <Button Grid.Column="1" Content="Gözat..." Click="BtnBrowse_Click" Padding="15,5" Margin="10,0,0,0" 
+                                        Background="#3498DB" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Sunucu API URL" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                             <TextBox x:Name="TxtApiUrl" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="API Anahtarı (Token)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                             <TextBox x:Name="TxtApiKey" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1" IsReadOnly="False" Background="White"/> 
+                             <!-- IsReadOnly artık PnlSettings.IsEnabled ile kontrol edilecek, ayrı butona gerek yok -->
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="İstasyon ID" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBox x:Name="TxtIstasyonId" Padding="10" BorderThickness="1" BorderBrush="#DCDDE1"/>
+                        </StackPanel>
+
+                        <CheckBox x:Name="ChkAutoStart" Content="Windows başladığında otomatik çalıştır" Margin="0,10,0,0" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                         <!-- Kaydet butonu da PnlSettings içinde değil o yüzden IsEnabled kontrolü manuel yapılabilir yada panel içinde tutulabilir
+                              Ancak "Kaydet" sadece edit modundaysa aktif olmalı.
+                          -->
+                        <Button x:Name="BtnSaveSettings" Content="Ayarları Kaydet" Click="BtnSave_Click" Padding="25,10" 
+                                Background="#2ECC71" Foreground="White" BorderThickness="0" FontWeight="Bold" Cursor="Hand" IsEnabled="False" Opacity="0.5"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Window>

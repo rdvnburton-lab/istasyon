@@ -17,6 +17,39 @@ public class FileTransferController : ControllerBase
     {
         _logger = logger;
         _context = context;
+    [HttpGet("verify")]
+    public async Task<IActionResult> VerifyConfig([FromQuery] int istasyonId, [FromHeader(Name = "X-Api-Key")] string apiKey)
+    {
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            return Unauthorized("API Key eksik.");
+        }
+
+        var istasyon = await _context.Istasyonlar.FirstOrDefaultAsync(i => i.Id == istasyonId);
+
+        if (istasyon == null)
+        {
+            return NotFound("Bu ID ile kayıtlı bir istasyon bulunamadı.");
+        }
+
+        if (istasyon.ApiKey != apiKey)
+        {
+            return Unauthorized("API Key hatalı.");
+        }
+
+        if (!istasyon.Aktif)
+        {
+            return BadRequest("İstasyon pasif durumda.");
+        }
+
+        return Ok(new { message = "Konfigürasyon geçerli.", istasyonAdi = istasyon.Ad });
+        return Ok(new { message = "Konfigürasyon geçerli.", istasyonAdi = istasyon.Ad });
+    }
+
+    [HttpGet("test")]
+    public IActionResult TestConnection()
+    {
+        return Ok(new { message = "Bağlantı başarılı." });
     }
 
     [HttpPost("upload")]
