@@ -41,6 +41,9 @@ public class FileWatcherService
         return await _apiService.RunDiagnosticsAsync(url, apiKey, istasyonId);
     }
 
+    public async Task<List<FirmaDto>> GetFirmasAsync() => await _apiService.GetFirmasAsync();
+    public async Task<List<IstasyonDto>> GetStationsAsync(int? firmaId = null) => await _apiService.GetStationsAsync(firmaId);
+
     public void Start(string path)
     {
         if (string.IsNullOrEmpty(path) || !Directory.Exists(path))

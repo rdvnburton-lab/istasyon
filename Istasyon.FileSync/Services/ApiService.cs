@@ -15,6 +15,7 @@ public class ApiService
     private string _apiKey = string.Empty;
     private int _istasyonId;
     private string _clientUniqueId = string.Empty;
+    private string? _authToken;
 
     public ApiService(DatabaseService dbService)
     {
@@ -112,6 +113,12 @@ public class ApiService
                    }
                 }
 
+                if (doc.RootElement.TryGetProperty("token", out var tokenProp))
+                {
+                    _authToken = tokenProp.GetString();
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authToken);
+                }
+
                 return (true, "Giriş başarılı", role, stations);
             }
 
@@ -122,6 +129,51 @@ public class ApiService
         {
             return (false, $"Giriş hatası: {ex.Message}", null, null);
         }
+    }
+
+    public async Task<List<FirmaDto>> GetFirmasAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken)) return new List<FirmaDto>();
+        
+        try
+        {
+            var baseUrl = GetBaseUrl(_apiUrl);
+            var response = await _httpClient.GetAsync($"{baseUrl}/api/Firma");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                return System.Text.Json.JsonSerializer.Deserialize<List<FirmaDto>>(json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<FirmaDto>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Firmalar alınamadı.");
+        }
+        return new List<FirmaDto>();
+    }
+
+    public async Task<List<IstasyonDto>> GetStationsAsync(int? firmaId = null)
+    {
+        if (string.IsNullOrEmpty(_authToken)) return new List<IstasyonDto>();
+        
+        try
+        {
+            var baseUrl = GetBaseUrl(_apiUrl);
+            var url = $"{baseUrl}/api/Istasyon";
+            if (firmaId.HasValue) url += $"?firmaId={firmaId}";
+
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                return System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDto>>(json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<IstasyonDto>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "İstasyonlar alınamadı.");
+        }
+        return new List<IstasyonDto>();
     }
 
     public async Task<(List<DiagnosticResult> results, StationInfo? info)> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)

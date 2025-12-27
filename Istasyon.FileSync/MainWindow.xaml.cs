@@ -72,26 +72,40 @@ public partial class MainWindow : Window
 
                 var (success, msg, role, stations) = await apiService.LoginAsync(login.Username, login.Password);
                 
-                if (success && stations != null && stations.Count > 0)
+                if (success)
                 {
-                    var selectedStation = stations[0];
-                    
-                    config = _configService.Config; // refresh ref
-                    config.ApiKey = selectedStation.ApiKey;
-                    config.IstasyonId = selectedStation.Id;
-                    
-                    _configService.SaveConfig(config);
-                    
-                    // Reload to ensure services get new config
-                    _configService.LoadConfig(); // Should update internal state
-                    _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId);
-
-                    MessageBox.Show($"Kurulum Başarılı!\nİstasyon: {selectedStation.Ad}", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
-                    loginSuccess = true;
+                    // Scenario 1: User is explicitly assigned to stations (e.g. Station Manager)
+                    if (stations != null && stations.Count > 0)
+                    {
+                        var selectedStation = stations[0];
+                        config = _configService.Config;
+                        config.ApiKey = selectedStation.ApiKey;
+                        config.IstasyonId = selectedStation.Id;
+                        SaveAndRestart(config, selectedStation.Ad);
+                        loginSuccess = true;
+                    }
+                    // Scenario 2: Admin/Patron - Need to select Firm -> Station
+                    else if (role?.ToLower() == "admin" || role?.ToLower() == "patron")
+                    {
+                        var adminSetup = new AdminSetupDialog(_fileWatcherService);
+                        if (adminSetup.ShowDialog() == true && adminSetup.SelectedStation != null)
+                        {
+                            var selectedStation = adminSetup.SelectedStation;
+                            config = _configService.Config;
+                            config.ApiKey = selectedStation.ApiKey ?? ""; // Should be there if Admin
+                            config.IstasyonId = selectedStation.Id;
+                            SaveAndRestart(config, selectedStation.Ad);
+                            loginSuccess = true;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bu kullanıcıya tanımlı istasyon bulunamadı ve yetkili değilsiniz.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show(success ? "Bu kullanıcıya tanımlı istasyon bulunamadı." : msg, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(success ? "Giriş başarılı ancak yetki sorunu var." : msg, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -99,6 +113,14 @@ public partial class MainWindow : Window
         LoadSettings();
         LoadDashboard();
         LoadLogs();
+    }
+
+    private void SaveAndRestart(AppConfig config, string stationName)
+    {
+        _configService.SaveConfig(config);
+        _configService.LoadConfig(); 
+        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId);
+        MessageBox.Show($"Kurulum Başarılı!\nİstasyon: {stationName}", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void LoadSettings()

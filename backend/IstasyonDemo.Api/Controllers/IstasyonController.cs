@@ -21,24 +21,34 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IstasyonDto>>> GetIstasyonlar()
+        public async Task<ActionResult<IEnumerable<IstasyonDto>>> GetIstasyonlar([FromQuery] int? firmaId = null)
         {
             var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
             IQueryable<Istasyon> query = _context.Istasyonlar
+                .Include(i => i.Firma)
                 .Include(i => i.IstasyonSorumlu).ThenInclude(s => s!.Role)
                 .Include(i => i.VardiyaSorumlu).ThenInclude(s => s!.Role)
                 .Include(i => i.MarketSorumlu).ThenInclude(s => s!.Role);
 
             if (userRole == "admin")
             {
-                // Admin sees all
+                // Admin sees all, optionally filtered by firmaId
+                if (firmaId.HasValue)
+                {
+                    query = query.Where(i => i.FirmaId == firmaId.Value);
+                }
             }
             else if (userRole == "patron")
             {
                 // Patron sees stations belonging to their firms
                 query = query.Where(i => i.Firma != null && i.Firma.PatronId == userId);
+                
+                if (firmaId.HasValue)
+                {
+                    query = query.Where(i => i.FirmaId == firmaId.Value);
+                }
             }
             else
             {
