@@ -345,7 +345,7 @@ export class VardiyaListesi implements OnInit {
     }
 
     dosyaYukle(): void {
-        if (!this.parseSonuc?.basarili || !this.secilenDosya) return;
+        if (!this.parseSonuc?.basarili || !this.secilenDosya || this.yukleniyor) return;
 
         // Mükerrer dosya kontrolü (Basit kontrol)
         const dosyaVar = this.vardiyalar.some(v => v.dosyaAdi === this.secilenDosya!.name);
@@ -358,6 +358,8 @@ export class VardiyaListesi implements OnInit {
             });
             return;
         }
+
+        this.yukleniyor = true; // Yükleme başlıyor
 
         const yeniVardiya: Vardiya = {
             id: 0, // DB tarafından atanacak
@@ -398,6 +400,7 @@ export class VardiyaListesi implements OnInit {
                         this.dosyaDialogKapat();
                         this.isAutomaticFile = false;
                         this.currentAutomaticFileId = null;
+                        this.yukleniyor = false; // Yükleme bitti
                     },
                     error: (err) => {
                         console.error('Backend kayıt hatası:', err);
@@ -422,6 +425,7 @@ export class VardiyaListesi implements OnInit {
                             detail: detail,
                             life: 7000
                         });
+                        this.yukleniyor = false; // Yükleme bitti (hata ile)
                     }
                 });
         };

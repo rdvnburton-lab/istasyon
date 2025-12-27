@@ -434,7 +434,7 @@
 
     <ng-template pTemplate="footer">
         <p-button label="İptal" icon="pi pi-times" severity="secondary" (onClick)="dosyaDialogKapat()"></p-button>
-        <p-button label="Yükle ve Devam Et" icon="pi pi-check" severity="success" [disabled]="!parseSonuc?.basarili"
+        <p-button label="Yükle ve Devam Et" icon="pi pi-check" severity="success" [disabled]="!parseSonuc?.basarili || yukleniyor"
             (onClick)="dosyaYukle()">
         </p-button>
     </ng-template>
