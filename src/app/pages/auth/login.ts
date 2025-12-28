@@ -32,7 +32,7 @@ import { ToastModule } from 'primeng/toast';
             <div class="login-content animate-slide-up">
                 <div class="glass-card">
                     <form (ngSubmit)="onLogin()">
-                        <img src="assets/logo.svg" alt="Logo Icon" class="form-logo">
+                        <img src="assets/tshift.svg" alt="Logo Icon" class="form-logo">
                         <h1 class="main-title">İstasyon Yönetimi</h1>
                         <p class="subtitle">Sisteme erişmek için bilgilerinizi girin</p>
                         
@@ -99,7 +99,7 @@ import { ToastModule } from 'primeng/toast';
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/assets/logo.svg');
+            background-image: url('/assets/tshift.svg');
             background-size: 150px;
             background-repeat: repeat;
             opacity: 0.03;
