@@ -1,6 +1,154 @@
 <p-toast></p-toast>
 
-<div class="grid grid-cols-12 gap-6">
+<!-- MOBILE NATIVE VIEW -->
+<div class="vardiya-page block md:hidden">
+    <!-- Mobile Native Header -->
+    <div class="mobile-page-header">
+        <h1 class="page-title">Vardiya Mutabakatı</h1>
+        <p class="page-subtitle">Otomasyon dosyalarını yönetin</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-scroll">
+        <div class="summary-card blue" (click)="dosyaDialogAc()">
+            <div class="summary-icon"><i class="pi pi-folder-open"></i></div>
+            <div class="summary-value">{{ vardiyalar.length }}</div>
+            <div class="summary-label">Yüklenen</div>
+        </div>
+        <div class="summary-card orange">
+            <div class="summary-icon"><i class="pi pi-hourglass"></i></div>
+            <div class="summary-value">{{ getMutabakatBekleyenSayisi() }}</div>
+            <div class="summary-label">Bekleyen</div>
+        </div>
+        <div class="summary-card green">
+            <div class="summary-icon"><i class="pi pi-check-circle"></i></div>
+            <div class="summary-value">{{ getTamamlananSayisi() }}</div>
+            <div class="summary-label">Tamamlanan</div>
+        </div>
+        <div class="summary-card purple">
+            <div class="summary-icon"><i class="pi pi-wallet"></i></div>
+            <div class="summary-value">{{ formatShortNumber(summary.toplamCiro) }}₺</div>
+            <div class="summary-label">Toplam</div>
+        </div>
+    </div>
+
+    <!-- Otomatik Dosyalar Section -->
+    <div class="otomatik-section" *ngIf="otomatikDosyalar.length > 0">
+        <div class="section-title-bar">
+            <div class="section-title">
+                <i class="pi pi-bolt text-blue-500"></i>
+                Otomatik Dosyalar
+                <span class="count-badge">{{ otomatikDosyalar.length }}</span>
+            </div>
+        </div>
+        <div class="otomatik-list">
+            <div *ngFor="let file of otomatikDosyalar" class="otomatik-card" (click)="otomatikDosyaIsle(file)">
+                <div class="otomatik-icon">
+                    <i class="pi pi-file-import"></i>
+                </div>
+                <div class="otomatik-info">
+                    <div class="otomatik-name">{{ file.dosyaAdi }}</div>
+                    <div class="otomatik-meta">
+                        {{ file.yuklemeTarihi | date:'dd.MM.yyyy HH:mm' }} · {{ file.istasyonAd }}
+                    </div>
+                </div>
+                <div class="otomatik-arrow">
+                    <i class="pi pi-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vardiya Cards Section -->
+    <div class="vardiya-section">
+        <div class="section-title-bar">
+            <div class="section-title">Yüklenen Vardiyalar</div>
+        </div>
+
+        <div class="vardiya-list" *ngIf="vardiyalar.length > 0">
+            <div *ngFor="let vardiya of vardiyalar" class="vardiya-card">
+                <div class="vardiya-header">
+                    <div class="file-icon">
+                        <i class="pi pi-file"></i>
+                    </div>
+                    <div class="vardiya-info">
+                        <div class="vardiya-name">{{ vardiya.dosyaAdi }}</div>
+                        <div class="vardiya-meta">
+                            <i class="pi pi-clock"></i>
+                            <span>{{ vardiya.yuklemeTarihi | date:'dd.MM.yyyy HH:mm' }}</span>
+                        </div>
+                    </div>
+                    <p-tag [value]="getDurumLabel(vardiya.durum)" [severity]="getDurumSeverity(vardiya.durum)"
+                        [style]="{fontSize: '0.65rem'}"></p-tag>
+                </div>
+
+                <div class="vardiya-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Personel</div>
+                        <div class="stat-value">{{ vardiya.personelSayisi }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">İşlem</div>
+                        <div class="stat-value">{{ vardiya.islemSayisi }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Tutar</div>
+                        <div class="stat-value">{{ vardiya.toplamTutar | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+                    </div>
+                </div>
+
+                <div class="vardiya-footer">
+                    <div class="vardiya-date" *ngIf="vardiya.baslangicTarih">
+                        <span style="font-weight: 600; color: #1e293b;">{{ vardiya.baslangicTarih | date:'dd MMM'
+                            }}</span>
+                        <span style="color: #94a3b8; margin-left: 0.5rem;">{{ vardiya.baslangicTarih | date:'HH:mm'
+                            }}</span>
+                    </div>
+                    <div class="vardiya-actions">
+                        <button *ngIf="vardiya.durum === 'ACIK' || vardiya.durum === 'REDDEDILDI'"
+                            class="action-btn success" (click)="mutabakatYap(vardiya)">
+                            <i class="pi pi-file-excel"></i>
+                        </button>
+                        <button
+                            *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI' || vardiya.durum === 'SILINME_ONAYI_BEKLIYOR'"
+                            class="action-btn info" (click)="incele(vardiya)">
+                            <i class="pi pi-search"></i>
+                        </button>
+                        <button class="action-btn info" (click)="dosyaIndir(vardiya)">
+                            <i class="pi pi-download"></i>
+                        </button>
+                        <button
+                            *ngIf="vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"
+                            class="action-btn danger" (click)="vardiyaSil(vardiya)">
+                            <i class="pi pi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="vardiyalar.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="pi pi-upload"></i>
+            </div>
+            <div class="empty-title">Henüz vardiya verisi yok</div>
+            <div class="empty-text">Otomasyon TXT dosyasını yükleyerek başlayın</div>
+            <button class="empty-btn" (click)="dosyaDialogAc()">
+                <i class="pi pi-upload"></i>
+                <span>Dosya Yükle</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- FAB Upload Button -->
+    <button class="fab-upload" (click)="dosyaDialogAc()">
+        <i class="pi pi-plus"></i>
+    </button>
+</div>
+
+<!-- DESKTOP VIEW -->
+<div class="grid grid-cols-12 gap-6 hidden md:grid">
     <!-- Başlık -->
     <div class="col-span-12">
         <div class="card">
@@ -434,8 +582,8 @@
 
     <ng-template pTemplate="footer">
         <p-button label="İptal" icon="pi pi-times" severity="secondary" (onClick)="dosyaDialogKapat()"></p-button>
-        <p-button label="Yükle ve Devam Et" icon="pi pi-check" severity="success" [disabled]="!parseSonuc?.basarili || yukleniyor"
-            (onClick)="dosyaYukle()">
+        <p-button label="Yükle ve Devam Et" icon="pi pi-check" severity="success"
+            [disabled]="!parseSonuc?.basarili || yukleniyor" (onClick)="dosyaYukle()">
         </p-button>
     </ng-template>
 </p-dialog><!-- Silme Talebi Dialog -->
@@ -473,8 +621,46 @@
 
     <div *ngIf="seciliVardiyaDetay && genelOzet" class="flex flex-col gap-6">
 
-        <!-- Üst Bilgi Kartları -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <!-- MOBILE: Horizontal Scroll Summary Cards -->
+        <div class="summary-scroll block md:hidden">
+            <div class="summary-card blue">
+                <div class="summary-icon"><i class="pi pi-chart-line"></i></div>
+                <div class="summary-value">{{ genelOzet.pompaToplam | number:'1.0-0' }}₺</div>
+                <div class="summary-label">Pompa Cirosu</div>
+            </div>
+            <div class="summary-card green">
+                <div class="summary-icon"><i class="pi pi-users"></i></div>
+                <div class="summary-value">{{ pompaciSatisTutar | number:'1.0-0' }}₺</div>
+                <div class="summary-label">Pompacı Satış</div>
+            </div>
+            <div class="summary-card purple" (click)="openKrediKartiDetay()">
+                <div class="summary-icon"><i class="pi pi-credit-card"></i></div>
+                <div class="summary-value">{{ toplamKrediKarti | number:'1.0-0' }}₺</div>
+                <div class="summary-label">Kredi Kartı</div>
+            </div>
+            <div class="summary-card orange">
+                <div class="summary-icon"><i class="pi pi-money-bill"></i></div>
+                <div class="summary-value">{{ pompaciNakitToplam | number:'1.0-0' }}₺</div>
+                <div class="summary-label">Nakit</div>
+            </div>
+            <div class="summary-card" [ngClass]="{
+                'green': pompaFarkDurumRenk === 'success',
+                'orange': pompaFarkDurumRenk === 'warn',
+                'red': pompaFarkDurumRenk === 'danger'
+            }">
+                <div class="summary-icon">
+                    <i class="pi" [ngClass]="{
+                        'pi-check-circle': pompaFarkDurumRenk === 'success',
+                        'pi-exclamation-circle': pompaFarkDurumRenk !== 'success'
+                    }"></i>
+                </div>
+                <div class="summary-value">{{ pompaFark | number:'1.0-0' }}₺</div>
+                <div class="summary-label">Fark</div>
+            </div>
+        </div>
+
+        <!-- DESKTOP: Grid Summary Cards -->
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-5 gap-4">
             <div
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
                 <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompa
@@ -547,7 +733,81 @@
             <p-tabpanels>
                 <!-- SEKME 1: POMPA & PERSONEL -->
                 <p-tabpanel value="0">
-                    <div class="grid grid-cols-1 mt-4">
+                    <!-- MOBILE VIEW: Personel Cards -->
+                    <div class="personel-detay-list block md:hidden mt-4">
+                        <div *ngFor="let item of farkAnalizi" class="personel-detay-card">
+                            <div class="personel-detay-header">
+                                <div class="personel-detay-avatar">
+                                    <i class="pi pi-user"></i>
+                                </div>
+                                <span class="personel-detay-name">{{ item.personelAdi }}</span>
+                                <p-tag *ngIf="item.farkDurum === 'UYUMLU'" value="Uyumlu" severity="success"
+                                    [style]="{fontSize: '0.65rem'}"></p-tag>
+                                <p-tag *ngIf="item.farkDurum === 'ACIK'" value="Açık" severity="danger"
+                                    [style]="{fontSize: '0.65rem'}"></p-tag>
+                                <p-tag *ngIf="item.farkDurum === 'FAZLA'" value="Fazla" severity="warn"
+                                    [style]="{fontSize: '0.65rem'}"></p-tag>
+                            </div>
+
+                            <div class="personel-detay-grid">
+                                <!-- Otomasyon Satış -->
+                                <div class="personel-stat highlight-blue">
+                                    <div class="personel-stat-label">Otomasyon Satış</div>
+                                    <div class="personel-stat-value">{{ item.otomasyonToplam |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                </div>
+                                <!-- Pusula Toplam -->
+                                <div class="personel-stat highlight-green">
+                                    <div class="personel-stat-label">Pusula Toplam</div>
+                                    <div class="personel-stat-value">{{ item.pusulaToplam |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                </div>
+                                <!-- Nakit -->
+                                <div class="personel-stat">
+                                    <div class="personel-stat-label">Nakit</div>
+                                    <div class="personel-stat-value">{{ item.pusulaDokum?.nakit |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                </div>
+                                <!-- Kredi Kartı -->
+                                <div class="personel-stat">
+                                    <div class="personel-stat-label">Kredi Kartı</div>
+                                    <div class="personel-stat-value">{{ item.pusulaDokum?.krediKarti |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                </div>
+                                <!-- Paro Puan -->
+                                <div class="personel-stat">
+                                    <div class="personel-stat-label">Paro Puan</div>
+                                    <div class="personel-stat-value">{{ item.pusulaDokum?.paroPuan |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                </div>
+                                <!-- Mobil Ödeme -->
+                                <div class="personel-stat">
+                                    <div class="personel-stat-label">Mobil Ödeme</div>
+                                    <div class="personel-stat-value">{{ item.pusulaDokum?.mobilOdeme |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="personel-detay-footer">
+                                <span style="font-size: 0.75rem; color: #94a3b8;">Fark:</span>
+                                <div class="fark-badge" [ngClass]="{
+                                    'success': item.farkDurum === 'UYUMLU',
+                                    'danger': item.farkDurum === 'ACIK',
+                                    'warn': item.farkDurum === 'FAZLA'
+                                }">
+                                    <i class="pi" [ngClass]="{
+                                        'pi-check': item.farkDurum === 'UYUMLU',
+                                        'pi-arrow-down': item.farkDurum === 'ACIK',
+                                        'pi-arrow-up': item.farkDurum === 'FAZLA'
+                                    }"></i>
+                                    {{ item.fark | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DESKTOP VIEW: Table -->
+                    <div class="hidden md:grid grid-cols-1 mt-4">
                         <p-table [value]="farkAnalizi" styleClass="p-datatable-sm p-datatable-striped"
                             [rowHover]="true">
                             <ng-template pTemplate="header">
@@ -595,7 +855,81 @@
                     </div>
                 </p-tabpanel>
                 <p-tabpanel value="1">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                    <!-- MOBILE VIEW: Card-based Layout -->
+                    <div class="block md:hidden mt-4">
+                        <!-- Tahsilat Özeti Card -->
+                        <div class="personel-detay-card mb-4">
+                            <div class="personel-detay-header" style="border: none; margin: 0; padding-bottom: 0;">
+                                <div class="personel-detay-avatar"
+                                    style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
+                                    <i class="pi pi-wallet" style="color: white;"></i>
+                                </div>
+                                <span class="personel-detay-name">Tahsilat Özeti</span>
+                            </div>
+                            <div style="margin-top: 0.75rem;">
+                                <div class="personel-detay-grid">
+                                    <div class="personel-stat highlight-green">
+                                        <div class="personel-stat-label">Nakit</div>
+                                        <div class="personel-stat-value">{{ genelOzet.toplamNakit |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                    <div class="personel-stat highlight-blue">
+                                        <div class="personel-stat-label">Kredi Kartı</div>
+                                        <div class="personel-stat-value">{{ genelOzet.toplamKrediKarti |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                    <div class="personel-stat highlight-orange">
+                                        <div class="personel-stat-label">Paro Puan</div>
+                                        <div class="personel-stat-value">{{ genelOzet.toplamParoPuan |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                    <div class="personel-stat">
+                                        <div class="personel-stat-label">Mobil Ödeme</div>
+                                        <div class="personel-stat-value">{{ genelOzet.toplamMobilOdeme |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                </div>
+                                <div class="fark-badge success full"
+                                    style="justify-content: space-between; margin-top: 0.5rem;">
+                                    <span>Toplam Tahsilat</span>
+                                    <span style="font-size: 1rem;">{{ (genelOzet.toplamNakit +
+                                        genelOzet.toplamKrediKarti + genelOzet.toplamParoPuan +
+                                        genelOzet.toplamMobilOdeme) | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kredi Kartı Detayları Card -->
+                        <div class="personel-detay-card">
+                            <div class="personel-detay-header" style="border: none; margin: 0; padding-bottom: 0;">
+                                <div class="personel-detay-avatar"
+                                    style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                                    <i class="pi pi-credit-card" style="color: white;"></i>
+                                </div>
+                                <span class="personel-detay-name">Kredi Kartı Detayları</span>
+                            </div>
+                            <div style="margin-top: 0.75rem;">
+                                <div *ngFor="let item of pusulaKrediKartiDetaylari" class="personel-stat full"
+                                    style="margin-bottom: 0.5rem;" [ngClass]="{'highlight-blue': item.isSpecial}">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span class="personel-stat-label"
+                                            style="text-transform: none; font-size: 0.8rem;">{{ item.banka }}</span>
+                                        <span class="personel-stat-value"
+                                            [ngClass]="{'color': item.isSpecial ? '#8b5cf6' : '#1e293b'}">
+                                            {{ item.tutar | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div *ngIf="pusulaKrediKartiDetaylari.length === 0"
+                                    style="text-align: center; padding: 1rem; color: #94a3b8;">
+                                    Kredi kartı detayı bulunamadı
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DESKTOP VIEW: Original Layout -->
+                    <div class="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
                         <!-- Sol: Tahsilat Özeti -->
                         <div class="flex flex-col gap-4">
                             <h3 class="text-lg font-bold border-b pb-2">Tahsilat Özeti</h3>
@@ -622,8 +956,7 @@
                             </div>
                             <div class="flex justify-between p-3 bg-green-50 rounded border border-green-100 mt-2">
                                 <span class="font-bold text-green-800">Toplam Tahsilat</span>
-                                <span class="font-bold text-green-800">{{ (genelOzet.toplamNakit
-                                    +
+                                <span class="font-bold text-green-800">{{ (genelOzet.toplamNakit +
                                     genelOzet.toplamKrediKarti + genelOzet.toplamParoPuan +
                                     genelOzet.toplamMobilOdeme) |
                                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
@@ -670,7 +1003,51 @@
 
                 <!-- SEKME 3: MARKET -->
                 <p-tabpanel value="2">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4" *ngIf="marketOzet">
+                    <!-- MOBILE VIEW -->
+                    <div class="block md:hidden mt-4" *ngIf="marketOzet">
+                        <div class="personel-detay-card mb-4">
+                            <div class="personel-detay-header" style="border: none; margin: 0; padding-bottom: 0;">
+                                <div class="personel-detay-avatar"
+                                    style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                                    <i class="pi pi-shopping-cart" style="color: white;"></i>
+                                </div>
+                                <span class="personel-detay-name">Market Özeti</span>
+                            </div>
+                            <div style="margin-top: 0.75rem;">
+                                <div class="personel-detay-grid">
+                                    <div class="personel-stat highlight-blue">
+                                        <div class="personel-stat-label">Z Raporu</div>
+                                        <div class="personel-stat-value">{{ marketOzet.zRaporuToplam |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                    <div class="personel-stat">
+                                        <div class="personel-stat-label">Toplam KDV</div>
+                                        <div class="personel-stat-value">{{ marketOzet.kdvDokum.toplam |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                    <div class="personel-stat highlight-green">
+                                        <div class="personel-stat-label">Tahsilat</div>
+                                        <div class="personel-stat-value">{{ marketOzet.tahsilatToplam |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                    <div class="personel-stat highlight-red">
+                                        <div class="personel-stat-label">Giderler</div>
+                                        <div class="personel-stat-value" style="color: #dc2626;">-{{
+                                            marketOzet.giderToplam | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                                    </div>
+                                </div>
+                                <div class="fark-badge"
+                                    style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1d4ed8; justify-content: space-between; margin-top: 0.5rem;">
+                                    <span>Net Kasa</span>
+                                    <span style="font-size: 1rem; font-weight: 700;">{{ marketOzet.netKasa |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DESKTOP VIEW -->
+                    <div class="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8 mt-4" *ngIf="marketOzet">
                         <div class="flex flex-col gap-4">
                             <h3 class="text-lg font-bold border-b pb-2">Z-Raporu ve Satışlar
                             </h3>

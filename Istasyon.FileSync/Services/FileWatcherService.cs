@@ -55,6 +55,7 @@ public class FileWatcherService
         _watchPath = path;
         _watcher = new FileSystemWatcher(_watchPath);
         _watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
+        _watcher.Filter = "*.D1*"; // Sadece D1 ile başlayan uzantıları izle
         _watcher.Created += OnCreated;
         _watcher.Changed += OnChanged;
         _watcher.Renamed += OnRenamed;
@@ -102,6 +103,22 @@ public class FileWatcherService
 
             if (!File.Exists(filePath)) return;
 
+            // FİLTRELEME: Uzantı kontrolü (.D1 ile başlamalı)
+            string extension = Path.GetExtension(filePath);
+            if (string.IsNullOrEmpty(extension) || !extension.StartsWith(".D1", StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Debug("Dosya uzantısı filtreye uymuyor, atlanıyor: {FilePath}", filePath);
+                return;
+            }
+
+            // FİLTRELEME: Boş dosya kontrolü
+            var fileInfo = new FileInfo(filePath);
+            if (fileInfo.Length == 0)
+            {
+                Log.Warning("Dosya içeriği boş, atlanıyor: {FilePath}", filePath);
+                return;
+            }
+
             string hash = await CalculateHash(filePath);
             var existing = _dbService.GetLogByPath(filePath);
 
@@ -133,10 +150,17 @@ public class FileWatcherService
 
     private void ScanExistingFiles()
     {
-        var files = Directory.GetFiles(_watchPath);
-        foreach (var file in files)
+        try
         {
-            ProcessFile(file);
+            var files = Directory.GetFiles(_watchPath, "*.D1*");
+            foreach (var file in files)
+            {
+                ProcessFile(file);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Dosya tarama hatası.");
         }
     }
 

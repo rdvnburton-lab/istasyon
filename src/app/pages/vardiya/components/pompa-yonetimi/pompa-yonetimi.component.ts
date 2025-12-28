@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -58,7 +58,8 @@ interface PersonelOtomasyonOzet {
     ],
     providers: [MessageService],
     templateUrl: './pompa-yonetimi.component.html',
-    styleUrls: ['./pompa-yonetimi.component.scss']
+    styleUrls: ['./pompa-yonetimi.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class PompaYonetimi implements OnInit, OnDestroy {
     vardiyaId: number | null = null;

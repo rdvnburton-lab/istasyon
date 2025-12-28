@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -27,7 +27,8 @@ import { AuthService } from '../../../../services/auth.service';
         SelectButtonModule
     ],
     templateUrl: './vardiya-raporu.component.html',
-    styles: [`:host { display: block; }`]
+    styleUrls: ['./vardiya-raporu.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class VardiyaRaporuComponent implements OnInit {
     baslangicTarihi: Date = new Date();

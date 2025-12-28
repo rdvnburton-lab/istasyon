@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TreeTableModule } from 'primeng/treetable';
@@ -37,7 +37,9 @@ import { forkJoin } from 'rxjs';
         TooltipModule
     ],
     providers: [MessageService, ConfirmationService],
-    templateUrl: './istasyon-yonetimi.component.html'
+    templateUrl: './istasyon-yonetimi.component.html',
+    styleUrls: ['./istasyon-yonetimi.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IstasyonYonetimiComponent implements OnInit {
     treeData: TreeNode[] = [];

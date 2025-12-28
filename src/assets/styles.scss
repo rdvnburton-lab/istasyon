@@ -3,3 +3,407 @@
 @use './layout/layout.scss';
 @use 'primeicons/primeicons.css';
 @use './demo/demo.scss';
+
+/* Mobile Safe Area Insets */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
+body {
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  min-height: 100vh;
+}
+
+// ============================================
+// PATRON DASHBOARD - NATIVE MOBILE APP DESIGN
+// ============================================
+@media screen and (max-width: 991px) {
+  .patron-dashboard {
+    padding: 0 !important;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    min-height: 100vh;
+  }
+
+  // ===== MOBILE HEADER - Clean & Minimal =====
+  .patron-dashboard .dashboard-header {
+    padding: 1rem 1rem 0.75rem 1rem !important;
+    margin-bottom: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .patron-dashboard .header-text {
+    flex: 1;
+  }
+
+  .patron-dashboard .dashboard-title {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    letter-spacing: -0.025em;
+
+    i {
+      display: none !important;
+    }
+  }
+
+  .patron-dashboard .dashboard-subtitle {
+    display: none !important;
+  }
+
+  .patron-dashboard .refresh-btn {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 12px !important;
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  // ===== STAT CARDS - Gradient Carousel =====
+  .patron-dashboard .stat-cards-container,
+  .patron-dashboard .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    padding: 0.5rem 1rem 1.5rem 1rem !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .patron-dashboard .stat-cards-container>div,
+  .patron-dashboard .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4>div {
+    flex: 0 0 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+    scroll-snap-align: start;
+    margin: 0 !important;
+  }
+
+  // Override stat card colors with gradients
+  .patron-dashboard .stat-card {
+    padding: 1.25rem !important;
+    border-radius: 20px !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .patron-dashboard .stat-card-blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+
+    .stat-label,
+    .stat-value,
+    .stat-footer,
+    .stat-icon {
+      color: white !important;
+    }
+
+    .stat-icon-wrapper {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+
+  .patron-dashboard .stat-card-green {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+
+    .stat-label,
+    .stat-value,
+    .stat-footer,
+    .stat-icon {
+      color: white !important;
+    }
+
+    .stat-icon-wrapper {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .text-green-500,
+    .text-red-500 {
+      color: white !important;
+      opacity: 0.9;
+    }
+  }
+
+  .patron-dashboard .stat-card-orange {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+
+    .stat-label,
+    .stat-value,
+    .stat-footer,
+    .stat-icon,
+    .click-indicator {
+      color: white !important;
+    }
+
+    .stat-icon-wrapper {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+
+  .patron-dashboard .stat-card-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+
+    .stat-label,
+    .stat-value,
+    .stat-footer,
+    .stat-icon {
+      color: white !important;
+    }
+
+    .stat-icon-wrapper {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+
+  .patron-dashboard .stat-value {
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.025em;
+  }
+
+  .patron-dashboard .stat-label {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+  }
+
+  .patron-dashboard .stat-footer {
+    font-size: 0.75rem !important;
+    opacity: 0.85;
+  }
+
+  // ===== SECTION HEADERS - Native Style =====
+  .patron-dashboard .chart-header,
+  .patron-dashboard .info-card-header,
+  .patron-dashboard .table-card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 1rem !important;
+  }
+
+  .patron-dashboard .chart-title,
+  .patron-dashboard .info-card-title,
+  .patron-dashboard .table-card-title {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+  }
+
+  .patron-dashboard .chart-subtitle {
+    display: none !important;
+  }
+
+  // ===== CARDS - Glass Morphism Style =====
+  .patron-dashboard .chart-card,
+  .patron-dashboard .info-card,
+  .patron-dashboard .table-card {
+    background: white !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    margin-bottom: 1rem !important;
+    overflow: hidden;
+  }
+
+  // ===== GRID LAYOUT =====
+  .patron-dashboard .grid:not(.stat-cards-container):not(.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4) {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 1rem !important;
+    gap: 1rem !important;
+  }
+
+  .patron-dashboard .grid.mb-6 {
+    margin-bottom: 1rem !important;
+  }
+
+  .patron-dashboard [class*="lg:col-span"],
+  .patron-dashboard [class*="col-span"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  // ===== TOP STATIONS - Compact Cards =====
+  .patron-dashboard .top-station-item {
+    background: #f8fafc !important;
+    border-radius: 14px !important;
+    padding: 0.875rem !important;
+    margin-bottom: 0.5rem !important;
+    border: 1px solid #e2e8f0;
+  }
+
+  .patron-dashboard .station-rank {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 10px !important;
+  }
+
+  .patron-dashboard .station-revenue {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #3b82f6 !important;
+  }
+
+  // ===== ACTIVITY ITEMS =====
+  .patron-dashboard .activity-item {
+    padding: 0.75rem 0 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+  }
+
+  .patron-dashboard .activity-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+  }
+
+  // ===== CHARTS =====
+  .patron-dashboard .chart-content {
+    padding: 0 1rem 1rem 1rem !important;
+  }
+
+  .patron-dashboard p-chart {
+    height: 200px !important;
+  }
+
+  // ===== TABLE / MOBILE LIST =====
+  .patron-dashboard .hidden.md\:block {
+    display: none !important;
+  }
+
+  .patron-dashboard .block.md\:hidden {
+    display: block !important;
+  }
+
+  .patron-dashboard .mobile-list-item {
+    padding: 1rem;
+    background: white;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.15s ease;
+
+    &:active {
+      background: #f8fafc;
+      transform: scale(0.99);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .item-header {
+      margin-bottom: 0.5rem;
+    }
+
+    .filename {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1e293b;
+    }
+
+    .price {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #3b82f6;
+    }
+  }
+
+  // ===== HIDE DECORATIVE ELEMENTS =====
+  .patron-dashboard .chart-header>i,
+  .patron-dashboard .info-card-header>i {
+    display: none !important;
+  }
+}
+
+// ============================================
+// MOBILE LAYOUT ADJUSTMENTS
+// ============================================
+@media screen and (max-width: 991px) {
+
+  // Add padding at bottom for the bottom nav
+  .layout-main-container {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  // Hide footer on mobile
+  .layout-footer {
+    display: none !important;
+  }
+
+  // Mobile Topbar - Native App Style
+  .layout-topbar {
+    padding: 0 1rem !important;
+    padding-top: env(safe-area-inset-top) !important; // Safe area for notch
+    min-height: calc(56px + env(safe-area-inset-top));
+    background: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  // Hide hamburger menu button on mobile (using bottom nav instead)
+  .layout-menu-button {
+    display: none !important;
+  }
+
+  // Keep logo centered
+  .layout-topbar-logo-container {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .layout-topbar-logo {
+    margin: 0 auto;
+
+    span {
+      font-size: 1rem;
+    }
+  }
+
+  // Hide entire user menu on mobile (Profile is in bottom nav drawer)
+  .layout-topbar-menu {
+    display: none !important;
+  }
+
+  // Notifications button spacing
+  .notification-wrapper {
+    margin-right: 0;
+  }
+
+  // Hide sidebar completely on mobile (bottom nav handles navigation)
+  .layout-sidebar {
+    z-index: 1001;
+  }
+}

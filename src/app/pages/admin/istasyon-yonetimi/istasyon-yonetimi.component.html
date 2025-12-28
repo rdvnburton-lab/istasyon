@@ -1,7 +1,140 @@
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
-<div class="grid grid-cols-12 gap-4">
+<!-- MOBILE NATIVE VIEW -->
+<div class="istasyon-page block md:hidden">
+    <!-- Mobile Native Header -->
+    <div class="mobile-page-header">
+        <div class="page-title-section">
+            <div>
+                <h1 class="page-title">İstasyonlar</h1>
+                <p class="page-subtitle">Firma ve istasyon yönetimi</p>
+            </div>
+            <div class="header-actions" *ngIf="isAdmin">
+                <button class="add-btn firma-btn" (click)="showFirmaDialog(false)">
+                    <i class="pi pi-building"></i>
+                </button>
+                <button class="add-btn istasyon-btn" (click)="showIstasyonDialog(false)">
+                    <i class="pi pi-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firma Accordion List -->
+    <div class="firma-list">
+        <ng-container *ngIf="treeData.length > 0; else emptyMobile">
+            <div *ngFor="let firmaNode of treeData" class="firma-card">
+                <!-- Firma Header -->
+                <div class="firma-header" (click)="firmaNode.expanded = !firmaNode.expanded">
+                    <div class="firma-info">
+                        <div class="firma-icon">
+                            <i class="pi pi-building"></i>
+                        </div>
+                        <div class="firma-details">
+                            <h3 class="firma-name">{{ firmaNode.data.ad }}</h3>
+                            <p class="firma-meta">{{ firmaNode.data.patronAdi || 'Patron atanmamış' }}</p>
+                        </div>
+                    </div>
+                    <span class="firma-badge">{{ firmaNode.children?.length || 0 }} İstasyon</span>
+                    <div class="firma-actions" (click)="$event.stopPropagation()">
+                        <button class="firma-action-btn" (click)="showIstasyonDialog(false, null, firmaNode.data.id)"
+                            *ngIf="isAdmin">
+                            <i class="pi pi-plus"></i>
+                        </button>
+                        <button class="firma-action-btn" (click)="showFirmaDialog(true, firmaNode.data)"
+                            *ngIf="isAdmin">
+                            <i class="pi pi-pencil"></i>
+                        </button>
+                    </div>
+                    <i class="pi pi-chevron-down expand-icon" [class.expanded]="firmaNode.expanded"></i>
+                </div>
+
+                <!-- İstasyon List - Collapsible -->
+                <div class="istasyon-list"
+                    *ngIf="firmaNode.expanded && firmaNode.children && firmaNode.children.length > 0">
+                    <div *ngFor="let istasyonNode of firmaNode.children" class="istasyon-card">
+                        <div class="istasyon-header">
+                            <div class="istasyon-name">
+                                <i class="pi pi-map-marker"></i>
+                                <span>{{ istasyonNode.data.ad }}</span>
+                            </div>
+                            <div class="istasyon-status">
+                                <span class="status-indicator" [class.online]="istasyonNode.data.isOnline"
+                                    [class.offline]="!istasyonNode.data.isOnline"></span>
+                                <p-tag [value]="istasyonNode.data.aktif ? 'Aktif' : 'Pasif'"
+                                    [severity]="istasyonNode.data.aktif ? 'success' : 'danger'"
+                                    [style]="{fontSize: '0.65rem'}"></p-tag>
+                            </div>
+                        </div>
+
+                        <div class="istasyon-body">
+                            <div class="istasyon-field">
+                                <div class="field-label">İstasyon Sorumlusu</div>
+                                <div class="field-value">{{ istasyonNode.data.istasyonSorumlusu || '-' }}</div>
+                            </div>
+                            <div class="istasyon-field">
+                                <div class="field-label">Vardiya Sorumlusu</div>
+                                <div class="field-value">{{ istasyonNode.data.vardiyaSorumlusu || '-' }}</div>
+                            </div>
+                            <div class="istasyon-field">
+                                <div class="field-label">Market Sorumlusu</div>
+                                <div class="field-value">{{ istasyonNode.data.marketSorumlusu || '-' }}</div>
+                            </div>
+                            <div class="istasyon-field">
+                                <div class="field-label">Cihaz Kilidi</div>
+                                <div class="field-value">
+                                    <span *ngIf="istasyonNode.data.registeredDeviceId" class="lock-status locked">
+                                        <i class="pi pi-lock"></i> Kilitli
+                                    </span>
+                                    <span *ngIf="!istasyonNode.data.registeredDeviceId" class="lock-status unlocked">
+                                        <i class="pi pi-lock-open"></i> Serbest
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="istasyon-actions">
+                            <button class="istasyon-action-btn edit-btn"
+                                (click)="showIstasyonDialog(true, istasyonNode.data)">
+                                <i class="pi pi-pencil"></i> Düzenle
+                            </button>
+                            <button *ngIf="istasyonNode.data.registeredDeviceId" class="istasyon-action-btn unlock-btn"
+                                (click)="unlockStation(istasyonNode.data)">
+                                <i class="pi pi-unlock"></i> Kilidi Kaldır
+                            </button>
+                            <button *ngIf="isAdmin" class="istasyon-action-btn delete-btn"
+                                (click)="delete(istasyonNode.data)">
+                                <i class="pi pi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty İstasyon -->
+                <div class="istasyon-list"
+                    *ngIf="firmaNode.expanded && (!firmaNode.children || firmaNode.children.length === 0)">
+                    <div class="text-center p-4 text-muted-color text-sm">
+                        Bu firmaya ait istasyon bulunmuyor
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #emptyMobile>
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="pi pi-building"></i>
+                </div>
+                <div class="empty-title">Henüz Firma Yok</div>
+                <div class="empty-text">Yeni firma eklemek için + butonuna tıklayın</div>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+<!-- DESKTOP VIEW -->
+<div class="grid grid-cols-12 gap-4 hidden md:grid">
     <!-- Başlık -->
     <div class="col-span-12">
         <div class="card">

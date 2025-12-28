@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -26,11 +26,13 @@ import { VardiyaLog } from '../../models/vardiya-log.model';
     ],
     providers: [MessageService],
     templateUrl: './vardiya-loglar.component.html',
-    styleUrls: ['./vardiya-loglar.component.scss']
+    styleUrls: ['./vardiya-loglar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class VardiyaLoglarComponent implements OnInit {
     loglar: VardiyaLog[] = [];
     loading = false;
+    searchTerm = '';
 
     constructor(private vardiyaApiService: VardiyaApiService) { }
 

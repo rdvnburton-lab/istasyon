@@ -1,6 +1,101 @@
 <p-toast></p-toast>
 
-<div class="grid grid-cols-12 gap-6">
+<!-- MOBILE NATIVE VIEW -->
+<div class="logs-page block md:hidden">
+    <!-- Mobile Native Header -->
+    <div class="mobile-page-header">
+        <div class="page-title-row">
+            <div>
+                <h1 class="page-title">İşlem Geçmişi</h1>
+                <p class="page-subtitle">Vardiya log kayıtları</p>
+            </div>
+            <div class="logs-count">
+                <span class="count-badge">{{ loglar.length }}</span>
+                <button class="refresh-btn" (click)="loglariYukle()">
+                    <i class="pi pi-refresh"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-input-wrapper">
+            <i class="pi pi-search"></i>
+            <input class="search-input" type="text" placeholder="Vardiya, istasyon veya kullanıcı ara..."
+                (input)="searchTerm = $any($event.target).value" />
+        </div>
+    </div>
+
+    <!-- Log Cards -->
+    <div class="logs-list">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loglar yükleniyor...</div>
+        </div>
+
+        <!-- Log Cards -->
+        <ng-container *ngIf="!loading && loglar.length > 0">
+            <div *ngFor="let log of loglar" class="log-card">
+                <div class="log-header">
+                    <div class="log-id-vardiya">
+                        <span class="log-id">#{{ log.vardiyaId }}</span>
+                        <span class="log-vardiya">{{ log.vardiyaDosyaAdi }}</span>
+                    </div>
+                    <div class="log-date">
+                        <div class="log-date-value">{{ log.islemTarihi | date:'dd.MM.yyyy' }}</div>
+                        <div class="log-time-value">{{ log.islemTarihi | date:'HH:mm:ss' }}</div>
+                    </div>
+                </div>
+
+                <div class="log-body">
+                    <div class="log-row">
+                        <div class="log-field">
+                            <div class="field-label">İstasyon</div>
+                            <div class="field-value">{{ log.istasyonAdi }}</div>
+                        </div>
+                        <div class="log-field">
+                            <div class="field-label">Kullanıcı</div>
+                            <div class="field-value">{{ log.kullaniciAdi || '-' }}</div>
+                        </div>
+                    </div>
+
+                    <div class="log-islem-row">
+                        <p-tag [value]="getIslemLabel(log.islem)" [severity]="getIslemSeverity(log.islem)"
+                            [icon]="getIslemIcon(log.islem)"></p-tag>
+
+                        <div class="durum-change" *ngIf="log.eskiDurum && log.yeniDurum">
+                            <span class="old-durum">{{ log.eskiDurum }}</span>
+                            <i class="pi pi-arrow-right"></i>
+                            <span class="new-durum">{{ log.yeniDurum }}</span>
+                        </div>
+
+                        <p-tag *ngIf="log.kullaniciRol" [value]="log.kullaniciRol"
+                            [severity]="log.kullaniciRol === 'admin' ? 'danger' : log.kullaniciRol === 'patron' ? 'warn' : 'info'"
+                            [style]="{fontSize: '0.65rem'}"></p-tag>
+                    </div>
+
+                    <div class="log-aciklama" *ngIf="log.aciklama">
+                        {{ log.aciklama }}
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && loglar.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="pi pi-history"></i>
+            </div>
+            <div class="empty-title">İşlem Kaydı Yok</div>
+            <div class="empty-text">Vardiya işlemleri gerçekleştiğinde burada görünecektir</div>
+        </div>
+    </div>
+</div>
+
+<!-- DESKTOP VIEW -->
+<div class="grid grid-cols-12 gap-6 hidden md:grid">
     <!-- Başlık -->
     <div class="col-span-12">
         <div class="card">

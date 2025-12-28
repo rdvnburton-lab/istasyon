@@ -12,7 +12,12 @@ public class ConfigService
 
     public ConfigService()
     {
-        _configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+        // "Single File" uygulamasında AppContext.BaseDirectory geçici (Temp) klasörü gösterir.
+        // Bu yüzden Process.MainModule.FileName kullanarak .exe'nin olduğu gerçek klasörü buluyoruz.
+        var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+        var directory = Path.GetDirectoryName(exePath) ?? AppDomain.CurrentDomain.BaseDirectory;
+        
+        _configPath = Path.Combine(directory, "appsettings.json");
         _config = LoadConfig();
     }
 

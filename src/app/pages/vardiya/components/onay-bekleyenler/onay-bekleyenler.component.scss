@@ -30,3 +30,866 @@
 ::ng-deep .p-tag {
     font-weight: 600;
 }
+
+// ============================================
+// MOBILE NATIVE APP STYLING
+// ============================================
+@media screen and (max-width: 991px) {
+    :host {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+    }
+
+    // ===== PAGE CONTAINER =====
+    .onay-page-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    // ===== NATIVE PAGE HEADER =====
+    .mobile-page-header {
+        padding: 1rem;
+        padding-top: calc(1rem + env(safe-area-inset-top));
+        background: white;
+    }
+
+    .page-title-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .pending-count {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .count-badge {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    .count-text {
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+
+    // ===== iOS SEGMENT CONTROL =====
+    .segment-control-container {
+        padding: 0 1rem 1rem;
+        background: white;
+    }
+
+    .segment-control {
+        display: flex;
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .segment-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+
+        i {
+            font-size: 1rem;
+        }
+
+        &.active {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    .segment-badge {
+        min-width: 18px;
+        height: 18px;
+        border-radius: 9px;
+        background: #3b82f6;
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 5px;
+
+        &.warn {
+            background: #f59e0b;
+        }
+
+        &.danger {
+            background: #ef4444;
+        }
+    }
+
+    // ===== CONTENT CONTAINER =====
+    .content-container {
+        flex: 1;
+        padding: 1rem;
+    }
+
+    // Hide old grid classes
+    .grid.grid-cols-12 {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+
+    // ===== HEADER CARD =====
+    .card:first-child {
+        background: transparent !important;
+        padding: 1rem !important;
+        border-radius: 0 !important;
+        margin-bottom: 0 !important;
+        box-shadow: none !important;
+    }
+
+    h2 {
+        font-size: 1.375rem !important;
+        font-weight: 800 !important;
+        color: #1e293b !important;
+
+        i {
+            display: none !important;
+        }
+    }
+
+    h2+p {
+        display: none !important; // Hide subtitle on mobile
+    }
+
+    // ===== TAB BUTTONS - Pill Style =====
+    ::ng-deep .p-selectbutton {
+        display: flex !important;
+        width: 100% !important;
+        gap: 8px !important;
+        flex-wrap: wrap !important;
+
+        .p-button {
+            flex: 1 !important;
+            min-width: 0 !important;
+            padding: 0.75rem 0.5rem !important;
+            border-radius: 12px !important;
+            background: white !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            font-size: 0.8rem !important;
+
+            &.p-highlight {
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+                color: white !important;
+                border-color: transparent !important;
+            }
+
+            .p-button-label {
+                display: none !important; // Hide text, show only icon and badge
+            }
+
+            i {
+                font-size: 1.1rem !important;
+            }
+        }
+    }
+
+    // Refresh button
+    ::ng-deep .p-button-secondary.p-button-text {
+        display: none !important;
+    }
+
+    // ===== CONTENT CARD =====
+    .card:last-child {
+        background: transparent !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    // ===== HIDE DESKTOP TABLE =====
+    ::ng-deep .p-datatable {
+        display: none !important;
+    }
+
+    // ===== MOBILE APPROVAL CARDS =====
+    .mobile-approval-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 0 1rem 1rem 1rem;
+    }
+
+    .mobile-approval-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        border: 1px solid #f1f5f9;
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .card-id {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .card-amount {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #3b82f6;
+            text-align: right;
+        }
+
+        .card-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 4px 8px;
+            border-radius: 6px;
+
+            i {
+                font-size: 0.7rem;
+            }
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &.btn-primary {
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+                color: white;
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+
+            &.btn-success {
+                background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+                color: white;
+            }
+
+            &.btn-danger {
+                background: #fef2f2;
+                color: #ef4444;
+                border: 1px solid #fecaca;
+            }
+
+            i {
+                font-size: 1rem;
+            }
+        }
+    }
+
+    // ===== STATUS TAG =====
+    .status-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+
+        &.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        &.delete-request {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+    }
+
+    // ===== EMPTY STATE =====
+    .mobile-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 2rem;
+        text-align: center;
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+
+            i {
+                font-size: 2rem;
+                color: #22c55e;
+            }
+        }
+
+        .empty-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+    }
+
+    // ===== MOBILE TAHSILAT VIEW =====
+    .mobile-tahsilat-view {
+        padding: 0.5rem 0;
+    }
+
+    .tahsilat-section {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .tahsilat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .tahsilat-item {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 0.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        &.highlight-blue {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+    }
+
+    .tahsilat-label {
+        font-size: 0.7rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tahsilat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .tahsilat-total {
+        margin-top: 1rem;
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        span:first-child {
+            font-weight: 600;
+            color: #166534;
+        }
+
+        .total-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #166534;
+        }
+    }
+
+    .kredi-karti-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .kredi-karti-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+
+        &.special {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+
+            .banka-adi {
+                font-weight: 700;
+            }
+
+            .banka-tutar {
+                color: #7c3aed;
+            }
+        }
+    }
+
+    .banka-adi {
+        font-size: 0.875rem;
+        color: #475569;
+    }
+
+    .banka-tutar {
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .empty-message {
+        text-align: center;
+        color: #94a3b8;
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+
+    // ===== MOBILE PERSONEL VIEW =====
+    .personel-mobile-view {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+    }
+
+    .personel-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .personel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .personel-name {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #1e293b;
+    }
+
+    .personel-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.25rem 0;
+
+        .label {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .value {
+            font-size: 0.9rem;
+            color: #334155;
+
+            &.bold {
+                font-weight: 700;
+            }
+        }
+
+        &.fark-row {
+            margin-top: 0.25rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: #f8fafc;
+
+            &.negative {
+                background: #fef2f2;
+
+                .value {
+                    color: #dc2626;
+                }
+            }
+
+            &.positive {
+                background: #f0fdf4;
+
+                .value {
+                    color: #16a34a;
+                }
+            }
+        }
+    }
+
+    // ===== CUSTOM DIALOG HEADER with Safe Area =====
+    .mobile-dialog-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        padding-top: calc(1rem + env(safe-area-inset-top)); // Safe area for notch
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        min-height: calc(56px + env(safe-area-inset-top));
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-title {
+        flex: 1;
+        color: white;
+        font-size: 0.95rem;
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-right: 1rem;
+    }
+
+    .header-close-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+
+        i {
+            font-size: 1.25rem;
+        }
+
+        &:active {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0.95);
+        }
+    }
+
+    .dialog-content {
+        padding: 1rem;
+        background: #f8fafc;
+        padding-bottom: calc(100px + env(safe-area-inset-bottom)); // Space for action buttons
+    }
+
+    // ===== DIALOG MOBILE OPTIMIZATION =====
+    ::ng-deep .p-dialog {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+
+        .p-dialog-header {
+            padding: 1rem !important;
+            padding-top: calc(1rem + env(safe-area-inset-top)) !important; // Safe area for notch
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            color: white !important;
+            border-radius: 0 !important;
+            min-height: calc(56px + env(safe-area-inset-top));
+
+            .p-dialog-title {
+                color: white !important;
+                font-size: 0.95rem !important;
+                font-weight: 700 !important;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding-right: 1rem;
+            }
+
+            // Close button styling
+            .p-dialog-header-icon {
+                color: white !important;
+                width: 40px !important;
+                height: 40px !important;
+                background: rgba(255, 255, 255, 0.2) !important;
+                border-radius: 50% !important;
+                margin-left: auto !important;
+                flex-shrink: 0;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.3) !important;
+                }
+
+                .pi {
+                    font-size: 1.25rem !important;
+                }
+            }
+        }
+
+        .p-dialog-content {
+            padding: 0 !important;
+            background: #f8fafc !important;
+            overflow-y: auto !important;
+            padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important; // Space for bottom buttons
+        }
+
+        .p-dialog-footer {
+            padding: 1rem !important;
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
+            background: white !important;
+            border-top: 1px solid #e2e8f0 !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 10;
+        }
+    }
+
+    // ===== DIALOG SUMMARY CARDS - Horizontal Scroll =====
+    ::ng-deep .p-dialog .grid.grid-cols-1.md\:grid-cols-5,
+    ::ng-deep .p-dialog .grid.grid-cols-1.md\:grid-cols-4 {
+        display: flex !important;
+        overflow-x: auto !important;
+        gap: 10px !important;
+        padding: 1rem !important;
+        margin: 0 !important;
+        background: white;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        >div {
+            flex: 0 0 130px !important;
+            min-width: 130px !important;
+            scroll-snap-align: start;
+            padding: 0.75rem !important;
+            border-radius: 12px !important;
+
+            span:first-child {
+                font-size: 0.65rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            span:last-child {
+                font-size: 1.25rem !important;
+            }
+        }
+    }
+
+    // ===== DIALOG TABS - Compact =====
+    ::ng-deep .p-dialog .p-tablist {
+        background: white !important;
+        padding: 0.5rem 1rem !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        overflow-x: auto !important;
+
+        .p-tab {
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.8rem !important;
+            white-space: nowrap;
+        }
+    }
+
+    ::ng-deep .p-dialog .p-tabpanels {
+        padding: 0 !important;
+    }
+
+    ::ng-deep .p-dialog .p-tabpanel {
+        padding: 1rem !important;
+    }
+
+    // ===== DIALOG TABLES - Card Style =====
+    ::ng-deep .p-dialog .p-datatable {
+        display: block !important;
+
+        .p-datatable-thead {
+            display: none !important;
+        }
+
+        .p-datatable-tbody {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+
+        .p-datatable-tbody>tr {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            background: white !important;
+            border-radius: 12px !important;
+            padding: 0.75rem !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            border: 1px solid #f1f5f9 !important;
+            gap: 0.5rem !important;
+
+            >td {
+                padding: 0 !important;
+                border: none !important;
+
+                &:first-child {
+                    width: 100% !important;
+                    font-weight: 700 !important;
+                    font-size: 0.95rem !important;
+                    color: #1e293b !important;
+                    margin-bottom: 0.25rem !important;
+                }
+
+                &:not(:first-child) {
+                    font-size: 0.8rem !important;
+                    color: #64748b !important;
+                    background: #f8fafc !important;
+                    padding: 4px 8px !important;
+                    border-radius: 6px !important;
+                }
+
+                &:last-child {
+                    margin-left: auto !important;
+                }
+            }
+        }
+    }
+
+    // ===== DIALOG ACTION BUTTONS =====
+    ::ng-deep .p-dialog .flex.justify-between {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        padding: 1rem !important;
+        background: white !important;
+
+        >div:first-child {
+            font-size: 0.75rem !important;
+        }
+
+        >div:last-child {
+            display: flex !important;
+            gap: 8px !important;
+
+            .p-button {
+                flex: 1 !important;
+                justify-content: center !important;
+                border-radius: 12px !important;
+                padding: 0.875rem !important;
+                font-weight: 600 !important;
+            }
+        }
+    }
+
+    // ===== DIALOG SECTION HEADERS =====
+    ::ng-deep .p-dialog h3 {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: #1e293b !important;
+        padding: 0.75rem 0 !important;
+        margin: 0 !important;
+    }
+
+    // ===== DIALOG KEY-VALUE ROWS =====
+    ::ng-deep .p-dialog .flex.justify-between.p-3 {
+        border-radius: 8px !important;
+        margin-bottom: 4px !important;
+        font-size: 0.875rem !important;
+    }
+
+    // ===== DIALOG TWO COLUMNS - Stack =====
+    ::ng-deep .p-dialog .grid.grid-cols-1.md\:grid-cols-2 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+}

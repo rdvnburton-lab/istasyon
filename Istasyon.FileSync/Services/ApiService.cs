@@ -71,8 +71,8 @@ public class ApiService
     public class StationLoginDto
     {
         public int Id { get; set; }
-        public string Ad { get; set; }
-        public string ApiKey { get; set; }
+        public string? Ad { get; set; }
+        public string? ApiKey { get; set; }
     }
 
     public async Task<(bool success, string message, string? role, System.Collections.Generic.List<StationLoginDto>? stations)> LoginAsync(string username, string password)
@@ -174,6 +174,23 @@ public class ApiService
             Log.Error(ex, "İstasyonlar alınamadı.");
         }
         return new List<IstasyonDto>();
+    }
+
+    public async Task<bool> UnlockStationAsync(int stationId)
+    {
+        if (string.IsNullOrEmpty(_authToken)) return false;
+
+        try
+        {
+            var baseUrl = GetBaseUrl(_apiUrl);
+            var response = await _httpClient.PostAsync($"{baseUrl}/api/Istasyon/{stationId}/unlock", null);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "İstasyon kilidi açılamadı.");
+            return false;
+        }
     }
 
     public async Task<(List<DiagnosticResult> results, StationInfo? info)> RunDiagnosticsAsync(string url, string apiKey, int istasyonId)

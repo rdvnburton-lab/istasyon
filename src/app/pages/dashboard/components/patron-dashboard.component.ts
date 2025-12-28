@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -55,7 +55,8 @@ interface PatronDashboard {
         RippleModule
     ],
     templateUrl: './patron-dashboard.component.html',
-    styleUrl: './patron-dashboard.component.scss'
+    styleUrl: './patron-dashboard.component.scss',
+    encapsulation: ViewEncapsulation.None
 })
 export class PatronDashboardComponent implements OnInit {
     dashboard: PatronDashboard | null = null;

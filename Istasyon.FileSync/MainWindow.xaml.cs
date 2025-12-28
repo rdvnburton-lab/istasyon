@@ -79,7 +79,7 @@ public partial class MainWindow : Window
                     // Scenario 1: Admin/Patron - ALWAYS select Firm -> Station explicitly
                     if (role?.ToLower() == "admin" || role?.ToLower() == "patron")
                     {
-                        var adminSetup = new AdminSetupDialog(apiService);
+                        var adminSetup = new AdminSetupDialog(apiService, config.ClientUniqueId);
                         if (adminSetup.ShowDialog() == true && adminSetup.SelectedStation != null)
                         {
                             var selectedStation = adminSetup.SelectedStation;
@@ -95,9 +95,9 @@ public partial class MainWindow : Window
                     {
                         var selectedStation = stations[0];
                         config = _configService.Config;
-                        config.ApiKey = selectedStation.ApiKey;
+                        config.ApiKey = selectedStation.ApiKey ?? "";
                         config.IstasyonId = selectedStation.Id;
-                        SaveAndRestart(config, selectedStation.Ad);
+                        SaveAndRestart(config, selectedStation.Ad ?? "Bilinmeyen İstasyon");
                         loginSuccess = true;
                     }
                     else
@@ -105,10 +105,10 @@ public partial class MainWindow : Window
                         MessageBox.Show("Bu kullanıcıya tanımlı istasyon bulunamadı ve yetkili değilsiniz.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-                    else
-                    {
-                        MessageBox.Show("Bu kullanıcıya tanımlı istasyon bulunamadı ve yetkili değilsiniz.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                else
+                {
+                    MessageBox.Show(msg, "Giriş Başarısız", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 }
                 else
                 {

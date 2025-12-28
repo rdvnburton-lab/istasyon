@@ -1,7 +1,7 @@
 <Window x:Class="Istasyon.FileSync.AdminSetupDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="İstasyon Seçimi" Height="300" Width="400"
+        Title="İstasyon Seçimi" Width="400" SizeToContent="Height"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="20">
         <StackPanel VerticalAlignment="Center">
@@ -14,7 +14,19 @@
 
             <TextBlock Text="İstasyon:" FontWeight="Bold" Margin="0,0,0,5"/>
             <ComboBox x:Name="CmbStations" DisplayMemberPath="Ad" 
-                      SelectionChanged="CmbStations_SelectionChanged" Height="30" IsEnabled="False" Margin="0,0,0,15"/>
+                      SelectionChanged="CmbStations_SelectionChanged" Height="30" IsEnabled="False" Margin="0,0,0,5"/>
+
+            <TextBlock x:Name="TxtWarning" Text="Bu istasyon şu anda başka bir cihazda aktif!" 
+                       Foreground="Red" FontWeight="Bold" Visibility="Collapsed" 
+                       HorizontalAlignment="Center" Margin="0,0,0,5"/>
+
+            <TextBlock x:Name="TxtDebug" FontSize="10" Foreground="Gray" 
+                       HorizontalAlignment="Center" Margin="0,0,0,5" TextWrapping="Wrap"/>
+
+
+            <Button x:Name="BtnUnlock" Content="Kilidi Kaldır" Click="BtnUnlock_Click" 
+                    Height="30" Margin="0,0,0,10" Background="#FFA500" Foreground="White" 
+                    FontWeight="Bold" Visibility="Collapsed"/>
 
             <Button x:Name="BtnSave" Content="Seçimi Kaydet" Click="BtnSave_Click" 
                     Height="40" Margin="0,5,0,0" IsEnabled="False"

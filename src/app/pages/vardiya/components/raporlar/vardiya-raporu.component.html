@@ -1,4 +1,164 @@
-<div class="grid grid-cols-12 gap-6">
+<!-- MOBILE NATIVE VIEW -->
+<div class="rapor-page block md:hidden">
+    <!-- Mobile Native Header -->
+    <div class="mobile-page-header">
+        <div class="page-title-row">
+            <div>
+                <h1 class="page-title">Raporlar</h1>
+                <p class="page-subtitle">{{ raporTuru === 'pompa' ? 'Pompa' : 'Market' }} performans özeti</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Segment Control (Pompa/Market) -->
+    <div class="segment-container"
+        *ngIf="userRole === 'admin' || userRole === 'patron' || userRole === 'istasyon_sorumlusu'">
+        <div class="segment-control">
+            <button *ngFor="let item of raporTurleri" class="segment-btn" [class.active]="raporTuru === item.value"
+                (click)="raporTuru = $any(item.value); raporla()">
+                <i [class]="item.icon"></i>
+                <span>{{ item.label }}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Date Filters -->
+    <div class="filter-container">
+        <div class="date-row">
+            <div class="date-field">
+                <div class="date-label">Başlangıç</div>
+                <input class="date-input" type="date" [value]="baslangicTarihi | date:'yyyy-MM-dd'"
+                    (change)="baslangicTarihi = $any($event.target).valueAsDate" />
+            </div>
+            <div class="date-field">
+                <div class="date-label">Bitiş</div>
+                <input class="date-input" type="date" [value]="bitisTarihi | date:'yyyy-MM-dd'"
+                    (change)="bitisTarihi = $any($event.target).valueAsDate" />
+            </div>
+        </div>
+        <div class="quick-filters">
+            <button class="quick-btn" (click)="tarihAyarla('bugun')">Bugün</button>
+            <button class="quick-btn" (click)="tarihAyarla('dun')">Dün</button>
+            <button class="quick-btn" (click)="tarihAyarla('buAy')">Bu Ay</button>
+            <button class="quick-btn active" (click)="raporla()">Raporla</button>
+        </div>
+    </div>
+
+    <!-- Summary Cards - Pompa -->
+    <div *ngIf="raporTuru === 'pompa'" class="summary-scroll">
+        <div class="summary-card blue">
+            <div class="summary-label">Toplam Vardiya</div>
+            <div class="summary-value">{{ ozet.toplamVardiya }}</div>
+        </div>
+        <div class="summary-card green">
+            <div class="summary-label">Toplam Ciro</div>
+            <div class="summary-value">{{ ozet.toplamTutar | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="summary-card orange">
+            <div class="summary-label">Toplam Litre</div>
+            <div class="summary-value">{{ ozet.toplamLitre | number:'1.0-0' }} Lt</div>
+        </div>
+        <div class="summary-card purple">
+            <div class="summary-label">Toplam Gider</div>
+            <div class="summary-value">{{ ozet.toplamGider | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+    </div>
+
+    <!-- Summary Cards - Market -->
+    <div *ngIf="raporTuru === 'market'" class="summary-scroll">
+        <div class="summary-card blue">
+            <div class="summary-label">Toplam Vardiya</div>
+            <div class="summary-value">{{ ozet.toplamVardiya }}</div>
+        </div>
+        <div class="summary-card green">
+            <div class="summary-label">Toplam Satış</div>
+            <div class="summary-value">{{ ozet.toplamSatis | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="summary-card indigo">
+            <div class="summary-label">Toplam Teslimat</div>
+            <div class="summary-value">{{ ozet.toplamTeslimat | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="summary-card" [ngClass]="ozet.toplamFark < 0 ? 'red' : 'teal'">
+            <div class="summary-label">Toplam Fark</div>
+            <div class="summary-value">{{ ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+    </div>
+
+    <!-- Vardiya Cards Section -->
+    <div class="section-title">Vardiya Listesi ({{ vardiyalar.length }})</div>
+
+    <div class="vardiya-list">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="text-center p-4">
+            <i class="pi pi-spin pi-spinner text-2xl text-blue-500"></i>
+        </div>
+
+        <!-- Pompa Vardiyalar -->
+        <ng-container *ngIf="!loading && raporTuru === 'pompa'">
+            <div *ngFor="let vardiya of vardiyalar" class="vardiya-card">
+                <div class="vardiya-header">
+                    <span class="vardiya-date">{{ vardiya.tarih | date:'dd.MM.yyyy HH:mm' }}</span>
+                    <p-tag [value]="vardiya.durum"
+                        [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"
+                        [style]="{fontSize: '0.7rem'}"></p-tag>
+                </div>
+                <div class="vardiya-body">
+                    <div class="vardiya-field full-width">
+                        <div class="field-label">Dosya Adı</div>
+                        <div class="field-value">{{ vardiya.dosyaAdi }}</div>
+                    </div>
+                    <div class="vardiya-field">
+                        <div class="field-label">Tutar</div>
+                        <div class="field-value">{{ vardiya.tutar | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- Market Vardiyalar -->
+        <ng-container *ngIf="!loading && raporTuru === 'market'">
+            <div *ngFor="let vardiya of vardiyalar" class="vardiya-card">
+                <div class="vardiya-header">
+                    <span class="vardiya-date">{{ vardiya.tarih | date:'dd.MM.yyyy' }}</span>
+                    <p-tag [value]="vardiya.durum"
+                        [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"
+                        [style]="{fontSize: '0.7rem'}"></p-tag>
+                </div>
+                <div class="vardiya-body">
+                    <div class="vardiya-field">
+                        <div class="field-label">Satış</div>
+                        <div class="field-value">{{ vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.2-2'
+                            }}</div>
+                    </div>
+                    <div class="vardiya-field">
+                        <div class="field-label">Teslimat</div>
+                        <div class="field-value">{{ vardiya.toplamTeslimatTutari |
+                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                    </div>
+                    <div class="vardiya-field full-width">
+                        <div class="field-label">Fark</div>
+                        <div class="field-value" [class.positive]="vardiya.toplamFark >= 0"
+                            [class.negative]="vardiya.toplamFark < 0">
+                            {{ vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && vardiyalar.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="pi pi-chart-bar"></i>
+            </div>
+            <div class="empty-title">Kayıt Bulunamadı</div>
+            <div class="empty-text">Bu tarih aralığında veri bulunmuyor</div>
+        </div>
+    </div>
+</div>
+
+<!-- DESKTOP VIEW -->
+<div class="grid grid-cols-12 gap-6 hidden md:grid">
     <!-- Başlık -->
     <div class="col-span-12">
         <div class="card">

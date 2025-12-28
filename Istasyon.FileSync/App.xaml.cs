@@ -15,8 +15,22 @@ public partial class App : Application
     private ApiService? _apiService;
     private FileWatcherService? _fileWatcherService;
 
+    private static System.Threading.Mutex? _mutex;
+
     protected override void OnStartup(StartupEventArgs e)
     {
+        const string appName = "IstasyonFileSync_SingleInstance_Mutex";
+        bool createdNew;
+
+        _mutex = new System.Threading.Mutex(true, appName, out createdNew);
+
+        if (!createdNew)
+        {
+            MessageBox.Show("Uygulama zaten çalışıyor! Sistem tepsisini (saat yanı) kontrol ediniz.", "İstasyon", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Application.Current.Shutdown();
+            return;
+        }
+
         base.OnStartup(e);
 
         // Serilog Yapılandırması

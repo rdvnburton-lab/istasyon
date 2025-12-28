@@ -1,8 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, Subject, Subscription, merge, fromEvent, timer, throttleTime } from 'rxjs';
+import { BehaviorSubject, Observable, tap, Subject, Subscription, merge, fromEvent, timer, throttleTime, from, of, catchError, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Capacitor } from '@capacitor/core';
+import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 
 export interface SimpleIstasyon {
     id: number;
@@ -114,6 +116,10 @@ export class AuthService {
         this.currentUserSubject.next(user);
     }
 
+    public async saveCredentialsForBiometric(username: string, password: string) {
+        await this.saveBiometricCredentials(username, password);
+    }
+
     public setSelectedIstasyon(istasyon: SimpleIstasyon) {
         sessionStorage.setItem('selectedIstasyonId', istasyon.id.toString());
         this.selectedIstasyonSubject.next(istasyon);
@@ -195,6 +201,81 @@ export class AuthService {
             return payload.id ? parseInt(payload.id, 10) : undefined;
         } catch (e) {
             return undefined;
+        }
+    }
+
+    // --- Biometric Authentication ---
+
+    async checkBiometricAvailability(): Promise<boolean> {
+        if (!Capacitor.isNativePlatform()) return false;
+        try {
+            const result = await NativeBiometric.isAvailable();
+            return result.isAvailable;
+        } catch (e) {
+            console.error('Biometric check failed', e);
+            return false;
+        }
+    }
+
+    async saveBiometricCredentials(username: string, password: string): Promise<void> {
+        if (!Capacitor.isNativePlatform()) return;
+        try {
+            // Check if available first
+            const available = await this.checkBiometricAvailability();
+            if (available) {
+                await NativeBiometric.setCredentials({
+                    username,
+                    password,
+                    server: 'tr.com.istasyon.patron',
+                });
+            }
+        } catch (e) {
+            console.error('Failed to save biometric credentials', e);
+        }
+    }
+
+    async loginWithBiometric(): Promise<boolean> {
+        if (!Capacitor.isNativePlatform()) return false;
+        try {
+            const result = await NativeBiometric.isAvailable();
+            if (!result.isAvailable) return false;
+
+            await NativeBiometric.verifyIdentity({
+                reason: "Patron Paneline Giriş",
+                title: "Hızlı Giriş",
+                subtitle: "Devam etmek için doğrulayın",
+                description: "Lütfen parmak izinizi veya yüzünüzü okutun",
+            });
+
+            // If we are here, verification was successful (otherwise it throws)
+            const credentials = await NativeBiometric.getCredentials({
+                server: 'tr.com.istasyon.patron',
+            });
+
+            if (credentials && credentials.username && credentials.password) {
+                // Trigger normal login flow
+                return new Promise((resolve) => {
+                    this.login(credentials.username, credentials.password).subscribe({
+                        next: () => resolve(true),
+                        error: () => resolve(false)
+                    });
+                });
+            }
+        } catch (e) {
+            console.error('Biometric login failed', e);
+        }
+        return false;
+    }
+
+    // Clear biometric credentials on logout if needed (Optional policy)
+    async clearBiometricCredentials(): Promise<void> {
+        if (!Capacitor.isNativePlatform()) return;
+        try {
+            await NativeBiometric.deleteCredentials({
+                server: 'tr.com.istasyon.patron',
+            });
+        } catch (e) {
+            // Ignore
         }
     }
 }

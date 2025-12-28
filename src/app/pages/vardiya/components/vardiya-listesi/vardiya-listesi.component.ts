@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -57,7 +57,8 @@ interface YuklenenVardiya {
     ],
     providers: [MessageService],
     templateUrl: './vardiya-listesi.component.html',
-    styleUrls: ['./vardiya-listesi.component.scss']
+    styleUrls: ['./vardiya-listesi.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class VardiyaListesi implements OnInit {
     vardiyalar: YuklenenVardiya[] = [];

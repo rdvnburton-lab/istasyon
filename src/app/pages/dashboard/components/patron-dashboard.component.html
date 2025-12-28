@@ -26,8 +26,8 @@
 
     <!-- Main Content -->
     <ng-container *ngIf="!loading && dashboard">
-        <!-- Stat Cards Row -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Stat Cards Row (Carousel on Mobile) -->
+        <div class="stat-cards-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="stat-card stat-card-blue">
                 <div class="stat-icon-wrapper">
                     <i class="pi pi-chart-line stat-icon"></i>
@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <!-- Pending Approvals Table -->
+        <!-- Pending Approvals Table / Mobile List -->
         <div class="grid grid-cols-1 gap-4" *ngIf="dashboard.onayBekleyenler.liste.length > 0">
             <div class="col-span-1">
                 <div class="table-card bg-surface-card rounded-lg shadow-sm overflow-hidden">
@@ -231,7 +231,9 @@
                         <p-tag [value]="dashboard.onayBekleyenler.toplamSayi.toString()" severity="warn"
                             [rounded]="true"></p-tag>
                     </div>
-                    <div class="p-4">
+
+                    <!-- Desktop Table View -->
+                    <div class="p-4 hidden md:block">
                         <p-table [value]="dashboard.onayBekleyenler.liste" styleClass="p-datatable-sm"
                             [paginator]="false">
                             <ng-template pTemplate="header">
@@ -270,6 +272,31 @@
                             </ng-template>
                         </p-table>
                     </div>
+
+                    <!-- Mobile List View -->
+                    <div class="block md:hidden">
+                        <div class="mobile-list-item" *ngFor="let vardiya of dashboard.onayBekleyenler.liste"
+                            (click)="navigateToOnayBekleyenler()">
+                            <div class="item-header">
+                                <span class="filename">
+                                    <i class="pi pi-file-pdf text-red-500"></i>
+                                    {{ vardiya.dosyaAdi }}
+                                </span>
+                                <p-tag [value]="getDurumLabel(vardiya.durum)"
+                                    [severity]="getDurumSeverity(vardiya.durum)"></p-tag>
+                            </div>
+                            <div class="item-details">
+                                <span class="istasyon">{{ vardiya.istasyonAdi }}</span>
+                                <span class="price">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.0-0'
+                                    }}</span>
+                            </div>
+                            <div class="mt-2 text-xs text-surface-400 flex justify-between items-center">
+                                <span>{{ vardiya.olusturmaTarihi | date:'dd.MM.yyyy HH:mm' }}</span>
+                                <i class="pi pi-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

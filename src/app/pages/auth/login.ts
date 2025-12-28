@@ -61,6 +61,11 @@ import { ToastModule } from 'primeng/toast';
                         <a href="#" class="forgot-pass">Şifremi Unuttum?</a>
                         <input type="submit" class="btn pulse-effect" value="Giriş Yap" [disabled]="loading">
                         
+                        <button *ngIf="biometricAvailable" type="button" class="btn biometric-btn mt-3" 
+                            (click)="loginWithBiometric()" [disabled]="loading">
+                            <i class="pi pi-face-smile mr-2"></i> Face ID / Touch ID
+                        </button>
+                        
                         <div *ngIf="error" class="error-msg">
                             <i class="pi pi-exclamation-circle"></i> {{ error }}
                         </div>
@@ -329,7 +334,32 @@ export class Login {
     loading: boolean = false;
     error: string = '';
 
+    biometricAvailable: boolean = false;
+
     constructor(private authService: AuthService, private router: Router, private messageService: MessageService) { }
+
+    ngOnInit() {
+        this.checkBiometric();
+    }
+
+    async checkBiometric() {
+        this.biometricAvailable = await this.authService.checkBiometricAvailability();
+        if (this.biometricAvailable) {
+            // Opsiyonel: Uygulama açılır açılmaz sormak isterseniz burayı açın
+            // this.loginWithBiometric();
+        }
+    }
+
+    async loginWithBiometric() {
+        this.loading = true;
+        const result = await this.authService.loginWithBiometric();
+        if (result) {
+            this.router.navigate(['/']);
+        } else {
+            this.loading = false;
+            // Sessiz başarısızlık veya mesaj
+        }
+    }
 
     onLogin() {
         if (!this.username || !this.password) {
@@ -342,7 +372,10 @@ export class Login {
         this.error = '';
 
         this.authService.login(this.username, this.password).subscribe({
-            next: () => {
+            next: async () => {
+                // Başarılı girişte bilgileri biometrik depoya kaydet
+                await this.authService.saveCredentialsForBiometric(this.username, this.password);
+
                 this.loading = false;
                 this.router.navigate(['/']);
             },
