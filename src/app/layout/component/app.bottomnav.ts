@@ -128,7 +128,7 @@ interface BottomNavItem {
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: 60px;
+                height: calc(65px + env(safe-area-inset-bottom));
                 padding-bottom: env(safe-area-inset-bottom);
                 background: var(--surface-card);
                 border-top: 1px solid var(--surface-border);

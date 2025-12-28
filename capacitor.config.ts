@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'tr.com.istasyon.patron',
-  appName: 'İstasyon Patron',
+  appName: 'Ti-Shift',
   webDir: 'dist/tigin/browser',
   server: {
     androidScheme: 'https',

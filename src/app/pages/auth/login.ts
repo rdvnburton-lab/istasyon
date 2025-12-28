@@ -33,7 +33,7 @@ import { ToastModule } from 'primeng/toast';
                 <div class="glass-card">
                     <form (ngSubmit)="onLogin()">
                         <img src="assets/tshift.svg" alt="Logo Icon" class="form-logo">
-                        <h1 class="main-title">İstasyon Yönetimi</h1>
+                        <h1 class="main-title">Dijital İstasyon</h1>
                         <p class="subtitle">Sisteme erişmek için bilgilerinizi girin</p>
                         
                         <div class="input-div one" [class.focus]="usernameFocus || username">
@@ -58,7 +58,6 @@ import { ToastModule } from 'primeng/toast';
                             </div>
                         </div>
 
-                        <a href="#" class="forgot-pass">Şifremi Unuttum?</a>
                         <input type="submit" class="btn pulse-effect" value="Giriş Yap" [disabled]="loading">
                         
                         <button *ngIf="biometricAvailable" type="button" class="btn biometric-btn mt-3" 
@@ -314,14 +313,219 @@ import { ToastModule } from 'primeng/toast';
         }
 
         @media screen and (max-width: 900px) {
+            :host {
+                background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 50%, #dcfce7 100%);
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+
+            .bg-watermark {
+                display: block;
+                background-image: url('/assets/logo.svg');
+                opacity: 0.05;
+                background-size: 100px;
+            }
+
             .container {
                 grid-template-columns: 1fr;
+                padding: 0;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+                align-items: stretch;
+                height: 100%;
             }
+
             .img {
                 display: none;
             }
+
             .login-content {
-                padding: 1rem;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .glass-card {
+                background: transparent;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                padding: 0;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 1.25rem 1.5rem 2rem 1.5rem;
+                padding-top: calc(env(safe-area-inset-top, 10px) + 0.75rem);
+            }
+
+            .form-logo {
+                height: 85px !important;
+                margin: 0 auto 2.5rem auto !important;
+                filter: drop-shadow(0 6px 20px rgba(50, 190, 143, 0.25));
+            }
+
+            .main-title {
+                font-size: 1.85rem;
+                margin-bottom: 2rem;
+                color: #1e293b;
+                -webkit-text-fill-color: #1e293b;
+                font-weight: 700;
+            }
+
+            .subtitle {
+                display: none;
+            }
+
+            .input-div {
+                grid-template-columns: 40px 1fr;
+                margin: 8px 0;
+                padding: 14px 0;
+                border-bottom: 2px solid #e2e8f0;
+                background: transparent;
+                border-radius: 0;
+                box-shadow: none;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+            }
+
+            .input-div.focus {
+                border-bottom-color: #32be8f;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .i {
+                font-size: 1.3rem;
+                color: #94a3b8;
+            }
+
+            .input-div.focus .i i {
+                color: #32be8f;
+            }
+
+            .input-div > div {
+                height: 32px;
+            }
+
+            .input-div > div > h5 {
+                font-size: 16px;
+                left: 0;
+                color: #94a3b8;
+                font-weight: 400;
+            }
+
+            .input-div.focus > div > h5 {
+                top: -18px;
+                font-size: 12px;
+                color: #32be8f;
+                font-weight: 500;
+            }
+
+            .input-div > div > input {
+                font-size: 17px;
+                padding: 0;
+                font-weight: 400;
+                color: #1e293b;
+            }
+
+            .forgot-pass {
+                font-size: 0.85rem;
+                margin-top: 1.5rem;
+                margin-bottom: 2rem;
+                color: #32be8f;
+                font-weight: 500;
+                text-align: center;
+            }
+
+            .btn {
+                height: 56px;
+                border-radius: 16px;
+                font-size: 1.1rem;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                box-shadow: 0 8px 30px rgba(50, 190, 143, 0.35);
+                text-transform: none;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+                box-shadow: 0 4px 15px rgba(50, 190, 143, 0.25);
+            }
+
+            .biometric-btn {
+                height: 54px;
+                border-radius: 16px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+                font-size: 1rem;
+                font-weight: 600;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+                text-transform: none;
+            }
+
+            .biometric-btn:active {
+                transform: scale(0.98);
+            }
+
+            .error-msg {
+                font-size: 0.9rem;
+                padding: 14px 16px;
+                border-radius: 14px;
+                margin-top: 1.5rem;
+                background: rgba(239, 68, 68, 0.08);
+            }
+
+            .mt-3 {
+                margin-top: 1rem !important;
+            }
+
+            .animate-slide-up {
+                animation: mobileSlideUp 0.6s ease-out;
+            }
+
+            @keyframes mobileSlideUp {
+                from { opacity: 0; transform: translateY(40px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        }
+
+        /* Extra small devices (phones in portrait) */
+        @media screen and (max-width: 380px) {
+            .glass-card {
+                padding: 1.5rem 1.25rem;
+                padding-top: calc(env(safe-area-inset-top, 20px) + 2rem);
+            }
+
+            .form-logo {
+                height: 65px !important;
+                margin-bottom: 1.25rem !important;
+            }
+
+            .main-title {
+                font-size: 1.75rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
+
+            .input-div {
+                padding: 14px;
+                grid-template-columns: 42px 1fr;
+            }
+
+            .btn {
+                height: 52px;
+                font-size: 1rem;
             }
         }
     `]

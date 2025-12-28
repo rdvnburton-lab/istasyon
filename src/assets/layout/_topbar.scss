@@ -99,15 +99,23 @@
 
 @media (max-width: 991px) {
     .layout-topbar {
-        padding: 0 2rem;
+        padding: 0 0.5rem !important;
+        /* Minimal padding */
+        justify-content: flex-start !important;
 
         .layout-topbar-logo-container {
-            width: auto;
+            width: auto !important;
+            flex: 0 0 auto !important;
+            margin-right: auto !important;
+            display: flex !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            padding-left: 0 !important;
         }
 
         .layout-menu-button {
-            margin-left: 0;
-            margin-right: 0.5rem;
+            margin-left: 0 !important;
+            margin-right: 0.25rem !important;
         }
 
         .layout-topbar-menu-button {

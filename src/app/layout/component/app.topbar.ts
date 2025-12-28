@@ -24,8 +24,7 @@ import { Subscription } from 'rxjs';
             <i class="pi pi-bars"></i>
         </button>
         <a class="layout-topbar-logo" routerLink="/">
-            <img src="assets/logo.svg" alt="logo" style="height: 35px;">
-            <span>Tigin Teknoloji</span>
+            <img src="assets/tshift.svg" alt="logo" style="height: 35px;">
         </a>
     </div>
 
