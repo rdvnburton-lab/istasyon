@@ -3,6 +3,8 @@ using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace IstasyonDemo.Api.Services
 {
