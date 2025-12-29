@@ -1,4 +1,4 @@
-package tr.com.istasyon.patron;
+package com.tiginteknoloji.tishift;
 
 import com.getcapacitor.BridgeActivity;
 

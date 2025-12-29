@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
     selector: 'app-login',
@@ -529,66 +530,4 @@ import { ToastModule } from 'primeng/toast';
             }
         }
     `]
-})
-export class Login {
-    username: string = '';
-    password: string = '';
-    usernameFocus: boolean = false;
-    passwordFocus: boolean = false;
-    loading: boolean = false;
-    error: string = '';
-
-    biometricAvailable: boolean = false;
-
-    constructor(private authService: AuthService, private router: Router, private messageService: MessageService) { }
-
-    ngOnInit() {
-        this.checkBiometric();
-    }
-
-    async checkBiometric() {
-        this.biometricAvailable = await this.authService.checkBiometricAvailability();
-        if (this.biometricAvailable) {
-            // Opsiyonel: Uygulama açılır açılmaz sormak isterseniz burayı açın
-            // this.loginWithBiometric();
-        }
-    }
-
-    async loginWithBiometric() {
-        this.loading = true;
-        const result = await this.authService.loginWithBiometric();
-        if (result) {
-            this.router.navigate(['/']);
-        } else {
-            this.loading = false;
-            // Sessiz başarısızlık veya mesaj
-        }
-    }
-
-    onLogin() {
-        if (!this.username || !this.password) {
-            this.error = 'Lütfen kullanıcı adı ve şifre giriniz.';
-            this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Lütfen tüm alanları doldurunuz.' });
-            return;
-        }
-
-        this.loading = true;
-        this.error = '';
-
-        this.authService.login(this.username, this.password).subscribe({
-            next: async () => {
-                // Başarılı girişte bilgileri biometrik depoya kaydet
-                await this.authService.saveCredentialsForBiometric(this.username, this.password);
-
-                this.loading = false;
-                this.router.navigate(['/']);
-            },
-            error: (err) => {
-                this.loading = false;
-                this.error = 'Giriş başarısız. Bilgilerinizi kontrol edin.';
-                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Giriş yapılamadı.' });
-                console.error(err);
-            }
-        });
-    }
 }

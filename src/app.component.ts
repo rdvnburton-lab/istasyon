@@ -23,7 +23,6 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.initMobileStatusBar();
-        this.initPushNotifications();
 
         this.authService.idleWarning$.subscribe(() => {
             this.confirmationService.confirm({
@@ -57,10 +56,5 @@ export class AppComponent implements OnInit {
         }
     }
 
-    private async initPushNotifications() {
-        const { Capacitor } = await import('@capacitor/core');
-        if (Capacitor.isNativePlatform()) {
-            this.notificationService.initPush();
-        }
-    }
+
 }

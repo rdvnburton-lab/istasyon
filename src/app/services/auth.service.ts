@@ -47,8 +47,8 @@ export class AuthService {
 
     private lastActivity: number = Date.now();
     private checkInterval: any;
-    private readonly IDLE_LIMIT = 15 * 60 * 1000; // 15 dakika
-    private readonly WARNING_LIMIT = 14 * 60 * 1000; // 14 dakika (Son 1 dakika uyarı)
+    private readonly IDLE_LIMIT = Capacitor.isNativePlatform() ? 7 * 24 * 60 * 60 * 1000 : 15 * 60 * 1000; // Mobilde 1 hafta, Webde 15 dakika
+    private readonly WARNING_LIMIT = Capacitor.isNativePlatform() ? (7 * 24 * 60 * 60 * 1000) - (60 * 60 * 1000) : 14 * 60 * 1000; // Uyarı süresi (Mobilde 1 saat kala)
     private warningShown = false;
     private activitySubscription?: Subscription;
 
@@ -226,7 +226,7 @@ export class AuthService {
                 await NativeBiometric.setCredentials({
                     username,
                     password,
-                    server: 'tr.com.istasyon.patron',
+                    server: 'com.tiginteknoloji.tishift',
                 });
             }
         } catch (e) {
@@ -241,7 +241,7 @@ export class AuthService {
             if (!result.isAvailable) return false;
 
             await NativeBiometric.verifyIdentity({
-                reason: "Patron Paneline Giriş",
+                reason: "Ti-Shift Paneline Giriş",
                 title: "Hızlı Giriş",
                 subtitle: "Devam etmek için doğrulayın",
                 description: "Lütfen parmak izinizi veya yüzünüzü okutun",
@@ -249,7 +249,7 @@ export class AuthService {
 
             // If we are here, verification was successful (otherwise it throws)
             const credentials = await NativeBiometric.getCredentials({
-                server: 'tr.com.istasyon.patron',
+                server: 'com.tiginteknoloji.tishift',
             });
 
             if (credentials && credentials.username && credentials.password) {
@@ -267,12 +267,24 @@ export class AuthService {
         return false;
     }
 
+    async hasBiometricCredentials(): Promise<boolean> {
+        if (!Capacitor.isNativePlatform()) return false;
+        try {
+            const result = await NativeBiometric.getCredentials({
+                server: 'com.tiginteknoloji.tishift',
+            });
+            return !!(result && result.username && result.password);
+        } catch (e) {
+            return false;
+        }
+    }
+
     // Clear biometric credentials on logout if needed (Optional policy)
     async clearBiometricCredentials(): Promise<void> {
         if (!Capacitor.isNativePlatform()) return;
         try {
             await NativeBiometric.deleteCredentials({
-                server: 'tr.com.istasyon.patron',
+                server: 'com.tiginteknoloji.tishift',
             });
         } catch (e) {
             // Ignore
