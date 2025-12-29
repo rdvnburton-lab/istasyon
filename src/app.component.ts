@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { AuthService } from './app/services/auth.service';
+import { NotificationService } from './app/services/notification.service';
 
 @Component({
     selector: 'app-root',
@@ -14,10 +15,15 @@ import { AuthService } from './app/services/auth.service';
     `
 })
 export class AppComponent implements OnInit {
-    constructor(private authService: AuthService, private confirmationService: ConfirmationService) { }
+    constructor(
+        private authService: AuthService,
+        private confirmationService: ConfirmationService,
+        private notificationService: NotificationService
+    ) { }
 
     ngOnInit() {
         this.initMobileStatusBar();
+        this.initPushNotifications();
 
         this.authService.idleWarning$.subscribe(() => {
             this.confirmationService.confirm({
@@ -48,6 +54,13 @@ export class AppComponent implements OnInit {
             } catch (e) {
                 console.error('Status Bar config failed', e);
             }
+        }
+    }
+
+    private async initPushNotifications() {
+        const { Capacitor } = await import('@capacitor/core');
+        if (Capacitor.isNativePlatform()) {
+            this.notificationService.initPush();
         }
     }
 }

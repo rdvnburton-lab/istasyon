@@ -20,6 +20,32 @@ namespace IstasyonDemo.Api.Controllers
             _context = context;
         }
 
+        public class RegisterTokenDto
+        {
+            public string Token { get; set; }
+        }
+
+        [HttpPost("register-token")]
+        public async Task<IActionResult> RegisterToken([FromBody] RegisterTokenDto dto)
+        {
+            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.FcmToken = dto.Token;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Token başarıyla kaydedildi." });
+        }
+
         [HttpGet]
         public async Task<ActionResult<NotificationSummaryDto>> GetNotifications()
         {

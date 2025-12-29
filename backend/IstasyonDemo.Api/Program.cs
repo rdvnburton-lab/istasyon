@@ -30,6 +30,40 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IVardiyaService, VardiyaService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFcmService, FcmService>();
+
+// Firebase Admin SDK Başlatma
+try
+{
+    // Google Credentials dosyasının yolu veya içeriği environment variable'dan alınabilir
+    string credentialPath = builder.Configuration["Firebase:CredentialPath"] ?? "firebase-adminsdk.json";
+    string credentialContent = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIAL_JSON");
+    
+    if (!string.IsNullOrEmpty(credentialContent))
+    {
+         FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+        {
+            Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(credentialContent)
+        });
+        Log.Information("Firebase Admin SDK ortam değişkeninden başarıyla başlatıldı.");
+    }
+    else if (File.Exists(credentialPath))
+    {
+        FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+        {
+            Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(credentialPath)
+        });
+        Log.Information("Firebase Admin SDK başarıyla başlatıldı.");
+    }
+    else
+    {
+        Log.Warning($"Firebase credential dosyası bulunamadı: {credentialPath}. Push bildirimleri çalışmayacak.");
+    }
+}
+catch (Exception ex)
+{
+    Log.Error(ex, "Firebase Admin SDK başlatılırken hata oluştu.");
+}
 
 // Proxy arkasında gerçek IP'yi görmek için gerekli (Rate Limiting için kritik)
 builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options =>

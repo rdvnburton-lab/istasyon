@@ -1,0 +1,95 @@
+2025-12-29 09:35:26.773 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2025-12-29 09:48:33.652 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-29 09:48:33.809 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-29 09:48:34.240 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:48:34.241 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:48:39.243 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 2)...
+2025-12-29 09:48:39.250 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:48:39.251 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:48:44.258 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 3)...
+2025-12-29 09:48:44.265 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:48:44.266 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:48:49.274 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 4)...
+2025-12-29 09:48:49.282 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:48:49.283 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:48:54.293 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 5)...
+2025-12-29 09:48:54.309 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:48:54.311 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:48:59.324 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 6)...
+2025-12-29 09:48:59.330 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:48:59.331 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:49:04.342 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 7)...
+2025-12-29 09:49:04.349 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:49:04.350 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:49:09.360 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 8)...
+2025-12-29 09:49:09.367 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:49:09.368 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:49:14.374 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 9)...
+2025-12-29 09:49:14.384 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:49:14.385 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:49:19.393 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 10)...
+2025-12-29 09:49:19.400 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://localhost:5432'.
+2025-12-29 09:49:19.401 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: 28P01: password authentication failed for user "postgres". 5 saniye sonra tekrar denenecek...
+2025-12-29 09:49:24.402 +03:00 [FTL] Veritabanı migration işlemi 10 deneme sonunda başarısız oldu. Uygulama durduruluyor.
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "postgres"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.GetAppliedMigrations()
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlHistoryRepository.GetAppliedMigrations()
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.Migrate(DatabaseFacade databaseFacade)
+   at Program.<Main>$(String[] args) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Program.cs:line 172
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "postgres"
+    File: auth.c
+    Line: 334
+    Routine: auth_failed
+2025-12-29 09:49:24.415 +03:00 [FTL] Veritabanı başlatma işlemi sırasında kritik bir hata oluştu.
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "postgres"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.GetAppliedMigrations()
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlHistoryRepository.GetAppliedMigrations()
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.Migrate(DatabaseFacade databaseFacade)
+   at Program.<Main>$(String[] args) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Program.cs:line 172
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "postgres"
+    File: auth.c
+    Line: 334
+    Routine: auth_failed
+2025-12-29 09:53:47.124 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-29 09:53:47.277 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-29 09:53:47.742 +03:00 [ERR] Failed executing DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-12-29 09:53:48.400 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.

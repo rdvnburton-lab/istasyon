@@ -7,14 +7,19 @@ namespace IstasyonDemo.Api.Services
     public class NotificationService : INotificationService
     {
         private readonly AppDbContext _context;
+        private readonly IFcmService _fcmService;
+        private readonly ILogger<NotificationService> _logger;
 
-        public NotificationService(AppDbContext context)
+        public NotificationService(AppDbContext context, IFcmService fcmService, ILogger<NotificationService> logger)
         {
             _context = context;
+            _fcmService = fcmService;
+            _logger = logger;
         }
 
         public async Task CreateNotificationAsync(int userId, string title, string message, string type, string severity, int? relatedVardiyaId = null, int? relatedMarketVardiyaId = null)
         {
+            // 1. Veritabanına kaydet (Web/In-App için)
             var notification = new Notification
             {
                 UserId = userId,
@@ -30,6 +35,27 @@ namespace IstasyonDemo.Api.Services
 
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
+
+            // 2. Push Notification Gönder (Mobil için)
+            try
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user != null && !string.IsNullOrEmpty(user.FcmToken))
+                {
+                    var data = new Dictionary<string, string>
+                    {
+                        { "type", type },
+                        { "relatedId", (relatedVardiyaId ?? relatedMarketVardiyaId ?? 0).ToString() }
+                    };
+
+                    await _fcmService.SendNotificationAsync(user.FcmToken, title, message, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Push hatası akışı bozmamalı
+                _logger.LogError(ex, $"Push notification gönderilemedi. UserId: {userId}");
+            }
         }
 
         public async Task NotifyAdminsAsync(string title, string message, string type, string severity, int? relatedVardiyaId = null, int? relatedMarketVardiyaId = null)

@@ -51,3 +51,5 @@ obj/
 
 # Environment Variables
 .env
+firebase-adminsdk.json
+backend/IstasyonDemo.Api/firebase-adminsdk.json

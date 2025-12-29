@@ -32,5 +32,7 @@ namespace IstasyonDemo.Api.Models
         public Istasyon? Istasyon { get; set; }
 
         public DateTime? LastActivity { get; set; }
+
+        public string? FcmToken { get; set; }
     }
 }
