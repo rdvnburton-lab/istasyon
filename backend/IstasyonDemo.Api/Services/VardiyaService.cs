@@ -100,6 +100,32 @@ namespace IstasyonDemo.Api.Services
                     relatedVardiyaId: vardiya.Id
                 );
 
+                // Eğer işlemi yapan kişi Vardiya Sorumlusu değilse (örn: Admin, Patron veya Otomasyon),
+                // o istasyonun Vardiya Sorumlularına bildirim gönder.
+                if (userRole != "vardiya_sorumlusu" && userRole != "vardiya sorumlusu")
+                {
+                    var vardiyaSorumlulari = await _context.Users
+                        .Include(u => u.Role)
+                        .Where(u => u.IstasyonId == vardiya.IstasyonId && 
+                                   (u.Role.Name == "Vardiya Sorumlusu" || u.Role.Name == "vardiya_sorumlusu"))
+                        .ToListAsync();
+
+                    foreach (var sorumlu in vardiyaSorumlulari)
+                    {
+                        // İşlemi yapan kişi sorumlu listesindeyse ona tekrar atma (zaten yukarıda attık)
+                        if (sorumlu.Id == userId) continue;
+
+                        await _notificationService.NotifyUserAsync(
+                            sorumlu.Id,
+                            "Yeni Veri Yüklendi",
+                            $"Sisteme yeni vardiya verisi yüklendi: {dto.DosyaAdi}. Lütfen kontrol ediniz.",
+                            "VARDIYA_OLUSTURULDU",
+                            "info",
+                            relatedVardiyaId: vardiya.Id
+                        );
+                    }
+                }
+
                 await transaction.CommitAsync();
                 return vardiya;
             }
@@ -138,7 +164,11 @@ namespace IstasyonDemo.Api.Services
 
         public async Task OnayaGonderAsync(int id, int userId, string? userRole)
         {
-            var vardiya = await _context.Vardiyalar.FindAsync(id);
+            var vardiya = await _context.Vardiyalar
+                .Include(v => v.Istasyon)
+                .ThenInclude(i => i.Firma)
+                .FirstOrDefaultAsync(v => v.Id == id);
+
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
 
             if (userRole != "admin")
@@ -175,6 +205,19 @@ namespace IstasyonDemo.Api.Services
                 "info",
                 relatedVardiyaId: vardiya.Id
             );
+
+            // Patron'a bildirim gönder
+            if (vardiya.Istasyon?.Firma?.PatronId != null)
+            {
+                await _notificationService.NotifyUserAsync(
+                    vardiya.Istasyon.Firma.PatronId.Value,
+                    "Yeni Vardiya Onayı",
+                    $"{vardiya.DosyaAdi} onayınızı bekliyor.",
+                    "VARDIYA_ONAY_BEKLIYOR",
+                    "info",
+                    relatedVardiyaId: vardiya.Id
+                );
+            }
         }
 
         public async Task SilmeTalebiOlusturAsync(int id, SilmeTalebiDto dto, int userId, string? userRole, string? userName)
@@ -237,6 +280,19 @@ namespace IstasyonDemo.Api.Services
                 "warn",
                 relatedVardiyaId: vardiya.Id
             );
+
+            // Patron'a bildirim gönder
+            if (vardiya.Istasyon?.Firma?.PatronId != null)
+            {
+                await _notificationService.NotifyUserAsync(
+                    vardiya.Istasyon.Firma.PatronId.Value,
+                    "Vardiya Silme Talebi",
+                    $"{vardiya.DosyaAdi} silinmek isteniyor. Neden: {dto.Nedeni}",
+                    "VARDIYA_SILME_ONAYI_BEKLIYOR",
+                    "warn",
+                    relatedVardiyaId: vardiya.Id
+                );
+            }
         }
 
         public async Task OnaylaAsync(int id, OnayDto dto, int userId, string? userRole)
