@@ -15,6 +15,7 @@ namespace IstasyonDemo.Api.Controllers
     [Route("api/[controller]")]
     public class NotificationController : ControllerBase
     {
+        private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
 
         public NotificationController(AppDbContext context, INotificationService notificationService)
@@ -27,8 +28,8 @@ namespace IstasyonDemo.Api.Controllers
         {
             public int? UserId { get; set; } // Tekil gönderim için (Geriye uyumluluk)
             public List<int>? UserIds { get; set; } // Toplu gönderim için
-            public string Title { get; set; }
-            public string Message { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public string Message { get; set; } = string.Empty;
         }
 
         [HttpPost("send-test")]
@@ -92,9 +93,9 @@ namespace IstasyonDemo.Api.Controllers
             }
         }
 
-        // ... existing code ...
+        public class RegisterTokenDto
         {
-            public string Token { get; set; }
+            public string Token { get; set; } = string.Empty;
         }
 
         [HttpPost("register-token")]

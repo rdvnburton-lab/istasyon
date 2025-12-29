@@ -93,3 +93,9 @@ SELECT "MigrationId", "ProductVersion"
 FROM "__EFMigrationsHistory"
 ORDER BY "MigrationId";
 2025-12-29 09:53:48.400 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-29 13:30:49.313 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-29 13:30:49.787 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-29 13:30:50.658 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-29 13:31:08.300 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-29 13:31:08.472 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-29 13:31:09.135 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.

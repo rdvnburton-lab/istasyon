@@ -109,7 +109,7 @@ namespace IstasyonDemo.Api.Services
                     var vardiyaSorumlulari = await _context.Users
                         .Include(u => u.Role)
                         .Where(u => u.IstasyonId == vardiya.IstasyonId && 
-                                   (u.Role.Name == "Vardiya Sorumlusu" || u.Role.Name == "vardiya_sorumlusu"))
+                                   (u.Role.Ad == "Vardiya Sorumlusu" || u.Role.Ad == "vardiya_sorumlusu"))
                         .ToListAsync();
 
                     foreach (var sorumlu in vardiyaSorumlulari)
