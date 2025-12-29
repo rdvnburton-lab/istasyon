@@ -1,6 +1,7 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
+using IstasyonDemo.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,14 +14,84 @@ namespace IstasyonDemo.Api.Controllers
     [Route("api/[controller]")]
     public class NotificationController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public NotificationController(AppDbContext context)
+        public NotificationController(AppDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
-        public class RegisterTokenDto
+        public class TestNotificationDto
+        {
+            public int? UserId { get; set; } // Tekil gönderim için (Geriye uyumluluk)
+            public List<int>? UserIds { get; set; } // Toplu gönderim için
+            public string Title { get; set; }
+            public string Message { get; set; }
+        }
+
+        [HttpPost("send-test")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> SendTestNotification([FromBody] TestNotificationDto dto)
+        {
+            int successCount = 0;
+
+            // 1. Toplu Gönderim (UserIds varsa)
+            if (dto.UserIds != null && dto.UserIds.Any())
+            {
+                foreach (var uid in dto.UserIds)
+                {
+                    try
+                    {
+                        await _notificationService.NotifyUserAsync(
+                            uid,
+                            dto.Title,
+                            dto.Message,
+                            "TEST_NOTIFICATION",
+                            "info"
+                        );
+                        successCount++;
+                    }
+                    catch (Exception)
+                    {
+                        // Log error but continue
+                    }
+                }
+                return Ok(new { message = $"{successCount} kullanıcıya bildirim gönderildi." });
+            }
+            // 2. Tekil Gönderim (UserId varsa)
+            else if (dto.UserId.HasValue)
+            {
+                await _notificationService.NotifyUserAsync(
+                    dto.UserId.Value,
+                    dto.Title,
+                    dto.Message,
+                    "TEST_NOTIFICATION",
+                    "info"
+                );
+                return Ok(new { message = $"Kullanıcıya ({dto.UserId}) test bildirimi gönderildi." });
+            }
+            // 3. Kendine Gönderim (Hiçbiri yoksa)
+            else
+            {
+                var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                {
+                    return Unauthorized();
+                }
+
+                await _notificationService.NotifyUserAsync(
+                    userId,
+                    dto.Title,
+                    dto.Message,
+                    "TEST_NOTIFICATION",
+                    "info"
+                );
+                return Ok(new { message = "Kendinize test bildirimi gönderildi." });
+            }
+        }
+
+        // ... existing code ...
         {
             public string Token { get; set; }
         }

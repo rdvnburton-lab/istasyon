@@ -173,4 +173,8 @@ export class NotificationService {
     getNotifications(): Notification[] {
         return this.notificationsSubject.value.notifications;
     }
+
+    sendTestNotification(data: { userId?: number, userIds?: number[], title: string, message: string }): Observable<any> {
+        return this.http.post(`${this.apiUrl}/send-test`, data);
+    }
 }

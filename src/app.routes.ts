@@ -35,6 +35,11 @@ export const appRoutes: Routes = [
             {
                 path: 'profile',
                 loadComponent: () => import('./app/pages/profile/profile.component').then(m => m.ProfileComponent)
+            },
+            {
+                path: 'admin/notifications',
+                loadComponent: () => import('./app/pages/admin/notification-sender/notification-sender.component').then(m => m.NotificationSenderComponent),
+                data: { roles: ['admin'] }
             }
         ]
     },
