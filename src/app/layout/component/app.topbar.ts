@@ -153,8 +153,9 @@ export class AppTopbar implements OnInit, OnDestroy {
     ngOnInit() {
         this.authService.currentUser$.subscribe(user => {
             this.currentUser = user;
-            this.isAdmin = user?.role === 'admin';
-            this.isPatron = user?.role === 'patron';
+            const role = user?.role?.toLowerCase();
+            this.isAdmin = role === 'admin';
+            this.isPatron = role === 'patron';
 
             if (!this.isAdmin && !this.isPatron && this.currentUser) {
                 this.loadUserInfo();

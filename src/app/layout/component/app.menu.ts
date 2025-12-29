@@ -23,8 +23,9 @@ export class AppMenu {
 
     ngOnInit() {
         const user = this.authService.getCurrentUser();
-        const isAdmin = user?.role === 'admin';
-        const isPatron = user?.role === 'patron';
+        const role = user?.role?.toLowerCase();
+        const isAdmin = role === 'admin';
+        const isPatron = role === 'patron';
         const isAdminOrPatron = isAdmin || isPatron;
 
         this.model = [
@@ -42,9 +43,9 @@ export class AppMenu {
 
         // Vardiya ve Raporlar (Admin görmez)
         if (!isAdmin) {
-            const isIstasyonSorumlusu = user?.role === 'istasyon sorumlusu';
-            const isVardiyaSorumlusu = user?.role === 'vardiya sorumlusu';
-            const isMarketSorumlusu = user?.role === 'market sorumlusu';
+            const isIstasyonSorumlusu = role === 'istasyon sorumlusu';
+            const isVardiyaSorumlusu = role === 'vardiya sorumlusu';
+            const isMarketSorumlusu = role === 'market sorumlusu';
 
             this.model.push({
                 label: 'Vardiya Yönetimi',

@@ -339,8 +339,9 @@ export class AppBottomNav implements OnInit {
             return;
         }
 
-        const isPatron = this.currentUser.role === 'patron';
-        const isAdmin = this.currentUser.role === 'admin';
+        const role = this.currentUser.role?.toLowerCase();
+        const isPatron = role === 'patron';
+        const isAdmin = role === 'admin';
 
         if (isAdmin) {
             this.isVisible = false;
@@ -380,13 +381,16 @@ export class AppBottomNav implements OnInit {
     }
 
     getRoleLabel(role: string | undefined): string {
+        if (!role) return '';
+        const lowerRole = role.toLowerCase();
         const labels: { [key: string]: string } = {
             'patron': 'Patron',
             'istasyon sorumlusu': 'İstasyon Sorumlusu',
             'vardiya sorumlusu': 'Vardiya Sorumlusu',
-            'market sorumlusu': 'Market Sorumlusu'
+            'market sorumlusu': 'Market Sorumlusu',
+            'admin': 'Admin'
         };
-        return role ? labels[role] || role : '';
+        return labels[lowerRole] || role;
     }
 
     logout() {
