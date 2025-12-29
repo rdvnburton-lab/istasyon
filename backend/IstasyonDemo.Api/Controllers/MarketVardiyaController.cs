@@ -11,7 +11,7 @@ namespace IstasyonDemo.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class MarketVardiyaController : ControllerBase
+    public class MarketVardiyaController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -23,29 +23,31 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MarketVardiyaDto>>> GetMarketVardiyalar()
         {
-            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == currentUserId);
-            
-            if (user == null) return Unauthorized();
-
             IQueryable<MarketVardiya> query = _context.MarketVardiyalar
                 .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
                 .Include(m => m.Sorumlu);
 
-            if (user.Role?.Ad != "admin")
+            if (!IsAdmin)
             {
-                if (user.Role?.Ad == "patron")
+                if (IsPatron)
                 {
-                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == currentUserId);
+                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == CurrentUserId);
                 }
-                else if (user.Role?.Ad == "vardiya_sorumlusu")
+                else if (CurrentUserRole == "vardiya_sorumlusu")
                 {
                     // Vardiya sorumlusu should not see market shifts
                     return Ok(new List<MarketVardiyaDto>());
                 }
                 else
                 {
-                    query = query.Where(m => m.IstasyonId == user.IstasyonId);
+                    if (CurrentIstasyonId.HasValue)
+                    {
+                        query = query.Where(m => m.IstasyonId == CurrentIstasyonId.Value);
+                    }
+                    else
+                    {
+                         return Ok(new List<MarketVardiyaDto>());
+                    }
                 }
             }
 
@@ -75,24 +77,21 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<MarketVardiya>> CreateMarketVardiya(CreateMarketVardiyaDto dto)
         {
-            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var user = await _context.Users.FindAsync(currentUserId);
-            
-            if (user == null || !user.IstasyonId.HasValue) 
+            if (!CurrentIstasyonId.HasValue) 
                 return BadRequest("Kullanıcı istasyon bilgisi bulunamadı.");
 
             // Aynı tarihte başka vardiya var mı kontrol et
             var tarih = dto.Tarih.Date;
             var mevcut = await _context.MarketVardiyalar
-                .AnyAsync(m => m.IstasyonId == user.IstasyonId.Value && m.Tarih.Date == tarih && m.Durum != VardiyaDurum.SILINDI);
+                .AnyAsync(m => m.IstasyonId == CurrentIstasyonId.Value && m.Tarih.Date == tarih && m.Durum != VardiyaDurum.SILINDI);
 
             if (mevcut)
                 return BadRequest($"{tarih:dd.MM.yyyy} tarihi için zaten bir market mutabakatı mevcut.");
 
             var marketVardiya = new MarketVardiya
             {
-                IstasyonId = user.IstasyonId.Value,
-                SorumluId = currentUserId,
+                IstasyonId = CurrentIstasyonId.Value,
+                SorumluId = CurrentUserId,
                 Tarih = dto.Tarih,
                 ZRaporuTutari = dto.ZRaporuTutari,
                 ZRaporuNo = dto.ZRaporuNo,
@@ -173,9 +172,17 @@ namespace IstasyonDemo.Api.Controllers
                 .Include(m => m.Tahsilatlar).ThenInclude(t => t.Personel)
                 .Include(m => m.Giderler)
                 .Include(m => m.Gelirler)
+                .Include(m => m.Istasyon).ThenInclude(i => i.Firma)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             return Ok(vardiya);
         }
@@ -183,8 +190,15 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("{id}/z-raporu")]
         public async Task<ActionResult> SaveZRaporu(int id, MarketZRaporuDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.ZRaporlari).FirstOrDefaultAsync(m => m.Id == id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.ZRaporlari).Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             // Mevcut Z raporlarını temizle (genelde bir tane olur ama liste olarak tutuyoruz)
             _context.MarketZRaporlari.RemoveRange(vardiya.ZRaporlari);
@@ -217,8 +231,15 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("{id}/tahsilat")]
         public async Task<ActionResult> SaveTahsilat(int id, MarketTahsilatDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Tahsilatlar).FirstOrDefaultAsync(m => m.Id == id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.Tahsilatlar).Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             // Aynı personel için mükerrer kaydı önle veya güncelle
             var mevcut = vardiya.Tahsilatlar.FirstOrDefault(t => t.PersonelId == dto.PersonelId);
@@ -261,8 +282,15 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("{id}/gider")]
         public async Task<ActionResult> AddGider(int id, MarketGiderDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.FindAsync(id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             var gider = new MarketGider
             {
@@ -287,20 +315,26 @@ namespace IstasyonDemo.Api.Controllers
         [HttpDelete("gider/{giderId}")]
         public async Task<ActionResult> DeleteGider(int giderId)
         {
-            var gider = await _context.MarketGiderler.FindAsync(giderId);
+            var gider = await _context.MarketGiderler.Include(g => g.MarketVardiya).ThenInclude(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(g => g.Id == giderId);
             if (gider == null) return NotFound();
+
+            var vardiya = gider.MarketVardiya;
+            if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             var vardiyaId = gider.MarketVardiyaId;
             _context.MarketGiderler.Remove(gider);
             await _context.SaveChangesAsync();
 
-            var vardiya = await _context.MarketVardiyalar.FindAsync(vardiyaId);
-            if (vardiya != null)
-            {
-                vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(vardiyaId);
-                vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-                await _context.SaveChangesAsync();
-            }
+            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(vardiyaId);
+            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
@@ -308,8 +342,15 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("{id}/gelir")]
         public async Task<ActionResult> AddGelir(int id, MarketGelirDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.FindAsync(id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             var gelir = new MarketGelir
             {
@@ -334,20 +375,26 @@ namespace IstasyonDemo.Api.Controllers
         [HttpDelete("gelir/{gelirId}")]
         public async Task<ActionResult> DeleteGelir(int gelirId)
         {
-            var gelir = await _context.MarketGelirler.FindAsync(gelirId);
+            var gelir = await _context.MarketGelirler.Include(g => g.MarketVardiya).ThenInclude(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(g => g.Id == gelirId);
             if (gelir == null) return NotFound();
+
+            var vardiya = gelir.MarketVardiya;
+            if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             var vardiyaId = gelir.MarketVardiyaId;
             _context.MarketGelirler.Remove(gelir);
             await _context.SaveChangesAsync();
 
-            var vardiya = await _context.MarketVardiyalar.FindAsync(vardiyaId);
-            if (vardiya != null)
-            {
-                vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(vardiyaId);
-                vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-                await _context.SaveChangesAsync();
-            }
+            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(vardiyaId);
+            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
@@ -364,10 +411,6 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("rapor")]
         public async Task<IActionResult> GetMarketRaporu([FromQuery] DateTimeOffset baslangic, [FromQuery] DateTimeOffset bitis)
         {
-            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == currentUserId);
-            if (user == null) return Unauthorized();
-
             var start = baslangic.UtcDateTime;
             var end = bitis.UtcDateTime;
 
@@ -375,15 +418,22 @@ namespace IstasyonDemo.Api.Controllers
                 .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
                 .Where(m => m.Tarih >= start && m.Tarih <= end && m.Durum != VardiyaDurum.SILINDI);
 
-            if (user.Role?.Ad != "admin")
+            if (!IsAdmin)
             {
-                if (user.Role?.Ad == "patron")
+                if (IsPatron)
                 {
-                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == currentUserId);
+                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == CurrentUserId);
                 }
                 else
                 {
-                    query = query.Where(m => m.IstasyonId == user.IstasyonId);
+                    if (CurrentIstasyonId.HasValue)
+                    {
+                        query = query.Where(m => m.IstasyonId == CurrentIstasyonId.Value);
+                    }
+                    else
+                    {
+                        return Ok(new { Ozet = new {}, Vardiyalar = new List<object>() });
+                    }
                 }
             }
 
@@ -414,8 +464,15 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("{id}/onaya-gonder")]
         public async Task<ActionResult> OnayaGonder(int id)
         {
-            var vardiya = await _context.MarketVardiyalar.FindAsync(id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
+            {
+                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+            }
 
             vardiya.Durum = VardiyaDurum.ONAY_BEKLIYOR;
             await _context.SaveChangesAsync();
@@ -427,11 +484,14 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<ActionResult> Onayla(int id)
         {
-            var vardiya = await _context.MarketVardiyalar.FindAsync(id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
 
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+
             vardiya.Durum = VardiyaDurum.ONAYLANDI;
-            vardiya.OnaylayanId = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            vardiya.OnaylayanId = CurrentUserId;
             vardiya.OnayTarihi = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -442,8 +502,11 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<ActionResult> Reddet(int id, [FromBody] string neden)
         {
-            var vardiya = await _context.MarketVardiyalar.FindAsync(id);
+            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
             if (vardiya == null) return NotFound();
+
+            // Authorization Check
+            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
 
             vardiya.Durum = VardiyaDurum.REDDEDILDI;
             vardiya.RedNedeni = neden;

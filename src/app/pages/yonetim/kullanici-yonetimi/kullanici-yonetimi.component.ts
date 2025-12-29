@@ -11,6 +11,8 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { UserService, UserDto, CreateUserDto, UpdateUserDto } from '../../../services/user.service';
 import { IstasyonService, Istasyon } from '../../../services/istasyon.service';
 import { FirmaService, Firma } from '../../../services/firma.service';
@@ -31,7 +33,9 @@ import { RoleService, Role } from '../../../services/role.service';
         PasswordModule,
         TagModule,
         TooltipModule,
-        ToastModule
+        ToastModule,
+        IconFieldModule,
+        InputIconModule
     ],
     providers: [MessageService],
     templateUrl: './kullanici-yonetimi.component.html',
@@ -160,8 +164,8 @@ export class KullaniciYonetimiComponent implements OnInit {
         const selectedRole = this.roles.find(r => r.id === event.value);
         this.user.role = selectedRole?.ad;
 
-        // Patron değilse istasyonu sıfırla
-        if (!this.isPatron) {
+        // Patron değilse istasyonu sıfırla (Pasif rolü hariç)
+        if (!this.isPatron && this.user.role?.toLowerCase() !== 'pasif') {
             this.user.istasyonId = null;
             this.user.firmaId = null;
         }
@@ -288,7 +292,8 @@ export class KullaniciYonetimiComponent implements OnInit {
             'vardiya sorumlusu': 'success',
             'market sorumlusu': 'success',
             'pompaci': 'secondary',
-            'market gorevlisi': 'secondary'
+            'market gorevlisi': 'secondary',
+            'pasif': 'contrast'
         };
         return roleMap[role?.toLowerCase()] || 'secondary';
     }

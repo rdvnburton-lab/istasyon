@@ -55,8 +55,7 @@ interface PatronDashboard {
         RippleModule
     ],
     templateUrl: './patron-dashboard.component.html',
-    styleUrl: './patron-dashboard.component.scss',
-    encapsulation: ViewEncapsulation.None
+    styleUrl: './patron-dashboard.component.scss'
 })
 export class PatronDashboardComponent implements OnInit {
     dashboard: PatronDashboard | null = null;

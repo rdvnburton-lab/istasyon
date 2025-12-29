@@ -10,7 +10,7 @@ namespace IstasyonDemo.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class DashboardController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -23,12 +23,11 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize]
         public async Task<ActionResult<SorumluDashboardDto>> GetSorumluSummary()
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
             var user = await _context.Users
                 .Include(u => u.Istasyon)
                 .ThenInclude(i => i!.Firma)
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Id == CurrentUserId);
 
             if (user == null)
             {
@@ -111,15 +110,6 @@ namespace IstasyonDemo.Api.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst("id")?.Value;
-                if (string.IsNullOrEmpty(userIdClaim))
-                {
-                    return Unauthorized("Kullanıcı ID bulunamadı.");
-                }
-
-                var userId = int.Parse(userIdClaim);
-                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
                 // Bugün ve bu ay için tarih aralıkları (PostgreSQL için UTC Kind zorunlu)
                 var bugun = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
                 var ayBaslangic = DateTime.SpecifyKind(new DateTime(bugun.Year, bugun.Month, 1), DateTimeKind.Utc);
@@ -127,9 +117,9 @@ namespace IstasyonDemo.Api.Controllers
 
                 // Patron için istasyonları filtrele
                 IQueryable<Vardiya> vardiyaQuery = _context.Vardiyalar.Include(v => v.Istasyon);
-                if (userRole == "patron")
+                if (IsPatron)
                 {
-                    vardiyaQuery = vardiyaQuery.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
+                    vardiyaQuery = vardiyaQuery.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
                 }
 
                 // Silinmiş vardiyaları hariç tut
@@ -156,15 +146,15 @@ namespace IstasyonDemo.Api.Controllers
                 int istasyonSayisi;
                 int personelSayisi;
 
-                if (userRole == "admin")
+                if (IsAdmin)
                 {
                     istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.Aktif);
                     personelSayisi = await _context.Personeller.CountAsync(p => p.Aktif);
                 }
                 else
                 {
-                    istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.Firma != null && i.Firma.PatronId == userId && i.Aktif);
-                    personelSayisi = await _context.Personeller.CountAsync(p => p.Istasyon != null && p.Istasyon.Firma != null && p.Istasyon.Firma.PatronId == userId && p.Aktif);
+                    istasyonSayisi = await _context.Istasyonlar.CountAsync(i => i.Firma != null && i.Firma.PatronId == CurrentUserId && i.Aktif);
+                    personelSayisi = await _context.Personeller.CountAsync(p => p.Istasyon != null && p.Istasyon.Firma != null && p.Istasyon.Firma.PatronId == CurrentUserId && p.Aktif);
                 }
 
                 // Son 7 günlük trend
@@ -220,9 +210,9 @@ namespace IstasyonDemo.Api.Controllers
                             .ThenInclude(v => v!.Istasyon)
                         .AsQueryable();
 
-                    if (userRole == "patron")
+                    if (IsPatron)
                     {
-                        logQuery = logQuery.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma != null && vl.Vardiya.Istasyon.Firma.PatronId == userId);
+                        logQuery = logQuery.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma != null && vl.Vardiya.Istasyon.Firma.PatronId == CurrentUserId);
                     }
 
                     var logs = await logQuery

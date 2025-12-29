@@ -4,6 +4,26 @@
 }
 
 // ============================================
+// DESKTOP STYLING
+// ============================================
+@media screen and (min-width: 992px) {
+
+    // Search bar styling
+    ::ng-deep .p-iconfield {
+        display: inline-block;
+
+        .p-inputtext {
+            width: 250px;
+            transition: width 0.3s ease;
+
+            &:focus {
+                width: 320px;
+            }
+        }
+    }
+}
+
+// ============================================
 // MOBILE NATIVE APP STYLING
 // ============================================
 @media screen and (max-width: 991px) {

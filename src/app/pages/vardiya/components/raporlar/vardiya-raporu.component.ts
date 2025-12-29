@@ -27,8 +27,7 @@ import { AuthService } from '../../../../services/auth.service';
         SelectButtonModule
     ],
     templateUrl: './vardiya-raporu.component.html',
-    styleUrls: ['./vardiya-raporu.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./vardiya-raporu.component.scss']
 })
 export class VardiyaRaporuComponent implements OnInit {
     baslangicTarihi: Date = new Date();

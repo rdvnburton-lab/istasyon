@@ -13,7 +13,7 @@ namespace IstasyonDemo.Api.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class NotificationController : ControllerBase
+    public class NotificationController : BaseController
     {
         private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
@@ -76,14 +76,8 @@ namespace IstasyonDemo.Api.Controllers
             // 3. Kendine Gönderim (Hiçbiri yoksa)
             else
             {
-                var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-                {
-                    return Unauthorized();
-                }
-
                 await _notificationService.NotifyUserAsync(
-                    userId,
+                    CurrentUserId,
                     dto.Title,
                     dto.Message,
                     "TEST_NOTIFICATION",
@@ -101,13 +95,7 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("register-token")]
         public async Task<IActionResult> RegisterToken([FromBody] RegisterTokenDto dto)
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-            {
-                return Unauthorized();
-            }
-
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _context.Users.FindAsync(CurrentUserId);
             if (user == null)
             {
                 return NotFound();
@@ -122,14 +110,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<NotificationSummaryDto>> GetNotifications()
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-            {
-                return Unauthorized();
-            }
-
             var notifications = await _context.Notifications
-                .Where(n => n.UserId == userId)
+                .Where(n => n.UserId == CurrentUserId)
                 .OrderByDescending(n => n.CreatedAt)
                 .Take(20) // Son 20 bildirim
                 .Select(n => new NotificationDto
@@ -147,7 +129,7 @@ namespace IstasyonDemo.Api.Controllers
                 .ToListAsync();
 
             var unreadCount = await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsRead)
+                .Where(n => n.UserId == CurrentUserId && !n.IsRead)
                 .CountAsync();
 
             return Ok(new NotificationSummaryDto
@@ -160,14 +142,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("mark-read/{id}")]
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-            {
-                return Unauthorized();
-            }
-
             var notification = await _context.Notifications
-                .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+                .FirstOrDefaultAsync(n => n.Id == id && n.UserId == CurrentUserId);
 
             if (notification == null)
             {
@@ -183,14 +159,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("mark-all-read")]
         public async Task<IActionResult> MarkAllAsRead()
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-            {
-                return Unauthorized();
-            }
-
             await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsRead)
+                .Where(n => n.UserId == CurrentUserId && !n.IsRead)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(n => n.IsRead, true));
 
             return Ok();
@@ -218,8 +188,7 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> SyncLogs()
         {
             // Admin only check (optional, but recommended)
-            // var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            // if (userRole != "admin") return Forbid();
+            // if (!IsAdmin) return Forbid();
 
             var logs = await _context.VardiyaLoglari
                 .OrderByDescending(l => l.IslemTarihi)

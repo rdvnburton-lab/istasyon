@@ -126,6 +126,36 @@ namespace IstasyonDemo.Api.Controllers
                 }
             }
 
+            // Handle Station Responsibility Assignment
+            if (request.IstasyonId.HasValue)
+            {
+                var istasyon = await _context.Istasyonlar.FindAsync(request.IstasyonId.Value);
+                if (istasyon != null)
+                {
+                    bool updated = false;
+                    if (role.Ad == "istasyon sorumlusu")
+                    {
+                        istasyon.IstasyonSorumluId = user.Id;
+                        updated = true;
+                    }
+                    else if (role.Ad == "vardiya sorumlusu")
+                    {
+                        istasyon.VardiyaSorumluId = user.Id;
+                        updated = true;
+                    }
+                    else if (role.Ad == "market sorumlusu")
+                    {
+                        istasyon.MarketSorumluId = user.Id;
+                        updated = true;
+                    }
+
+                    if (updated)
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
             return Ok(new { message = "Kullanıcı başarıyla oluşturuldu.", userId = user.Id });
         }
 
@@ -136,7 +166,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 var user = await _context.Users
                     .Include(u => u.Role)
-                    .FirstOrDefaultAsync(u => u.Username == request.Username);
+                    .FirstOrDefaultAsync(u => u.Username.ToLower() == request.Username.ToLower());
 
                 if (user == null)
                 {
@@ -148,14 +178,19 @@ namespace IstasyonDemo.Api.Controllers
                     return BadRequest("Yanlış şifre.");
                 }
 
+                if (user.Role?.Ad?.ToLower() == "pasif")
+                {
+                    return BadRequest("Hesabınız pasif durumdadır. Yöneticinizle iletişime geçin.");
+                }
+
                 user.LastActivity = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
-                string token = CreateToken(user);
+                int? firmaId = null;
+                int? istasyonId = user.IstasyonId;
 
                 var response = new AuthResponseDto
                 {
-                    Token = token,
                     Username = user.Username,
                     Role = user.Role?.Ad ?? "User"
                 };
@@ -168,6 +203,7 @@ namespace IstasyonDemo.Api.Controllers
 
                     if (firma != null)
                     {
+                        firmaId = firma.Id;
                         response.FirmaAdi = firma.Ad;
                         response.Istasyonlar = firma.Istasyonlar
                             .Where(i => i.Aktif)
@@ -184,6 +220,9 @@ namespace IstasyonDemo.Api.Controllers
                      }
                 }
 
+                string token = CreateToken(user, firmaId, istasyonId);
+                response.Token = token;
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -195,7 +234,7 @@ namespace IstasyonDemo.Api.Controllers
             }
         }
 
-        private string CreateToken(User user)
+        private string CreateToken(User user, int? firmaId = null, int? istasyonId = null)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["SecretKey"] ?? "super_secret_key_change_this_in_production_12345"; // Fallback for dev
@@ -206,6 +245,16 @@ namespace IstasyonDemo.Api.Controllers
                 new Claim(ClaimTypes.Role, user.Role?.Ad ?? "User"),
                 new Claim("id", user.Id.ToString())
             };
+
+            if (istasyonId.HasValue)
+            {
+                claims.Add(new Claim("IstasyonId", istasyonId.Value.ToString()));
+            }
+
+            if (firmaId.HasValue)
+            {
+                claims.Add(new Claim("FirmaId", firmaId.Value.ToString()));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);

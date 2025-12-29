@@ -336,8 +336,19 @@
                 </p-button>
             </div>
 
-            <p-table [value]="vardiyalar" [paginator]="vardiyalar.length > 10" [rows]="10"
+            <p-table [value]="vardiyalar" [paginator]="vardiyalar.length > 10" [rows]="10" #dt
+                [globalFilterFields]="['dosyaAdi']">
                 styleClass="p-datatable-striped">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-end">
+                        <p-iconfield>
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" placeholder="Dosya adı ara..."
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+                        </p-iconfield>
+                    </div>
+                </ng-template>
 
                 <ng-template pTemplate="header">
                     <tr class="text-sm">

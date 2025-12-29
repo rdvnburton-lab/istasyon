@@ -58,8 +58,7 @@ interface PersonelOtomasyonOzet {
     ],
     providers: [MessageService],
     templateUrl: './pompa-yonetimi.component.html',
-    styleUrls: ['./pompa-yonetimi.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./pompa-yonetimi.component.scss']
 })
 export class PompaYonetimi implements OnInit, OnDestroy {
     vardiyaId: number | null = null;

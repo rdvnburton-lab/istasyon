@@ -15,5 +15,7 @@ namespace IstasyonDemo.Api.Models
         public string? Aciklama { get; set; }
 
         public bool IsSystemRole { get; set; } = false; // Silinemez roller için
+
+        public ICollection<RolePermission> Permissions { get; set; } = new List<RolePermission>();
     }
 }

@@ -10,7 +10,7 @@ namespace IstasyonDemo.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class PersonelController : ControllerBase
+    public class PersonelController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -22,26 +22,22 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             IQueryable<Personel> query = _context.Personeller.Include(p => p.Istasyon).ThenInclude(i => i!.Firma);
 
-            if (userRole == "admin")
+            if (IsAdmin)
             {
                 // Admin sees all
             }
-            else if (userRole == "patron")
+            else if (IsPatron)
             {
-                query = query.Where(p => p.Istasyon != null && p.Istasyon.Firma != null && p.Istasyon.Firma.PatronId == userId);
+                query = query.Where(p => p.Istasyon != null && p.Istasyon.Firma != null && p.Istasyon.Firma.PatronId == CurrentUserId);
             }
             else
             {
                 // Vardiya Sorumlusu sees their station's personnel
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != null)
+                if (CurrentIstasyonId.HasValue)
                 {
-                    query = query.Where(p => p.IstasyonId == user.IstasyonId);
+                    query = query.Where(p => p.IstasyonId == CurrentIstasyonId.Value);
                 }
                 else
                 {
@@ -56,20 +52,16 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var personel = await _context.Personeller.Include(p => p.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(p => p.Id == id);
             
             if (personel == null)
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != userId)) return Forbid();
-            if (userRole != "admin" && userRole != "patron")
+            if (IsPatron && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != personel.IstasyonId) return Forbid();
+                if (CurrentIstasyonId != personel.IstasyonId) return Forbid();
             }
 
             return Ok(personel);
@@ -79,29 +71,24 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Create(Personel personel)
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             // Authorization
-            // Authorization
-            if (userRole == "patron")
+            if (IsPatron)
             {
                 var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == personel.IstasyonId);
-                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != userId)
+                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != CurrentUserId)
                 {
                     return BadRequest("Geçersiz istasyon. Bu istasyonun sahibi değilsiniz.");
                 }
             }
-            else if (userRole != "admin")
+            else if (!IsAdmin)
             {
                 // Vardiya Sorumlusu etc.
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId == null)
+                if (!CurrentIstasyonId.HasValue)
                 {
                     return Forbid("Bir istasyona bağlı değilsiniz.");
                 }
                 // Force IstasyonId
-                personel.IstasyonId = user.IstasyonId.Value;
+                personel.IstasyonId = CurrentIstasyonId.Value;
             }
 
             // KeyId benzersizlik kontrolü
@@ -126,20 +113,16 @@ namespace IstasyonDemo.Api.Controllers
             if (id != personel.Id)
                 return BadRequest();
 
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var existing = await _context.Personeller.Include(p => p.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(p => p.Id == id);
             if (existing == null)
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && (existing.Istasyon == null || existing.Istasyon.Firma == null || existing.Istasyon.Firma.PatronId != userId)) return Forbid();
-            if (userRole != "admin" && userRole != "patron")
+            if (IsPatron && (existing.Istasyon == null || existing.Istasyon.Firma == null || existing.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
             {
                 // Vardiya Sorumlusu can update names
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != existing.IstasyonId) return Forbid();
+                if (CurrentIstasyonId != existing.IstasyonId) return Forbid();
             }
 
             // KeyId benzersizlik kontrolü
@@ -170,16 +153,13 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var personel = await _context.Personeller.Include(p => p.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(p => p.Id == id);
             
             if (personel == null)
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != userId)) return Forbid();
+            if (IsPatron && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
 
             // Satışları olan personeli silmeyi engelle
             var hasSales = await _context.OtomasyonSatislar
@@ -197,20 +177,16 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPatch("{id}/toggle-aktif")]
         public async Task<IActionResult> ToggleAktif(int id)
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var personel = await _context.Personeller.Include(p => p.Istasyon).ThenInclude(i => i!.Firma).FirstOrDefaultAsync(p => p.Id == id);
             
             if (personel == null)
                 return NotFound();
 
             // Authorization Check
-            if (userRole == "patron" && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != userId)) return Forbid();
-            if (userRole != "admin" && userRole != "patron")
+            if (IsPatron && (personel.Istasyon == null || personel.Istasyon.Firma == null || personel.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
+            if (!IsAdmin && !IsPatron)
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != personel.IstasyonId) return Forbid();
+                if (CurrentIstasyonId != personel.IstasyonId) return Forbid();
             }
 
             personel.Aktif = !personel.Aktif;

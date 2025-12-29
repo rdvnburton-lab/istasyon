@@ -1,0 +1,53 @@
+<p-toast></p-toast>
+<div class="container">
+    <!-- Arka Plan Filigran (Logo Pattern) -->
+    <div class="bg-watermark"></div>
+
+    <div class="img">
+        <!-- 3D İllüstrasyon (Statik) -->
+        <img src="assets/login_3d.png" alt="3D Illustration" class="main-illustration">
+    </div>
+
+    <div class="login-content animate-slide-up">
+        <div class="glass-card">
+            <form (ngSubmit)="onLogin()">
+                <img src="assets/tshift.svg" alt="Logo Icon" class="form-logo">
+                <h1 class="main-title">Dijital İstasyon</h1>
+                <p class="subtitle">Sisteme erişmek için bilgilerinizi girin</p>
+
+                <div class="input-div one" [class.focus]="usernameFocus || username">
+                    <div class="i">
+                        <i class="pi pi-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Kullanıcı Adı</h5>
+                        <input type="text" class="input" [(ngModel)]="username" name="username" autocapitalize="off"
+                            (focus)="usernameFocus = true" (blur)="usernameFocus = false">
+                    </div>
+                </div>
+
+                <div class="input-div pass" [class.focus]="passwordFocus || password">
+                    <div class="i">
+                        <i class="pi pi-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Şifre</h5>
+                        <input type="password" class="input" [(ngModel)]="password" name="password"
+                            (focus)="passwordFocus = true" (blur)="passwordFocus = false">
+                    </div>
+                </div>
+
+                <input type="submit" class="btn pulse-effect" value="Giriş Yap" [disabled]="loading">
+
+                <button *ngIf="biometricAvailable" type="button" class="btn biometric-btn mt-3"
+                    (click)="loginWithBiometric()" [disabled]="loading">
+                    <i class="pi pi-face-smile mr-2"></i> Face ID / Touch ID
+                </button>
+
+                <div *ngIf="error" class="error-msg">
+                    <i class="pi pi-exclamation-circle"></i> {{ error }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

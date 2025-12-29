@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { Capacitor } from '@capacitor/core';
 
 export interface Notification {
     id: number;
@@ -39,6 +40,10 @@ export class NotificationService {
     }
 
     async initPush() {
+        if (!Capacitor.isNativePlatform()) {
+            console.log('Push bildirimleri sadece mobil cihazlarda çalışır.');
+            return;
+        }
         try {
             const permStatus = await PushNotifications.checkPermissions();
 

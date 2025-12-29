@@ -11,7 +11,7 @@ namespace IstasyonDemo.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -23,26 +23,23 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             IQueryable<User> query = _context.Users
                 .Include(u => u.Istasyon)
                 .Include(u => u.Role);
 
-            if (currentUserRole == "patron")
+            if (IsPatron)
             {
                 // Patron can only see users in their stations
                 // Find stations owned by this patron
                 var patronStationIds = await _context.Istasyonlar
                     .Include(i => i.Firma)
-                    .Where(i => i.Firma != null && i.Firma.PatronId == currentUserId)
+                    .Where(i => i.Firma != null && i.Firma.PatronId == CurrentUserId)
                     .Select(i => i.Id)
                     .ToListAsync();
 
                 query = query.Where(u => u.IstasyonId.HasValue && patronStationIds.Contains(u.IstasyonId.Value));
             }
-            else if (currentUserRole != "admin")
+            else if (!IsAdmin)
             {
                 // Regular users can't see list of users
                 return Forbid();
@@ -68,17 +65,22 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var query = _context.Users
                 .Include(u => u.Role)
                 .Include(u => u.Istasyon)
                 .Where(u => u.Role != null && u.Role.Ad == role);
 
-            if (userRole == "patron")
+            if (IsPatron)
             {
                 // Patron için ek filtreleme gerekirse buraya eklenebilir
+                // Örneğin sadece kendi istasyonlarındaki o role sahip kullanıcıları görsün
+                 var patronStationIds = await _context.Istasyonlar
+                    .Include(i => i.Firma)
+                    .Where(i => i.Firma != null && i.Firma.PatronId == CurrentUserId)
+                    .Select(i => i.Id)
+                    .ToListAsync();
+
+                query = query.Where(u => u.IstasyonId.HasValue && patronStationIds.Contains(u.IstasyonId.Value));
             }
 
             var users = await query
@@ -102,16 +104,13 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserDto request)
         {
-            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            if (currentUserRole == "patron")
+            if (IsPatron)
             {
                 // Check if the user belongs to one of the patron's stations
                 if (!user.IstasyonId.HasValue)
@@ -120,12 +119,12 @@ namespace IstasyonDemo.Api.Controllers
                 }
 
                 var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == user.IstasyonId.Value);
-                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != currentUserId)
+                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != CurrentUserId)
                 {
                     return Forbid("Bu kullanıcıyı düzenleme yetkiniz yok.");
                 }
             }
-            else if (currentUserRole != "admin")
+            else if (!IsAdmin)
             {
                 return Forbid();
             }
@@ -136,13 +135,21 @@ namespace IstasyonDemo.Api.Controllers
                 return BadRequest("Geçersiz rol.");
             }
 
-            if (currentUserRole == "patron")
+            if (IsPatron)
             {
                 // Patron cannot change role to admin or patron
                 if (role.Ad == "admin" || role.Ad == "patron")
                 {
                     return BadRequest("Bu rolü atayamazsınız.");
                 }
+            }
+
+            // Capture old role name for later check
+            var oldRoleName = user.Role?.Ad;
+            if (oldRoleName == null)
+            {
+                var oldRole = await _context.Roles.FindAsync(user.RoleId);
+                oldRoleName = oldRole?.Ad;
             }
 
             user.Username = request.Username;
@@ -153,10 +160,10 @@ namespace IstasyonDemo.Api.Controllers
             
             if (request.IstasyonId.HasValue)
             {
-                 if (currentUserRole == "patron")
+                 if (IsPatron)
                  {
                       var targetIstasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == request.IstasyonId.Value);
-                      if (targetIstasyon == null || targetIstasyon.Firma == null || targetIstasyon.Firma.PatronId != currentUserId)
+                      if (targetIstasyon == null || targetIstasyon.Firma == null || targetIstasyon.Firma.PatronId != CurrentUserId)
                       {
                            return BadRequest("Kullanıcıyı sahip olmadığınız bir istasyona atayamazsınız.");
                       }
@@ -164,7 +171,7 @@ namespace IstasyonDemo.Api.Controllers
                  user.IstasyonId = request.IstasyonId;
             }
 
-            if (request.FirmaId.HasValue && currentUserRole == "admin")
+            if (request.FirmaId.HasValue && IsAdmin)
             {
                 // Clear previous firma ownership if any
                 var previousFirmas = await _context.Firmalar.Where(f => f.PatronId == user.Id).ToListAsync();
@@ -181,6 +188,33 @@ namespace IstasyonDemo.Api.Controllers
                 }
             }
 
+            // Handle Station Responsibility Assignment on Update
+            if (user.IstasyonId.HasValue)
+            {
+                var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
+                if (istasyon != null)
+                {
+                    // If user is assigned to this station, update responsibility based on role
+                    if (role.Ad == "istasyon sorumlusu") istasyon.IstasyonSorumluId = user.Id;
+                    else if (role.Ad == "vardiya sorumlusu") istasyon.VardiyaSorumluId = user.Id;
+                    else if (role.Ad == "market sorumlusu") istasyon.MarketSorumluId = user.Id;
+                    
+                    // If role changed AWAY from a responsible role (e.g. to Pasif), clear the responsibility
+                    if (oldRoleName == "istasyon sorumlusu" && role.Ad != "istasyon sorumlusu" && istasyon.IstasyonSorumluId == user.Id)
+                    {
+                        istasyon.IstasyonSorumluId = null;
+                    }
+                    else if (oldRoleName == "vardiya sorumlusu" && role.Ad != "vardiya sorumlusu" && istasyon.VardiyaSorumluId == user.Id)
+                    {
+                        istasyon.VardiyaSorumluId = null;
+                    }
+                    else if (oldRoleName == "market sorumlusu" && role.Ad != "market sorumlusu" && istasyon.MarketSorumluId == user.Id)
+                    {
+                        istasyon.MarketSorumluId = null;
+                    }
+                }
+            }
+
             if (!string.IsNullOrEmpty(request.Password))
             {
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -194,16 +228,13 @@ namespace IstasyonDemo.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var currentUserId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            if (currentUserRole == "patron")
+            if (IsPatron)
             {
                 if (!user.IstasyonId.HasValue)
                 {
@@ -211,12 +242,12 @@ namespace IstasyonDemo.Api.Controllers
                 }
 
                 var istasyon = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == user.IstasyonId.Value);
-                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != currentUserId)
+                if (istasyon == null || istasyon.Firma == null || istasyon.Firma.PatronId != CurrentUserId)
                 {
                     return Forbid("Bu kullanıcıyı silme yetkiniz yok.");
                 }
             }
-            else if (currentUserRole != "admin")
+            else if (!IsAdmin)
             {
                 return Forbid();
             }

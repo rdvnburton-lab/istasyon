@@ -11,6 +11,9 @@ import { TabsModule } from 'primeng/tabs';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { VardiyaService } from '../../services/vardiya.service';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
@@ -33,7 +36,10 @@ import { Vardiya, VardiyaOzet, PersonelFarkAnalizi, MarketOzet, GenelOzet, Marke
         TabsModule,
         SelectButtonModule,
         TextareaModule,
-        ToastModule
+        ToastModule,
+        IconFieldModule,
+        InputIconModule,
+        InputTextModule
     ],
     templateUrl: './onay-bekleyenler.component.html',
     styleUrls: ['./onay-bekleyenler.component.scss'],

@@ -161,10 +161,15 @@
     <div class="col-span-12">
         <div class="card">
             <p-treeTable [value]="treeData" [columns]="cols" selectionMode="single"
-                styleClass="p-treetable-sm p-treetable-striped">
+                styleClass="p-treetable-sm p-treetable-striped" #tt>
                 <ng-template pTemplate="caption">
                     <div class="flex justify-between items-center">
                         <span class="text-xl font-bold">Firma ve İstasyon Listesi</span>
+                        <p-iconfield>
+                            <p-inputicon class="pi pi-search" />
+                            <input pInputText type="text" placeholder="Ara..."
+                                (input)="tt.filterGlobal($any($event.target).value, 'contains')" />
+                        </p-iconfield>
                     </div>
                 </ng-template>
 

@@ -119,7 +119,8 @@ interface BottomNavItem {
         </ng-container>
     `,
     styles: [`
-        .mobile-bottom-nav {
+        .mobile-bottom-nav,
+        .profile-drawer {
             display: none;
         }
 

@@ -11,7 +11,7 @@ namespace IstasyonDemo.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class FirmaController : ControllerBase
+    public class FirmaController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -23,23 +23,20 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FirmaDto>>> GetFirmalar()
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             IQueryable<Firma> query = _context.Firmalar;
 
-            if (userRole == "admin")
+            if (IsAdmin)
             {
                 // Admin sees all
             }
-            else if (userRole == "patron")
+            else if (IsPatron)
             {
-                query = query.Where(f => f.PatronId == userId);
+                query = query.Where(f => f.PatronId == CurrentUserId);
             }
             else
             {
                 // Regular users see the firma of their station
-                var user = await _context.Users.Include(u => u.Istasyon).FirstOrDefaultAsync(u => u.Id == userId);
+                var user = await _context.Users.Include(u => u.Istasyon).FirstOrDefaultAsync(u => u.Id == CurrentUserId);
                 if (user?.Istasyon != null)
                 {
                     query = query.Where(f => f.Id == user.Istasyon.FirmaId);

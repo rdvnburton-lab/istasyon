@@ -13,6 +13,9 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TabsModule } from 'primeng/tabs';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { MessageService } from 'primeng/api';
 
@@ -53,12 +56,14 @@ interface YuklenenVardiya {
         FileUploadModule,
         DialogModule,
         ProgressBarModule,
-        TabsModule
+        TabsModule,
+        IconFieldModule,
+        InputIconModule,
+        InputTextModule
     ],
     providers: [MessageService],
     templateUrl: './vardiya-listesi.component.html',
-    styleUrls: ['./vardiya-listesi.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./vardiya-listesi.component.scss']
 })
 export class VardiyaListesi implements OnInit {
     vardiyalar: YuklenenVardiya[] = [];

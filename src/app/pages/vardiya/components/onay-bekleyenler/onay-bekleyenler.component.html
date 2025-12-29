@@ -1,6 +1,7 @@
 <p-toast></p-toast>
 
-<div class="onay-page-container">
+<!-- MOBILE NATIVE VIEW -->
+<div class="onay-page block md:hidden">
     <!-- Mobile Native Header -->
     <div class="mobile-page-header">
         <div class="page-title-section">
@@ -36,346 +37,333 @@
         </div>
     </div>
 
-    <!-- Content Area -->
-    <div class="content-container">
+    <!-- Mobile Content Area -->
+    <div class="mobile-approval-list">
+        <!-- POMPA MOBILE -->
+        <ng-container *ngIf="activeView === 'pompa'">
+            <ng-container *ngIf="vardiyalar.length > 0; else pompaEmpty">
+                <div *ngFor="let vardiya of vardiyalar" class="mobile-approval-card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">{{ vardiya.dosyaAdi }}</div>
+                            <div class="card-id">#{{ vardiya.id }} • {{ vardiya.istasyonAdi }}</div>
+                        </div>
+                        <div class="card-amount">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-meta"><i class="pi pi-calendar"></i>{{ vardiya.baslangicTarihi |
+                            date:'dd.MM.yyyy' }}</span>
+                        <span class="status-tag pending"><i class="pi pi-clock"></i>Onay Bekliyor</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn btn-primary" (click)="incele(vardiya)">
+                            <i class="pi pi-search"></i> İncele
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #pompaEmpty>
+                <div class="mobile-empty-state">
+                    <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
+                    <div class="empty-title">Bekleyen Onay Yok</div>
+                    <div class="empty-text">Tüm pompa vardiyaları onaylanmış.</div>
+                </div>
+            </ng-template>
+        </ng-container>
 
-        <!-- VIEW 1: POMPA VARDİYALARI -->
-        <div *ngIf="activeView === 'pompa'">
-            <!-- Desktop Table (hidden on mobile via CSS) -->
-            <p-table [value]="vardiyalar" [loading]="loading" [paginator]="vardiyalar.length > 10" [rows]="10"
-                styleClass="p-datatable-striped" [globalFilterFields]="['dosyaAdi', 'istasyonAdi']" #dt1>
-
-                <ng-template pTemplate="caption">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xl font-bold">Pompa Vardiyaları ({{ vardiyalar.length }})</span>
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" placeholder="Ara..."
-                                (input)="dt1.filterGlobal($any($event.target).value, 'contains')" />
+        <!-- MARKET MOBILE -->
+        <ng-container *ngIf="activeView === 'market'">
+            <ng-container *ngIf="marketVardiyalar.length > 0; else marketEmpty">
+                <div *ngFor="let vardiya of marketVardiyalar" class="mobile-approval-card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Market Vardiyası</div>
+                            <div class="card-id">#{{ vardiya.id }} • {{ vardiya.tarih | date:'dd.MM.yyyy' }}</div>
+                        </div>
+                        <div class="card-amount">{{ vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.0-0'
+                            }}</div>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-meta"><i class="pi pi-arrow-up"></i>Teslimat: {{ vardiya.toplamTeslimatTutari
+                            | currency:'TRY':'symbol-narrow':'1.0-0' }}</span>
+                        <span class="card-meta" [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0}">
+                            <i class="pi pi-chart-bar"></i>Fark: {{ vardiya.toplamFark |
+                            currency:'TRY':'symbol-narrow':'1.0-0' }}
                         </span>
+                        <span class="status-tag pending"><i class="pi pi-clock"></i>Onay Bekliyor</span>
                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr class="text-sm">
-                        <th>ID</th>
-                        <th>Tarih</th>
-                        <th>Dosya Adı</th>
-                        <th class="text-right">Toplam Tutar</th>
-                        <th>İstasyon</th>
-                        <th class="text-center">Durum</th>
-                        <th class="text-center">İşlemler</th>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="body" let-vardiya>
-                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td><span class="text-surface-600">#</span>{{ vardiya.id }}</td>
-                        <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
-                        <td>
-                            <span class="font-bold text-surface-800 dark:text-surface-100">{{
-                                vardiya.dosyaAdi }}</span>
-                        </td>
-                        <td class="text-right">
-                            <span class="font-bold text-lg text-primary">{{ vardiya.genelToplam |
-                                currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
-                        </td>
-                        <td>{{ vardiya.istasyonAdi }}</td>
-                        <td class="text-center">
-                            <p-tag value="Onay Bekliyor" severity="warn" icon="pi pi-clock"></p-tag>
-                        </td>
-                        <td class="text-center">
-                            <div class="flex gap-2 justify-center">
-                                <button pButton pRipple icon="pi pi-search" label="İncele"
-                                    class="p-button-rounded p-button-text p-button-info"
-                                    [loading]="loading && seciliVardiya?.id === vardiya.id" [disabled]="loading"
-                                    (click)="incele(vardiya)" pTooltip="Detayları İncele" tooltipPosition="top">
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="7" class="text-center py-12">
-                            <div class="flex flex-col items-center">
-                                <div
-                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
-                                    <i class="pi pi-check-circle text-4xl text-green-500"></i>
-                                </div>
-                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Bekleyen onay
-                                    bulunmuyor</h4>
-                                <p class="text-surface-400 text-sm m-0 mt-2">
-                                    Her şey yolunda! Tüm pompa vardiyaları onaylanmış.
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-
-            <!-- Mobile Card View -->
-            <div class="mobile-approval-list block md:hidden">
-                <ng-container *ngIf="vardiyalar.length > 0; else pompaEmpty">
-                    <div *ngFor="let vardiya of vardiyalar" class="mobile-approval-card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">{{ vardiya.dosyaAdi }}</div>
-                                <div class="card-id">#{{ vardiya.id }} • {{ vardiya.istasyonAdi }}</div>
-                            </div>
-                            <div class="card-amount">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.0-0'
-                                }}</div>
-                        </div>
-                        <div class="card-body">
-                            <span class="card-meta"><i class="pi pi-calendar"></i>{{ vardiya.baslangicTarihi |
-                                date:'dd.MM.yyyy' }}</span>
-                            <span class="status-tag pending"><i class="pi pi-clock"></i>Onay Bekliyor</span>
-                        </div>
-                        <div class="card-actions">
-                            <button class="action-btn btn-primary" (click)="incele(vardiya)">
-                                <i class="pi pi-search"></i> İncele
-                            </button>
-                        </div>
+                    <div class="card-actions">
+                        <button class="action-btn btn-primary" (click)="marketIncele(vardiya)">
+                            <i class="pi pi-search"></i> İncele
+                        </button>
                     </div>
-                </ng-container>
-                <ng-template #pompaEmpty>
-                    <div class="mobile-empty-state">
-                        <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
-                        <div class="empty-title">Bekleyen Onay Yok</div>
-                        <div class="empty-text">Tüm pompa vardiyaları onaylanmış.</div>
+                </div>
+            </ng-container>
+            <ng-template #marketEmpty>
+                <div class="mobile-empty-state">
+                    <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
+                    <div class="empty-title">Bekleyen Onay Yok</div>
+                    <div class="empty-text">Tüm market vardiyaları onaylanmış.</div>
+                </div>
+            </ng-template>
+        </ng-container>
+
+        <!-- SILINME MOBILE -->
+        <ng-container *ngIf="activeView === 'silinme'">
+            <ng-container *ngIf="silinmeTalepleri.length > 0; else silinmeEmpty">
+                <div *ngFor="let vardiya of silinmeTalepleri" class="mobile-approval-card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">{{ vardiya.dosyaAdi }}</div>
+                            <div class="card-id">#{{ vardiya.id }} • {{ vardiya.istasyonAdi }}</div>
+                        </div>
+                        <div class="card-amount text-red-500">{{ vardiya.genelToplam |
+                            currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
                     </div>
-                </ng-template>
+                    <div class="card-body">
+                        <span class="card-meta"><i class="pi pi-calendar"></i>{{ vardiya.baslangicTarihi |
+                            date:'dd.MM.yyyy' }}</span>
+                        <span class="status-tag delete-request"><i class="pi pi-trash"></i>Silme Talebi</span>
+                    </div>
+                    <div class="card-meta" style="margin-bottom: 0.75rem; background: #fef2f2; color: #dc2626;">
+                        <i class="pi pi-info-circle"></i>
+                        {{ vardiya.silinmeTalebiNedeni || 'Neden belirtilmemiş' }}
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn btn-primary" (click)="incele(vardiya)">
+                            <i class="pi pi-search"></i> İncele
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #silinmeEmpty>
+                <div class="mobile-empty-state">
+                    <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
+                    <div class="empty-title">Bekleyen Silme Talebi Yok</div>
+                    <div class="empty-text">Tüm silme talepleri işlenmiş.</div>
+                </div>
+            </ng-template>
+        </ng-container>
+    </div>
+</div>
+
+<!-- DESKTOP VIEW -->
+<div class="grid grid-cols-12 gap-6 hidden md:grid">
+    <!-- Başlık Kartı -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                        <i class="pi pi-check-circle mr-2 text-orange-500"></i>Onay Bekleyenler
+                    </h2>
+                    <p class="text-surface-500 mt-2">
+                        Bekleyen onay talepleri: {{ vardiyalar.length + marketVardiyalar.length +
+                        silinmeTalepleri.length }}
+                    </p>
+                </div>
+                <p-selectButton [options]="viewOptions" [(ngModel)]="activeView" optionLabel="label"
+                    optionValue="value">
+                    <ng-template let-item pTemplate="item">
+                        <div class="flex items-center gap-2 px-2">
+                            <i [class]="item.icon"></i>
+                            <span>{{item.label}}</span>
+                        </div>
+                    </ng-template>
+                </p-selectButton>
             </div>
         </div>
+    </div>
 
-        <!-- VIEW 2: MARKET VARDİYALARI -->
-        <div *ngIf="activeView === 'market'">
-            <p-table [value]="marketVardiyalar" [loading]="loading" [paginator]="marketVardiyalar.length > 10"
-                [rows]="10" styleClass="p-datatable-striped" #dt2>
-
-                <ng-template pTemplate="caption">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xl font-bold">Market Vardiyaları ({{ marketVardiyalar.length
-                            }})</span>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr class="text-sm">
-                        <th>ID</th>
-                        <th>Tarih</th>
-                        <th class="text-right">Top. Satış</th>
-                        <th class="text-right">Top. Teslimat</th>
-                        <th class="text-right">Fark</th>
-                        <th class="text-center">Durum</th>
-                        <th class="text-center">İşlemler</th>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="body" let-vardiya>
-                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td><span class="text-surface-600">#</span>{{ vardiya.id }}</td>
-                        <td>{{ vardiya.tarih | date:'dd.MM.yyyy' }}</td>
-                        <td class="text-right">
-                            <span class="font-bold">{{ vardiya.toplamSatisTutari |
-                                currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
-                        </td>
-                        <td class="text-right">
-                            <span class="font-bold text-green-600">{{ vardiya.toplamTeslimatTutari |
-                                currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
-                        </td>
-                        <td class="text-right">
-                            <span class="font-bold"
-                                [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0, 'text-blue-500': (vardiya.toplamFark || 0) > 0}">
-                                {{ vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <p-tag value="Onay Bekliyor" severity="warn" icon="pi pi-clock"></p-tag>
-                        </td>
-                        <td class="text-center">
-                            <div class="flex gap-2 justify-center">
-                                <button pButton pRipple icon="pi pi-search" label="İncele"
-                                    class="p-button-rounded p-button-text p-button-info" (click)="marketIncele(vardiya)"
-                                    pTooltip="Detayları İncele" tooltipPosition="top">
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="7" class="text-center py-12">
-                            <div class="flex flex-col items-center">
-                                <div
-                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
-                                    <i class="pi pi-check-circle text-4xl text-green-500"></i>
-                                </div>
-                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Bekleyen market onayı
-                                    bulunmuyor</h4>
-                                <p class="text-surface-400 text-sm m-0 mt-2">
-                                    Tüm market vardiyaları onaylanmış.
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-
-            <!-- Mobile Card View for Market -->
-            <div class="mobile-approval-list block md:hidden">
-                <ng-container *ngIf="marketVardiyalar.length > 0; else marketEmpty">
-                    <div *ngFor="let vardiya of marketVardiyalar" class="mobile-approval-card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">Market Vardiyası</div>
-                                <div class="card-id">#{{ vardiya.id }} • {{ vardiya.tarih | date:'dd.MM.yyyy' }}
-                                </div>
-                            </div>
-                            <div class="card-amount">{{ vardiya.toplamSatisTutari |
-                                currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+    <!-- Tablo Kartı -->
+    <div class="col-span-12">
+        <div class="card">
+            <!-- POMPA TABLOSU -->
+            <div *ngIf="activeView === 'pompa'">
+                <p-table [value]="vardiyalar" [loading]="loading" [paginator]="vardiyalar.length > 10" [rows]="10"
+                    styleClass="p-datatable-striped" [globalFilterFields]="['dosyaAdi', 'istasyonAdi']" #dt1>
+                    <ng-template pTemplate="caption">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold">Pompa Vardiyaları ({{ vardiyalar.length }})</span>
+                            <p-iconfield>
+                                <p-inputicon class="pi pi-search" />
+                                <input pInputText type="text" placeholder="Ara..."
+                                    (input)="dt1.filterGlobal($any($event.target).value, 'contains')" />
+                            </p-iconfield>
                         </div>
-                        <div class="card-body">
-                            <span class="card-meta"><i class="pi pi-arrow-up"></i>Teslimat: {{
-                                vardiya.toplamTeslimatTutari | currency:'TRY':'symbol-narrow':'1.0-0' }}</span>
-                            <span class="card-meta" [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0}">
-                                <i class="pi pi-chart-bar"></i>Fark: {{ vardiya.toplamFark |
-                                currency:'TRY':'symbol-narrow':'1.0-0' }}
-                            </span>
-                            <span class="status-tag pending"><i class="pi pi-clock"></i>Onay Bekliyor</span>
-                        </div>
-                        <div class="card-actions">
-                            <button class="action-btn btn-primary" (click)="marketIncele(vardiya)">
-                                <i class="pi pi-search"></i> İncele
-                            </button>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-template #marketEmpty>
-                    <div class="mobile-empty-state">
-                        <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
-                        <div class="empty-title">Bekleyen Onay Yok</div>
-                        <div class="empty-text">Tüm market vardiyaları onaylanmış.</div>
-                    </div>
-                </ng-template>
-            </div>
-        </div>
-
-        <!-- VIEW 3: SİLİNME TALEPLERİ -->
-        <div *ngIf="activeView === 'silinme'">
-            <p-table [value]="silinmeTalepleri" [loading]="loading" [paginator]="silinmeTalepleri.length > 10"
-                [rows]="10" styleClass="p-datatable-striped" [globalFilterFields]="['dosyaAdi', 'istasyon.ad']" #dt3>
-
-                <ng-template pTemplate="caption">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xl font-bold">Silinme Talepleri ({{ silinmeTalepleri.length
-                            }})</span>
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" placeholder="Ara..."
-                                (input)="dt3.filterGlobal($any($event.target).value, 'contains')" />
-                        </span>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr class="text-sm">
-                        <th>ID</th>
-                        <th>Tarih</th>
-                        <th>Dosya Adı</th>
-                        <th class="text-right">Toplam Tutar</th>
-                        <th>İstasyon</th>
-                        <th>Silme Nedeni</th>
-                        <th>Talep Eden</th>
-                        <th class="text-center">İşlemler</th>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="body" let-vardiya>
-                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td><span class="text-surface-600">#</span>{{ vardiya.id }}</td>
-                        <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
-                        <td>
-                            <span class="font-bold text-surface-800 dark:text-surface-100">{{
-                                vardiya.dosyaAdi }}</span>
-                        </td>
-                        <td class="text-right">
-                            <span class="font-bold text-lg">{{ vardiya.genelToplam |
-                                currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
-                        </td>
-                        <td>{{ vardiya.istasyon?.ad }}</td>
-                        <td>
-                            <span class="text-sm text-surface-600 dark:text-surface-300">{{
-                                vardiya.silinmeTalebiNedeni }}</span>
-                        </td>
-                        <td>
-                            <span class="text-sm">{{ vardiya.silinmeTalebiOlusturanAdi }}</span>
-                        </td>
-                        <td class="text-center">
-                            <div class="flex gap-2 justify-center">
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr class="text-sm">
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Dosya Adı</th>
+                            <th class="text-right">Toplam Tutar</th>
+                            <th>İstasyon</th>
+                            <th class="text-center">Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vardiya>
+                        <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                            <td><span class="text-surface-600">#</span>{{ vardiya.id }}</td>
+                            <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
+                            <td><span class="font-bold text-surface-800 dark:text-surface-100">{{ vardiya.dosyaAdi
+                                    }}</span></td>
+                            <td class="text-right"><span class="font-bold text-lg text-primary">{{ vardiya.genelToplam |
+                                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span></td>
+                            <td>{{ vardiya.istasyonAdi }}</td>
+                            <td class="text-center"><p-tag value="Onay Bekliyor" severity="warn"
+                                    icon="pi pi-clock"></p-tag></td>
+                            <td class="text-center">
                                 <button pButton pRipple icon="pi pi-search" label="İncele"
                                     class="p-button-rounded p-button-text p-button-info"
-                                    [loading]="loading && seciliVardiya?.id === vardiya.id" [disabled]="loading"
-                                    (click)="incele(vardiya)" pTooltip="Detayları İncele" tooltipPosition="top">
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="8" class="text-center py-12">
-                            <div class="flex flex-col items-center">
-                                <div
-                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
-                                    <i class="pi pi-check-circle text-4xl text-green-500"></i>
+                                    (click)="incele(vardiya)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7" class="text-center py-12">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
+                                        <i class="pi pi-check-circle text-4xl text-green-500"></i>
+                                    </div>
+                                    <h4 class="text-surface-600 dark:text-surface-300 m-0">Bekleyen onay bulunmuyor</h4>
                                 </div>
-                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Bekleyen silme talebi
-                                    bulunmuyor</h4>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
 
-            <!-- Mobile Card View for Silinme -->
-            <div class="mobile-approval-list block md:hidden">
-                <ng-container *ngIf="silinmeTalepleri.length > 0; else silinmeEmpty">
-                    <div *ngFor="let vardiya of silinmeTalepleri" class="mobile-approval-card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">{{ vardiya.dosyaAdi }}</div>
-                                <div class="card-id">#{{ vardiya.id }} • {{ vardiya.istasyonAdi }}</div>
-                            </div>
-                            <div class="card-amount text-red-500">{{ vardiya.genelToplam |
-                                currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <!-- MARKET TABLOSU -->
+            <div *ngIf="activeView === 'market'">
+                <p-table [value]="marketVardiyalar" [loading]="loading" [paginator]="marketVardiyalar.length > 10"
+                    [rows]="10" styleClass="p-datatable-striped" #dt2>
+                    <ng-template pTemplate="caption">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold">Market Vardiyaları ({{ marketVardiyalar.length }})</span>
+                            <p-iconfield>
+                                <p-inputicon class="pi pi-search" />
+                                <input pInputText type="text" placeholder="Ara..."
+                                    (input)="dt2.filterGlobal($any($event.target).value, 'contains')" />
+                            </p-iconfield>
                         </div>
-                        <div class="card-body">
-                            <span class="card-meta"><i class="pi pi-calendar"></i>{{ vardiya.baslangicTarihi |
-                                date:'dd.MM.yyyy' }}</span>
-                            <span class="status-tag delete-request"><i class="pi pi-trash"></i>Silme Talebi</span>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr class="text-sm">
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th class="text-right">Top. Satış</th>
+                            <th class="text-right">Top. Teslimat</th>
+                            <th class="text-right">Fark</th>
+                            <th class="text-center">Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vardiya>
+                        <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                            <td><span class="text-surface-600">#</span>{{ vardiya.id }}</td>
+                            <td>{{ vardiya.tarih | date:'dd.MM.yyyy' }}</td>
+                            <td class="text-right"><span class="font-bold">{{ vardiya.toplamSatisTutari |
+                                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span></td>
+                            <td class="text-right"><span class="font-bold text-green-600">{{
+                                    vardiya.toplamTeslimatTutari | currency:'TRY':'symbol-narrow':'1.2-2' }}</span></td>
+                            <td class="text-right">
+                                <span class="font-bold"
+                                    [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0, 'text-blue-500': (vardiya.toplamFark || 0) > 0}">
+                                    {{ vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                                </span>
+                            </td>
+                            <td class="text-center"><p-tag value="Onay Bekliyor" severity="warn"
+                                    icon="pi pi-clock"></p-tag></td>
+                            <td class="text-center">
+                                <button pButton pRipple icon="pi pi-search" label="İncele"
+                                    class="p-button-rounded p-button-text p-button-info"
+                                    (click)="marketIncele(vardiya)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7" class="text-center py-12">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
+                                        <i class="pi pi-check-circle text-4xl text-green-500"></i>
+                                    </div>
+                                    <h4 class="text-surface-600 dark:text-surface-300 m-0">Bekleyen market onayı
+                                        bulunmuyor</h4>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <!-- SILINME TABLOSU -->
+            <div *ngIf="activeView === 'silinme'">
+                <p-table [value]="silinmeTalepleri" [loading]="loading" [paginator]="silinmeTalepleri.length > 10"
+                    [rows]="10" styleClass="p-datatable-striped" [globalFilterFields]="['dosyaAdi', 'istasyon.ad']"
+                    #dt3>
+                    <ng-template pTemplate="caption">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold">Silinme Talepleri ({{ silinmeTalepleri.length }})</span>
+                            <p-iconfield>
+                                <p-inputicon class="pi pi-search" />
+                                <input pInputText type="text" placeholder="Ara..."
+                                    (input)="dt3.filterGlobal($any($event.target).value, 'contains')" />
+                            </p-iconfield>
                         </div>
-                        <div class="card-meta" style="margin-bottom: 0.75rem; background: #fef2f2; color: #dc2626;">
-                            <i class="pi pi-info-circle"></i>
-                            {{ vardiya.silinmeTalebiNedeni || 'Neden belirtilmemiş' }}
-                        </div>
-                        <div class="card-actions">
-                            <button class="action-btn btn-primary" (click)="incele(vardiya)">
-                                <i class="pi pi-search"></i> İncele
-                            </button>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-template #silinmeEmpty>
-                    <div class="mobile-empty-state">
-                        <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
-                        <div class="empty-title">Bekleyen Silme Talebi Yok</div>
-                        <div class="empty-text">Tüm silme talepleri işlenmiş.</div>
-                    </div>
-                </ng-template>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr class="text-sm">
+                            <th>ID</th>
+                            <th>Tarih</th>
+                            <th>Dosya Adı</th>
+                            <th class="text-right">Toplam Tutar</th>
+                            <th>İstasyon</th>
+                            <th>Silme Nedeni</th>
+                            <th>Talep Eden</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vardiya>
+                        <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                            <td><span class="text-surface-600">#</span>{{ vardiya.id }}</td>
+                            <td>{{ vardiya.baslangicTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
+                            <td><span class="font-bold text-surface-800 dark:text-surface-100">{{ vardiya.dosyaAdi
+                                    }}</span></td>
+                            <td class="text-right"><span class="font-bold text-lg">{{ vardiya.genelToplam |
+                                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span></td>
+                            <td>{{ vardiya.istasyon?.ad }}</td>
+                            <td><span class="text-sm text-surface-600 dark:text-surface-300">{{
+                                    vardiya.silinmeTalebiNedeni }}</span></td>
+                            <td><span class="text-sm">{{ vardiya.silinmeTalebiOlusturanAdi }}</span></td>
+                            <td class="text-center">
+                                <button pButton pRipple icon="pi pi-search" label="İncele"
+                                    class="p-button-rounded p-button-text p-button-info"
+                                    (click)="incele(vardiya)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8" class="text-center py-12">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
+                                        <i class="pi pi-check-circle text-4xl text-green-500"></i>
+                                    </div>
+                                    <h4 class="text-surface-600 dark:text-surface-300 m-0">Bekleyen silme talebi
+                                        bulunmuyor</h4>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </div>
         </div>
     </div>

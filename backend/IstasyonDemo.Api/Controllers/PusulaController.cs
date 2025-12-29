@@ -1,6 +1,7 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,8 @@ namespace IstasyonDemo.Api.Controllers
 {
     [ApiController]
     [Route("api/vardiya/{vardiyaId}/[controller]")]
-    public class PusulaController : ControllerBase
+    [Authorize]
+    public class PusulaController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -17,11 +19,29 @@ namespace IstasyonDemo.Api.Controllers
             _context = context;
         }
 
+        private async Task<bool> CheckVardiyaAccess(int vardiyaId)
+        {
+            if (IsAdmin) return true;
+
+            var vardiya = await _context.Vardiyalar
+                .Include(v => v.Istasyon).ThenInclude(i => i!.Firma)
+                .FirstOrDefaultAsync(v => v.Id == vardiyaId);
+
+            if (vardiya == null) return false;
+
+            if (IsPatron)
+            {
+                return vardiya.Istasyon?.Firma?.PatronId == CurrentUserId;
+            }
+
+            return vardiya.IstasyonId == CurrentIstasyonId;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll(int vardiyaId)
         {
-            // OPTIMIZED: Removed redundant FindAsync check
-            // If vardiyaId doesn't exist, we simply return an empty list
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var pusulalar = await _context.Pusulalar
                 .AsNoTracking()
                 .Include(p => p.KrediKartiDetaylari)
@@ -35,6 +55,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int vardiyaId, int id)
         {
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var pusula = await _context.Pusulalar
                 .Include(p => p.KrediKartiDetaylari)
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
@@ -48,6 +70,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("personel/{personelAdi}")]
         public async Task<IActionResult> GetByPersonel(int vardiyaId, string personelAdi)
         {
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var pusula = await _context.Pusulalar
                 .Include(p => p.KrediKartiDetaylari)
                 .FirstOrDefaultAsync(p => p.VardiyaId == vardiyaId && p.PersonelAdi == personelAdi);
@@ -61,6 +85,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int vardiyaId, CreatePusulaDto dto)
         {
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var vardiya = await _context.Vardiyalar.FindAsync(vardiyaId);
             if (vardiya == null)
                 return NotFound(new { message = "Vardiya bulunamadı" });
@@ -103,8 +129,6 @@ namespace IstasyonDemo.Api.Controllers
                 }
                 await _context.SaveChangesAsync();
             }
-            // Geriye dönük uyumluluk: Eğer JSON string gelmişse ama liste gelmemişse, parse edip kaydetmeye çalışabiliriz
-            // Ancak şimdilik frontend'in yeni yapıyı göndermesini bekleyeceğiz.
 
             return CreatedAtAction(nameof(GetById), new { vardiyaId, id = pusula.Id }, pusula);
         }
@@ -112,6 +136,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int vardiyaId, int id, UpdatePusulaDto dto)
         {
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var pusula = await _context.Pusulalar
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
 
@@ -155,6 +181,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int vardiyaId, int id)
         {
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var pusula = await _context.Pusulalar
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
 
@@ -170,6 +198,8 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("ozet")]
         public async Task<IActionResult> GetOzet(int vardiyaId)
         {
+            if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
             var vardiya = await _context.Vardiyalar.FindAsync(vardiyaId);
             if (vardiya == null)
                 return NotFound(new { message = "Vardiya bulunamadı" });

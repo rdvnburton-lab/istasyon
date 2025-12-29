@@ -13,6 +13,7 @@ namespace IstasyonDemo.Api.Data
         public DbSet<Pusula> Pusulalar { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Firma> Firmalar { get; set; }
         public DbSet<Istasyon> Istasyonlar { get; set; }
         public DbSet<VardiyaLog> VardiyaLoglari { get; set; }
@@ -238,6 +239,13 @@ namespace IstasyonDemo.Api.Data
                 .WithMany()
                 .HasForeignKey(o => o.IstasyonId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // RolePermission Relations
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Role)
+                .WithMany(r => r.Permissions)
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

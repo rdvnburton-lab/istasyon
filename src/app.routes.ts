@@ -3,6 +3,7 @@ import { AppLayout } from './app/layout/component/app.layout';
 import { Notfound } from './app/pages/notfound/notfound';
 
 import { authGuard } from './app/services/auth.guard';
+import { roleGuard } from './app/services/role.guard';
 
 export const appRoutes: Routes = [
     {
@@ -15,22 +16,23 @@ export const appRoutes: Routes = [
             { path: 'vardiya', loadChildren: () => import('./app/pages/vardiya/vardiya.routes') },
             {
                 path: 'sistem/ayarlar',
-                loadComponent: () => import('./app/pages/sistem/ayarlar/ayarlar.component').then(m => m.AyarlarComponent)
+                loadComponent: () => import('./app/pages/sistem/ayarlar/ayarlar.component').then(m => m.AyarlarComponent),
+                canActivate: [roleGuard],
+                data: { resource: 'SISTEM_AYARLAR' }
             },
             { path: 'yonetim', loadChildren: () => import('./app/pages/yonetim/yonetim.routes').then(m => m.YONETIM_ROUTES) },
-            {
-                path: 'admin/istasyonlar',
-                loadComponent: () => import('./app/pages/admin/istasyon-yonetimi/istasyon-yonetimi.component').then(m => m.IstasyonYonetimiComponent)
-            },
+
             {
                 path: 'admin/health',
                 loadComponent: () => import('./app/pages/dashboard/components/system-health/system-health.component').then(m => m.SystemHealthComponent),
-                data: { roles: ['admin'] }
+                canActivate: [roleGuard],
+                data: { resource: 'SISTEM_SAGLIK' }
             },
             {
                 path: 'settings/roles',
                 loadComponent: () => import('./app/pages/settings/role-management/role-management.component').then(m => m.RoleManagementComponent),
-                data: { roles: ['admin'] }
+                canActivate: [roleGuard],
+                data: { resource: 'SISTEM_ROLLER' }
             },
             {
                 path: 'profile',
@@ -39,7 +41,8 @@ export const appRoutes: Routes = [
             {
                 path: 'admin/notifications',
                 loadComponent: () => import('./app/pages/admin/notification-sender/notification-sender.component').then(m => m.NotificationSenderComponent),
-                data: { roles: ['admin'] }
+                canActivate: [roleGuard],
+                data: { resource: 'SISTEM_BILDIRIM' }
             }
         ]
     },

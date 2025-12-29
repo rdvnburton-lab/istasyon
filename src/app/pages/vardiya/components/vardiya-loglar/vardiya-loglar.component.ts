@@ -7,6 +7,8 @@ import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { MessageService } from 'primeng/api';
 import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { VardiyaLog } from '../../models/vardiya-log.model';
@@ -22,12 +24,13 @@ import { VardiyaLog } from '../../models/vardiya-log.model';
         CardModule,
         TooltipModule,
         ToastModule,
-        InputTextModule
+        InputTextModule,
+        IconFieldModule,
+        InputIconModule
     ],
     providers: [MessageService],
     templateUrl: './vardiya-loglar.component.html',
-    styleUrls: ['./vardiya-loglar.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./vardiya-loglar.component.scss']
 })
 export class VardiyaLoglarComponent implements OnInit {
     loglar: VardiyaLog[] = [];

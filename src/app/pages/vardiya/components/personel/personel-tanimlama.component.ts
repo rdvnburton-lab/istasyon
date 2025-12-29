@@ -11,6 +11,8 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { PersonelApiService, Personel } from '../../../../services/personel-api.service';
 import { AuthService } from '../../../../services/auth.service';
 
@@ -28,11 +30,13 @@ import { AuthService } from '../../../../services/auth.service';
         TagModule,
         TooltipModule,
         CheckboxModule,
-        SelectModule
+        SelectModule,
+        IconFieldModule,
+        InputIconModule
     ],
     providers: [MessageService],
     templateUrl: './personel-tanimlama.component.html',
-    styles: [`:host { display: block; }`]
+    styleUrls: ['./personel-tanimlama.component.scss']
 })
 export class PersonelTanimlamaComponent implements OnInit {
     personeller: Personel[] = [];

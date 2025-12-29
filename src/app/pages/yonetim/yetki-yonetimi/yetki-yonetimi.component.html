@@ -1,0 +1,47 @@
+<div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h5 class="m-0 text-xl font-bold">Yetki Yönetimi</h5>
+                    <p class="text-gray-500 mt-2">Rol bazlı sayfa ve işlem yetkilerini yönetin.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button pButton label="Varsayılanlara Dön" icon="pi pi-refresh"
+                        class="p-button-outlined p-button-secondary" (click)="reset()"></button>
+                    <button pButton label="Kaydet" icon="pi pi-save" (click)="save()" [loading]="loading"></button>
+                </div>
+            </div>
+
+            <p-table [value]="groupedResources" styleClass="p-datatable-gridlines w-full">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 300px" class="bg-gray-50 font-bold">Sayfa / İşlem</th>
+                        <th *ngFor="let role of roles" class="text-center bg-gray-50 font-bold">{{ role.ad | titlecase
+                            }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-group>
+                    <!-- Grup Başlığı -->
+                    <tr class="bg-blue-50">
+                        <td [attr.colspan]="roles.length + 1" class="font-bold py-3 text-blue-700">{{ group.group }}
+                        </td>
+                    </tr>
+
+                    <!-- Grup Öğeleri -->
+                    <tr *ngFor="let resource of group.items" class="hover:bg-gray-50">
+                        <td class="pl-4 border-b">
+                            <span class="font-medium">{{ resource.name }}</span>
+                        </td>
+                        <td *ngFor="let role of roles" class="text-center border-b">
+                            <p-checkbox [binary]="true" [ngModel]="hasPermission(role, resource)"
+                                (onChange)="togglePermission(role, resource, $event)">
+                            </p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>

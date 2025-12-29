@@ -13,7 +13,7 @@ namespace IstasyonDemo.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VardiyaController : ControllerBase
+    public class VardiyaController : BaseController
     {
         private readonly AppDbContext _context;
         private readonly IVardiyaService _vardiyaService;
@@ -29,26 +29,21 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> Create(CreateVardiyaDto dto)
         {
             Console.WriteLine($"Create Vardiya - User Claims: {string.Join(", ", User.Claims.Select(c => c.Type + "=" + c.Value))}");
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim ?? "0");
-
-            if (userId == 0)
+            
+            if (CurrentUserId == 0)
             {
                 return BadRequest("Kullanıcı kimliği doğrulanamadı (Token hatası). Lütfen çıkış yapıp tekrar giriş yapın.");
             }
 
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
             var userIstasyonId = 0;
 
-            if (userRole != "admin")
+            if (!IsAdmin)
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId == null)
+                if (!CurrentIstasyonId.HasValue)
                 {
                     return BadRequest("Kullanıcının istasyonu tanımlı değil.");
                 }
-                userIstasyonId = user.IstasyonId.Value;
+                userIstasyonId = CurrentIstasyonId.Value;
                 
                 // Force IstasyonId to be user's station
                 dto.IstasyonId = userIstasyonId;
@@ -61,7 +56,7 @@ namespace IstasyonDemo.Api.Controllers
 
             try
             {
-                var vardiya = await _vardiyaService.CreateVardiyaAsync(dto, userId, userRole, userName);
+                var vardiya = await _vardiyaService.CreateVardiyaAsync(dto, CurrentUserId, CurrentUserRole, User.Identity.Name);
                 return CreatedAtAction(nameof(GetById), new { id = vardiya.Id }, vardiya);
             }
             catch (Exception ex)
@@ -149,6 +144,23 @@ namespace IstasyonDemo.Api.Controllers
                 return NotFound();
             }
 
+            // Security Check
+            if (!IsAdmin)
+            {
+                if (IsPatron)
+                {
+                    // Check if station belongs to patron's company
+                    // This requires fetching station info which is not in the projection above easily unless we include it or check separately
+                    // For performance, let's assume if they have the ID they might access, OR better check:
+                    var station = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == vardiya.IstasyonId);
+                    if (station?.Firma?.PatronId != CurrentUserId) return Forbid();
+                }
+                else
+                {
+                    if (vardiya.IstasyonId != CurrentIstasyonId) return Forbid();
+                }
+            }
+
             Console.WriteLine($"✅ Vardiya bulundu: {vardiya.DosyaAdi}, Satış: {vardiya.OtomasyonSatislar?.Count ?? 0}");
             return Ok(vardiya);
         }
@@ -171,26 +183,22 @@ namespace IstasyonDemo.Api.Controllers
             var start = baslangic.UtcDateTime;
             var end = bitis.UtcDateTime;
 
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var query = _context.Vardiyalar.AsQueryable();
 
-            if (userRole == "admin") { }
-            else if (userRole == "patron")
+            if (IsAdmin) { }
+            else if (IsPatron)
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
-            else if (userRole == "market_sorumlusu")
+            else if (CurrentUserRole == "market_sorumlusu")
             {
                 return Ok(new VardiyaRaporuDto { Ozet = new VardiyaRaporOzetDto(), Vardiyalar = new List<VardiyaRaporItemDto>() });
             }
             else
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != null)
+                if (CurrentIstasyonId != null)
                 {
-                    query = query.Where(v => v.IstasyonId == user.IstasyonId);
+                    query = query.Where(v => v.IstasyonId == CurrentIstasyonId);
                 }
                 else return Unauthorized();
             }
@@ -232,26 +240,22 @@ namespace IstasyonDemo.Api.Controllers
             var start = baslangic.UtcDateTime;
             var end = bitis.UtcDateTime;
 
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             var query = _context.Vardiyalar.AsQueryable();
 
-            if (userRole == "admin") { }
-            else if (userRole == "patron")
+            if (IsAdmin) { }
+            else if (IsPatron)
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
-            else if (userRole == "market_sorumlusu")
+            else if (CurrentUserRole == "market_sorumlusu")
             {
                 return Ok(new { Ozet = new { }, Vardiyalar = new List<object>() });
             }
             else
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != null)
+                if (CurrentIstasyonId != null)
                 {
-                    query = query.Where(v => v.IstasyonId == user.IstasyonId);
+                    query = query.Where(v => v.IstasyonId == CurrentIstasyonId);
                 }
                 else return Unauthorized();
             }
@@ -540,30 +544,26 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             IQueryable<Vardiya> query = _context.Vardiyalar.AsNoTracking();
 
-            if (userRole == "admin")
+            if (IsAdmin)
             {
                 // Admin sees all
             }
-            else if (userRole == "patron")
+            else if (IsPatron)
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
-            else if (userRole == "market_sorumlusu")
+            else if (CurrentUserRole == "market_sorumlusu")
             {
                 // Market sorumlusu should not see pump shifts
                 return Ok(new { Items = new List<object>(), Summary = new { ToplamCiro = 0, ToplamIslem = 0, BenzersizPersonelSayisi = 0 } });
             }
             else
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user?.IstasyonId != null)
+                if (CurrentIstasyonId != null)
                 {
-                    query = query.Where(v => v.IstasyonId == user.IstasyonId);
+                    query = query.Where(v => v.IstasyonId == CurrentIstasyonId);
                 }
                 else
                 {
@@ -622,17 +622,13 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> GetOnayBekleyenler()
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             IQueryable<Vardiya> query = _context.Vardiyalar
                 .Include(v => v.Istasyon)
                 .Where(v => v.Durum == VardiyaDurum.ONAY_BEKLIYOR || v.Durum == VardiyaDurum.SILINME_ONAYI_BEKLIYOR);
 
-            if (userRole == "patron")
+            if (IsPatron)
             {
-                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == userId);
+                query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
 
             var list = await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
@@ -643,11 +639,7 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize]
         public async Task<IActionResult> OnayaGonder(int id)
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            await _vardiyaService.OnayaGonderAsync(id, userId, userRole);
+            await _vardiyaService.OnayaGonderAsync(id, CurrentUserId, CurrentUserRole);
             return Ok(new { message = "Vardiya onaya gönderildi." });
         }
 
@@ -657,12 +649,7 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize]
         public async Task<IActionResult> SilmeTalebi(int id, [FromBody] SilmeTalebiDto dto)
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
-
-            await _vardiyaService.SilmeTalebiOlusturAsync(id, dto, userId, userRole, userName);
+            await _vardiyaService.SilmeTalebiOlusturAsync(id, dto, CurrentUserId, CurrentUserRole, User.Identity.Name);
             return Ok(new { message = "Vardiya silme onayına gönderildi." });
         }
 
@@ -670,11 +657,7 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> Onayla(int id, [FromBody] OnayDto dto)
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            await _vardiyaService.OnaylaAsync(id, dto, userId, userRole);
+            await _vardiyaService.OnaylaAsync(id, dto, CurrentUserId, CurrentUserRole);
             return Ok(new { message = "Vardiya işlemi onaylandı." });
         }
 
@@ -682,11 +665,7 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> Reddet(int id, [FromBody] RedDto dto)
         {
-            var userIdClaim = User.FindFirst("id")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = int.Parse(userIdClaim ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            await _vardiyaService.ReddetAsync(id, dto, userId, userRole);
+            await _vardiyaService.ReddetAsync(id, dto, CurrentUserId, CurrentUserRole);
             return Ok(new { message = "Vardiya işlemi reddedildi." });
         }
 
@@ -723,6 +702,20 @@ namespace IstasyonDemo.Api.Controllers
             if (vardiya == null)
             {
                 return NotFound();
+            }
+
+            // Security Check for Mutabakat
+            if (!IsAdmin)
+            {
+                if (IsPatron)
+                {
+                    var station = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == vardiya.IstasyonId);
+                    if (station?.Firma?.PatronId != CurrentUserId) return Forbid();
+                }
+                else
+                {
+                    if (vardiya.IstasyonId != CurrentIstasyonId) return Forbid();
+                }
             }
 
             Console.WriteLine($"⏱️ Vardiya sorgusu: {stopwatch.ElapsedMilliseconds}ms");
@@ -842,6 +835,20 @@ namespace IstasyonDemo.Api.Controllers
             if (vardiya == null)
             {
                 return NotFound();
+            }
+
+            // Security Check
+            if (!IsAdmin)
+            {
+                if (IsPatron)
+                {
+                    var station = await _context.Istasyonlar.Include(i => i.Firma).FirstOrDefaultAsync(i => i.Id == vardiya.IstasyonId);
+                    if (station?.Firma?.PatronId != CurrentUserId) return Forbid();
+                }
+                else
+                {
+                    if (vardiya.IstasyonId != CurrentIstasyonId) return Forbid();
+                }
             }
 
             Console.WriteLine($"⏱️ Vardiya sorgusu: {stopwatch.ElapsedMilliseconds}ms");
@@ -1099,17 +1106,14 @@ namespace IstasyonDemo.Api.Controllers
         [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> GetVardiyaLoglari([FromQuery] int? vardiyaId, [FromQuery] int? limit = 100)
         {
-            var userId = int.Parse(User.FindFirst("id")?.Value ?? "0");
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
             IQueryable<VardiyaLog> query = _context.VardiyaLoglari
                 .Include(vl => vl.Vardiya)
                     .ThenInclude(v => v!.Istasyon).ThenInclude(i => i!.Firma);
 
             // Patron sadece kendi istasyonlarının loglarını görebilir
-            if (userRole == "patron")
+            if (IsPatron)
             {
-                query = query.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma != null && vl.Vardiya.Istasyon.Firma.PatronId == userId);
+                query = query.Where(vl => vl.Vardiya != null && vl.Vardiya.Istasyon != null && vl.Vardiya.Istasyon.Firma != null && vl.Vardiya.Istasyon.Firma.PatronId == CurrentUserId);
             }
 
             // Belirli bir vardiya için filtreleme
