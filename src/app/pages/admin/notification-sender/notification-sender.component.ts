@@ -9,6 +9,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import { MessageService } from 'primeng/api';
 import { NotificationService } from '../../../services/notification.service';
 import { FirmaService } from '../../../services/firma.service';
@@ -29,7 +30,8 @@ import { RoleService } from '../../../services/role.service';
         TextareaModule,
         ButtonModule,
         ToastModule,
-        TableModule
+        TableModule,
+        TagModule
     ],
     providers: [MessageService],
     templateUrl: './notification-sender.component.html',
@@ -88,7 +90,7 @@ export class NotificationSenderComponent implements OnInit {
             this.firmalar = data;
         });
 
-        // İstasyonları yükle
+        // Istasyonları yükle
         this.istasyonService.getIstasyonlar().subscribe(data => {
             this.istasyonlar = data;
         });
@@ -145,7 +147,7 @@ export class NotificationSenderComponent implements OnInit {
             }
 
             if (this.selectedRole) {
-                matchRole = user.role === this.selectedRole || user.roleName === this.selectedRole;
+                matchRole = user.role === this.selectedRole;
             }
 
             return matchFirma && matchIstasyon && matchRole;

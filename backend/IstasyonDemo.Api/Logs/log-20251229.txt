@@ -99,3 +99,6 @@ ORDER BY "MigrationId";
 2025-12-29 13:31:08.300 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
 2025-12-29 13:31:08.472 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
 2025-12-29 13:31:09.135 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-29 13:35:44.218 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-29 13:35:44.461 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-29 13:35:45.265 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.

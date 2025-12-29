@@ -156,6 +156,12 @@ export class AppMenu {
                         visible: isAdmin
                     },
                     {
+                        label: 'Bildirim Gönder',
+                        icon: 'pi pi-fw pi-send',
+                        routerLink: ['/admin/notifications'],
+                        visible: isAdmin
+                    },
+                    {
                         label: 'Ayarlar',
                         icon: 'pi pi-fw pi-cog',
                         routerLink: ['/sistem/ayarlar']

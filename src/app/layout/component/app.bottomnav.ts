@@ -15,106 +15,108 @@ interface BottomNavItem {
     standalone: true,
     imports: [CommonModule, RouterModule],
     template: `
-        <nav class="mobile-bottom-nav" *ngIf="isVisible">
-            <ng-container *ngFor="let item of navItems">
-                <a *ngIf="item.route" 
-                   [routerLink]="item.route" 
-                   routerLinkActive="active"
-                   [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
-                   class="nav-item">
-                    <i [class]="'pi ' + item.icon"></i>
-                    <span>{{ item.label }}</span>
-                </a>
-                <button *ngIf="item.action" 
-                        (click)="item.action()"
-                        class="nav-item">
-                    <i [class]="'pi ' + item.icon"></i>
-                    <span>{{ item.label }}</span>
-                </button>
-            </ng-container>
-        </nav>
+        <ng-container *ngIf="isVisible">
+            <nav class="mobile-bottom-nav">
+                <ng-container *ngFor="let item of navItems">
+                    <a *ngIf="item.route" 
+                       [routerLink]="item.route" 
+                       routerLinkActive="active"
+                       [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+                       class="nav-item">
+                        <i [class]="'pi ' + item.icon"></i>
+                        <span>{{ item.label }}</span>
+                    </a>
+                    <button *ngIf="item.action" 
+                            (click)="item.action()"
+                            class="nav-item">
+                        <i [class]="'pi ' + item.icon"></i>
+                        <span>{{ item.label }}</span>
+                    </button>
+                </ng-container>
+            </nav>
 
-        <!-- More Menu Drawer -->
-        <div class="profile-drawer" [class.open]="showProfileDrawer" (click)="closeDrawer($event)">
-            <div class="drawer-content" (click)="$event.stopPropagation()">
-                <!-- Handle bar -->
-                <div class="drawer-handle"><div class="handle-bar"></div></div>
-                
-                <!-- User Profile Section -->
-                <div class="drawer-header" (click)="goToProfile()">
-                    <div class="user-avatar">
-                        <i class="pi pi-user"></i>
+            <!-- More Menu Drawer -->
+            <div class="profile-drawer" [class.open]="showProfileDrawer" (click)="closeDrawer($event)">
+                <div class="drawer-content" (click)="$event.stopPropagation()">
+                    <!-- Handle bar -->
+                    <div class="drawer-handle"><div class="handle-bar"></div></div>
+                    
+                    <!-- User Profile Section -->
+                    <div class="drawer-header" (click)="goToProfile()">
+                        <div class="user-avatar">
+                            <i class="pi pi-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">{{ currentUser?.username }}</div>
+                            <div class="user-role">{{ getRoleLabel(currentUser?.role) }}</div>
+                        </div>
+                        <div class="profile-arrow">
+                            <i class="pi pi-chevron-right"></i>
+                        </div>
                     </div>
-                    <div class="user-info">
-                        <div class="user-name">{{ currentUser?.username }}</div>
-                        <div class="user-role">{{ getRoleLabel(currentUser?.role) }}</div>
-                    </div>
-                    <div class="profile-arrow">
-                        <i class="pi pi-chevron-right"></i>
-                    </div>
-                </div>
 
-                <!-- Vardiya Section -->
-                <div class="drawer-section">
-                    <div class="section-title">Vardiya İşlemleri</div>
-                    <div class="drawer-menu">
-                        <a class="drawer-item" routerLink="/vardiya" (click)="showProfileDrawer = false">
-                            <i class="pi pi-list"></i>
-                            <span>Vardiya Listesi</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
-                        <a class="drawer-item" routerLink="/vardiya/raporlar/vardiya" (click)="showProfileDrawer = false">
-                            <i class="pi pi-chart-bar"></i>
-                            <span>Raporlar</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
-                        <a class="drawer-item" routerLink="/vardiya/tanimlamalar/personel" (click)="showProfileDrawer = false">
-                            <i class="pi pi-users"></i>
-                            <span>Personel Tanımları</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
+                    <!-- Vardiya Section -->
+                    <div class="drawer-section">
+                        <div class="section-title">Vardiya İşlemleri</div>
+                        <div class="drawer-menu">
+                            <a class="drawer-item" routerLink="/vardiya" (click)="showProfileDrawer = false">
+                                <i class="pi pi-list"></i>
+                                <span>Vardiya Listesi</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                            <a class="drawer-item" routerLink="/vardiya/raporlar/vardiya" (click)="showProfileDrawer = false">
+                                <i class="pi pi-chart-bar"></i>
+                                <span>Raporlar</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                            <a class="drawer-item" routerLink="/vardiya/tanimlamalar/personel" (click)="showProfileDrawer = false">
+                                <i class="pi pi-users"></i>
+                                <span>Personel Tanımları</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Management Section -->
-                <div class="drawer-section">
-                    <div class="section-title">Yönetim</div>
-                    <div class="drawer-menu">
-                        <a class="drawer-item" routerLink="/admin/istasyonlar" (click)="showProfileDrawer = false">
-                            <i class="pi pi-building"></i>
-                            <span>Firma & İstasyonlar</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
-                        <a class="drawer-item" routerLink="/market/yonetim" (click)="showProfileDrawer = false">
-                            <i class="pi pi-shopping-cart"></i>
-                            <span>Market Yönetimi</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
-                        <a class="drawer-item" routerLink="/vardiya/tanimlamalar/istasyon" (click)="showProfileDrawer = false">
-                            <i class="pi pi-map-marker"></i>
-                            <span>İstasyon Tanımları</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
+                    <!-- Management Section -->
+                    <div class="drawer-section">
+                        <div class="section-title">Yönetim</div>
+                        <div class="drawer-menu">
+                            <a class="drawer-item" routerLink="/admin/istasyonlar" (click)="showProfileDrawer = false">
+                                <i class="pi pi-building"></i>
+                                <span>Firma & İstasyonlar</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                            <a class="drawer-item" routerLink="/market/yonetim" (click)="showProfileDrawer = false">
+                                <i class="pi pi-shopping-cart"></i>
+                                <span>Market Yönetimi</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                            <a class="drawer-item" routerLink="/vardiya/tanimlamalar/istasyon" (click)="showProfileDrawer = false">
+                                <i class="pi pi-map-marker"></i>
+                                <span>İstasyon Tanımları</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Settings Section -->
-                <div class="drawer-section">
-                    <div class="section-title">Ayarlar</div>
-                    <div class="drawer-menu">
-                        <a class="drawer-item" routerLink="/sistem/ayarlar" (click)="showProfileDrawer = false">
-                            <i class="pi pi-cog"></i>
-                            <span>Uygulama Ayarları</span>
-                            <i class="pi pi-chevron-right arrow"></i>
-                        </a>
-                        <button class="drawer-item logout" (click)="logout()">
-                            <i class="pi pi-sign-out"></i>
-                            <span>Çıkış Yap</span>
-                        </button>
+                    <!-- Settings Section -->
+                    <div class="drawer-section">
+                        <div class="section-title">Ayarlar</div>
+                        <div class="drawer-menu">
+                            <a class="drawer-item" routerLink="/sistem/ayarlar" (click)="showProfileDrawer = false">
+                                <i class="pi pi-cog"></i>
+                                <span>Uygulama Ayarları</span>
+                                <i class="pi pi-chevron-right arrow"></i>
+                            </a>
+                            <button class="drawer-item logout" (click)="logout()">
+                                <i class="pi pi-sign-out"></i>
+                                <span>Çıkış Yap</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
     `,
     styles: [`
         .mobile-bottom-nav {
@@ -172,7 +174,6 @@ interface BottomNavItem {
                 }
             }
 
-            // Profile Drawer
             .profile-drawer {
                 display: none;
                 position: fixed;
@@ -201,12 +202,8 @@ interface BottomNavItem {
             }
 
             @keyframes slideUp {
-                from {
-                    transform: translateY(100%);
-                }
-                to {
-                    transform: translateY(0);
-                }
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
             }
 
             .drawer-header {
@@ -215,6 +212,12 @@ interface BottomNavItem {
                 gap: 1rem;
                 padding: 1.5rem;
                 border-bottom: 1px solid var(--surface-border);
+                cursor: pointer;
+                transition: background 0.2s ease;
+
+                &:active {
+                    background: var(--surface-hover);
+                }
             }
 
             .user-avatar {
@@ -247,29 +250,6 @@ interface BottomNavItem {
                 color: var(--text-color-secondary);
             }
 
-            .logout-btn {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background: #fef2f2;
-                border: 1px solid #fecaca;
-                color: #ef4444;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                
-                i {
-                    font-size: 1rem;
-                }
-                
-                &:active {
-                    background: #fecaca;
-                    transform: scale(0.95);
-                }
-            }
-
             .drawer-menu {
                 padding: 0.5rem 0;
             }
@@ -299,17 +279,15 @@ interface BottomNavItem {
                 
                 &.logout {
                     color: #ef4444;
-                    
-                    i {
-                        color: #ef4444;
-                    }
+                    i { color: #ef4444; }
                 }
-            }
 
-            .drawer-divider {
-                height: 1px;
-                background: var(--surface-border);
-                margin: 0.5rem 0;
+                .arrow {
+                    margin-left: auto;
+                    font-size: 0.75rem;
+                    color: var(--text-color-secondary);
+                    opacity: 0.5;
+                }
             }
 
             .drawer-handle {
@@ -325,29 +303,6 @@ interface BottomNavItem {
                 border-radius: 2px;
             }
 
-            .profile-btn {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                background: var(--primary-100);
-                border: none;
-                color: var(--primary-color);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                text-decoration: none;
-                
-                i {
-                    font-size: 0.875rem;
-                }
-                
-                &:active {
-                    background: var(--primary-200);
-                    transform: scale(0.95);
-                }
-            }
-
             .drawer-section {
                 padding: 0.5rem 0;
             }
@@ -361,29 +316,10 @@ interface BottomNavItem {
                 padding: 0.5rem 1.5rem;
             }
 
-            .drawer-item .arrow {
-                margin-left: auto;
-                font-size: 0.75rem;
-                color: var(--text-color-secondary);
-                opacity: 0.5;
-            }
-
-            .drawer-header {
-                cursor: pointer;
-                transition: background 0.2s ease;
-
-                &:active {
-                    background: var(--surface-hover);
-                }
-            }
-
             .profile-arrow {
                 color: var(--text-color-secondary);
                 opacity: 0.5;
-                
-                i {
-                    font-size: 0.875rem;
-                }
+                i { font-size: 0.875rem; }
             }
         }
     `]
@@ -406,7 +342,6 @@ export class AppBottomNav implements OnInit {
         const isPatron = this.currentUser.role === 'patron';
         const isAdmin = this.currentUser.role === 'admin';
 
-        // Only show for non-admin users
         if (isAdmin) {
             this.isVisible = false;
             return;
@@ -414,9 +349,7 @@ export class AppBottomNav implements OnInit {
 
         this.isVisible = true;
 
-        // Different navigation based on role
         if (isPatron) {
-            // Patron: Quick actions, approvals, oversight
             this.navItems = [
                 { label: 'Özet', icon: 'pi-home', route: '/dashboard' },
                 { label: 'Onaylar', icon: 'pi-check-circle', route: '/vardiya/onay-bekleyenler' },
@@ -429,7 +362,6 @@ export class AppBottomNav implements OnInit {
                 }
             ];
         } else {
-            // Other roles: Day-to-day operations
             this.navItems = [
                 { label: 'Anasayfa', icon: 'pi-home', route: '/dashboard' },
                 { label: 'Vardiyalar', icon: 'pi-list', route: '/vardiya' },

@@ -1,5 +1,82 @@
 .notification-sender-page {
+    min-height: calc(100vh - 9rem);
+
     .card {
-        padding: 2rem;
+        background: var(--surface-card);
+        border: 1px solid var(--surface-border);
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        padding: 1.5rem;
+    }
+
+    ::ng-deep {
+        .p-datatable {
+            .p-datatable-header {
+                background: transparent;
+                border: none;
+                padding: 0 0 1rem 0;
+            }
+
+            .p-datatable-thead>tr>th {
+                background: var(--surface-50);
+                color: var(--surface-700);
+                font-weight: 600;
+                font-size: 0.875rem;
+                padding: 0.75rem 1rem;
+            }
+
+            .p-datatable-tbody>tr {
+                background: transparent;
+                transition: background 0.2s;
+
+                &:hover {
+                    background: var(--surface-50) !important;
+                }
+            }
+        }
+
+        .p-select {
+            border-radius: 0.5rem;
+            border-color: var(--surface-300);
+
+            &:not(.p-disabled):hover {
+                border-color: var(--primary-color);
+            }
+
+            &.p-focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 2px var(--primary-100);
+            }
+        }
+
+        .p-inputtext,
+        .p-textarea {
+            border-radius: 0.5rem;
+            border-color: var(--surface-300);
+            padding: 0.75rem;
+
+            &:not(.p-disabled):hover {
+                border-color: var(--primary-color);
+            }
+
+            &:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 2px var(--primary-100);
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .notification-sender-page {
+        padding: 1rem !important;
+
+        .card {
+            padding: 1rem;
+        }
+
+        .lg\:col-span-4 {
+            margin-top: 1rem;
+        }
     }
 }
