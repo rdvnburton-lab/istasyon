@@ -85,6 +85,17 @@
                     </form>
                 </p-card>
             </div>
+
+            <!-- Notification Permission Card -->
+            <div class="card-wrapper">
+                <p-card header="Bildirim Ayarları">
+                    <div class="field">
+                        <p>Bildirimleri almak için izin vermeniz gerekmektedir.</p>
+                        <button pButton type="button" label="Bildirim İzni İste" icon="pi pi-bell"
+                            class="p-button-secondary w-full" (click)="requestNotificationPermission()"></button>
+                    </div>
+                </p-card>
+            </div>
         </div>
     </div>
 </div>

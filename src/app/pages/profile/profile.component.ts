@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { AuthService, User } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { SorumluDashboardDto } from '../../models/dashboard.model';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
     selector: 'app-profile',
@@ -42,7 +43,8 @@ export class ProfileComponent implements OnInit {
     constructor(
         private authService: AuthService,
         private dashboardService: DashboardService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private notificationService: NotificationService
     ) { }
 
     ngOnInit() {
@@ -61,6 +63,15 @@ export class ProfileComponent implements OnInit {
                 console.error('Kullanıcı bilgileri yüklenirken hata:', err);
                 this.loading = false;
             }
+        });
+    }
+
+    requestNotificationPermission() {
+        this.notificationService.initPush();
+        this.messageService.add({
+            severity: 'info',
+            summary: 'Bilgi',
+            detail: 'Bildirim izni istendi.'
         });
     }
 
