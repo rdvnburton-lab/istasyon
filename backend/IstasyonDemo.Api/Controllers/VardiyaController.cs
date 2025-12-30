@@ -13,6 +13,7 @@ namespace IstasyonDemo.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class VardiyaController : BaseController
     {
         private readonly AppDbContext _context;

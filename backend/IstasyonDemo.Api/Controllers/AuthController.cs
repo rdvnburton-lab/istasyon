@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using System.Text;
 
@@ -25,6 +26,7 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting("AuthPolicy")]
         public async Task<ActionResult<User>> Register(RegisterDto request)
         {
             if (await _context.Users.AnyAsync(u => u.Username == request.Username))
@@ -160,78 +162,70 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("AuthPolicy")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto request)
         {
-            try
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Username.ToLower() == request.Username.ToLower());
+
+            if (user == null)
             {
-                var user = await _context.Users
-                    .Include(u => u.Role)
-                    .FirstOrDefaultAsync(u => u.Username.ToLower() == request.Username.ToLower());
+                return BadRequest("Kullanıcı bulunamadı.");
+            }
 
-                if (user == null)
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                return BadRequest("Yanlış şifre.");
+            }
+
+            if (user.Role?.Ad?.ToLower() == "pasif")
+            {
+                return BadRequest("Hesabınız pasif durumdadır. Yöneticinizle iletişime geçin.");
+            }
+
+            user.LastActivity = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            int? firmaId = null;
+            int? istasyonId = user.IstasyonId;
+
+            var response = new AuthResponseDto
+            {
+                Username = user.Username,
+                Role = user.Role?.Ad ?? "User",
+                AdSoyad = user.AdSoyad
+            };
+
+            if (response.Role == "patron")
+            {
+                var firma = await _context.Firmalar
+                    .Include(f => f.Istasyonlar)
+                    .FirstOrDefaultAsync(f => f.PatronId == user.Id);
+
+                if (firma != null)
                 {
-                    return BadRequest("Kullanıcı bulunamadı.");
+                    firmaId = firma.Id;
+                    response.FirmaAdi = firma.Ad;
+                    response.Istasyonlar = firma.Istasyonlar
+                        .Where(i => i.Aktif)
+                        .Select(i => new SimpleIstasyonDto { Id = i.Id, Ad = i.Ad, ApiKey = i.ApiKey })
+                        .ToList();
                 }
-
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                {
-                    return BadRequest("Yanlış şifre.");
-                }
-
-                if (user.Role?.Ad?.ToLower() == "pasif")
-                {
-                    return BadRequest("Hesabınız pasif durumdadır. Yöneticinizle iletişime geçin.");
-                }
-
-                user.LastActivity = DateTime.UtcNow;
-                await _context.SaveChangesAsync();
-
-                int? firmaId = null;
-                int? istasyonId = user.IstasyonId;
-
-                var response = new AuthResponseDto
-                {
-                    Username = user.Username,
-                    Role = user.Role?.Ad ?? "User"
-                };
-
-                if (response.Role == "patron")
-                {
-                    var firma = await _context.Firmalar
-                        .Include(f => f.Istasyonlar)
-                        .FirstOrDefaultAsync(f => f.PatronId == user.Id);
-
-                    if (firma != null)
+            }
+            else if (user.IstasyonId.HasValue)
+            {
+                    var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
+                    if (istasyon != null)
                     {
-                        firmaId = firma.Id;
-                        response.FirmaAdi = firma.Ad;
-                        response.Istasyonlar = firma.Istasyonlar
-                            .Where(i => i.Aktif)
-                            .Select(i => new SimpleIstasyonDto { Id = i.Id, Ad = i.Ad, ApiKey = i.ApiKey })
-                            .ToList();
+                        response.Istasyonlar.Add(new SimpleIstasyonDto { Id = istasyon.Id, Ad = istasyon.Ad, ApiKey = istasyon.ApiKey });
                     }
-                }
-                else if (user.IstasyonId.HasValue)
-                {
-                     var istasyon = await _context.Istasyonlar.FindAsync(user.IstasyonId.Value);
-                     if (istasyon != null)
-                     {
-                         response.Istasyonlar.Add(new SimpleIstasyonDto { Id = istasyon.Id, Ad = istasyon.Ad, ApiKey = istasyon.ApiKey });
-                     }
-                }
-
-                string token = CreateToken(user, firmaId, istasyonId);
-                response.Token = token;
-
-                return Ok(response);
             }
-            catch (Exception ex)
-            {
-                // Log the exception (you can use ILogger here if injected)
-                Console.WriteLine($"Login Error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
-            }
+
+            string token = CreateToken(user, firmaId, istasyonId);
+            response.Token = token;
+
+            return Ok(response);
         }
 
         private string CreateToken(User user, int? firmaId = null, int? istasyonId = null)

@@ -10,6 +10,7 @@ namespace IstasyonDemo.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DashboardController : BaseController
     {
         private readonly AppDbContext _context;

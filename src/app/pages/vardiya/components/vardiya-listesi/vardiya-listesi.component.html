@@ -336,7 +336,7 @@
                 </p-button>
             </div>
 
-            <p-table [value]="vardiyalar" [paginator]="vardiyalar.length > 10" [rows]="10" #dt
+            <p-table [value]="vardiyalar" [paginator]="vardiyalar.length > rowsPerPage" [rows]="rowsPerPage" #dt
                 [globalFilterFields]="['dosyaAdi']">
                 styleClass="p-datatable-striped">
 
@@ -428,7 +428,7 @@
                         </td>
                         <td>
                             <div class="flex gap-2 justify-end">
-                                <button pButton pRipple icon="pi pi-file-excel"
+                                <button pButton pRipple icon="pi pi-calculator"
                                     class="p-button-rounded p-button-success p-button-text mr-2"
                                     (click)="mutabakatYap(vardiya)"
                                     [pTooltip]="vardiya.durum === 'REDDEDILDI' ? 'Mutabakatı Düzenle' : 'Mutabakat Başlat'"

@@ -1,0 +1,34 @@
+2025-12-30 09:36:24.523 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-30 09:36:25.012 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-30 09:36:25.972 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-30 09:36:37.643 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2025-12-30 09:56:13.085 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-30 09:56:13.240 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-30 09:56:13.799 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-30 09:59:38.700 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-30 09:59:45.288 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-30 10:06:10.936 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-30 10:06:15.750 +03:00 [INF] Firebase Admin SDK başarıyla başlatıldı.
+2025-12-30 10:06:15.910 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-30 10:06:16.523 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-30 10:20:35.613 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-12-30 10:20:47.117 +03:00 [ERR] Something went wrong: Bu işlem için yetkiniz yok.
+System.UnauthorizedAccessException: Bu işlem için yetkiniz yok.
+   at IstasyonDemo.Api.Services.VardiyaService.OnayaGonderAsync(Int32 id, Int32 userId, String userRole) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 179
+   at IstasyonDemo.Api.Controllers.VardiyaController.OnayaGonder(Int32 id) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Controllers\VardiyaController.cs:line 643
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2025-12-30 10:21:15.069 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.

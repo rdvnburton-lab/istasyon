@@ -15,6 +15,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TooltipModule } from 'primeng/tooltip';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 import { IstasyonService, Istasyon, CreateIstasyonDto, UpdateIstasyonDto } from '../../../services/istasyon.service';
 import { FirmaService, Firma, CreateFirmaDto, UpdateFirmaDto } from '../../../services/firma.service';
 import { UserService, UserDto } from '../../../services/user.service';
@@ -38,7 +40,9 @@ import { forkJoin } from 'rxjs';
         ToggleSwitchModule,
         TooltipModule,
         IconFieldModule,
-        InputIconModule
+        InputIconModule,
+        AvatarModule,
+        AvatarGroupModule
     ],
     providers: [MessageService, ConfirmationService],
     templateUrl: './istasyon-yonetimi.component.html',
@@ -100,15 +104,9 @@ export class IstasyonYonetimiComponent implements OnInit {
 
     ngOnInit() {
         this.cols = [
-            { field: 'ad', header: 'Ad' },
-            { field: 'adres', header: 'Adres' },
-            { field: 'patronAdi', header: 'Patron' },
-            { field: 'istasyonSorumlusu', header: 'İstasyon Sorumlusu' },
-            { field: 'vardiyaSorumlusu', header: 'Vardiya Sorumlusu' },
-            { field: 'marketSorumlusu', header: 'Market Sorumlusu' },
-            { field: 'durum', header: 'Sağlık / Son Veri' },
-            { field: 'kilit', header: 'Cihaz Kilidi' },
-            { field: 'aktif', header: 'Durum' }
+            { field: 'bilgi', header: 'Firma / İstasyon Bilgisi' },
+            { field: 'yonetim', header: 'Yönetim Ekibi' },
+            { field: 'durum', header: 'Durum & Cihaz' }
         ];
 
         const currentUser = this.authService.getCurrentUser();
@@ -126,13 +124,14 @@ export class IstasyonYonetimiComponent implements OnInit {
         forkJoin({
             firmalar: this.firmaService.getFirmalar(),
             istasyonlar: this.istasyonService.getIstasyonlar(),
-            patronlar: this.userService.getUsersByRole('patron')
-        }).subscribe(({ firmalar, istasyonlar, patronlar }) => {
-            // Patronları her zaman yükle (hem admin hem patron için)
+            users: this.userService.getUsers()
+        }).subscribe(({ firmalar, istasyonlar, users }) => {
+            // Patronları filtrele
+            const patronlar = users.filter(u => u.role === 'patron');
             this.patronOptions = patronlar.map(u => ({ label: u.adSoyad || u.username, value: u.id }));
 
-            // Tree'yi oluştur
-            this.buildTree(firmalar, istasyonlar);
+            // Tree'yi oluştur (Users listesini de gönder)
+            this.buildTree(firmalar, istasyonlar, users);
 
             // Firma seçeneklerini yükle
             this.firmaOptions = firmalar.map(f => ({ label: f.ad, value: f.id }));
@@ -186,11 +185,28 @@ export class IstasyonYonetimiComponent implements OnInit {
         });
     }
 
-    buildTree(firmalar: Firma[], istasyonlar: Istasyon[]) {
+    buildTree(firmalar: Firma[], istasyonlar: Istasyon[], users: any[] = []) {
         const roots: TreeNode[] = [];
+        const currentUser = this.authService.getCurrentUser();
 
         firmalar.forEach(f => {
-            const patronName = this.patronOptions.find(p => p.value === f.patronId)?.label || '-';
+            // 1. Önce users listesinden patronu bulmaya çalış (En güvenilir yöntem)
+            let patronUser = users.find(u => u.id === f.patronId);
+            let patronName = patronUser ? (patronUser.adSoyad || patronUser.username) : null;
+
+            // 2. Eğer users listesinde yoksa, patronOptions'dan bak (Yedek)
+            if (!patronName) {
+                patronName = this.patronOptions.find(p => p.value == f.patronId)?.label;
+            }
+
+            // 3. Eğer hala bulunamadıysa ve giriş yapan kullanıcı bu firmanın patronuysa
+            if (!patronName && currentUser && (currentUser.id == f.patronId || currentUser.role === 'patron')) {
+                // Giriş yapan kullanıcının adını kullan
+                patronName = currentUser.adSoyad || currentUser.username;
+            }
+
+            patronName = patronName || '-';
+
             const firmaNode: TreeNode = {
                 data: {
                     ...f,
@@ -206,15 +222,19 @@ export class IstasyonYonetimiComponent implements OnInit {
 
             const relatedIstasyonlar = istasyonlar.filter(i => i.firmaId === f.id);
             relatedIstasyonlar.forEach(i => {
+                // İsimleri manuel eşleştir (Backend göndermiyorsa)
+                const iSorumlu = users.find(u => u.id === i.istasyonSorumluId)?.adSoyad || users.find(u => u.id === i.istasyonSorumluId)?.username || i.istasyonSorumlusu || '-';
+                const vSorumlu = users.find(u => u.id === i.vardiyaSorumluId)?.adSoyad || users.find(u => u.id === i.vardiyaSorumluId)?.username || i.vardiyaSorumlusu || '-';
+                const mSorumlu = users.find(u => u.id === i.marketSorumluId)?.adSoyad || users.find(u => u.id === i.marketSorumluId)?.username || i.marketSorumlusu || '-';
+
                 firmaNode.children?.push({
                     data: {
                         ...i,
                         type: 'istasyon',
                         patronAdi: '-',
-                        // Backend'den gelen hazır veriler - frontend'de işlem yok!
-                        istasyonSorumlusu: i.istasyonSorumlusu || '-',
-                        vardiyaSorumlusu: i.vardiyaSorumlusu || '-',
-                        marketSorumlusu: i.marketSorumlusu || '-'
+                        istasyonSorumlusu: iSorumlu,
+                        vardiyaSorumlusu: vSorumlu,
+                        marketSorumlusu: mSorumlu
                     },
                     children: [],
                     expanded: true

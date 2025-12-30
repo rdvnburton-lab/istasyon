@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography;
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Models;
@@ -8,7 +9,7 @@ namespace IstasyonDemo.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FileTransferController : ControllerBase
+public class FileTransferController : BaseController
 {
     private readonly ILogger<FileTransferController> _logger;
     private readonly AppDbContext _context;
@@ -164,11 +165,19 @@ public class FileTransferController : ControllerBase
     }
 
     [HttpGet("pending")]
+    [Authorize(Roles = "admin,patron")]
     public async Task<IActionResult> GetPendingFiles()
     {
-        var files = await _context.OtomatikDosyalar
+        var query = _context.OtomatikDosyalar
             .Include(f => f.Istasyon)
-            .Where(f => !f.Islendi)
+            .Where(f => !f.Islendi);
+
+        if (IsPatron)
+        {
+            query = query.Where(f => f.Istasyon != null && f.Istasyon.Firma != null && f.Istasyon.Firma.PatronId == CurrentUserId);
+        }
+
+        var files = await query
             .Select(f => new { 
                 f.Id, 
                 f.DosyaAdi, 
@@ -183,10 +192,19 @@ public class FileTransferController : ControllerBase
     }
 
     [HttpGet("{id}/content")]
+    [Authorize(Roles = "admin,patron")]
     public async Task<IActionResult> GetFileContent(int id)
     {
-        var file = await _context.OtomatikDosyalar.FindAsync(id);
+        var file = await _context.OtomatikDosyalar
+            .Include(f => f.Istasyon).ThenInclude(i => i.Firma)
+            .FirstOrDefaultAsync(f => f.Id == id);
+            
         if (file == null) return NotFound();
+
+        if (IsPatron)
+        {
+            if (file.Istasyon?.Firma?.PatronId != CurrentUserId) return Forbid();
+        }
         
         return Ok(new { 
             id = file.Id, 
@@ -196,10 +214,19 @@ public class FileTransferController : ControllerBase
     }
 
     [HttpPost("{id}/processed")]
+    [Authorize(Roles = "admin,patron")]
     public async Task<IActionResult> MarkAsProcessed(int id)
     {
-        var file = await _context.OtomatikDosyalar.FindAsync(id);
+        var file = await _context.OtomatikDosyalar
+            .Include(f => f.Istasyon).ThenInclude(i => i.Firma)
+            .FirstOrDefaultAsync(f => f.Id == id);
+            
         if (file == null) return NotFound();
+
+        if (IsPatron)
+        {
+            if (file.Istasyon?.Firma?.PatronId != CurrentUserId) return Forbid();
+        }
         
         file.Islendi = true;
         file.IslenmeTarihi = DateTime.UtcNow;

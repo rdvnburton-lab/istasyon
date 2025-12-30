@@ -194,7 +194,7 @@ export class AppMenu implements OnInit, OnDestroy {
                 label: 'Ayarlar',
                 icon: 'pi pi-fw pi-cog',
                 routerLink: ['/sistem/ayarlar'],
-                visible: hasAccess('SISTEM_AYARLAR')
+                visible: true
             }
         ].filter(item => item.visible);
 

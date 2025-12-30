@@ -79,10 +79,9 @@ builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     
-    // IP Bazlı Sınırlama: Dakikada 300 istek (Saniyede 5 istek)
+    // IP Bazlı Sınırlama: Dakikada 300 istek
     options.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<HttpContext, string>(context =>
     {
-        // IP adresini al, yoksa "unknown" kullan
         var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
         return System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
@@ -90,9 +89,24 @@ builder.Services.AddRateLimiter(options =>
             factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
             {
                 AutoReplenishment = true,
-                PermitLimit = 300,        // Dakikada 300 istek hakkı
+                PermitLimit = 300,
                 Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0            // Kuyrukta bekletme, direkt reddet
+                QueueLimit = 0
+            });
+    });
+
+    // Auth Endpointleri için daha sıkı limit (Dakikada 10 istek)
+    options.AddPolicy("AuthPolicy", context =>
+    {
+        var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: remoteIp,
+            factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
             });
     });
 });
@@ -232,8 +246,14 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 app.UseRouting();
 

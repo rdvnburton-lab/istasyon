@@ -160,11 +160,12 @@
     <!-- İstasyon Tree Tablosu -->
     <div class="col-span-12">
         <div class="card">
-            <p-treeTable [value]="treeData" [columns]="cols" selectionMode="single"
-                styleClass="p-treetable-sm p-treetable-striped" #tt>
+            <p-treeTable [value]="treeData" [columns]="cols" selectionMode="single" styleClass="p-treetable-sm"
+                [tableStyle]="{'table-layout':'fixed'}" #tt>
                 <ng-template pTemplate="caption">
                     <div class="flex justify-between items-center">
-                        <span class="text-xl font-bold">Firma ve İstasyon Listesi</span>
+                        <span class="text-xl font-bold text-surface-900 dark:text-surface-0">Firma ve İstasyon
+                            Listesi</span>
                         <p-iconfield>
                             <p-inputicon class="pi pi-search" />
                             <input pInputText type="text" placeholder="Ara..."
@@ -174,89 +175,149 @@
                 </ng-template>
 
                 <ng-template pTemplate="header" let-columns>
-                    <tr class="text-sm">
-                        <th *ngFor="let col of columns">
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [style.width]="col.field === 'bilgi' ? '40%' : (col.field === 'yonetim' ? '35%' : '15%')">
                             {{col.header}}
                         </th>
-                        <th class="text-center" style="width: 12rem">İşlemler</th>
+                        <th class="text-center" style="width: 10%">İşlemler</th>
                     </tr>
                 </ng-template>
 
                 <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-                    <tr [ngClass]="{'bg-blue-50/50 dark:bg-blue-900/10 font-bold': rowData.type === 'firma'}"
-                        class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td *ngFor="let col of columns; let i = index">
-                            <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
-                            <i *ngIf="i == 0"
-                                [class]="rowData.type === 'firma' ? 'pi pi-building mr-2 text-blue-600' : 'pi pi-map-marker mr-2 text-orange-500'"></i>
+                    <tr [ngClass]="{'bg-blue-50/50 dark:bg-blue-900/10': rowData.type === 'firma'}"
+                        class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-b border-surface-200 dark:border-surface-700">
 
-                            <ng-container *ngIf="col.field !== 'aktif'">
-                                <span
-                                    [class]="rowData.type === 'firma' ? 'font-bold text-surface-800 dark:text-surface-100' : 'text-surface-800 dark:text-surface-100'">
-                                    {{rowData[col.field]}}
-                                </span>
-                            </ng-container>
-                            <ng-container *ngIf="col.field === 'aktif'">
-                                <p-tag [value]="rowData.aktif ? 'Aktif' : 'Pasif'"
-                                    [severity]="rowData.aktif ? 'success' : 'danger'"></p-tag>
-                            </ng-container>
-
-                            <!-- NEW: Device Lock & Status -->
-                            <ng-container *ngIf="col.field === 'durum' && rowData.type === 'istasyon'">
-                                <div class="flex items-center gap-2">
-                                    <i class="pi pi-circle-fill text-xs"
-                                        [ngClass]="rowData.isOnline ? 'text-green-500' : 'text-gray-400'"
-                                        [pTooltip]="rowData.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'"></i>
-                                    <span class="text-xs text-gray-500">{{ rowData.lastConnectionTime | date:'dd.MM
-                                        HH:mm' }}</span>
+                        <!-- Bilgi Kolonu -->
+                        <td>
+                            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                            <div class="inline-flex items-center gap-3 align-middle">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                                    [ngClass]="rowData.type === 'firma' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400'">
+                                    <i
+                                        [class]="rowData.type === 'firma' ? 'pi pi-building text-xl' : 'pi pi-map-marker text-xl'"></i>
                                 </div>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'kilit' && rowData.type === 'istasyon'">
-                                <div *ngIf="rowData.registeredDeviceId">
-                                    <button pButton icon="pi pi-lock" label="Kilitli"
-                                        class="p-button-danger p-button-xs p-button-outlined"
-                                        style="font-size: 0.75rem; padding: 0.2rem 0.5rem;"
-                                        (click)="unlockStation(rowData)" pTooltip="Kilidi Kaldır (Cihazı Unut)"
-                                        tooltipPosition="top">
-                                    </button>
+                                <div>
+                                    <div class="font-bold text-surface-900 dark:text-surface-0 text-base">{{rowData.ad}}
+                                    </div>
+                                    <div class="text-sm text-surface-500 dark:text-surface-400 flex items-center gap-1"
+                                        *ngIf="rowData.adres">
+                                        <i class="pi pi-map text-xs"></i>
+                                        <span class="truncate max-w-[200px]">{{rowData.adres}}</span>
+                                    </div>
                                 </div>
-                                <div *ngIf="!rowData.registeredDeviceId">
-                                    <span class="text-green-500 text-xs"><i
-                                            class="pi pi-lock-open mr-1"></i>Serbest</span>
-                                </div>
-                            </ng-container>
+                            </div>
                         </td>
+
+                        <!-- Yönetim Ekibi Kolonu -->
+                        <td>
+                            <!-- Firma için Patron -->
+                            <div *ngIf="rowData.type === 'firma'" class="flex items-center gap-2">
+                                <p-avatar icon="pi pi-user" shape="circle" styleClass="bg-indigo-100 text-indigo-600"
+                                    [pTooltip]="'Firma Sahibi: ' + rowData.patronAdi" tooltipPosition="top"></p-avatar>
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-surface-500">Firma Sahibi</span>
+                                    <span class="text-sm font-medium">{{rowData.patronAdi}}</span>
+                                </div>
+                            </div>
+
+                            <!-- İstasyon için Sorumlular -->
+                            <div *ngIf="rowData.type === 'istasyon'">
+                                <p-avatarGroup styleClass="mb-1">
+                                    <p-avatar icon="pi pi-user" shape="circle" size="normal"
+                                        [styleClass]="rowData.istasyonSorumlusu !== '-' ? 'bg-green-100 text-green-600 cursor-pointer' : 'bg-surface-200 text-surface-400'"
+                                        [pTooltip]="'İstasyon Sorumlusu: ' + rowData.istasyonSorumlusu"
+                                        tooltipPosition="top"></p-avatar>
+                                    <p-avatar icon="pi pi-clock" shape="circle" size="normal"
+                                        [styleClass]="rowData.vardiyaSorumlusu !== '-' ? 'bg-green-100 text-green-600 cursor-pointer' : 'bg-surface-200 text-surface-400'"
+                                        [pTooltip]="'Vardiya Sorumlusu: ' + rowData.vardiyaSorumlusu"
+                                        tooltipPosition="top"></p-avatar>
+                                    <p-avatar icon="pi pi-shopping-cart" shape="circle" size="normal"
+                                        [styleClass]="rowData.marketSorumlusu !== '-' ? 'bg-green-100 text-green-600 cursor-pointer' : 'bg-surface-200 text-surface-400'"
+                                        [pTooltip]="'Market Sorumlusu: ' + rowData.marketSorumlusu"
+                                        tooltipPosition="top"></p-avatar>
+                                </p-avatarGroup>
+                                <div class="text-xs text-surface-500 mt-1"
+                                    *ngIf="rowData.istasyonSorumlusu === '-' && rowData.vardiyaSorumlusu === '-' && rowData.marketSorumlusu === '-'">
+                                    Henüz sorumlu atanmamış
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Durum & Cihaz Kolonu -->
+                        <td>
+                            <div class="flex flex-col gap-2">
+                                <!-- Aktif/Pasif -->
+                                <div class="flex items-center gap-2">
+                                    <p-tag [value]="rowData.aktif ? 'Aktif' : 'Pasif'"
+                                        [severity]="rowData.aktif ? 'success' : 'danger'"
+                                        styleClass="text-xs px-2 py-0.5"></p-tag>
+
+                                    <!-- İstasyon Online Durumu -->
+                                    <ng-container *ngIf="rowData.type === 'istasyon'">
+                                        <div class="w-px h-4 bg-surface-300 dark:bg-surface-600 mx-1"></div>
+                                        <div class="flex items-center gap-1"
+                                            [pTooltip]="rowData.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'"
+                                            tooltipPosition="top">
+                                            <div class="w-2 h-2 rounded-full"
+                                                [ngClass]="rowData.isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'">
+                                            </div>
+                                            <span class="text-xs text-surface-600 dark:text-surface-400"
+                                                *ngIf="rowData.isOnline">Online</span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+
+                                <!-- Cihaz Kilidi (Sadece İstasyon) -->
+                                <div *ngIf="rowData.type === 'istasyon'" class="flex items-center gap-2 text-xs">
+                                    <ng-container *ngIf="rowData.registeredDeviceId">
+                                        <i class="pi pi-lock text-red-500"></i>
+                                        <span class="text-surface-600 dark:text-surface-400">Cihaz Kilitli</span>
+                                        <button pButton icon="pi pi-unlock"
+                                            class="p-button-text p-button-danger p-button-xs h-6 w-6"
+                                            (click)="unlockStation(rowData)" pTooltip="Kilidi Kaldır"
+                                            tooltipPosition="top"></button>
+                                    </ng-container>
+                                    <ng-container *ngIf="!rowData.registeredDeviceId">
+                                        <i class="pi pi-lock-open text-green-500"></i>
+                                        <span class="text-surface-500 dark:text-surface-400">Cihaz Serbest</span>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- İşlemler -->
                         <td class="text-center">
-                            <div class="flex gap-2 justify-center">
+                            <div class="flex gap-1 justify-center">
                                 <!-- Firma İşlemleri -->
                                 <ng-container *ngIf="rowData.type === 'firma'">
                                     <button pButton pRipple icon="pi pi-plus"
-                                        class="p-button-rounded p-button-text p-button-success"
+                                        class="p-button-rounded p-button-text p-button-success w-8 h-8"
                                         (click)="showIstasyonDialog(false, null, rowData.id)" pTooltip="İstasyon Ekle"
                                         tooltipPosition="top">
                                     </button>
                                     <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-text p-button-warning"
+                                        class="p-button-rounded p-button-text p-button-warning w-8 h-8"
                                         (click)="showFirmaDialog(true, rowData)" pTooltip="Firmayı Düzenle"
                                         tooltipPosition="top" *ngIf="isAdmin">
                                     </button>
                                     <button pButton pRipple icon="pi pi-trash"
-                                        class="p-button-rounded p-button-text p-button-danger" (click)="delete(rowData)"
-                                        pTooltip="Firmayı Sil" tooltipPosition="top" *ngIf="isAdmin">
+                                        class="p-button-rounded p-button-text p-button-danger w-8 h-8"
+                                        (click)="delete(rowData)" pTooltip="Firmayı Sil" tooltipPosition="top"
+                                        *ngIf="isAdmin">
                                     </button>
                                 </ng-container>
 
                                 <!-- İstasyon İşlemleri -->
                                 <ng-container *ngIf="rowData.type === 'istasyon'">
                                     <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-text p-button-warning"
+                                        class="p-button-rounded p-button-text p-button-warning w-8 h-8"
                                         (click)="showIstasyonDialog(true, rowData)" pTooltip="İstasyonu Düzenle"
                                         tooltipPosition="top">
                                     </button>
                                     <button pButton pRipple icon="pi pi-trash"
-                                        class="p-button-rounded p-button-text p-button-danger" (click)="delete(rowData)"
-                                        pTooltip="İstasyonu Sil" tooltipPosition="top">
+                                        class="p-button-rounded p-button-text p-button-danger w-8 h-8"
+                                        (click)="delete(rowData)" pTooltip="İstasyonu Sil" tooltipPosition="top">
                                     </button>
                                 </ng-container>
                             </div>
@@ -266,7 +327,7 @@
 
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td [attr.colspan]="cols.length + 1" class="text-center py-12">
+                        <td [attr.colspan]="4" class="text-center py-12">
                             <div class="flex flex-col items-center">
                                 <div
                                     class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">

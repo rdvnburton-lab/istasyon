@@ -33,7 +33,7 @@ import { Subscription } from 'rxjs';
         <div class="user-info-content">
             <div class="user-name">
                 <i class="pi pi-user"></i>
-                <span>{{currentUser.username}}</span>
+                <span>{{currentUser.adSoyad || currentUser.username}}</span>
                 <span class="user-role-badge">{{getRoleLabel(currentUser.role)}}</span>
             </div>
             
@@ -107,7 +107,7 @@ import { Subscription } from 'rxjs';
             <div class="layout-topbar-menu-content">
                 <button type="button" class="layout-topbar-action" (click)="menu.toggle($event)">
                     <i class="pi pi-user"></i>
-                    <span>{{currentUser?.username || 'Profil'}}</span>
+                    <span>{{currentUser?.adSoyad || currentUser?.username || 'Profil'}}</span>
                 </button>
                 <p-menu #menu [model]="items" [popup]="true"></p-menu>
             </div>

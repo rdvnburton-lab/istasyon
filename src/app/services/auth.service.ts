@@ -19,6 +19,7 @@ export interface User {
     firmaAdi?: string;
     istasyonlar?: SimpleIstasyon[];
     selectedIstasyonId?: number;
+    adSoyad?: string;
 }
 
 export interface AuthResponse {
@@ -28,6 +29,7 @@ export interface AuthResponse {
     id?: number;
     firmaAdi?: string;
     istasyonlar?: SimpleIstasyon[];
+    adSoyad?: string;
 }
 
 @Injectable({
@@ -88,7 +90,8 @@ export class AuthService {
                     role: response.role,
                     token: response.token,
                     firmaAdi: response.firmaAdi,
-                    istasyonlar: response.istasyonlar
+                    istasyonlar: response.istasyonlar,
+                    adSoyad: response.adSoyad
                 };
                 this.setCurrentUser(user);
 
@@ -143,6 +146,16 @@ export class AuthService {
     getToken(): string | null {
         const user = this.getCurrentUser();
         return user ? user.token || null : null;
+    }
+
+    isAdmin(): boolean {
+        const user = this.getCurrentUser();
+        return user?.role?.toLowerCase() === 'admin';
+    }
+
+    isPatron(): boolean {
+        const user = this.getCurrentUser();
+        return user?.role?.toLowerCase() === 'patron';
     }
     public startIdleMonitoring() {
         this.lastActivity = Date.now();

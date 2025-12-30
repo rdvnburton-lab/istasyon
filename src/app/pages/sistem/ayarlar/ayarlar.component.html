@@ -1,10 +1,10 @@
 <p-toast></p-toast>
 
-<div class="card mb-4">
-    <div class="flex flex-column md:flex-row align-items-start md:align-items-center justify-content-between gap-3">
+<div class="card mb-4 border-none shadow-sm bg-white dark:bg-surface-900 p-4 rounded-xl">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
-            <h4 class="m-0 mb-2">Uygulama Ayarları</h4>
-            <p class="m-0 text-gray-600">Sisteminizi ihtiyaçlarınıza göre özelleştirin</p>
+            <h4 class="m-0 mb-2 text-surface-900 dark:text-surface-0 font-bold text-xl">Uygulama Ayarları</h4>
+            <p class="m-0 text-surface-600 dark:text-surface-400">Sisteminizi ihtiyaçlarınıza göre özelleştirin</p>
         </div>
         <div class="flex gap-2">
             <p-button label="Varsayılana Dön" icon="pi pi-refresh" [outlined]="true" severity="secondary"
@@ -14,176 +14,194 @@
     </div>
 </div>
 
-<!-- Bildirim Ayarları -->
-<div class="card mb-4">
-    <div class="flex align-items-center gap-3 mb-4 pb-3 border-bottom-1 surface-border">
-        <div class="flex align-items-center justify-content-center bg-blue-100 border-circle"
-            style="width: 3rem; height: 3rem;">
-            <i class="pi pi-bell text-blue-600 text-xl"></i>
-        </div>
-        <div>
-            <h5 class="m-0 mb-1">Bildirim Ayarları</h5>
-            <p class="m-0 text-sm text-gray-600">Uyarı ve bildirim tercihlerinizi yönetin</p>
+<div class="grid grid-cols-12 gap-4">
+    <!-- Bildirim Ayarları -->
+    <div class="col-span-12 md:col-span-6">
+        <div class="card h-full border-none shadow-sm bg-white dark:bg-surface-900 p-4 rounded-xl">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-surface-200 dark:border-surface-700">
+                <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-full"
+                    style="width: 3rem; height: 3rem;">
+                    <i class="pi pi-bell text-blue-600 dark:text-blue-400 text-xl"></i>
+                </div>
+                <div>
+                    <h5 class="m-0 mb-1 text-surface-900 dark:text-surface-0 font-semibold text-lg">Bildirim Ayarları
+                    </h5>
+                    <p class="m-0 text-sm text-surface-600 dark:text-surface-400">Uyarı ve bildirim tercihleri</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <!-- Vardiya Onay Bildirimi -->
+                <div
+                    class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3 flex-1">
+                            <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-xl"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold mb-1 text-surface-900 dark:text-surface-0">Vardiya Onay
+                                    Bildirimi</div>
+                                <div class="text-sm text-surface-600 dark:text-surface-400">Vardiya onaylandığında
+                                    bildirim al</div>
+                            </div>
+                        </div>
+                        <p-toggleSwitch [(ngModel)]="settings.bildirimler.vardiyaOnayBildirimi"></p-toggleSwitch>
+                    </div>
+                </div>
+
+                <!-- Fark Uyarısı -->
+                <div
+                    class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3 flex-1">
+                            <i class="pi pi-exclamation-triangle text-orange-600 dark:text-orange-400 text-xl"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold mb-1 text-surface-900 dark:text-surface-0">Fark Uyarısı</div>
+                                <div class="text-sm text-surface-600 dark:text-surface-400">Belirli tutarın üzerinde
+                                    fark uyarısı</div>
+                            </div>
+                        </div>
+                        <p-toggleSwitch [(ngModel)]="settings.bildirimler.farkUyarisi"></p-toggleSwitch>
+                    </div>
+
+                    <div *ngIf="settings.bildirimler.farkUyarisi"
+                        class="ml-5 pl-3 border-l-2 border-orange-400 fadein animation-duration-300">
+                        <label class="block font-medium mb-2 text-surface-900 dark:text-surface-0">Eşik Tutarı</label>
+                        <p-inputNumber [(ngModel)]="settings.bildirimler.farkEsikTutari" [min]="0" [max]="10000"
+                            mode="currency" currency="TRY" locale="tr-TR" styleClass="w-full" inputStyleClass="w-full">
+                        </p-inputNumber>
+                        <small class="text-surface-600 dark:text-surface-400 block mt-1">Bu tutarın üzerindeki farklar
+                            için uyarı alırsınız</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="flex flex-column gap-3">
-        <!-- Vardiya Onay Bildirimi -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center justify-content-between">
-                <div class="flex align-items-center gap-3 flex-1">
-                    <div class="flex align-items-center justify-content-center"
-                        style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                        <i class="pi pi-check-circle text-green-600 text-xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold mb-1">Vardiya Onay Bildirimi</div>
-                        <div class="text-sm text-gray-600">Vardiya onaylandığında bildirim al</div>
-                    </div>
+    <!-- Görünüm Ayarları -->
+    <div class="col-span-12 md:col-span-6">
+        <div class="card h-full border-none shadow-sm bg-white dark:bg-surface-900 p-4 rounded-xl">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-surface-200 dark:border-surface-700">
+                <div class="flex items-center justify-center bg-purple-100 dark:bg-purple-900/30 rounded-full"
+                    style="width: 3rem; height: 3rem;">
+                    <i class="pi pi-eye text-purple-600 dark:text-purple-400 text-xl"></i>
                 </div>
-                <p-toggleSwitch [(ngModel)]="settings.bildirimler.vardiyaOnayBildirimi"></p-toggleSwitch>
-            </div>
-        </div>
-
-        <!-- Fark Uyarısı -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center justify-content-between mb-3">
-                <div class="flex align-items-center gap-3 flex-1">
-                    <div class="flex align-items-center justify-content-center"
-                        style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                        <i class="pi pi-exclamation-triangle text-orange-600 text-xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold mb-1">Fark Uyarısı</div>
-                        <div class="text-sm text-gray-600">Belirli tutarın üzerinde fark olduğunda uyar</div>
-                    </div>
+                <div>
+                    <h5 class="m-0 mb-1 text-surface-900 dark:text-surface-0 font-semibold text-lg">Görünüm Ayarları
+                    </h5>
+                    <p class="m-0 text-sm text-surface-600 dark:text-surface-400">Arayüz tercihleri</p>
                 </div>
-                <p-toggleSwitch [(ngModel)]="settings.bildirimler.farkUyarisi"></p-toggleSwitch>
             </div>
 
-            <div *ngIf="settings.bildirimler.farkUyarisi" class="ml-5 pl-3 border-left-3 border-orange-400">
-                <label class="block font-medium mb-2">Eşik Tutarı</label>
-                <p-inputNumber [(ngModel)]="settings.bildirimler.farkEsikTutari" [min]="0" [max]="10000" mode="currency"
-                    currency="TRY" locale="tr-TR" styleClass="w-full">
-                </p-inputNumber>
-                <small class="text-gray-600 block mt-1">Bu tutarın üzerindeki farklar için uyarı alırsınız</small>
+            <div class="flex flex-col gap-3">
+                <!-- Tablo Satır Sayısı -->
+                <div
+                    class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="pi pi-table text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <label class="font-semibold flex-1 m-0 text-surface-900 dark:text-surface-0">Tablo Satır
+                            Sayısı</label>
+                    </div>
+                    <p-select [options]="satirSayisiOptions" [(ngModel)]="settings.gorunum.satirSayisi"
+                        optionLabel="label" optionValue="value" styleClass="w-full">
+                    </p-select>
+                    <small class="text-surface-600 dark:text-surface-400 block mt-2">Sayfa başına gösterilecek kayıt
+                        sayısı</small>
+                </div>
+
+                <!-- Tema -->
+                <div
+                    class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="pi pi-palette text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <label class="font-semibold flex-1 m-0 text-surface-900 dark:text-surface-0">Tema</label>
+                    </div>
+                    <p-select [options]="temaOptions" [(ngModel)]="settings.gorunum.tema" optionLabel="label"
+                        optionValue="value" styleClass="w-full">
+                    </p-select>
+                    <small class="text-surface-600 dark:text-surface-400 block mt-2">Arayüz renk teması</small>
+                </div>
+
+                <!-- Varsayılan Tarih Aralığı -->
+                <div
+                    class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="pi pi-calendar text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <label class="font-semibold flex-1 m-0 text-surface-900 dark:text-surface-0">Varsayılan Tarih
+                            Aralığı</label>
+                    </div>
+                    <p-select [options]="tarihAraligiOptions" [(ngModel)]="settings.gorunum.varsayilanTarihAraligi"
+                        optionLabel="label" optionValue="value" styleClass="w-full">
+                    </p-select>
+                    <small class="text-surface-600 dark:text-surface-400 block mt-2">Raporlar için başlangıç
+                        filtresi</small>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Görünüm Ayarları -->
-<div class="card mb-4">
-    <div class="flex align-items-center gap-3 mb-4 pb-3 border-bottom-1 surface-border">
-        <div class="flex align-items-center justify-content-center bg-purple-100 border-circle"
-            style="width: 3rem; height: 3rem;">
-            <i class="pi pi-eye text-purple-600 text-xl"></i>
-        </div>
-        <div>
-            <h5 class="m-0 mb-1">Görünüm Ayarları</h5>
-            <p class="m-0 text-sm text-gray-600">Arayüz tercihlerinizi belirleyin</p>
-        </div>
-    </div>
-
-    <div class="flex flex-column gap-3">
-        <!-- Tablo Satır Sayısı -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center gap-3 mb-2">
-                <div class="flex align-items-center justify-content-center"
-                    style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                    <i class="pi pi-table text-purple-600 text-xl"></i>
+    <!-- Sistem Ayarları (Admin Only) -->
+    <div class="col-span-12" *ngIf="isAdmin">
+        <div class="card border-none shadow-sm bg-white dark:bg-surface-900 p-4 rounded-xl">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-surface-200 dark:border-surface-700">
+                <div class="flex items-center justify-center bg-orange-100 dark:bg-orange-900/30 rounded-full"
+                    style="width: 3rem; height: 3rem;">
+                    <i class="pi pi-cog text-orange-600 dark:text-orange-400 text-xl"></i>
                 </div>
-                <label class="font-semibold flex-1 m-0">Tablo Satır Sayısı</label>
-            </div>
-            <p-select [options]="satirSayisiOptions" [(ngModel)]="settings.gorunum.satirSayisi" optionLabel="label"
-                optionValue="value" styleClass="w-full">
-            </p-select>
-            <small class="text-gray-600 block mt-2">Sayfa başına gösterilecek kayıt sayısı</small>
-        </div>
-
-        <!-- Tema -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center gap-3 mb-2">
-                <div class="flex align-items-center justify-content-center"
-                    style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                    <i class="pi pi-palette text-purple-600 text-xl"></i>
+                <div>
+                    <h5 class="m-0 mb-1 text-surface-900 dark:text-surface-0 font-semibold text-lg">Sistem Ayarları</h5>
+                    <p class="m-0 text-sm text-surface-600 dark:text-surface-400">Veri yönetimi ve sistem yapılandırması
+                    </p>
                 </div>
-                <label class="font-semibold flex-1 m-0">Tema</label>
             </div>
-            <p-select [options]="temaOptions" [(ngModel)]="settings.gorunum.tema" optionLabel="label"
-                optionValue="value" styleClass="w-full">
-            </p-select>
-            <small class="text-gray-600 block mt-2">Arayüz renk teması</small>
-        </div>
 
-        <!-- Varsayılan Tarih Aralığı -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center gap-3 mb-2">
-                <div class="flex align-items-center justify-content-center"
-                    style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                    <i class="pi pi-calendar text-purple-600 text-xl"></i>
-                </div>
-                <label class="font-semibold flex-1 m-0">Varsayılan Tarih Aralığı</label>
-            </div>
-            <p-select [options]="tarihAraligiOptions" [(ngModel)]="settings.gorunum.varsayilanTarihAraligi"
-                optionLabel="label" optionValue="value" styleClass="w-full">
-            </p-select>
-            <small class="text-gray-600 block mt-2">Raporlar için başlangıç filtresi</small>
-        </div>
-    </div>
-</div>
+            <div class="grid grid-cols-12 gap-4">
+                <!-- Otomatik Yedekleme -->
+                <div class="col-span-12 md:col-span-6">
+                    <div
+                        class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200 h-full">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3 flex-1">
+                                <i class="pi pi-save text-orange-600 dark:text-orange-400 text-xl"></i>
+                                <div class="flex-1">
+                                    <div class="font-semibold mb-1 text-surface-900 dark:text-surface-0">Otomatik
+                                        Yedekleme</div>
+                                    <div class="text-sm text-surface-600 dark:text-surface-400">Veritabanını düzenli
+                                        olarak yedekle</div>
+                                </div>
+                            </div>
+                            <p-toggleSwitch [(ngModel)]="settings.sistem.otomatikYedekleme"></p-toggleSwitch>
+                        </div>
 
-<!-- Sistem Ayarları -->
-<div class="card">
-    <div class="flex align-items-center gap-3 mb-4 pb-3 border-bottom-1 surface-border">
-        <div class="flex align-items-center justify-content-center bg-orange-100 border-circle"
-            style="width: 3rem; height: 3rem;">
-            <i class="pi pi-cog text-orange-600 text-xl"></i>
-        </div>
-        <div>
-            <h5 class="m-0 mb-1">Sistem Ayarları</h5>
-            <p class="m-0 text-sm text-gray-600">Veri yönetimi ve sistem yapılandırması</p>
-        </div>
-    </div>
-
-    <div class="flex flex-column gap-3">
-        <!-- Otomatik Yedekleme -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center justify-content-between mb-3">
-                <div class="flex align-items-center gap-3 flex-1">
-                    <div class="flex align-items-center justify-content-center"
-                        style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                        <i class="pi pi-save text-orange-600 text-xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold mb-1">Otomatik Yedekleme</div>
-                        <div class="text-sm text-gray-600">Veritabanını düzenli olarak yedekle</div>
+                        <div *ngIf="settings.sistem.otomatikYedekleme"
+                            class="ml-5 pl-3 border-l-2 border-orange-400 fadein animation-duration-300">
+                            <label class="block font-medium mb-2 text-surface-900 dark:text-surface-0">Yedekleme
+                                Günü</label>
+                            <p-select [options]="gunOptions" [(ngModel)]="settings.sistem.yedeklemeGunu"
+                                optionLabel="label" optionValue="value" styleClass="w-full">
+                            </p-select>
+                            <small class="text-surface-600 dark:text-surface-400 block mt-2">Ayın bu gününde otomatik
+                                yedekleme yapılır</small>
+                        </div>
                     </div>
                 </div>
-                <p-toggleSwitch [(ngModel)]="settings.sistem.otomatikYedekleme"></p-toggleSwitch>
-            </div>
 
-            <div *ngIf="settings.sistem.otomatikYedekleme" class="ml-5 pl-3 border-left-3 border-orange-400">
-                <label class="block font-medium mb-2">Yedekleme Günü</label>
-                <p-select [options]="gunOptions" [(ngModel)]="settings.sistem.yedeklemeGunu" optionLabel="label"
-                    optionValue="value" styleClass="w-full">
-                </p-select>
-                <small class="text-gray-600 block mt-2">Ayın bu gününde otomatik yedekleme yapılır</small>
-            </div>
-        </div>
-
-        <!-- Varsayılan İstasyon -->
-        <div class="p-3 surface-50 border-round">
-            <div class="flex align-items-center gap-3 mb-2">
-                <div class="flex align-items-center justify-content-center"
-                    style="width: 2.5rem; height: 2.5rem; min-width: 2.5rem;">
-                    <i class="pi pi-building text-orange-600 text-xl"></i>
+                <!-- Varsayılan İstasyon -->
+                <div class="col-span-12 md:col-span-6">
+                    <div
+                        class="p-3 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-200 h-full">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="pi pi-building text-orange-600 dark:text-orange-400 text-xl"></i>
+                            <label class="font-semibold flex-1 m-0 text-surface-900 dark:text-surface-0">Varsayılan
+                                İstasyon ID</label>
+                        </div>
+                        <p-inputNumber [(ngModel)]="settings.sistem.varsayilanIstasyon" [min]="1" [max]="100"
+                            styleClass="w-full" inputStyleClass="w-full">
+                        </p-inputNumber>
+                        <small class="text-surface-600 dark:text-surface-400 block mt-2">Yeni kayıtlar için otomatik
+                            seçilecek istasyon</small>
+                    </div>
                 </div>
-                <label class="font-semibold flex-1 m-0">Varsayılan İstasyon ID</label>
             </div>
-            <p-inputNumber [(ngModel)]="settings.sistem.varsayilanIstasyon" [min]="1" [max]="100" styleClass="w-full">
-            </p-inputNumber>
-            <small class="text-gray-600 block mt-2">Yeni kayıtlar için otomatik seçilecek istasyon</small>
         </div>
     </div>
 </div>

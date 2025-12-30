@@ -25,6 +25,7 @@ import { TxtParserService, ParseSonuc } from '../../services/txt-parser.service'
 import { VardiyaDurum, OtomasyonSatis, Vardiya, PersonelFarkAnalizi, MarketOzet, GenelOzet, VardiyaOzet, FarkDurum } from '../../models/vardiya.model';
 
 import { AuthService } from '../../../../services/auth.service';
+import { SettingsService } from '../../../../services/settings.service';
 
 interface YuklenenVardiya {
     id: number;
@@ -112,22 +113,38 @@ export class VardiyaListesi implements OnInit {
     pompaFarkDurumRenk: 'success' | 'warn' | 'danger' = 'success';
     Math = Math;
 
+    rowsPerPage = 10;
+
     constructor(
         private vardiyaService: VardiyaService,
         private vardiyaApiService: VardiyaApiService,
         private txtParser: TxtParserService,
         private messageService: MessageService,
         private router: Router,
-
-        private authService: AuthService
+        private authService: AuthService,
+        private settingsService: SettingsService
     ) { }
 
     ngOnInit(): void {
         this.userRole = this.authService.getCurrentUser()?.role || null;
+
+        // Subscribe to settings
+        this.settingsService.settings$.subscribe(settings => {
+            if (settings && settings.extraSettingsJson) {
+                try {
+                    const extra = JSON.parse(settings.extraSettingsJson);
+                    if (extra.gorunum && extra.gorunum.satirSayisi) {
+                        this.rowsPerPage = extra.gorunum.satirSayisi;
+                    }
+                } catch (e) {
+                    console.error('Error parsing settings in VardiyaListesi', e);
+                }
+            }
+        });
+
         this.vardiyalariYukle();
         this.otomatikDosyalariYukle();
     }
-
 
     otomatikDosyalariYukle(): void {
         this.vardiyaApiService.getPendingAutomaticFiles().subscribe({

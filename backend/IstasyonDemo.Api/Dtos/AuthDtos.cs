@@ -28,6 +28,7 @@ namespace IstasyonDemo.Api.Dtos
         public string Username { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string? FirmaAdi { get; set; }
+        public string? AdSoyad { get; set; }
         public List<SimpleIstasyonDto> Istasyonlar { get; set; } = new();
     }
 

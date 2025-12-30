@@ -185,86 +185,97 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpPost("sync-logs")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> SyncLogs()
         {
-            // Admin only check (optional, but recommended)
-            // if (!IsAdmin) return Forbid();
-
             var logs = await _context.VardiyaLoglari
                 .OrderByDescending(l => l.IslemTarihi)
                 .Take(100) // Son 100 işlem
                 .ToListAsync();
 
+            if (!logs.Any()) return Ok(new { message = "İşlenecek log bulunamadı." });
+
+            var logDates = logs.Select(l => l.IslemTarihi).ToList();
+            var userIds = logs.Where(l => l.KullaniciId.HasValue).Select(l => l.KullaniciId.Value).Distinct().ToList();
+
+            // Batch check for existing notifications
+            // Note: This is an approximation. Ideally, we should have a LogId in Notification table to be precise.
+            // But checking UserId + CreatedAt matches the logic used before.
+            var existingNotifications = await _context.Notifications
+                .Where(n => userIds.Contains(n.UserId) && logDates.Contains(n.CreatedAt))
+                .Select(n => new { n.UserId, n.CreatedAt })
+                .ToListAsync();
+
+            var existingSet = new HashSet<(int, DateTime)>(existingNotifications.Select(n => (n.UserId, n.CreatedAt)));
+
             int count = 0;
+            var newNotifications = new List<Notification>();
+
             foreach (var log in logs)
             {
                 if (!log.KullaniciId.HasValue) continue;
 
-                // Check if notification already exists for this log (approximate check by time and user)
-                var exists = await _context.Notifications.AnyAsync(n => 
-                    n.UserId == log.KullaniciId.Value && 
-                    n.CreatedAt == log.IslemTarihi);
+                if (existingSet.Contains((log.KullaniciId.Value, log.IslemTarihi))) continue;
 
-                if (!exists)
+                string title = "İşlem Bildirimi";
+                string message = log.Aciklama ?? "İşlem yapıldı.";
+                string type = "INFO";
+                string severity = "info";
+
+                switch (log.Islem)
                 {
-                    string title = "İşlem Bildirimi";
-                    string message = log.Aciklama ?? "İşlem yapıldı.";
-                    string type = "INFO";
-                    string severity = "info";
-
-                    switch (log.Islem)
-                    {
-                        case "OLUSTURULDU":
-                            title = "Vardiya Oluşturuldu";
-                            type = "VARDIYA_OLUSTURULDU";
-                            severity = "success";
-                            break;
-                        case "ONAYA_GONDERILDI":
-                            title = "Onaya Gönderildi";
-                            type = "VARDIYA_ONAY_BEKLIYOR";
-                            severity = "info";
-                            break;
-                        case "ONAYLANDI":
-                            title = "Vardiya Onaylandı";
-                            type = "VARDIYA_ONAYLANDI";
-                            severity = "success";
-                            break;
-                        case "REDDEDILDI":
-                            title = "Vardiya Reddedildi";
-                            type = "VARDIYA_REDDEDILDI";
-                            severity = "error";
-                            break;
-                        case "SILME_TALEP_EDILDI":
-                            title = "Silme Talebi";
-                            type = "VARDIYA_SILME_ONAYI_BEKLIYOR";
-                            severity = "warn";
-                            break;
-                        case "SILINDI":
-                            title = "Vardiya Silindi";
-                            type = "VARDIYA_SILINDI";
-                            severity = "error";
-                            break;
-                    }
-
-                    var notification = new Notification
-                    {
-                        UserId = log.KullaniciId.Value,
-                        Title = title,
-                        Message = message,
-                        Type = type,
-                        Severity = severity,
-                        CreatedAt = log.IslemTarihi,
-                        IsRead = true, // Geçmiş bildirimler okundu olarak gelsin
-                        RelatedVardiyaId = log.VardiyaId
-                    };
-
-                    _context.Notifications.Add(notification);
-                    count++;
+                    case "OLUSTURULDU":
+                        title = "Vardiya Oluşturuldu";
+                        type = "VARDIYA_OLUSTURULDU";
+                        severity = "success";
+                        break;
+                    case "ONAYA_GONDERILDI":
+                        title = "Onaya Gönderildi";
+                        type = "VARDIYA_ONAY_BEKLIYOR";
+                        severity = "info";
+                        break;
+                    case "ONAYLANDI":
+                        title = "Vardiya Onaylandı";
+                        type = "VARDIYA_ONAYLANDI";
+                        severity = "success";
+                        break;
+                    case "REDDEDILDI":
+                        title = "Vardiya Reddedildi";
+                        type = "VARDIYA_REDDEDILDI";
+                        severity = "error";
+                        break;
+                    case "SILME_TALEP_EDILDI":
+                        title = "Silme Talebi";
+                        type = "VARDIYA_SILME_ONAYI_BEKLIYOR";
+                        severity = "warn";
+                        break;
+                    case "SILINDI":
+                        title = "Vardiya Silindi";
+                        type = "VARDIYA_SILINDI";
+                        severity = "error";
+                        break;
                 }
+
+                newNotifications.Add(new Notification
+                {
+                    UserId = log.KullaniciId.Value,
+                    Title = title,
+                    Message = message,
+                    Type = type,
+                    Severity = severity,
+                    CreatedAt = log.IslemTarihi,
+                    IsRead = true, // Geçmiş bildirimler okundu olarak gelsin
+                    RelatedVardiyaId = log.VardiyaId
+                });
+                
+                // Add to set to prevent duplicates within the same batch if logs have identical timestamps
+                existingSet.Add((log.KullaniciId.Value, log.IslemTarihi));
+                count++;
             }
 
-            if (count > 0)
+            if (newNotifications.Any())
             {
+                _context.Notifications.AddRange(newNotifications);
                 await _context.SaveChangesAsync();
             }
 

@@ -17,8 +17,7 @@ export const appRoutes: Routes = [
             {
                 path: 'sistem/ayarlar',
                 loadComponent: () => import('./app/pages/sistem/ayarlar/ayarlar.component').then(m => m.AyarlarComponent),
-                canActivate: [roleGuard],
-                data: { resource: 'SISTEM_AYARLAR' }
+                canActivate: [roleGuard]
             },
             { path: 'yonetim', loadChildren: () => import('./app/pages/yonetim/yonetim.routes').then(m => m.YONETIM_ROUTES) },
 

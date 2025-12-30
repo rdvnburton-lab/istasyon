@@ -25,6 +25,7 @@ namespace IstasyonDemo.Api.Data
         public DbSet<PusulaKrediKartiDetay> PusulaKrediKartiDetaylari { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<OtomatikDosya> OtomatikDosyalar { get; set; }
+        public DbSet<UserSettings> UserSettings { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -245,6 +246,13 @@ namespace IstasyonDemo.Api.Data
                 .HasOne(rp => rp.Role)
                 .WithMany(r => r.Permissions)
                 .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // UserSettings Relations
+            modelBuilder.Entity<UserSettings>()
+                .HasOne(us => us.User)
+                .WithOne()
+                .HasForeignKey<UserSettings>(us => us.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

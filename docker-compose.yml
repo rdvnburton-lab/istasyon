@@ -7,19 +7,14 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=db;Database=istasyon;Username=postgres;Password=${POSTGRES_PASSWORD};TrustServerCertificate=True
+      # Host kısmına Coolify'daki veritabanının internal adını yazdık
+      - ConnectionStrings__DefaultConnection=Host=fs4kwcgwcos48ssw0w48sssw;Database=postgres;Username=postgres;Password=${POSTGRES_PASSWORD};TrustServerCertificate=True
       - AllowedOrigins__0=https://istasyon.tiginteknoloji.tr
       - AllowedOrigins__1=https://istasyonapi.tiginteknoloji.tr
       - JwtSettings__SecretKey=${JWT_SECRET}
       - TZ=Europe/Istanbul
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: curl -f http://localhost:8080/health || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 3
+    networks:
+      - coolify
     volumes:
       - backend_backups:/app/Backups
 
@@ -30,43 +25,11 @@ services:
     restart: always
     environment:
       - TZ=Europe/Istanbul
+    networks:
+      - coolify
     depends_on:
       - backend
-    healthcheck:
-      test: curl -f http://localhost/ || exit 1
-      interval: 30s
-      timeout: 5s
-      retries: 3
 
-  db:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB:-istasyon}
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - TZ=Europe/Istanbul
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  adminer:
-    image: adminer
-    restart: always
-    environment:
-      - ADMINER_DEFAULT_SERVER=db
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    depends_on:
-      - db
-
-volumes:
-  postgres_data:
-  backend_backups:
+networks:
+  coolify:
+    external: true
