@@ -8,7 +8,7 @@ services:
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Production
       # Host kısmına Coolify'daki veritabanının internal adını yazdık
-      - ConnectionStrings__DefaultConnection=Host=fs4kwcgwcos48ssw0w48sssw;Database=postgres;Username=postgres;Password=${POSTGRES_PASSWORD};TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Host=z4ko4swwc0000g4k4oo8soo8;Database=postgres;Username=postgres;Password=${POSTGRES_PASSWORD};TrustServerCertificate=True
       - AllowedOrigins__0=https://istasyon.tiginteknoloji.tr
       - AllowedOrigins__1=https://istasyonapi.tiginteknoloji.tr
       - JwtSettings__SecretKey=${JWT_SECRET}
@@ -34,7 +34,7 @@ services:
     image: adminer
     restart: always
     environment:
-      - ADMINER_DEFAULT_SERVER=fs4kwcgwcos48ssw0w48sssw
+      - ADMINER_DEFAULT_SERVER=z4ko4swwc0000g4k4oo8soo8
       - ADMINER_DESIGN=pepa-linha
     networks:
       - coolify
