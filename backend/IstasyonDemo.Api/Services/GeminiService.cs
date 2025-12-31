@@ -33,6 +33,9 @@ namespace IstasyonDemo.Api.Services
                 base64Image = base64Image.Substring(base64Image.IndexOf(",") + 1);
             }
 
+            // Normalize Bank Names List
+            var validBanks = "['Ziraat Bankası', 'Garanti BBVA', 'İş Bankası', 'Yapı Kredi', 'Akbank', 'Halkbank', 'Vakıfbank', 'QNB Finansbank', 'Denizbank']";
+
             var requestBody = new
             {
                 contents = new[]
@@ -41,7 +44,7 @@ namespace IstasyonDemo.Api.Services
                     {
                         parts = new object[]
                         {
-                            new { text = "Extract payment details from this receipt image. Return ONLY a JSON object with this structure: { \"nakit\": number, \"krediKarti\": number, \"krediKartiDetay\": [ { \"banka\": \"bank name\", \"tutar\": number } ], \"paroPuan\": number, \"mobilOdeme\": number }. Do not include any markdown formatting or backticks." },
+                            new { text = $"Extract payment details from this receipt image. Return ONLY a JSON object with this structure: {{ \"nakit\": number, \"krediKarti\": number, \"krediKartiDetay\": [ {{ \"banka\": \"bank name\", \"tutar\": number }} ], \"paroPuan\": number, \"mobilOdeme\": number }}. Do not include any markdown formatting or backticks. IMPORTANT: For 'banka' field, map any detected bank name (e.g. 'Y.K.B.', 'Ziraat', 'Finans') to exactly one of these valid values: {validBanks}." },
                             new
                             {
                                 inline_data = new
@@ -52,6 +55,12 @@ namespace IstasyonDemo.Api.Services
                             }
                         }
                     }
+                },
+                generationConfig = new
+                {
+                    temperature = 0.1,
+                    maxOutputTokens = 300,
+                    responseMimeType = "application/json"
                 }
             };
 

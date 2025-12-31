@@ -26,13 +26,16 @@ import { PersonelApiService } from '../../services/personel-api.service';
         ToolbarModule
     ],
     templateUrl: './personel-karnesi.component.html',
-    styles: [`:host { display: block; }`]
+    styleUrls: ['./personel-karnesi.component.scss']
 })
 export class PersonelKarnesiComponent implements OnInit {
     baslangicTarihi: Date = new Date();
     bitisTarihi: Date = new Date();
     secilenPersonel: any = null;
     personeller: any[] = [];
+
+    // Mobile State
+    showMobileFilters = false;
 
     ozet = {
         toplamSatis: 0,

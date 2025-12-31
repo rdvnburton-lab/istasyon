@@ -90,17 +90,21 @@
     <div class="vardiya-list">
         <!-- Loading State -->
         <div *ngIf="loading" class="text-center p-4">
-            <i class="pi pi-spin pi-spinner text-2xl text-blue-500"></i>
+            <i class="pi pi-spin pi-spinner text-2xl text-[var(--primary-color)]"></i>
         </div>
 
         <!-- Pompa Vardiyalar -->
         <ng-container *ngIf="!loading && raporTuru === 'pompa'">
             <div *ngFor="let vardiya of vardiyalar" class="vardiya-card">
-                <div class="vardiya-header">
-                    <span class="vardiya-date">{{ vardiya.tarih | date:'dd.MM.yyyy HH:mm' }}</span>
-                    <p-tag [value]="vardiya.durum"
-                        [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"
-                        [style]="{fontSize: '0.7rem'}"></p-tag>
+                <div class="vardiya-header" (click)="toggleRow(vardiya.vardiyaId)">
+                    <div class="flex items-center gap-2">
+                        <span class="vardiya-date">{{ vardiya.tarih | date:'dd.MM.yyyy HH:mm' }}</span>
+                        <p-tag [value]="vardiya.durum"
+                            [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"
+                            [style]="{fontSize: '0.7rem'}"></p-tag>
+                    </div>
+                    <i [class]="expandedRows[vardiya.vardiyaId] ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                        class="text-[var(--text-color-secondary)]"></i>
                 </div>
                 <div class="vardiya-body">
                     <div class="vardiya-field full-width">
@@ -112,6 +116,21 @@
                         <div class="field-value">{{ vardiya.tutar | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                     </div>
                 </div>
+
+                <!-- Expanded Personel Detail for Mobile -->
+                <div *ngIf="expandedRows[vardiya.vardiyaId]" class="personel-detay-list">
+                    <div *ngFor="let pf of vardiya.personelFarklari" class="personel-row">
+                        <span class="p-name">{{ pf.personelAdi }}</span>
+                        <span class="p-fark"
+                            [style.color]="pf.fark < -1 ? '#ef4444' : (pf.fark > 1 ? '#22c55e' : 'var(--text-color)')">
+                            {{ pf.fark | currency:'TRY':'symbol-narrow':'1.2-2' }}
+                        </span>
+                    </div>
+                    <div *ngIf="!vardiya.personelFarklari || vardiya.personelFarklari.length === 0"
+                        class="text-center text-xs text-[var(--text-color-secondary)] py-2">
+                        Personel detayı bulunamadı.
+                    </div>
+                </div>
             </div>
         </ng-container>
 
@@ -119,6 +138,7 @@
         <ng-container *ngIf="!loading && raporTuru === 'market'">
             <div *ngFor="let vardiya of vardiyalar" class="vardiya-card">
                 <div class="vardiya-header">
+                    <!-- Market view doesn't need expansion necessarily as per Fark Raporu structure usually being generic, but we can add it if needed. Leaving as static for market based on reference implying Focus on Shift/Personnel diffs usually related to Pompa/Fark raporu structure primarily. But let's keep it consistent if Market data supports it. Assuming generic structure for now -->
                     <span class="vardiya-date">{{ vardiya.tarih | date:'dd.MM.yyyy' }}</span>
                     <p-tag [value]="vardiya.durum"
                         [severity]="vardiya.durum === 'ONAYLANDI' ? 'success' : vardiya.durum === 'ACIK' ? 'info' : vardiya.durum === 'REDDEDILDI' ? 'danger' : 'warn'"
@@ -164,10 +184,10 @@
         <div class="card">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                    <h2 class="text-2xl font-bold text-[var(--text-color)] m-0">
                         <i class="pi pi-chart-bar mr-2 text-blue-500"></i>Vardiya Raporu
                     </h2>
-                    <p class="text-surface-500 mt-2">
+                    <p class="text-[var(--text-color-secondary)] mt-2">
                         İstasyonunuzun vardiya bazlı performans özeti
                     </p>
                 </div>
@@ -192,12 +212,12 @@
             <div class="flex flex-col md:flex-row gap-4 items-end">
                 <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col gap-2">
-                        <label class="font-bold text-sm text-surface-700 dark:text-surface-200">Başlangıç Tarihi</label>
+                        <label class="font-bold text-sm text-[var(--text-color)]">Başlangıç Tarihi</label>
                         <p-datePicker [(ngModel)]="baslangicTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
                             inputId="baslangic" styleClass="w-full"></p-datePicker>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="font-bold text-sm text-surface-700 dark:text-surface-200">Bitiş Tarihi</label>
+                        <label class="font-bold text-sm text-[var(--text-color)]">Bitiş Tarihi</label>
                         <p-datePicker [(ngModel)]="bitisTarihi" dateFormat="dd.mm.yy" [showIcon]="true" inputId="bitis"
                             styleClass="w-full"></p-datePicker>
                     </div>
@@ -212,27 +232,56 @@
         </div>
     </div>
 
-    <!-- Pompa Özeti -->
     <div *ngIf="raporTuru === 'pompa'" class="col-span-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="card mb-0 h-full bg-blue-50 dark:bg-blue-900/10 border-none shadow-none">
-                <div class="text-blue-600 dark:text-blue-400 font-medium mb-2">Toplam Vardiya</div>
-                <div class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ozet.toplamVardiya}}</div>
+            <div class="card mb-0 h-full border-t-4 border-t-blue-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Vardiya</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                        <i class="pi pi-folder-open text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamVardiya}}</div>
             </div>
-            <div class="card mb-0 h-full bg-green-50 dark:bg-green-900/10 border-none shadow-none">
-                <div class="text-green-600 dark:text-green-400 font-medium mb-2">Toplam Ciro</div>
-                <div class="text-2xl font-bold text-green-900 dark:text-green-100">{{ozet.toplamTutar |
+            <div class="card mb-0 h-full border-t-4 border-t-green-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Ciro</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-green-500/10 text-green-600 dark:text-green-400">
+                        <i class="pi pi-wallet text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamTutar |
                     currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
             </div>
-            <div class="card mb-0 h-full bg-orange-50 dark:bg-orange-900/10 border-none shadow-none">
-                <div class="text-orange-600 dark:text-orange-400 font-medium mb-2">Toplam Litre</div>
-                <div class="text-2xl font-bold text-orange-900 dark:text-orange-100">{{ozet.toplamLitre |
-                    number:'1.2-2'}}
-                    Lt</div>
+            <div class="card mb-0 h-full border-t-4 border-t-orange-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Litre</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-500/10 text-orange-600 dark:text-orange-400">
+                        <i class="pi pi-database text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamLitre | number:'1.2-2'}} Lt</div>
             </div>
-            <div class="card mb-0 h-full bg-purple-50 dark:bg-purple-900/10 border-none shadow-none">
-                <div class="text-purple-600 dark:text-purple-400 font-medium mb-2">Toplam Gider</div>
-                <div class="text-2xl font-bold text-purple-900 dark:text-purple-100">{{ozet.toplamGider |
+            <div class="card mb-0 h-full border-t-4 border-t-purple-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Gider</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                        <i class="pi pi-receipt text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamGider |
                     currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
             </div>
         </div>
@@ -241,28 +290,59 @@
     <!-- Market Özeti -->
     <div *ngIf="raporTuru === 'market'" class="col-span-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="card mb-0 h-full bg-blue-50 dark:bg-blue-900/10 border-none shadow-none">
-                <div class="text-blue-600 dark:text-blue-400 font-medium mb-2">Toplam Vardiya</div>
-                <div class="text-2xl font-bold text-blue-900 dark:text-blue-100">{{ozet.toplamVardiya}}</div>
+            <div class="card mb-0 h-full border-t-4 border-t-blue-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Vardiya</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                        <i class="pi pi-folder-open text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamVardiya}}</div>
             </div>
-            <div class="card mb-0 h-full bg-green-50 dark:bg-green-900/10 border-none shadow-none">
-                <div class="text-green-600 dark:text-green-400 font-medium mb-2">Toplam Satış</div>
-                <div class="text-2xl font-bold text-green-900 dark:text-green-100">{{ozet.toplamSatis |
+            <div class="card mb-0 h-full border-t-4 border-t-green-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Satış</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-green-500/10 text-green-600 dark:text-green-400">
+                        <i class="pi pi-shopping-cart text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamSatis |
                     currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
             </div>
-            <div class="card mb-0 h-full bg-indigo-50 dark:bg-indigo-900/10 border-none shadow-none">
-                <div class="text-indigo-600 dark:text-indigo-400 font-medium mb-2">Toplam Teslimat</div>
-                <div class="text-2xl font-bold text-indigo-900 dark:text-indigo-100">{{ozet.toplamTeslimat |
+            <div class="card mb-0 h-full border-t-4 border-t-indigo-500 p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Teslimat</span>
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                        <i class="pi pi-truck text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[var(--text-color)]">{{ozet.toplamTeslimat |
                     currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
             </div>
-            <div class="card mb-0 h-full"
-                [ngClass]="ozet.toplamFark < 0 ? 'bg-red-50 dark:bg-red-900/10' : 'bg-teal-50 dark:bg-teal-900/10'">
-                <div
-                    [class]="ozet.toplamFark < 0 ? 'text-red-600 dark:text-red-400 font-medium mb-2' : 'text-teal-600 dark:text-teal-400 font-medium mb-2'">
-                    Toplam Fark</div>
-                <div
-                    [class]="ozet.toplamFark < 0 ? 'text-2xl font-bold text-red-900 dark:text-red-100' : 'text-2xl font-bold text-teal-900 dark:text-teal-100'">
-                    {{ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
+            <div class="card mb-0 h-full border-t-4 p-4"
+                [ngClass]="ozet.toplamFark < 0 ? 'border-t-red-500' : 'border-t-teal-500'">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Toplam
+                        Fark</span>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                        [ngClass]="ozet.toplamFark < 0 ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-teal-500/10 text-teal-600 dark:text-teal-400'">
+                        <i class="pi pi-percentage text-sm"></i>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold"
+                    [ngClass]="ozet.toplamFark < 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400'">
+                    {{ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2'}}
+                </div>
             </div>
         </div>
     </div>
@@ -295,10 +375,10 @@
                 <ng-template pTemplate="body" let-vardiya>
                     <tr *ngIf="raporTuru === 'pompa'"
                         class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td><span class="text-surface-800 dark:text-surface-100 font-medium">{{vardiya.tarih |
+                        <td><span class="text-[var(--text-color)] font-medium">{{vardiya.tarih |
                                 date:'dd.MM.yyyy HH:mm'}}</span></td>
                         <td>{{vardiya.dosyaAdi}}</td>
-                        <td class="text-right font-bold text-surface-800 dark:text-surface-100">{{vardiya.tutar |
+                        <td class="text-right font-bold text-[var(--text-color)]">{{vardiya.tutar |
                             currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
                         <td class="text-center">
                             <p-tag [value]="vardiya.durum"
@@ -307,15 +387,15 @@
                     </tr>
                     <tr *ngIf="raporTuru === 'market'"
                         class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td><span class="text-surface-800 dark:text-surface-100 font-medium">{{vardiya.tarih |
+                        <td><span class="text-[var(--text-color)] font-medium">{{vardiya.tarih |
                                 date:'dd.MM.yyyy'}}</span></td>
-                        <td class="text-right font-bold text-surface-800 dark:text-surface-100">
+                        <td class="text-right font-bold text-[var(--text-color)]">
                             {{vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.2-2'}}
                         </td>
-                        <td class="text-right font-bold text-blue-600">{{vardiya.toplamTeslimatTutari |
+                        <td class="text-right font-bold text-[var(--primary-color)]">{{vardiya.toplamTeslimatTutari |
                             currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
-                        <td class="text-right font-bold" [class.text-red-600]="vardiya.toplamFark < 0"
-                            [class.text-green-600]="vardiya.toplamFark >= 0">
+                        <td class="text-right font-bold" [class.text-red-500]="vardiya.toplamFark < 0"
+                            [class.text-green-500]="vardiya.toplamFark >= 0">
                             {{vardiya.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2'}}
                         </td>
                         <td class="text-center">

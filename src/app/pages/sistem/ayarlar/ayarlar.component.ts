@@ -12,6 +12,7 @@ import { DividerModule } from 'primeng/divider';
 import { SettingsService, UserSettingsDto } from '../../../services/settings.service';
 import { AuthService } from '../../../services/auth.service';
 import { LayoutService } from '../../../layout/service/layout.service';
+import { PickListModule } from 'primeng/picklist';
 
 interface AppSettings {
     bildirimler: {
@@ -23,6 +24,7 @@ interface AppSettings {
         satirSayisi: number;
         tema: 'light' | 'dark';
         varsayilanTarihAraligi: 'bugun' | 'buAy' | 'gecenAy';
+        mobilMenu: string[];
     };
     sistem: {
         otomatikYedekleme: boolean;
@@ -43,7 +45,8 @@ interface AppSettings {
         ButtonModule,
         SelectModule,
         ToastModule,
-        DividerModule
+        DividerModule,
+        PickListModule
     ],
     providers: [MessageService],
     templateUrl: './ayarlar.component.html',
@@ -59,7 +62,8 @@ export class AyarlarComponent implements OnInit {
         gorunum: {
             satirSayisi: 10,
             tema: 'light',
-            varsayilanTarihAraligi: 'buAy'
+            varsayilanTarihAraligi: 'buAy',
+            mobilMenu: ['/dashboard', '/vardiya', '/vardiya/loglar', '/vardiya/raporlar/vardiya']
         },
         sistem: {
             otomatikYedekleme: false,
@@ -67,6 +71,22 @@ export class AyarlarComponent implements OnInit {
             varsayilanIstasyon: 1
         }
     };
+
+    // Mobile Menu Config
+    sourceMenuItems = [
+        { label: 'Özet', icon: 'pi pi-home', route: '/dashboard' },
+        { label: 'Vardiya Listesi', icon: 'pi pi-list', route: '/vardiya' },
+        { label: 'Onay Bekleyenler', icon: 'pi pi-check-circle', route: '/vardiya/onay-bekleyenler' },
+        { label: 'İşlem Geçmişi', icon: 'pi pi-history', route: '/vardiya/loglar' },
+        { label: 'Vardiya Raporu', icon: 'pi pi-chart-bar', route: '/vardiya/raporlar/vardiya' },
+        { label: 'Personel Karnesi', icon: 'pi pi-users', route: '/vardiya/raporlar/personel' },
+        { label: 'Fark Raporu', icon: 'pi pi-exclamation-triangle', route: '/vardiya/raporlar/fark' },
+        { label: 'Market', icon: 'pi pi-shopping-bag', route: '/vardiya/market' },
+        { label: 'Karşılaştırma', icon: 'pi pi-chart-line', route: '/vardiya/karsilastirma' }
+    ];
+
+    selectedMenuItems: any[] = [];
+    availableMenuItems: any[] = [];
 
     satirSayisiOptions = [
         { label: '10 satır', value: 10 },
@@ -121,6 +141,9 @@ export class AyarlarComponent implements OnInit {
                         if (extra.gorunum) {
                             this.settings.gorunum.satirSayisi = extra.gorunum.satirSayisi;
                             this.settings.gorunum.varsayilanTarihAraligi = extra.gorunum.varsayilanTarihAraligi;
+                            if (extra.gorunum.mobilMenu) {
+                                this.settings.gorunum.mobilMenu = extra.gorunum.mobilMenu;
+                            }
                         }
                         if (extra.sistem) {
                             this.settings.sistem = extra.sistem;
@@ -129,6 +152,7 @@ export class AyarlarComponent implements OnInit {
                         console.error('Error parsing extra settings', e);
                     }
                 }
+                this.initMenuLists();
             },
             error: (err: any) => {
                 console.error('Error loading settings', err);
@@ -137,8 +161,39 @@ export class AyarlarComponent implements OnInit {
                 if (savedSettings) {
                     this.settings = JSON.parse(savedSettings);
                 }
+                this.initMenuLists();
             }
         });
+    }
+
+    initMenuLists() {
+        // Initialize PickList
+        const currentRoutes = this.settings.gorunum.mobilMenu || ['/dashboard'];
+
+        this.selectedMenuItems = this.sourceMenuItems.filter(item =>
+            currentRoutes.includes(item.route)
+        );
+
+        this.availableMenuItems = this.sourceMenuItems.filter(item =>
+            !currentRoutes.includes(item.route)
+        );
+    }
+
+    onMenuReorder() {
+        // Limit to 4 items
+        if (this.selectedMenuItems.length > 4) {
+            // Move extra items back to available
+            const extras = this.selectedMenuItems.splice(4);
+            this.availableMenuItems = [...this.availableMenuItems, ...extras];
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Limit Aşıldı',
+                detail: 'En fazla 4 menü öğesi seçebilirsiniz.',
+                life: 3000
+            });
+        }
+        // Update settings model
+        this.settings.gorunum.mobilMenu = this.selectedMenuItems.map(item => item.route);
     }
 
     saveSettings() {
@@ -150,9 +205,11 @@ export class AyarlarComponent implements OnInit {
             },
             gorunum: {
                 satirSayisi: this.settings.gorunum.satirSayisi,
-                varsayilanTarihAraligi: this.settings.gorunum.varsayilanTarihAraligi
+                varsayilanTarihAraligi: this.settings.gorunum.varsayilanTarihAraligi,
+                mobilMenu: this.settings.gorunum.mobilMenu
             },
-            sistem: this.settings.sistem
+            sistem: this.settings.sistem,
+            mobileMenu: this.settings.gorunum.mobilMenu // Root level alias for easier access
         };
 
         const dto: UserSettingsDto = {
@@ -203,7 +260,8 @@ export class AyarlarComponent implements OnInit {
             gorunum: {
                 satirSayisi: 10,
                 tema: 'light',
-                varsayilanTarihAraligi: 'buAy'
+                varsayilanTarihAraligi: 'buAy',
+                mobilMenu: ['/dashboard', '/vardiya', '/vardiya/loglar', '/vardiya/raporlar/vardiya']
             },
             sistem: {
                 otomatikYedekleme: false,
@@ -211,6 +269,9 @@ export class AyarlarComponent implements OnInit {
                 varsayilanIstasyon: 1
             }
         };
+        this.selectedMenuItems = this.sourceMenuItems.filter(item =>
+            this.settings.gorunum.mobilMenu.includes(item.route)
+        );
         this.saveSettings();
     }
 }

@@ -32,7 +32,7 @@
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        background: var(--surface-ground);
         padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
@@ -40,19 +40,20 @@
     .mobile-page-header {
         padding: 1rem;
         padding-top: calc(1rem + env(safe-area-inset-top));
-        background: white;
+        background: var(--surface-card);
+        border-bottom: 1px solid var(--surface-border);
     }
 
     .page-title {
         font-size: 1.5rem;
         font-weight: 800;
-        color: #1e293b;
+        color: var(--text-color);
         margin: 0;
     }
 
     .page-subtitle {
         font-size: 0.8rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
         margin-top: 0.25rem;
     }
 
@@ -71,72 +72,97 @@
 
     .summary-card {
         flex-shrink: 0;
-        width: 140px;
+        width: 130px;
         padding: 1rem;
+        background: var(--surface-card);
         border-radius: 16px;
+        border: 1px solid var(--surface-border);
+        border-top: 4px solid;
         position: relative;
         overflow: hidden;
         cursor: pointer;
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-        }
+        transition: all 0.2s ease;
 
         &.blue {
-            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+            border-top-color: #3b82f6;
+
+            .summary-icon {
+                background: rgba(59, 130, 246, 0.1);
+
+                i {
+                    color: #3b82f6;
+                }
+            }
         }
 
         &.orange {
-            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            border-top-color: #f59e0b;
+
+            .summary-icon {
+                background: rgba(245, 158, 11, 0.1);
+
+                i {
+                    color: #f59e0b;
+                }
+            }
         }
 
         &.green {
-            background: linear-gradient(135deg, #10b981 0%, #16a34a 100%);
+            border-top-color: #10b981;
+
+            .summary-icon {
+                background: rgba(16, 185, 129, 0.1);
+
+                i {
+                    color: #10b981;
+                }
+            }
         }
 
         &.purple {
-            background: linear-gradient(135deg, #8b5cf6 0%, #9333ea 100%);
+            border-top-color: #8b5cf6;
+
+            .summary-icon {
+                background: rgba(139, 92, 246, 0.1);
+
+                i {
+                    color: #8b5cf6;
+                }
+            }
         }
 
         &:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
+            background: var(--surface-hover);
         }
     }
 
     .summary-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.2);
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 0.75rem;
 
         i {
-            color: white;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
         }
     }
 
     .summary-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: white;
-        line-height: 1.2;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-color);
+        line-height: 1;
     }
 
     .summary-label {
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.8);
-        margin-top: 0.25rem;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--text-color-secondary);
+        margin-top: 0.4rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -183,7 +209,7 @@
     .section-title {
         font-size: 0.95rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-color);
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -204,10 +230,12 @@
     }
 
     .otomatik-card {
-        background: white;
+        background: var(--surface-card);
         border-radius: 14px;
         padding: 1rem;
         border-left: 4px solid #3b82f6;
+        border: 1px solid var(--surface-border);
+        border-left-width: 4px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         display: flex;
         align-items: center;
@@ -215,7 +243,7 @@
         cursor: pointer;
 
         &:active {
-            background: #f8fafc;
+            background: var(--surface-hover);
         }
     }
 
@@ -241,7 +269,7 @@
 
     .otomatik-name {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-color);
         font-size: 0.9rem;
         white-space: nowrap;
         overflow: hidden;
@@ -250,12 +278,12 @@
 
     .otomatik-meta {
         font-size: 0.75rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
         margin-top: 0.25rem;
     }
 
     .otomatik-arrow {
-        color: #94a3b8;
+        color: var(--text-color-secondary);
     }
 
     // ===== VARDIYA CARDS =====
@@ -270,9 +298,10 @@
     }
 
     .vardiya-card {
-        background: white;
+        background: var(--surface-card);
         border-radius: 16px;
         padding: 1rem;
+        border: 1px solid var(--surface-border);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
@@ -306,7 +335,7 @@
 
     .vardiya-name {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-color);
         font-size: 0.95rem;
         white-space: nowrap;
         overflow: hidden;
@@ -319,7 +348,7 @@
         gap: 0.5rem;
         margin-top: 0.25rem;
         font-size: 0.75rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
     }
 
     .vardiya-stats {
@@ -331,7 +360,7 @@
 
     .stat-box {
         padding: 0.75rem 0.5rem;
-        background: #f8fafc;
+        background: var(--surface-ground);
         border-radius: 10px;
         text-align: center;
     }
@@ -346,7 +375,7 @@
     .stat-value {
         font-size: 0.95rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-color);
         margin-top: 0.125rem;
     }
 
@@ -355,7 +384,7 @@
         align-items: center;
         justify-content: space-between;
         padding-top: 0.75rem;
-        border-top: 1px solid #f1f5f9;
+        border-top: 1px solid var(--surface-border);
     }
 
     .vardiya-actions {
@@ -397,7 +426,8 @@
     .empty-state {
         text-align: center;
         padding: 3rem 1rem;
-        background: white;
+        background: var(--surface-card);
+        border: 1px dashed var(--surface-border);
         border-radius: 16px;
         margin: 0 1rem;
 
@@ -405,7 +435,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #f1f5f9;
+            background: var(--surface-ground);
             margin: 0 auto 1rem;
             display: flex;
             align-items: center;
@@ -413,20 +443,20 @@
 
             i {
                 font-size: 2rem;
-                color: #94a3b8;
+                color: var(--text-color-secondary);
             }
         }
 
         .empty-title {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--text-color);
             margin-bottom: 0.5rem;
         }
 
         .empty-text {
             font-size: 0.875rem;
-            color: #64748b;
+            color: var(--text-color-secondary);
             margin-bottom: 1rem;
         }
 
@@ -459,8 +489,8 @@
         border-radius: 0 !important;
 
         .p-dialog-header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-color-text);
             padding: 1rem;
             padding-top: calc(1rem + env(safe-area-inset-top));
             border-radius: 0 !important;
@@ -471,7 +501,7 @@
             }
 
             .p-dialog-header-icons button {
-                color: white;
+                color: var(--primary-color-text);
 
                 &:hover {
                     background: rgba(255, 255, 255, 0.1);
@@ -482,7 +512,7 @@
         .p-dialog-content {
             padding: 1rem;
             padding-bottom: calc(1rem + 80px);
-            background: #f8fafc;
+            background: var(--surface-ground);
             overflow-y: auto;
         }
 
@@ -493,8 +523,8 @@
             right: 0;
             padding: 1rem;
             padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-            background: white;
-            border-top: 1px solid #e2e8f0;
+            background: var(--surface-card);
+            border-top: 1px solid var(--surface-border);
             display: flex;
             gap: 0.75rem;
 
@@ -521,10 +551,11 @@
         flex-shrink: 0;
         min-width: 100px;
         padding: 0.75rem;
-        background: white;
+        background: var(--surface-card);
         border-radius: 12px;
         text-align: center;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--surface-border);
         border-left: 3px solid;
 
         &.blue {
@@ -558,7 +589,7 @@
     .detay-value {
         font-size: 0.9rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-color);
         margin-top: 0.125rem;
     }
 
@@ -570,9 +601,10 @@
     }
 
     .personel-detay-card {
-        background: white;
+        background: var(--surface-card);
         border-radius: 14px;
         padding: 1rem;
+        border: 1px solid var(--surface-border);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
@@ -582,7 +614,7 @@
         gap: 0.75rem;
         margin-bottom: 0.75rem;
         padding-bottom: 0.75rem;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--surface-border);
     }
 
     .personel-detay-avatar {
@@ -603,7 +635,7 @@
     .personel-detay-name {
         flex: 1;
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-color);
         font-size: 0.95rem;
     }
 
@@ -616,7 +648,7 @@
 
     .personel-stat {
         padding: 0.5rem;
-        background: #f8fafc;
+        background: var(--surface-ground);
         border-radius: 8px;
 
         &.full {
@@ -642,7 +674,7 @@
 
     .personel-stat-label {
         font-size: 0.6rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
         text-transform: uppercase;
         letter-spacing: 0.3px;
     }
@@ -650,7 +682,7 @@
     .personel-stat-value {
         font-size: 0.85rem;
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-color);
         margin-top: 0.125rem;
     }
 
@@ -659,7 +691,7 @@
         align-items: center;
         justify-content: space-between;
         padding-top: 0.75rem;
-        border-top: 1px solid #f1f5f9;
+        border-top: 1px solid var(--surface-border);
     }
 
     .fark-badge {

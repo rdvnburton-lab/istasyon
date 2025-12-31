@@ -45,6 +45,7 @@ export class VardiyaRaporuComponent implements OnInit {
     };
 
     vardiyalar: any[] = [];
+    expandedRows: { [key: string]: boolean } = {};
     loading: boolean = false;
 
     raporTuru: 'pompa' | 'market' = 'pompa';
@@ -144,5 +145,9 @@ export class VardiyaRaporuComponent implements OnInit {
                 break;
         }
         this.raporla();
+    }
+
+    toggleRow(id: string) {
+        this.expandedRows[id] = !this.expandedRows[id];
     }
 }

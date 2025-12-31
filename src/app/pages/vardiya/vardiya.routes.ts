@@ -39,10 +39,23 @@ export default [
     },
 
     {
+        path: 'stok',
+        loadComponent: () => import('./components/yakit-stok/yakit-stok.component').then(m => m.YakitStokComponent),
+        canActivate: [roleGuard],
+        data: { resource: 'VARDIYA_STOK' }
+    },
+
+    {
         path: 'tanimlamalar/personel',
         loadComponent: () => import('./components/personel/personel-tanimlama.component').then(m => m.PersonelTanimlamaComponent),
         canActivate: [roleGuard],
         data: { resource: 'TANIMLAMA_PERSONEL' }
+    },
+    {
+        path: 'tanimlamalar/yakit',
+        loadComponent: () => import('../tanimlar/yakit/yakit-tanimlari.component').then(m => m.YakitTanimlariComponent),
+        canActivate: [roleGuard],
+        data: { resource: 'TANIMLAMA_YAKIT' }
     },
     {
         path: 'raporlar/vardiya',

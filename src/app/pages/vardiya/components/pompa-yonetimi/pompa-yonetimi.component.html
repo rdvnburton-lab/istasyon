@@ -159,20 +159,21 @@
                             pTooltip="Geri Dön">
                         </p-button>
                         <div>
-                            <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                            <h2 class="text-2xl font-bold text-[var(--text-color)] dark:text-surface-100 m-0">
                                 <i class="pi pi-calculator mr-2 text-blue-500"></i>Pompa Mutabakatı
                             </h2>
-                            <p class="text-surface-500 mt-1">Personel bazında otomasyon satışları ve pusula girişleri
+                            <p class="text-[var(--text-color-secondary)] mt-1">Personel bazında otomasyon satışları ve
+                                pusula girişleri
                             </p>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-4" *ngIf="vardiya">
                         <div class="text-right hidden md:block">
-                            <div class="text-lg font-bold text-surface-900 dark:text-surface-0">
+                            <div class="text-lg font-bold text-[var(--text-color)] dark:text-surface-0">
                                 {{ vardiya.baslangicTarihi | date:'dd MMMM yyyy' }}
                             </div>
-                            <div class="text-sm text-surface-500 flex items-center justify-end gap-2">
+                            <div class="text-sm text-[var(--text-color-secondary)] flex items-center justify-end gap-2">
                                 <i class="pi pi-clock text-xs"></i>
                                 <span>{{ vardiya.baslangicTarihi | date:'HH:mm' }}</span>
                                 <span *ngIf="vardiya.bitisTarihi">- {{ vardiya.bitisTarihi | date:'HH:mm' }}</span>
@@ -207,7 +208,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 <!-- Kart 1: Otomasyon Toplam -->
                 <div
-                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-white/60 dark:bg-surface-900/60 border border-white/20 dark:border-surface-700/50 shadow-xl">
+                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-[var(--surface-card)]/60 dark:bg-surface-900/60 border border-[var(--surface-border)] shadow-xl shadow-surface-900/10">
                     <div class="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-blue-500/20 blur-2xl"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-3">
@@ -218,15 +219,16 @@
                             <span
                                 class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">Otomasyon</span>
                         </div>
-                        <div class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-1">{{ otomasyonToplam |
+                        <div class="text-2xl font-bold text-[var(--text-color)] dark:text-surface-0 mb-1">{{
+                            otomasyonToplam |
                             number:'1.2-2' }} ₺</div>
-                        <div class="text-sm text-surface-500">Toplam Satış</div>
+                        <div class="text-sm text-[var(--text-color-secondary)]">Toplam Satış</div>
                     </div>
                 </div>
 
                 <!-- Kart 2: Pompacı Satışları -->
                 <div
-                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-white/60 dark:bg-surface-900/60 border border-white/20 dark:border-surface-700/50 shadow-xl">
+                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-[var(--surface-card)]/60 dark:bg-surface-900/60 border border-[var(--surface-border)] shadow-xl shadow-surface-900/10">
                     <div class="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-orange-500/20 blur-2xl"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-3">
@@ -238,16 +240,17 @@
                                 class="text-xs font-medium px-2 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">{{
                                 personelOzetler.length - (filoToplam > 0 ? 1 : 0) }} Kişi</span>
                         </div>
-                        <div class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-1">{{ personelSatisToplam
+                        <div class="text-2xl font-bold text-[var(--text-color)] dark:text-surface-0 mb-1">{{
+                            personelSatisToplam
                             |
                             number:'1.2-2' }} ₺</div>
-                        <div class="text-sm text-surface-500">Pompacı Satışları</div>
+                        <div class="text-sm text-[var(--text-color-secondary)]">Pompacı Satışları</div>
                     </div>
                 </div>
 
                 <!-- Kart 3: Filo Satışları -->
                 <div
-                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-white/60 dark:bg-surface-900/60 border border-white/20 dark:border-surface-700/50 shadow-xl">
+                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-[var(--surface-card)]/60 dark:bg-surface-900/60 border border-[var(--surface-border)] shadow-xl shadow-surface-900/10">
                     <div class="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-purple-500/20 blur-2xl"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-3">
@@ -258,15 +261,16 @@
                             <span
                                 class="text-xs font-medium px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">Otomatik</span>
                         </div>
-                        <div class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-1">{{ filoToplam |
+                        <div class="text-2xl font-bold text-[var(--text-color)] dark:text-surface-0 mb-1">{{ filoToplam
+                            |
                             number:'1.2-2' }} ₺</div>
-                        <div class="text-sm text-surface-500">Filo Satışları</div>
+                        <div class="text-sm text-[var(--text-color-secondary)]">Filo Satışları</div>
                     </div>
                 </div>
 
                 <!-- Kart 4: Pusula Toplam -->
                 <div
-                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-white/60 dark:bg-surface-900/60 border border-white/20 dark:border-surface-700/50 shadow-xl">
+                    class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl bg-[var(--surface-card)]/60 dark:bg-surface-900/60 border border-[var(--surface-border)] shadow-xl shadow-surface-900/10">
                     <div class="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-green-500/20 blur-2xl"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-3">
@@ -278,17 +282,18 @@
                                 class="text-xs font-medium px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">{{
                                 pusulalar.length }} Giriş</span>
                         </div>
-                        <div class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-1">{{ pusulaToplam |
+                        <div class="text-2xl font-bold text-[var(--text-color)] dark:text-surface-0 mb-1">{{
+                            pusulaToplam |
                             number:'1.2-2' }} ₺</div>
-                        <div class="text-sm text-surface-500">Pusula Toplamı</div>
+                        <div class="text-sm text-[var(--text-color-secondary)]">Pusula Toplamı</div>
                     </div>
                 </div>
 
                 <!-- Kart 5: Fark Durumu -->
                 <div class="relative overflow-hidden rounded-2xl p-5 backdrop-blur-xl border shadow-xl" [ngClass]="{
-                'bg-green-50/60 dark:bg-green-900/20 border-green-200/50 dark:border-green-800/50': Math.abs(fark) < 1,
-                'bg-red-50/60 dark:bg-red-900/20 border-red-200/50 dark:border-red-800/50': fark <= -1,
-                'bg-orange-50/60 dark:bg-orange-900/20 border-orange-200/50 dark:border-orange-800/50': fark >= 1
+                'bg-green-500/10 dark:bg-green-500/20 border-green-200 dark:border-green-800/30': Math.abs(fark) < 1,
+                'bg-red-500/10 dark:bg-red-500/20 border-red-200 dark:border-red-800/30': fark <= -1,
+                'bg-orange-500/10 dark:bg-orange-500/20 border-orange-200 dark:border-orange-800/30': fark >= 1
             }">
                     <div class="absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl" [ngClass]="{
                     'bg-green-500/20': Math.abs(fark) < 1,
@@ -319,7 +324,7 @@
                         'text-red-700 dark:text-red-400': fark <= -1,
                         'text-orange-700 dark:text-orange-400': fark >= 1
                     }">{{ fark | number:'1.2-2' }} ₺</div>
-                        <div class="text-sm text-surface-500">Fark Durumu</div>
+                        <div class="text-sm text-[var(--text-color-secondary)]">Fark Durumu</div>
                     </div>
                 </div>
             </div>
@@ -426,11 +431,11 @@
 
                 <div class="text-center mb-6">
                     <div
-                        class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-surface-700 shadow-sm mb-3 text-indigo-600">
+                        class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--surface-card)] dark:bg-surface-700 shadow-sm mb-3 text-indigo-600">
                         <i class="pi pi-receipt text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 m-0">Pusula Önizleme</h3>
-                    <p class="text-sm text-surface-500 mt-1">{{ currentDate | date:'dd.MM.yyyy' }}</p>
+                    <h3 class="text-lg font-bold text-[var(--text-color)] dark:text-surface-0 m-0">Pusula Önizleme</h3>
+                    <p class="text-sm text-[var(--text-color-secondary)] mt-1">{{ currentDate | date:'dd.MM.yyyy' }}</p>
                 </div>
 
                 <div class="space-y-4">
@@ -438,7 +443,8 @@
                     <div
                         class="flex justify-between items-center py-2 border-b border-dashed border-surface-300 dark:border-surface-600">
                         <span class="text-surface-600 dark:text-surface-400">Otomasyon Satış</span>
-                        <span class="font-bold text-surface-900 dark:text-surface-0">{{ seciliPersonel.toplamTutar |
+                        <span class="font-bold text-[var(--text-color)] dark:text-surface-0">{{
+                            seciliPersonel.toplamTutar |
                             number:'1.2-2' }} ₺</span>
                     </div>
 
@@ -465,7 +471,7 @@
                         <div *ngIf="pusulaForm.krediKartiDetay && pusulaForm.krediKartiDetay.length > 0"
                             class="pl-5 space-y-1 mb-2">
                             <div *ngFor="let detay of pusulaForm.krediKartiDetay"
-                                class="flex justify-between text-xs text-surface-500">
+                                class="flex justify-between text-xs text-[var(--text-color-secondary)]">
                                 <span>{{ detay.banka }}</span>
                                 <span>{{ detay.tutar | number:'1.2-2' }} ₺</span>
                             </div>
@@ -522,7 +528,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm m-0">Otomatik Doldur</h4>
-                        <p class="text-xs text-surface-500 mt-1">Fiş veya Z-Raporu fotoğrafı çekin</p>
+                        <p class="text-xs text-[var(--text-color-secondary)] mt-1">Fiş veya Z-Raporu fotoğrafı çekin</p>
                     </div>
                     <button pButton label="Fiş Tara" icon="pi pi-camera" class="p-button-sm p-button-outlined"
                         (click)="scanReceipt()" [disabled]="analyzing || loading"></button>
@@ -568,7 +574,7 @@
                             <p-button icon="pi pi-list" severity="info" (onClick)="krediKartiDialogAc()"
                                 pTooltip="Banka Detayları"></p-button>
                         </div>
-                        <small class="text-surface-500"
+                        <small class="text-[var(--text-color-secondary)]"
                             *ngIf="pusulaForm.krediKartiDetay && pusulaForm.krediKartiDetay.length > 0">
                             {{ pusulaForm.krediKartiDetay.length }} banka detayı
                         </small>
@@ -655,7 +661,7 @@
 
                     <div class="flex flex-col gap-2">
                         <div *ngFor="let detay of anlikKrediKartiDetaylari; let i = index"
-                            class="flex items-center p-3 bg-white rounded-xl border border-gray-100 shadow-sm">
+                            class="flex items-center p-3 bg-[var(--surface-card)] rounded-xl border border-gray-100 shadow-sm">
                             <div
                                 class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-3">
                                 <i class="pi pi-credit-card text-white text-sm"></i>
@@ -713,7 +719,8 @@
                             class="flex justify-between items-center p-3 bg-surface-50 dark:bg-surface-800 rounded-lg">
                             <div>
                                 <div class="font-semibold">{{ detay.banka }}</div>
-                                <div class="text-sm text-surface-500">{{ detay.tutar | number:'1.2-2' }} ₺</div>
+                                <div class="text-sm text-[var(--text-color-secondary)]">{{ detay.tutar | number:'1.2-2'
+                                    }} ₺</div>
                             </div>
                             <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true"
                                 (onClick)="krediKartiSil(i)"></p-button>
@@ -758,7 +765,7 @@
                     class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg mb-3">
                     <i class="pi pi-receipt text-xl text-white"></i>
                 </div>
-                <p class="text-sm text-surface-500 mt-1">{{ currentDate | date:'dd.MM.yyyy' }}</p>
+                <p class="text-sm text-[var(--text-color-secondary)] mt-1">{{ currentDate | date:'dd.MM.yyyy' }}</p>
             </div>
 
             <!-- Otomasyon Satış -->
@@ -796,7 +803,7 @@
                 <div *ngIf="onizlemeData.pusula.krediKartiDetay?.length"
                     class="pl-5 space-y-1 ml-2 border-l-2 border-blue-200 dark:border-blue-800">
                     <div *ngFor="let detay of onizlemeData.pusula.krediKartiDetay"
-                        class="flex justify-between text-xs text-surface-500">
+                        class="flex justify-between text-xs text-[var(--text-color-secondary)]">
                         <span>{{ detay.banka }}</span>
                         <span>{{ detay.tutar | number:'1.2-2' }} ₺</span>
                     </div>
@@ -859,7 +866,7 @@
 
             <!-- Açıklama -->
             <div *ngIf="onizlemeData.pusula?.aciklama"
-                class="mt-4 p-3 bg-white dark:bg-surface-900 rounded-lg text-sm text-surface-600 dark:text-surface-400 italic border-l-4 border-indigo-500">
+                class="mt-4 p-3 bg-[var(--surface-card)] dark:bg-surface-900 rounded-lg text-sm text-surface-600 dark:text-surface-400 italic border-l-4 border-indigo-500">
                 "{{ onizlemeData.pusula.aciklama }}"
             </div>
         </div>

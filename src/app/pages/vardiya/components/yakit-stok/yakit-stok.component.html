@@ -1,0 +1,621 @@
+<div class="stok-page">
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+
+    <!--MOBILE NATIVE VIEW-->
+    <div class="rapor-page block md:hidden">
+        <!-- Mobile Native Header -->
+        <div class="mobile-page-header">
+            <div class="page-title-row">
+                <div>
+                    <h1 class="page-title">Yakıt Stok</h1>
+                    <p class="page-subtitle">Stok takibi ve yakıt girişleri</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segment Control -->
+        <div class="segment-container">
+            <div class="segment-control">
+                <button *ngFor="let item of tabOptions" class="segment-btn" [class.active]="activeTab === item.value"
+                    (click)="activeTab = item.value; onTabChange(null)">
+                    <i [class]="item.icon"></i>
+                    <span>{{ item.label }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTENT CONTAINER -->
+        <div class="content-wrapper px-4 pb-4">
+            <!-- TAB 0: ÖZET (Cards) -->
+            <div *ngIf="activeTab === '0'" class="animate-fade-in space-y-4">
+                <ng-container *ngFor="let item of stokOzet">
+                    <div class="stok-card" [style.border-top-color]="item.renk">
+                        <div class="card-header">
+                            <span class="fuel-type">{{ item.yakitTuru }}</span>
+                            <span class="badge" [style.background]="item.renk">Stokta</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="main-stat">
+                                <span class="value">{{ item.kalanStok | number:'1.0-0' }}</span>
+                                <span class="unit">Litre</span>
+                            </div>
+                            <div class="sub-stats">
+                                <div class="stat-item">
+                                    <label>Geçen Ay</label>
+                                    <span>{{ item.gecenAyDevir | number:'1.0-0' }}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <label>Giriş</label>
+                                    <span class="positive">+{{ item.buAyGiris | number:'1.0-0' }}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <label>Satış</label>
+                                    <span class="negative">-{{ item.buAySatis | number:'1.0-0' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <div *ngIf="stokOzet.length === 0 && !loading" class="empty-state">
+                    <i class="pi pi-info-circle text-2xl mb-2"></i>
+                    <p>Veri yok.</p>
+                </div>
+            </div>
+
+            <!-- TAB 1: GEÇMİŞ (Date & List) -->
+            <div *ngIf="activeTab === '1'" class="animate-fade-in">
+                <!-- Mobile Date Filter -->
+                <div class="filter-container mb-4 bg-white p-3 rounded-xl border border-gray-100">
+                    <div class="flex gap-2 mb-2">
+                        <div class="flex-1">
+                            <div class="text-xs text-gray-500 mb-1">Ay</div>
+                            <p-select [options]="months" [(ngModel)]="selectedMonth" optionLabel="label"
+                                (onChange)="onDateChange()" styleClass="w-full text-sm"></p-select>
+                        </div>
+                        <div class="w-1/3">
+                            <div class="text-xs text-gray-500 mb-1">Yıl</div>
+                            <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
+                                (onChange)="onDateChange()" styleClass="w-full text-sm"></p-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vardiya-list space-y-3">
+                    <ng-container *ngFor="let fis of girisler">
+                        <!-- Invoice Card (Similar to Shift Card) -->
+                        <div class="vardiya-card bg-white border border-gray-200 rounded-xl overflow-hidden">
+                            <div class="p-3 bg-gray-50 flex justify-between items-center border-b border-gray-100"
+                                (click)="toggleRow(fis.faturaNo)">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-gray-800">{{ fis.faturaNo }}</span>
+                                    <span class="text-xs text-gray-500">{{ fis.tarih | date:'dd.MM.yyyy HH:mm' }}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="font-bold text-gray-900">{{ fis.toplamTutar |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                    <!-- Mobile Actions (Stop Propagation required) -->
+                                    <div class="flex gap-1" (click)="$event.stopPropagation()">
+                                        <button pButton icon="pi pi-pencil"
+                                            class="p-button-rounded p-button-text p-button-info p-button-sm"
+                                            (click)="editFatura(fis)"></button>
+                                        <button pButton icon="pi pi-trash"
+                                            class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                                            (click)="deleteFatura(fis.faturaNo)"></button>
+                                    </div>
+                                    <i [class]="expandedRows[fis.faturaNo] ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                                        class="text-gray-400"></i>
+                                </div>
+                            </div>
+
+                            <!-- Items List (Details) -->
+                            <div *ngIf="expandedRows[fis.faturaNo]" class="p-3 space-y-2 bg-white animate-fade-in">
+                                <div *ngFor="let item of fis.kalemler"
+                                    class="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
+                                    <div class="flex flex-col">
+                                        <span class="font-medium text-sm text-gray-700">{{ item.yakitAd }}</span>
+                                        <span class="text-xs text-gray-500">{{ item.litre | number }} Lt x {{
+                                            item.birimFiyat | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-semibold text-gray-800">{{ item.toplamTutar |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <div *ngIf="girisler.length === 0" class="no-entries text-center py-6 text-gray-500">
+                        Bu ay için fatura kaydı bulunamadı.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: EKLE (Form) -->
+            <div *ngIf="activeTab === '2'" class="animate-fade-in">
+                <div class="card p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
+                    <div class="space-y-4">
+                        <!-- Invoice Header -->
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                            <div class="mb-2">
+                                <span class="font-bold text-sm text-gray-700">Yeni Fatura</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tarih</label>
+                                    <p-datepicker [(ngModel)]="yeniFatura.tarih" dateFormat="dd.mm.yy"
+                                        [showIcon]="false" [showTime]="true" hourFormat="24" appendTo="body"
+                                        styleClass="w-full p-inputtext-sm"></p-datepicker>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Fatura No</label>
+                                    <input pInputText [(ngModel)]="yeniFatura.faturaNo" class="w-full p-inputtext-sm"
+                                        placeholder="Fatura No" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Geliş
+                                        Yöntemi</label>
+                                    <input pInputText [(ngModel)]="yeniFatura.gelisYontemi"
+                                        class="w-full p-inputtext-sm" placeholder="Örn: Gemi" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Araç Plaka</label>
+                                    <input pInputText [(ngModel)]="yeniFatura.plaka" class="w-full p-inputtext-sm"
+                                        placeholder="34 ABC 123" />
+                                </div>
+                            </div>
+
+                            <div class="mb-1">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1">Ürün Giriş
+                                    Tarihi</label>
+                                <p-datepicker [(ngModel)]="yeniFatura.urunGirisTarihi" dateFormat="dd.mm.yy"
+                                    [showIcon]="false" [showTime]="true" hourFormat="24" appendTo="body"
+                                    placeholder="Opsiyonel" styleClass="w-full p-inputtext-sm"></p-datepicker>
+                            </div>
+                        </div>
+
+                        <!-- Items -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-gray-700">Yakıt Kalemleri</label>
+
+                            <div *ngFor="let item of yeniFatura.kalemler; let i = index"
+                                class="p-3 border border-blue-100 rounded-xl relative bg-blue-50/30">
+                                <button *ngIf="yeniFatura.kalemler.length > 1" (click)="removeItem(i)"
+                                    class="absolute -top-2 -right-2 bg-red-100 text-red-500 rounded-full w-6 h-6 flex items-center justify-center shadow-sm">
+                                    <i class="pi pi-times text-xs"></i>
+                                </button>
+
+                                <div class="grid grid-cols-1 gap-3">
+                                    <div class="field">
+                                        <p-select [options]="yakitList" [(ngModel)]="item.yakitId" optionLabel="ad"
+                                            optionValue="id" placeholder="Yakıt Seçin" styleClass="w-full"
+                                            appendTo="body"></p-select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="field">
+                                            <label class="text-xs text-gray-500 block mb-1">Miktar (Lt)</label>
+                                            <p-inputNumber [(ngModel)]="item.litre" mode="decimal"
+                                                [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0"
+                                                (onInput)="calculateItemTotal(item)" styleClass="w-full"
+                                                inputStyleClass="w-full" locale="tr-TR"
+                                                placeholder="0,00"></p-inputNumber>
+                                        </div>
+                                        <div class="field">
+                                            <label class="text-xs text-gray-500 block mb-1">Birim Fiyat</label>
+                                            <p-inputNumber [(ngModel)]="item.birimFiyat" mode="currency" currency="TRY"
+                                                locale="tr-TR" [minFractionDigits]="2"
+                                                (onInput)="calculateItemTotal(item)" styleClass="w-full"
+                                                inputStyleClass="w-full" placeholder="0,00 ₺"></p-inputNumber>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center pt-2 border-t border-blue-100">
+                                        <span class="text-xs text-gray-500">Ara Toplam</span>
+                                        <span class="font-bold text-gray-900">{{ item.toplamTutar |
+                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button pButton label="Yeni Kalem Ekle" icon="pi pi-plus"
+                                class="p-button-outlined p-button-sm w-full" (click)="addItem()"></button>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="bg-blue-50 p-3 rounded-lg flex justify-between items-center mt-4">
+                            <span class="font-semibold text-blue-900">Genel Toplam</span>
+                            <span class="text-xl font-bold text-blue-700">
+                                {{ invoiceTotal | currency:'TRY':'symbol-narrow':'1.2-2':'tr-TR' }}
+                            </span>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button pButton [label]="editingFaturaNo ? 'Güncelle' : 'Faturayı Kaydet'"
+                                class="p-button-primary w-full" (click)="saveGiris()" [loading]="loading"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESKTOP VIEW -->
+    <div class="grid grid-cols-12 gap-6 hidden md:grid">
+        <!-- Header Card -->
+        <div class="col-span-12">
+            <div class="card">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-[var(--text-color)] m-0">
+                            <i class="pi pi-server mr-2 text-blue-500"></i>Yakıt Stok Yönetimi
+                        </h2>
+                        <p class="text-[var(--text-color-secondary)] mt-2">
+                            Stok durumu takibi ve yeni yakıt girişi
+                        </p>
+                    </div>
+                    <div>
+                        <p-selectButton [options]="tabOptions" [(ngModel)]="activeTab" optionLabel="label"
+                            optionValue="value" (onChange)="onTabChange($event)">
+                            <ng-template let-item pTemplate="item">
+                                <div class="flex items-center gap-2 px-2">
+                                    <i [class]="item.icon"></i>
+                                    <span>{{item.label}}</span>
+                                </div>
+                            </ng-template>
+                        </p-selectButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Content - Özet -->
+        <div *ngIf="activeTab === '0'" class="col-span-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Summary Cards -->
+                <div *ngFor="let item of stokOzet" class="card mb-0 h-full border-t-4 p-4"
+                    [style.border-top-color]="item.renk">
+                    <div class="flex justify-between items-start mb-2">
+                        <span
+                            class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">{{
+                            item.yakitTuru }}</span>
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                            <i class="pi pi-database text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-[var(--text-color)] mb-4">
+                        {{ item.kalanStok | number:'1.0-0' }} <span class="text-lg text-gray-500">Lt</span>
+                    </div>
+                    <div class="flex justify-between text-sm pt-2 border-t border-dashed border-gray-200">
+                        <div class="text-center">
+                            <div class="text-gray-400 text-xs">Giriş</div>
+                            <div class="font-bold text-green-500">+{{ item.buAyGiris | number }}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-gray-400 text-xs">Satış</div>
+                            <div class="font-bold text-red-500">-{{ item.buAySatis | number }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Content - Geçmiş -->
+        <div *ngIf="activeTab === '1'" class="col-span-12">
+            <div class="card">
+                <!-- Filter Header -->
+                <div
+                    class="flex flex-col xl:flex-row justify-between items-start gap-4 mb-6 pb-4 border-b border-gray-100">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <!-- Filter Type Selector -->
+                        <p-selectButton [options]="filterOptions" [(ngModel)]="filterType" optionLabel="label"
+                            optionValue="value" (onChange)="onFilterTypeChange()"></p-selectButton>
+
+                        <!-- Month/Year Filters -->
+                        <ng-container *ngIf="filterType === 'MONTH'">
+                            <p-select [options]="months" [(ngModel)]="selectedMonth" optionLabel="label"
+                                (onChange)="onDateChange()" styleClass="w-32"></p-select>
+                            <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
+                                (onChange)="onDateChange()" styleClass="w-24"></p-select>
+                        </ng-container>
+
+                        <!-- Year Filter -->
+                        <ng-container *ngIf="filterType === 'YEAR'">
+                            <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
+                                (onChange)="onDateChange()" styleClass="w-24"></p-select>
+                        </ng-container>
+
+                        <!-- Range Filter -->
+                        <ng-container *ngIf="filterType === 'RANGE'">
+                            <p-datepicker [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true"
+                                placeholder="Tarih Aralığı Seçin" (ngModelChange)="onDateChange()" [showIcon]="true"
+                                appendTo="body"></p-datepicker>
+                        </ng-container>
+                    </div>
+
+                    <!-- Totals Display -->
+                    <div class="flex gap-4 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 whitespace-nowrap">
+                        <div class="text-right">
+                            <div class="text-xs text-blue-600 font-semibold uppercase tracking-wider">Toplam Litre
+                            </div>
+                            <div class="text-lg font-bold text-gray-800">{{ listTotalLitre | number }} Lt</div>
+                        </div>
+                        <div class="w-px bg-blue-200"></div>
+                        <div class="text-right">
+                            <div class="text-xs text-blue-600 font-semibold uppercase tracking-wider">Toplam Tutar
+                            </div>
+                            <div class="text-lg font-bold text-gray-800">{{ listTotalTutar |
+                                currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div *ngFor="let fis of girisler"
+                        class="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow bg-white relative">
+                        <!-- Card Header -->
+                        <div class="flex justify-between items-start mb-3 pb-3 border-b border-gray-100">
+                            <div>
+                                <div class="text-xs text-gray-500 mb-1">Fatura No</div>
+                                <div class="font-bold text-lg text-gray-800">{{ fis.faturaNo }}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-500 mb-1">Tarih</div>
+                                <div class="font-medium text-gray-700">{{ fis.tarih | date:'dd.MM.yyyy HH:mm' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Stats -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-50 p-2 rounded-lg text-center">
+                                <div class="text-xs text-gray-500">Tutar</div>
+                                <div class="font-bold text-blue-600">{{ fis.toplamTutar |
+                                    currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+                            </div>
+                            <div class="bg-gray-50 p-2 rounded-lg text-center">
+                                <div class="text-xs text-gray-500">Miktar</div>
+                                <div class="font-bold text-gray-700">{{ fis.toplamLitre | number }} Lt</div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info (If present) -->
+                        <div *ngIf="fis.gelisYontemi || fis.plaka || fis.urunGirisTarihi"
+                            class="mb-4 p-2 bg-gray-50 rounded-lg border border-dashed border-gray-200 text-xs">
+                            <div class="flex flex-wrap gap-x-4 gap-y-1">
+                                <div *ngIf="fis.gelisYontemi" class="flex items-center gap-1">
+                                    <span class="text-gray-400">Yöntem:</span>
+                                    <span class="font-medium text-gray-700">{{ fis.gelisYontemi }}</span>
+                                </div>
+                                <div *ngIf="fis.plaka" class="flex items-center gap-1">
+                                    <span class="text-gray-400">Plaka:</span>
+                                    <span class="font-medium text-gray-700">{{ fis.plaka }}</span>
+                                </div>
+                                <div *ngIf="fis.urunGirisTarihi" class="flex items-center gap-1">
+                                    <span class="text-gray-400">Ürün Giriş:</span>
+                                    <span class="font-medium text-gray-700">{{ fis.urunGirisTarihi |
+                                        date:'dd.MM.yyyy
+                                        HH:mm' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items List -->
+                        <div class="space-y-2 mb-4">
+                            <div *ngFor="let item of fis.kalemler" class="flex justify-between items-center text-sm">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full border border-gray-200 shadow-sm"
+                                        [style.background-color]="item.yakitRenk"></div>
+                                    <span class="text-gray-700 font-medium">{{ item.yakitAd }}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm font-mono text-gray-800">
+                                        {{ item.litre | number }} <span class="text-gray-400 text-xs ml-1">Lt</span>
+                                    </div>
+                                    <span class="text-gray-400 text-xs">x {{ item.birimFiyat | number:'1.2-2'
+                                        }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer / Actions -->
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                            <div class="text-xs text-gray-400">
+                                <i class="pi pi-user mr-1"></i>{{ fis.kaydeden }}
+                            </div>
+                            <div class="flex gap-1">
+                                <button pButton icon="pi pi-pencil"
+                                    class="p-button-text p-button-rounded p-button-info p-button-sm"
+                                    (click)="editFatura(fis)"></button>
+                                <button pButton icon="pi pi-trash"
+                                    class="p-button-text p-button-rounded p-button-danger p-button-sm"
+                                    (click)="deleteFatura(fis.faturaNo)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div *ngIf="girisler.length === 0 && !loading" class="text-center py-12 text-gray-400"
+                    class="empty-state">
+                    <i class="pi pi-inbox text-4xl mb-3"></i>
+                    <p>Kayıt bulunamadı.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Content - Ekle -->
+        <div *ngIf="activeTab === '2'" class="col-span-12 lg:col-span-6 lg:col-start-4">
+            <div class="card p-6">
+                <!-- Desktop Form -->
+                <div class="mb-6 pb-4 border-b border-gray-100">
+                    <span class="font-bold text-lg">Yeni Fatura Girişi</span>
+                </div>
+
+                <div class="flex gap-4 mb-3">
+                    <div class="flex-1">
+                        <label class="block font-bold mb-2">Tarih</label>
+                        <p-datepicker [(ngModel)]="yeniFatura.tarih" dateFormat="dd.mm.yy" [showIcon]="true"
+                            [showTime]="true" hourFormat="24" styleClass="w-full"></p-datepicker>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block font-bold mb-2">Fatura No</label>
+                        <input pInputText [(ngModel)]="yeniFatura.faturaNo" class="w-full" />
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mb-6">
+                    <div class="flex-1">
+                        <label class="block font-bold mb-2">Geliş Yöntemi</label>
+                        <input pInputText [(ngModel)]="yeniFatura.gelisYontemi" class="w-full"
+                            placeholder="Örn: Gemi, Tanker" />
+                    </div>
+                    <div class="flex-1">
+                        <label class="block font-bold mb-2">Araç Plaka</label>
+                        <input pInputText [(ngModel)]="yeniFatura.plaka" class="w-full" placeholder="34 ABC 123" />
+                    </div>
+                    <div class="flex-1">
+                        <label class="block font-bold mb-2">Ürün Giriş Tarihi</label>
+                        <p-datepicker [(ngModel)]="yeniFatura.urunGirisTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
+                            [showTime]="true" hourFormat="24" styleClass="w-full"
+                            placeholder="Opsiyonel"></p-datepicker>
+                    </div>
+                </div>
+
+                <div *ngFor="let item of yeniFatura.kalemler; let i = index"
+                    class="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-gray-700">Kalem #{{i+1}}</span>
+                        <button *ngIf="yeniFatura.kalemler.length > 1" pButton icon="pi pi-times"
+                            class="p-button-danger p-button-text p-button-sm" (click)="removeItem(i)"></button>
+                    </div>
+                    <div class="grid grid-cols-12 gap-3">
+                        <div class="col-span-12 md:col-span-4">
+                            <label class="block text-sm font-semibold mb-1">Yakıt</label>
+                            <p-select [options]="yakitList" [(ngModel)]="item.yakitId" optionLabel="ad" optionValue="id"
+                                styleClass="w-full" appendTo="body"></p-select>
+                        </div>
+                        <div class="col-span-6 md:col-span-4">
+                            <label class="block text-sm font-semibold mb-1">Miktar</label>
+                            <p-inputNumber [(ngModel)]="item.litre" (onInput)="calculateItemTotal(item)"
+                                styleClass="w-full" inputStyleClass="w-full" mode="decimal" [minFractionDigits]="2"
+                                [maxFractionDigits]="2" [min]="0" locale="tr-TR" placeholder="0,00"></p-inputNumber>
+                        </div>
+                        <div class="col-span-6 md:col-span-4">
+                            <label class="block text-sm font-semibold mb-1">Birim Fiyat</label>
+                            <p-inputNumber [(ngModel)]="item.birimFiyat" mode="currency" currency="TRY"
+                                (onInput)="calculateItemTotal(item)" styleClass="w-full" inputStyleClass="w-full"
+                                locale="tr-TR" [minFractionDigits]="2" placeholder="0,00 ₺"></p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center my-4">
+                    <button pButton label="Yeni Kalem Ekle" icon="pi pi-plus" class="p-button-outlined"
+                        (click)="addItem()"></button>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-xl flex justify-between items-center mb-4">
+                    <span class="font-bold text-blue-900">Genel Toplam</span>
+                    <span class="text-2xl font-bold text-blue-700">{{ invoiceTotal |
+                        currency:'TRY':'symbol-narrow':'1.2-2'
+                        }}</span>
+                </div>
+
+                <button pButton label="Faturayı Kaydet" class="w-full p-button-lg" (click)="saveGiris()"
+                    [loading]="loading"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Dialog -->
+    <p-dialog [(visible)]="displayEditModal" [header]="'Fatura Düzenle: ' + editingFaturaNo" [modal]="true"
+        [style]="{width: '90vw', maxWidth: '800px'}" [draggable]="false" [resizable]="false" appendTo="body"
+        (onHide)="resetForm()">
+
+        <div class="p-4 pt-0">
+            <!-- Date / Fatura No row -->
+            <div class="flex flex-wrap gap-4 mb-4">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block font-bold mb-2">Tarih</label>
+                    <p-datepicker [(ngModel)]="yeniFatura.tarih" dateFormat="dd.mm.yy" [showIcon]="true"
+                        [showTime]="true" hourFormat="24" styleClass="w-full"></p-datepicker>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block font-bold mb-2">Fatura No</label>
+                    <input pInputText [(ngModel)]="yeniFatura.faturaNo" class="w-full" />
+                </div>
+            </div>
+
+            <!-- Optional fields row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="flex-1">
+                    <label class="block font-bold mb-2">Geliş Yöntemi</label>
+                    <input pInputText [(ngModel)]="yeniFatura.gelisYontemi" class="w-full"
+                        placeholder="Örn: Gemi, Tanker" />
+                </div>
+                <div class="flex-1">
+                    <label class="block font-bold mb-2">Araç Plaka</label>
+                    <input pInputText [(ngModel)]="yeniFatura.plaka" class="w-full" placeholder="34 ABC 123" />
+                </div>
+                <div class="flex-1">
+                    <label class="block font-bold mb-2">Ürün Giriş Tarihi</label>
+                    <p-datepicker [(ngModel)]="yeniFatura.urunGirisTarihi" dateFormat="dd.mm.yy" [showIcon]="true"
+                        [showTime]="true" hourFormat="24" styleClass="w-full" placeholder="Opsiyonel"></p-datepicker>
+                </div>
+            </div>
+
+            <!-- Items -->
+            <div class="space-y-4 mb-6">
+                <h3 class="font-bold border-b pb-2 mb-4 text-gray-700">Yakıt Kalemleri</h3>
+                <div *ngFor="let item of yeniFatura.kalemler; let i = index"
+                    class="p-4 bg-gray-50 rounded-xl border border-gray-200 relative mb-4">
+                    <button *ngIf="yeniFatura.kalemler.length > 1" (click)="removeItem(i)"
+                        class="absolute -top-2 -right-2 bg-red-100 text-red-500 rounded-full w-6 h-6 flex items-center justify-center shadow-sm z-10 hover:bg-red-200 transition-colors">
+                        <i class="pi pi-times text-xs"></i>
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-bold text-gray-400">Yakıt Türü</label>
+                            <p-select [options]="yakitList" [(ngModel)]="item.yakitId" optionLabel="ad" optionValue="id"
+                                styleClass="w-full"></p-select>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-bold text-gray-400">Litre</label>
+                            <p-inputNumber [(ngModel)]="item.litre" (ngModelChange)="calculateItemTotal(item)"
+                                mode="decimal" [minFractionDigits]="2" styleClass="w-full"></p-inputNumber>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-xs font-bold text-gray-400">Birim Fiyat</label>
+                            <p-inputNumber [(ngModel)]="item.birimFiyat" (ngModelChange)="calculateItemTotal(item)"
+                                mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="4"
+                                styleClass="w-full"></p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+                <button pButton label="Yeni Satır Ekle" icon="pi pi-plus" class="p-button-outlined p-button-sm w-full"
+                    (click)="addItem()"></button>
+            </div>
+
+            <!-- Total and Save -->
+            <div
+                class="flex flex-col sm:flex-row justify-between items-center bg-gray-100 p-4 rounded-xl border border-gray-200 gap-4">
+                <div class="text-center sm:text-left">
+                    <span class="text-gray-500 text-sm">Toplam Fatura Tutarı:</span>
+                    <div class="text-2xl font-black text-gray-800">{{ invoiceTotal |
+                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <button pButton label="Güncelle" icon="pi pi-check" class="p-button-success order-1 sm:order-2"
+                        [loading]="loading" (click)="saveGiris()"></button>
+                    <button pButton label="Vazgeç" class="p-button-text p-button-secondary order-2 sm:order-1"
+                        (click)="resetForm()"></button>
+                </div>
+            </div>
+        </div>
+    </p-dialog>
+
+</div>

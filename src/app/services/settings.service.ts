@@ -41,4 +41,21 @@ export class SettingsService {
     getCurrentSettings(): UserSettingsDto | null {
         return this.settingsSubject.value;
     }
+
+    getExtraSettings(): any {
+        const current = this.getCurrentSettings();
+        if (current && current.extraSettingsJson) {
+            try {
+                return JSON.parse(current.extraSettingsJson);
+            } catch {
+                return {};
+            }
+        }
+        return {};
+    }
+
+    getMobileMenu(): string[] {
+        const extra = this.getExtraSettings();
+        return extra.mobileMenu || [];
+    }
 }

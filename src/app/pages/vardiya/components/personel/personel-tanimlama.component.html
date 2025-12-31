@@ -23,7 +23,8 @@
 
     <!-- Personel Listesi -->
     <div class="col-span-12">
-        <div class="card">
+        <!-- Desktop Table View -->
+        <div class="card hidden md:block">
             <p-table [value]="personeller" [loading]="loading" [paginator]="personeller.length > 10" [rows]="10"
                 styleClass="p-datatable-striped" [globalFilterFields]="filterFields" #dt>
 
@@ -72,13 +73,12 @@
                         </td>
                         <td *ngIf="!isMarketSorumlusu">
                             <span class="text-surface-600 dark:text-surface-400 font-mono"
-                                *ngIf="personel.rol !== 'MARKET_GOREVLISI'">{{ personel.keyId || '-'
-                                }}</span>
+                                *ngIf="personel.rol !== 'MARKET_GOREVLISI'">{{ personel.keyId || '-' }}</span>
                             <span *ngIf="personel.rol === 'MARKET_GOREVLISI'" class="text-surface-400 italic">N/A</span>
                         </td>
                         <td class="text-center">
-                            <p-tag [value]="getRolLabel(personel.rol)" [severity]="getRolSeverity(personel.rol)">
-                            </p-tag>
+                            <p-tag [value]="getRolLabel(personel.rol)"
+                                [severity]="getRolSeverity(personel.rol)"></p-tag>
                         </td>
                         <td class="text-center">
                             <p-tag [value]="personel.aktif ? 'Aktif' : 'Pasif'"
@@ -110,14 +110,104 @@
                                     <i class="pi pi-users text-4xl text-surface-400"></i>
                                 </div>
                                 <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz personel kaydı yok</h4>
-                                <p class="text-surface-400 text-sm m-0 mt-2">
-                                    Yeni personel eklemek için "Yeni Personel" butonuna tıklayın
-                                </p>
+                                <p class="text-surface-400 text-sm m-0 mt-2">Yeni personel eklemek için "Yeni Personel"
+                                    butonuna tıklayın</p>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="block md:hidden">
+            <!-- Search for Mobile -->
+            <div class="mb-3">
+                <p-iconfield styleClass="w-full">
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText type="text" placeholder="Personel Ara..." class="w-full"
+                        (input)="dtMobile.filterGlobal($any($event.target).value, 'contains')" />
+                </p-iconfield>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div *ngFor="let personel of personeller"
+                    class="bg-surface-card p-4 rounded-xl shadow-sm border border-surface-200 dark:border-surface-700">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div *ngIf="personel.rol !== 'MARKET_GOREVLISI'"
+                                class="w-10 h-10 rounded-full flex items-center justify-center"
+                                [style.background]="'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)'">
+                                <span class="text-white font-bold text-sm">{{ personel.otomasyonAdi.substring(0,
+                                    2).toUpperCase() }}</span>
+                            </div>
+                            <div *ngIf="personel.rol === 'MARKET_GOREVLISI'"
+                                class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                <i class="pi pi-shopping-bag text-orange-500 text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-surface-900 dark:text-surface-0 m-0">{{ personel.adSoyad }}
+                                </h3>
+                                <div class="text-sm text-surface-500 flex items-center gap-1 mt-1">
+                                    <i class="pi pi-id-card text-xs"></i>
+                                    <span>{{ personel.otomasyonAdi || 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p-tag [value]="getRolLabel(personel.rol)" [severity]="getRolSeverity(personel.rol)"
+                            styleClass="text-xs"></p-tag>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
+                        <div class="bg-surface-50 dark:bg-surface-800 p-2 rounded-lg">
+                            <span class="block text-surface-500 text-xs mb-1">Telefon</span>
+                            <span class="font-medium text-surface-700 dark:text-surface-200">{{ personel.telefon || '-'
+                                }}</span>
+                        </div>
+                        <div class="bg-surface-50 dark:bg-surface-800 p-2 rounded-lg">
+                            <span class="block text-surface-500 text-xs mb-1">Key ID</span>
+                            <span class="font-medium text-surface-700 dark:text-surface-200 font-mono">{{ personel.keyId
+                                || '-' }}</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-center justify-between pt-3 border-t border-surface-100 dark:border-surface-700">
+                        <div class="flex items-center gap-2" (click)="toggleAktif(personel)">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                                [ngClass]="personel.aktif ? 'bg-green-100 text-green-600 dark:bg-green-900/30' : 'bg-red-100 text-red-600 dark:bg-red-900/30'">
+                                <i [class]="personel.aktif ? 'pi pi-check' : 'pi pi-ban'"></i>
+                            </div>
+                            <span class="text-sm font-medium"
+                                [ngClass]="personel.aktif ? 'text-green-600' : 'text-red-600'">
+                                {{ personel.aktif ? 'Aktif' : 'Pasif' }}
+                            </span>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button pButton pRipple icon="pi pi-pencil"
+                                class="p-button-rounded p-button-text p-button-info" (click)="editPersonel(personel)">
+                            </button>
+                            <button *ngIf="!isVardiyaSorumlusu" pButton pRipple icon="pi pi-trash"
+                                class="p-button-rounded p-button-text p-button-danger"
+                                (click)="deletePersonel(personel)">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State Mobile -->
+                <div *ngIf="personeller.length === 0 && !loading" class="text-center py-8">
+                    <div
+                        class="w-16 h-16 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="pi pi-users text-2xl text-surface-400"></i>
+                    </div>
+                    <h4 class="text-surface-600 dark:text-surface-300 m-0">Kayıt Bulunamadı</h4>
+                </div>
+            </div>
+
+            <!-- Hidden table to support filtering logic if needed, or better, use a pipe filter manually -->
+            <p-table #dtMobile [value]="personeller" [globalFilterFields]="filterFields" class="hidden"></p-table>
         </div>
     </div>
 </div>

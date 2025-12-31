@@ -718,6 +718,64 @@ namespace IstasyonDemo.Api.Migrations
                     b.ToTable("RolePermissions");
                 });
 
+            modelBuilder.Entity("IstasyonDemo.Api.Models.TankGiris", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("BirimFiyat")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FaturaNo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("GelisYontemi")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Kaydeden")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("Litre")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Plaka")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("Tarih")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ToplamTutar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UrunGirisTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("YakitId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tarih")
+                        .IsDescending()
+                        .HasDatabaseName("IX_TankGirisler_Tarih");
+
+                    b.HasIndex("YakitId");
+
+                    b.ToTable("TankGirisler");
+                });
+
             modelBuilder.Entity("IstasyonDemo.Api.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -943,6 +1001,63 @@ namespace IstasyonDemo.Api.Migrations
                     b.ToTable("VardiyaLoglari");
                 });
 
+            modelBuilder.Entity("IstasyonDemo.Api.Models.Yakit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("OtomasyonUrunAdi")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Renk")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("Sira")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Yakitlar");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Ad = "Motorin",
+                            OtomasyonUrunAdi = "MOTORIN,DIZEL",
+                            Renk = "#F59E0B",
+                            Sira = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Ad = "Benzin (Kurşunsuz 95)",
+                            OtomasyonUrunAdi = "BENZIN,KURŞUNSUZ,KURSUNSUZ",
+                            Renk = "#EF4444",
+                            Sira = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Ad = "LPG",
+                            OtomasyonUrunAdi = "LPG,OTOGAZ",
+                            Renk = "#3B82F6",
+                            Sira = 3
+                        });
+                });
+
             modelBuilder.Entity("IstasyonDemo.Api.Models.FiloSatis", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Vardiya", "Vardiya")
@@ -1158,6 +1273,17 @@ namespace IstasyonDemo.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("IstasyonDemo.Api.Models.TankGiris", b =>
+                {
+                    b.HasOne("IstasyonDemo.Api.Models.Yakit", "Yakit")
+                        .WithMany()
+                        .HasForeignKey("YakitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Yakit");
                 });
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.User", b =>

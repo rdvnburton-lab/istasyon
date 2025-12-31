@@ -27,7 +27,7 @@
 // ============================================
 @media screen and (max-width: 991px) {
     :host {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        background: var(--surface-ground);
         min-height: 100vh;
     }
 
@@ -41,7 +41,7 @@
     .mobile-page-header {
         padding: 1rem;
         padding-top: calc(1rem + env(safe-area-inset-top));
-        background: white;
+        background: var(--surface-card);
     }
 
     .page-title-section {
@@ -53,7 +53,7 @@
     .page-title {
         font-size: 1.75rem;
         font-weight: 800;
-        color: #1e293b;
+        color: var(--text-color);
         margin: 0;
     }
 
@@ -78,18 +78,18 @@
 
     .count-text {
         font-size: 0.8rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
     }
 
     // ===== iOS SEGMENT CONTROL =====
     .segment-control-container {
         padding: 0 1rem 1rem;
-        background: white;
+        background: var(--surface-card);
     }
 
     .segment-control {
         display: flex;
-        background: #f1f5f9;
+        background: var(--surface-ground);
         border-radius: 10px;
         padding: 4px;
         gap: 4px;
@@ -104,7 +104,7 @@
         padding: 0.75rem 0.5rem;
         border: none;
         background: transparent;
-        color: #64748b;
+        color: var(--text-color-secondary);
         font-size: 0.8rem;
         font-weight: 600;
         border-radius: 8px;
@@ -116,8 +116,8 @@
         }
 
         &.active {
-            background: white;
-            color: #1e293b;
+            background: var(--surface-card);
+            color: var(--text-color);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
     }
@@ -153,11 +153,11 @@
     }
 
     .mobile-approval-card {
-        background: white;
+        background: var(--surface-card);
         border-radius: 16px;
         padding: 1rem;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        border: 1px solid #f1f5f9;
+        border: 1px solid var(--surface-border);
 
         .card-header {
             display: flex;
@@ -169,13 +169,13 @@
         .card-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #1e293b;
+            color: var(--text-color);
             margin-bottom: 4px;
         }
 
         .card-id {
             font-size: 0.75rem;
-            color: #94a3b8;
+            color: var(--text-color-secondary);
         }
 
         .card-amount {
@@ -197,8 +197,8 @@
             align-items: center;
             gap: 4px;
             font-size: 0.8rem;
-            color: #64748b;
-            background: #f8fafc;
+            color: var(--text-color-secondary);
+            background: var(--surface-ground);
             padding: 4px 8px;
             border-radius: 6px;
         }
@@ -207,7 +207,7 @@
             display: flex;
             gap: 8px;
             padding-top: 0.75rem;
-            border-top: 1px solid #f1f5f9;
+            border-top: 1px solid var(--surface-border);
         }
 
         .action-btn {
@@ -265,7 +265,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #f0fdf4;
+            background: var(--surface-ground);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -280,13 +280,13 @@
         .empty-title {
             font-weight: 700;
             font-size: 1.1rem;
-            color: #1e293b;
+            color: var(--text-color);
             margin-bottom: 0.5rem;
         }
 
         .empty-text {
             font-size: 0.875rem;
-            color: #64748b;
+            color: var(--text-color-secondary);
         }
     }
 }
@@ -383,7 +383,7 @@
 
     .dialog-content {
         padding: 1rem;
-        background: #f8fafc;
+        background: var(--surface-ground);
     }
 
     ::ng-deep .p-dialog {

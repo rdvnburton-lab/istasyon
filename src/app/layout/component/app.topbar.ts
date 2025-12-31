@@ -60,6 +60,16 @@ import { Subscription } from 'rxjs';
         </div>
     </div>
 
+    <!-- Mobile Context Info (Firma/Istasyon) -->
+    <div class="mobile-context-info">
+        <span class="context-text" *ngIf="isPatron">
+            {{currentUser?.firmaAdi || 'Firma'}}
+        </span>
+        <span class="context-text" *ngIf="!isPatron">
+            {{selectedIstasyon?.ad || userInfo?.istasyonAdi}}
+        </span>
+    </div>
+
     <div class="layout-topbar-actions">
         <!-- Notifications -->
         <div class="notification-wrapper">

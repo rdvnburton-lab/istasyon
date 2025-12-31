@@ -540,6 +540,7 @@ export class VardiyaListesi implements OnInit {
                     toplamParoPuan: data.genelOzet.toplamParoPuan,
                     toplamMobilOdeme: data.genelOzet.toplamMobilOdeme,
                     toplamGider: 0,
+                    toplamVeresiye: data.genelOzet.toplamVeresiye || 0,
                     toplamFark: data.genelOzet.toplamFark,
                     durumRenk: data.genelOzet.durumRenk
                 };

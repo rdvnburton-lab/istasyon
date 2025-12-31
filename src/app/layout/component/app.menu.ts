@@ -84,6 +84,12 @@ export class AppMenu implements OnInit, OnDestroy {
                 icon: 'pi pi-fw pi-chart-bar',
                 routerLink: ['/vardiya/karsilastirma'],
                 visible: hasAccess('VARDIYA_KARSILASTIRMA')
+            },
+            {
+                label: 'Yakıt Stok Yönetimi',
+                icon: 'pi pi-fw pi-filter-fill', // Using same icon as mobile
+                routerLink: ['/vardiya/stok'],
+                visible: hasAccess('VARDIYA_STOK')
             }
         ].filter(item => item.visible !== false);
 
@@ -148,6 +154,12 @@ export class AppMenu implements OnInit, OnDestroy {
                 icon: 'pi pi-fw pi-user',
                 routerLink: ['/vardiya/tanimlamalar/personel'],
                 visible: hasAccess('TANIMLAMA_PERSONEL')
+            },
+            {
+                label: 'Yakıt Tanımları',
+                icon: 'pi pi-fw pi-filter',
+                routerLink: ['/vardiya/tanimlamalar/yakit'],
+                visible: hasAccess('TANIMLAMA_YAKIT')
             },
         ].filter(item => item.visible);
 

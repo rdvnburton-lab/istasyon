@@ -31,9 +31,25 @@ namespace IstasyonDemo.Api.Mappings
                 .ForMember(dest => dest.Tarih, opt => opt.MapFrom(src => src.Tarih.ToUniversalTime()));
 
             // Role Mappings
+            // Role Mappings
             CreateMap<Role, RoleDto>();
             CreateMap<CreateRoleDto, Role>();
             CreateMap<UpdateRoleDto, Role>();
+
+            // Stok Mappings
+            CreateMap<CreateTankGirisDto, TankGiris>()
+               .ForMember(dest => dest.Tarih, opt => opt.MapFrom(src => src.Tarih.ToUniversalTime()))
+               .ForMember(dest => dest.Id, opt => opt.Ignore())
+               .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
+            CreateMap<TankGiris, TankGirisDto>()
+               .ForMember(dest => dest.YakitAd, opt => opt.MapFrom(src => src.Yakit != null ? src.Yakit.Ad : ""))
+               .ForMember(dest => dest.YakitRenk, opt => opt.MapFrom(src => src.Yakit != null ? src.Yakit.Renk : ""));
+
+            // Yakit Mappings
+            CreateMap<Yakit, YakitDto>();
+            CreateMap<CreateYakitDto, Yakit>();
+            CreateMap<UpdateYakitDto, Yakit>();
         }
     }
 }

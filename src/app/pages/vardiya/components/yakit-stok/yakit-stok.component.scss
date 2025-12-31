@@ -1,0 +1,330 @@
+:host {
+    display: block;
+    background-color: var(--surface-ground);
+    min-height: 100vh;
+    padding-bottom: 80px; // Bottom nav space
+}
+
+// ===== MOBILE NATIVE HEADER =====
+.mobile-page-header {
+    background: var(--surface-card);
+    padding: 1rem;
+    padding-top: calc(1rem + env(safe-area-inset-top));
+
+    .page-title-row {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text-color);
+        margin: 0;
+    }
+
+    .page-subtitle {
+        font-size: 0.8rem;
+        color: var(--text-color-secondary);
+        margin-top: 0.25rem;
+    }
+}
+
+// ===== PILL/SEGMENT CONTROL (MOBILE) =====
+.segment-container {
+    padding: 0 1rem 1rem;
+    background: var(--surface-card);
+}
+
+// (Styles moved below or removed if empty base class)
+
+
+.segment-control {
+    display: flex;
+    background: var(--surface-ground);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.segment-btn {
+    flex: 1; // Mobile: Full width
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem; // Reduced vertical padding for "daha kibar"
+    border: none;
+    background: transparent;
+    color: var(--text-color-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    i {
+        font-size: 1rem;
+    }
+
+    &.active {
+        background: var(--surface-card); // On desktop inside a card, this still works since header-group is surface-card
+        color: var(--text-color);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.content-wrapper {
+    padding: 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+// STOK KARTLARI (Common or Mobile)
+.stok-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stok-card {
+    background: var(--surface-card);
+    border-radius: 16px; // Match summary-card
+    padding: 1.25rem;
+    border: 1px solid var(--surface-border);
+    border-top: 4px solid; // Dynamic color will override
+    box-shadow: none; // Vardiya summary-card uses minimal/no shadow usually, or specific
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.2s;
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .fuel-type {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            background: #ccc;
+        }
+    }
+
+    .card-body {
+        .main-stat {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+
+            .value {
+                font-size: 2rem;
+                font-weight: 800;
+                color: var(--text-color);
+                line-height: 1;
+            }
+
+            .unit {
+                color: var(--text-color-secondary);
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+        }
+
+        .sub-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            background: var(--surface-ground);
+            padding: 0.75rem;
+            border-radius: 12px; // Match radius
+
+            .stat-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 0.25rem;
+
+                label {
+                    font-size: 0.7rem;
+                    color: var(--text-color-secondary);
+                    font-weight: 600;
+                    text-transform: uppercase;
+                }
+
+                span {
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    color: var(--text-color);
+
+                    &.positive {
+                        color: #10b981;
+                    }
+
+                    &.negative {
+                        color: #ef4444;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// LISTE
+.vardiya-list {
+    // This wrapper is used in mobile view.
+    // Padding is handled by content-wrapper or Tailwind classes in HTML
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.entry-item {
+    background: var(--surface-card);
+    padding: 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid var(--surface-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .entry-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--surface-ground);
+        color: var(--primary-color);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .entry-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .entry-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .fatura-no {
+                font-weight: 700;
+                font-size: 0.95rem;
+                color: var(--text-color);
+            }
+
+            .date {
+                font-size: 0.8rem;
+                color: var(--text-color-secondary);
+            }
+        }
+
+        .entry-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .fuel-name {
+                font-size: 0.85rem;
+                color: var(--text-color-secondary);
+                font-weight: 500;
+            }
+
+
+        }
+    }
+
+    .entry-actions {
+        button {
+            width: 32px;
+            height: 32px;
+        }
+    }
+}
+
+.no-entries {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-color-secondary);
+    background: white;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    border: 1px dashed var(--surface-border);
+}
+
+// FORM ALANI
+.form-card {
+    background: white;
+    padding: 1.5rem; // Increased padding
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+
+        @media (min-width: 768px) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        input,
+        .p-inputnumber,
+        .p-dropdown,
+        .p-calendar {
+            width: 100%;
+        }
+    }
+
+    .total-display {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        padding: 0.5rem;
+        background: var(--surface-ground);
+        border-radius: 8px;
+        text-align: right;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+
+        button {
+            flex: 1;
+        }
+    }
+}

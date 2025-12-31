@@ -1,4 +1,3 @@
-
 @use './layout/layout.scss';
 @use 'primeicons/primeicons.css';
 @use './demo/demo.scss';
@@ -17,7 +16,7 @@
 @media screen and (max-width: 991px) {
   .patron-dashboard {
     padding: 0 !important;
-    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    background: var(--surface-ground) !important;
     min-height: 100vh;
   }
 
@@ -36,7 +35,7 @@
   .patron-dashboard .dashboard-title {
     font-size: 1.5rem !important;
     font-weight: 800 !important;
-    color: #1e293b !important;
+    color: var(--text-color) !important;
     letter-spacing: -0.025em;
 
     i {
@@ -52,9 +51,9 @@
     width: 44px !important;
     height: 44px !important;
     border-radius: 12px !important;
-    background: white !important;
+    background: var(--surface-card) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid var(--surface-border) !important;
   }
 
   .patron-dashboard .stat-cards-container,
@@ -205,7 +204,7 @@
   .patron-dashboard .table-card-title {
     font-size: 1.1rem !important;
     font-weight: 700 !important;
-    color: #1e293b !important;
+    color: var(--text-color) !important;
   }
 
   .patron-dashboard .chart-subtitle {
@@ -215,9 +214,9 @@
   .patron-dashboard .chart-card,
   .patron-dashboard .info-card,
   .patron-dashboard .table-card {
-    background: white !important;
+    background: var(--surface-card) !important;
     border-radius: 20px !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid var(--surface-border) !important;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
     margin-bottom: 1rem !important;
     overflow: hidden;
@@ -241,11 +240,11 @@
   }
 
   .patron-dashboard .top-station-item {
-    background: #f8fafc !important;
+    background: var(--surface-ground) !important;
     border-radius: 14px !important;
     padding: 0.875rem !important;
     margin-bottom: 0.5rem !important;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--surface-border);
   }
 
   .patron-dashboard .station-rank {
@@ -263,7 +262,7 @@
 
   .patron-dashboard .activity-item {
     padding: 0.75rem 0 !important;
-    border-bottom: 1px solid #f1f5f9 !important;
+    border-bottom: 1px solid var(--surface-border) !important;
   }
 
   .patron-dashboard .activity-icon {
@@ -290,12 +289,12 @@
 
   .patron-dashboard .mobile-list-item {
     padding: 1rem;
-    background: white;
-    border-bottom: 1px solid #f1f5f9;
+    background: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
     transition: all 0.15s ease;
 
     &:active {
-      background: #f8fafc;
+      background: var(--surface-hover);
       transform: scale(0.99);
     }
 
@@ -310,7 +309,7 @@
     .filename {
       font-weight: 600;
       font-size: 0.95rem;
-      color: #1e293b;
+      color: var(--text-color);
     }
 
     .price {
@@ -376,5 +375,22 @@
 
   .layout-sidebar {
     display: none !important;
+  }
+}
+
+// ============================================
+// COMPONENT OVERRIDES FOR MOBILE
+// ============================================
+@media screen and (max-width: 768px) {
+
+  // Fix Toast Overflow on Mobile
+  .p-toast {
+    width: 90vw !important;
+    left: 50% !important;
+    transform: translateX(-50%);
+
+    .p-toast-message-content {
+      word-break: break-word;
+    }
   }
 }

@@ -98,7 +98,7 @@
                     <h3 class="text-lg font-bold m-0 my-5">
                         {{ seciliMarketVardiya.tarih | date:'dd.MM.yyyy' }} - Personel İşlemleri
                     </h3>
-                    <span class="text-surface-500 text-sm">
+                    <span class="text-[var(--text-color-secondary)] text-sm">
                         Market Personel Satış ve Teslimat Girişi
                     </span>
                 </div>
@@ -159,7 +159,7 @@
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-surface-500">
+                            <td colspan="5" class="text-center py-4 text-[var(--text-color-secondary)]">
                                 Henüz personel verisi girilmemiş.
                             </td>
                         </tr>
@@ -210,10 +210,10 @@
                         <ng-template pTemplate="body" let-gider>
                             <tr class="text-xs">
                                 <td>
-                                    <div class="font-medium text-surface-600">{{
+                                    <div class="font-medium text-[var(--text-color-secondary)]">{{
                                         getGiderTuruLabel(gider.giderTuru)
                                         }}</div>
-                                    <div class="text-surface-500 text-xs">{{ gider.aciklama }}</div>
+                                    <div class="text-[var(--text-color-secondary)] text-xs">{{ gider.aciklama }}</div>
                                 </td>
                                 <td class="text-right font-bold text-orange-600">
                                     {{ gider.tutar | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
@@ -229,7 +229,7 @@
                         </ng-template>
                     </p-table>
 
-                    <div *ngIf="giderler.length === 0" class="text-center py-4 text-surface-500">
+                    <div *ngIf="giderler.length === 0" class="text-center py-4 text-[var(--text-color-secondary)]">
                         <p class="m-0 text-sm">Gider yok</p>
                     </div>
                 </div>
@@ -258,10 +258,10 @@
                         <ng-template pTemplate="body" let-gelir>
                             <tr class="text-xs">
                                 <td>
-                                    <div class="font-medium text-surface-600">{{
+                                    <div class="font-medium text-[var(--text-color-secondary)]">{{
                                         getGelirTuruLabel(gelir.gelirTuru)
                                         }}</div>
-                                    <div class="text-surface-500 text-xs">{{ gelir.aciklama }}</div>
+                                    <div class="text-[var(--text-color-secondary)] text-xs">{{ gelir.aciklama }}</div>
                                 </td>
                                 <td class="text-right font-bold text-green-600">
                                     {{ gelir.tutar | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
@@ -277,7 +277,7 @@
                         </ng-template>
                     </p-table>
 
-                    <div *ngIf="gelirler.length === 0" class="text-center py-4 text-surface-500">
+                    <div *ngIf="gelirler.length === 0" class="text-center py-4 text-[var(--text-color-secondary)]">
                         <p class="m-0 text-sm">Gelir yok</p>
                     </div>
                 </div>
@@ -295,35 +295,35 @@
                 </div>
 
                 <div *ngIf="zRaporu"
-                    class="p-4 border rounded-xl bg-orange-50 dark:bg-orange-900/10 border-orange-200 dark:border-orange-800">
+                    class="p-4 border rounded-xl bg-orange-500/10 dark:bg-orange-900/10 border-orange-200 dark:border-orange-800/30">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="flex flex-col">
-                            <span class="text-xs text-surface-500 uppercase font-semibold">Genel
+                            <span class="text-xs text-[var(--text-color-secondary)] uppercase font-semibold">Genel
                                 Toplam</span>
                             <span class="font-bold text-xl text-orange-700">{{ zRaporu.genelToplam |
                                 currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs text-surface-500 uppercase font-semibold">KDV
+                            <span class="text-xs text-[var(--text-color-secondary)] uppercase font-semibold">KDV
                                 Toplam</span>
                             <span class="font-bold">{{ zRaporu.kdvToplam |
                                 currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs text-surface-500 uppercase font-semibold">KDV
+                            <span class="text-xs text-[var(--text-color-secondary)] uppercase font-semibold">KDV
                                 Hariç</span>
                             <span class="font-bold">{{ zRaporu.kdvHaricToplam |
                                 currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs text-surface-500 uppercase font-semibold">Kayıt
+                            <span class="text-xs text-[var(--text-color-secondary)] uppercase font-semibold">Kayıt
                                 Saati</span>
                             <span class="font-bold">{{ zRaporu.olusturmaTarihi | date:'HH:mm' }}</span>
                         </div>
                     </div>
                 </div>
                 <div *ngIf="!zRaporu"
-                    class="text-center py-8 text-surface-500 bg-surface-50 dark:bg-surface-800 rounded-xl border border-dashed border-surface-300 dark:border-surface-700">
+                    class="text-center py-8 text-[var(--text-color-secondary)] bg-surface-100/10 dark:bg-surface-800 rounded-xl border border-dashed border-surface-300 dark:border-surface-700">
                     <i class="pi pi-info-circle text-2xl mb-2 text-surface-400"></i>
                     <p class="m-0">Henüz Z Raporu girilmemiş.</p>
                     <p-button *ngIf="seciliMarketVardiya.durum === 'ACIK' || seciliMarketVardiya.durum === 'REDDEDILDI'"
@@ -335,7 +335,7 @@
 
         <!-- Sağ: Veri Giriş Formu -->
         <div class="col-span-12 lg:col-span-5">
-            <div class="card bg-blue-50 dark:bg-blue-900/10 h-full border-blue-100 dark:border-blue-900/30 border">
+            <div class="card bg-blue-500/10 dark:bg-blue-900/20 h-full border-blue-200 dark:border-blue-800/30 border">
                 <div class="flex justify-between items-center mb-4">
                     <h5 class="font-semibold m-0 flex items-center text-blue-700 dark:text-blue-300">
                         <i class="pi pi-user-edit mr-2"></i>
@@ -362,13 +362,13 @@
                         <p-inputnumber [(ngModel)]="personelIslemForm.sistemSatisTutari" mode="currency" currency="TRY"
                             locale="tr-TR" styleClass="w-full">
                         </p-inputnumber>
-                        <small class="text-surface-500">Otomasyon veya rapordaki satış tutarı</small>
+                        <small class="text-[var(--text-color-secondary)]">Otomasyon veya rapordaki satış tutarı</small>
                     </div>
 
                     <!-- Pusula Girişleri -->
                     <div
-                        class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 mt-2">
-                        <h6 class="font-semibold mb-3 text-sm text-surface-500 uppercase">Pusula
+                        class="p-3 bg-[var(--surface-card)] dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 mt-2">
+                        <h6 class="font-semibold mb-3 text-sm text-[var(--text-color-secondary)] uppercase">Pusula
                             Teslimatı
                         </h6>
                         <div class="grid grid-cols-2 gap-3">
@@ -400,13 +400,13 @@
                     <!-- Anlık Özeti -->
                     <div class="grid grid-cols-2 gap-4 mt-2">
                         <div class="p-2 rounded bg-surface-100 text-center">
-                            <div class="text-xs text-surface-500">Toplam Teslimat</div>
+                            <div class="text-xs text-[var(--text-color-secondary)]">Toplam Teslimat</div>
                             <div class="font-bold text-green-600">{{ getPersonelIslemToplam() |
                                 currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
                         </div>
                         <div class="p-2 rounded bg-surface-100 text-center"
                             [ngClass]="{'bg-red-50': getPersonelFark() < 0, 'bg-blue-50': getPersonelFark() > 0}">
-                            <div class="text-xs text-surface-500">Fark</div>
+                            <div class="text-xs text-[var(--text-color-secondary)]">Fark</div>
                             <div class="font-bold"
                                 [ngClass]="{'text-red-500': getPersonelFark() < 0, 'text-blue-500': getPersonelFark() > 0}">
                                 {{ getPersonelFark() | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
@@ -424,7 +424,7 @@
                     <i class="pi pi-lock text-4xl mb-4 text-surface-400"></i>
                     <h6 class="font-bold text-surface-700 dark:text-surface-300 mb-2">Mutabakat Kilitli
                     </h6>
-                    <p class="text-surface-500 text-sm m-0">
+                    <p class="text-[var(--text-color-secondary)] text-sm m-0">
                         Bu mutabakat onaya gönderildiği veya onaylandığı için üzerinde değişiklik
                         yapılamaz.
                     </p>
@@ -446,7 +446,7 @@
             </div>
 
             <p-divider align="center">
-                <span class="text-sm text-surface-500">KDV Dağılımı</span>
+                <span class="text-sm text-[var(--text-color-secondary)]">KDV Dağılımı</span>
             </p-divider>
 
             <div class="grid grid-cols-3 gap-3">

@@ -4,8 +4,9 @@ import { RouterModule, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { NotificationService } from '../../../services/notification.service';
 
 @Component({
@@ -16,9 +17,10 @@ import { NotificationService } from '../../../services/notification.service';
         ButtonModule,
         FormsModule,
         RouterModule,
-        ToastModule
+        ToastModule,
+        ConfirmDialogModule
     ],
-    providers: [MessageService],
+    providers: [MessageService, ConfirmationService],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
@@ -36,7 +38,8 @@ export class Login {
         private authService: AuthService,
         private router: Router,
         private messageService: MessageService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private confirmationService: ConfirmationService
     ) { }
 
     ngOnInit() {
@@ -83,17 +86,20 @@ export class Login {
                 this.notificationService.initPush();
 
                 // Başarılı girişte bilgileri biometrik depoya kaydetmek için sor
-                if (this.biometricAvailable) {
-                    if (confirm("Sonraki girişlerinizde Face ID / Touch ID kullanmak ister misiniz?")) {
-                        await this.authService.saveCredentialsForBiometric(this.username, this.password);
-                    }
-                } else {
-                    // Eğer donanım varsa ama veri yoksa yine sor
-                    const hardwareAvailable = await this.authService.checkBiometricAvailability();
-                    if (hardwareAvailable) {
-                        if (confirm("Sonraki girişlerinizde Face ID / Touch ID kullanmak ister misiniz?")) {
-                            await this.authService.saveCredentialsForBiometric(this.username, this.password);
-                        }
+                const hardwareAvailable = await this.authService.checkBiometricAvailability();
+                if (hardwareAvailable) {
+                    const hasCredentials = await this.authService.hasBiometricCredentials();
+                    if (!hasCredentials) {
+                        this.confirmationService.confirm({
+                            header: 'Biyometrik Giriş',
+                            message: 'Sonraki girişlerinizde Face ID / Touch ID kullanmak ister misiniz?',
+                            icon: 'pi pi-face-smile',
+                            acceptLabel: 'Evet',
+                            rejectLabel: 'Hayır',
+                            accept: async () => {
+                                await this.authService.saveCredentialsForBiometric(this.username, this.password);
+                            }
+                        });
                     }
                 }
 

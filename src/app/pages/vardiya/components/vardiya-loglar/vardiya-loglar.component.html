@@ -11,9 +11,6 @@
             </div>
             <div class="logs-count">
                 <span class="count-badge">{{ loglar.length }}</span>
-                <button class="refresh-btn" (click)="loglariYukle()">
-                    <i class="pi pi-refresh"></i>
-                </button>
             </div>
         </div>
     </div>
@@ -95,10 +92,10 @@
         <div class="card">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                    <h2 class="text-2xl font-bold text-[var(--text-color)] m-0">
                         <i class="pi pi-history mr-2 text-purple-500"></i>Vardiya İşlem Geçmişi
                     </h2>
-                    <p class="text-surface-500 mt-2">
+                    <p class="text-[var(--text-color-secondary)] mt-2">
                         Tüm vardiya işlemlerinin detaylı kaydı ve log takibi
                     </p>
                 </div>
@@ -145,30 +142,32 @@
 
                 <ng-template pTemplate="body" let-log>
                     <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td><span class="text-surface-600">#</span>{{ log.id }}</td>
-                        <td><span class="font-bold text-surface-800 dark:text-surface-100">{{ log.vardiyaDosyaAdi
+                        <td><span class="text-[var(--text-color-secondary)]">#</span>{{ log.id }}</td>
+                        <td><span class="font-bold text-[var(--text-color)]">{{ log.vardiyaDosyaAdi
                                 }}</span></td>
-                        <td>{{ log.istasyonAdi }}</td>
+                        <td class="text-[var(--text-color)]">{{ log.istasyonAdi }}</td>
                         <td class="text-center">
                             <p-tag [value]="getIslemLabel(log.islem)" [severity]="getIslemSeverity(log.islem)"
                                 [icon]="'pi ' + getIslemIcon(log.islem)"></p-tag>
                         </td>
-                        <td>
-                            <span class="text-sm text-surface-600 dark:text-surface-300">{{ log.aciklama }}</span>
+                        <td class="text-[var(--text-color)]">
+                            <span class="text-sm text-[var(--text-color-secondary)]">{{ log.aciklama }}</span>
                         </td>
-                        <td>{{ log.kullaniciAdi }}</td>
-                        <td class="text-center">
+                        <td class="text-[var(--text-color)]">{{ log.kullaniciAdi }}</td>
+                        <td class="text-center text-[var(--text-color)]">
                             <p-tag [value]="log.kullaniciRol" severity="secondary"></p-tag>
                         </td>
                         <td>
                             <div class="flex items-center gap-2 text-xs" *ngIf="log.eskiDurum || log.yeniDurum">
-                                <span class="text-surface-500">{{ log.eskiDurum || 'BAŞLANGIÇ' }}</span>
-                                <i class="pi pi-arrow-right text-[10px] text-surface-400"></i>
+                                <span class="text-[var(--text-color-secondary)]">{{ log.eskiDurum || 'BAŞLANGIÇ'
+                                    }}</span>
+                                <i
+                                    class="pi pi-arrow-right text-[10px] text-[var(--text-color-secondary)] opacity-50"></i>
                                 <span class="font-bold text-primary">{{ log.yeniDurum }}</span>
                             </div>
                         </td>
                         <td class="text-center">
-                            <span class="text-surface-800 dark:text-surface-100">{{ log.islemTarihi | date:'dd.MM.yyyy
+                            <span class="text-[var(--text-color)]">{{ log.islemTarihi | date:'dd.MM.yyyy
                                 HH:mm' }}</span>
                         </td>
                     </tr>
@@ -179,10 +178,10 @@
                         <td colspan="9" class="text-center py-12">
                             <div class="flex flex-col items-center">
                                 <div
-                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
-                                    <i class="pi pi-history text-4xl text-surface-400"></i>
+                                    class="w-24 h-24 bg-[var(--surface-ground)] rounded-full flex items-center justify-center mb-4 border border-[var(--surface-border)]">
+                                    <i class="pi pi-history text-4xl text-[var(--text-color-secondary)] opacity-50"></i>
                                 </div>
-                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Kayıt bulunamadı</h4>
+                                <h4 class="text-[var(--text-color-secondary)] m-0">Kayıt bulunamadı</h4>
                             </div>
                         </td>
                     </tr>

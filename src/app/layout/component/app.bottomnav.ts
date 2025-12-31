@@ -1,9 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
+import { PermissionService } from '../../services/permission.service';
+import { SettingsService } from '../../services/settings.service';
+import { Subscription } from 'rxjs';
 
 interface BottomNavItem {
+    label: string;
+    icon: string;
+    route?: string;
+    action?: () => void;
+}
+
+interface DrawerSection {
+    label: string;
+    items: DrawerItem[];
+}
+
+interface DrawerItem {
     label: string;
     icon: string;
     route?: string;
@@ -21,7 +36,7 @@ interface BottomNavItem {
                     <a *ngIf="item.route" 
                        [routerLink]="item.route" 
                        routerLinkActive="active"
-                       [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+                       [routerLinkActiveOptions]="{exact: true}"
                        class="nav-item">
                         <i [class]="'pi ' + item.icon"></i>
                         <span>{{ item.label }}</span>
@@ -37,17 +52,23 @@ interface BottomNavItem {
 
             <!-- More Menu Drawer -->
             <div class="profile-drawer" [class.open]="showProfileDrawer" (click)="closeDrawer($event)">
-                <div class="drawer-content" (click)="$event.stopPropagation()">
+                <div class="drawer-content" 
+                     [class.dragging]="isDragging"
+                     [style.transform]="drawerTransform"
+                     (click)="$event.stopPropagation()"
+                     (touchstart)="onTouchStart($event)"
+                     (touchmove)="onTouchMove($event)"
+                     (touchend)="onTouchEnd($event)">
                     <!-- Handle bar -->
                     <div class="drawer-handle"><div class="handle-bar"></div></div>
                     
                     <!-- User Profile Section -->
                     <div class="drawer-header" (click)="goToProfile()">
-                        <div class="user-avatar">
+                        <div class="user-avatar" [style.background]="getAvatarColor(currentUser?.role)">
                             <i class="pi pi-user"></i>
                         </div>
                         <div class="user-info">
-                            <div class="user-name">{{ currentUser?.username }}</div>
+                            <div class="user-name">{{ currentUser?.adSoyad || currentUser?.username }}</div>
                             <div class="user-role">{{ getRoleLabel(currentUser?.role) }}</div>
                         </div>
                         <div class="profile-arrow">
@@ -55,63 +76,35 @@ interface BottomNavItem {
                         </div>
                     </div>
 
-                    <!-- Vardiya Section -->
-                    <div class="drawer-section">
-                        <div class="section-title">Vardiya İşlemleri</div>
-                        <div class="drawer-menu">
-                            <a class="drawer-item" routerLink="/vardiya" (click)="showProfileDrawer = false">
-                                <i class="pi pi-list"></i>
-                                <span>Vardiya Listesi</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
-                            <a class="drawer-item" routerLink="/vardiya/raporlar/vardiya" (click)="showProfileDrawer = false">
-                                <i class="pi pi-chart-bar"></i>
-                                <span>Raporlar</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
-                            <a class="drawer-item" routerLink="/vardiya/tanimlamalar/personel" (click)="showProfileDrawer = false">
-                                <i class="pi pi-users"></i>
-                                <span>Personel Tanımları</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
+                    <div class="drawer-scroll-area">
+                        <!-- Dynamic Sections -->
+                        <div class="drawer-section" *ngFor="let section of drawerSections">
+                            <div class="section-title">{{ section.label }}</div>
+                            <div class="drawer-menu">
+                                <ng-container *ngFor="let item of section.items">
+                                    <a *ngIf="item.route" class="drawer-item" [routerLink]="item.route" (click)="showProfileDrawer = false">
+                                        <i [class]="'pi ' + item.icon"></i>
+                                        <span>{{ item.label }}</span>
+                                        <i class="pi pi-chevron-right arrow"></i>
+                                    </a>
+                                    <button *ngIf="item.action" class="drawer-item" (click)="item.action()">
+                                        <i [class]="'pi ' + item.icon"></i>
+                                        <span>{{ item.label }}</span>
+                                        <i class="pi pi-chevron-right arrow"></i>
+                                    </button>
+                                </ng-container>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Management Section -->
-                    <div class="drawer-section">
-                        <div class="section-title">Yönetim</div>
-                        <div class="drawer-menu">
-                            <a class="drawer-item" routerLink="/admin/istasyonlar" (click)="showProfileDrawer = false">
-                                <i class="pi pi-building"></i>
-                                <span>Firma & İstasyonlar</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
-                            <a class="drawer-item" routerLink="/market/yonetim" (click)="showProfileDrawer = false">
-                                <i class="pi pi-shopping-cart"></i>
-                                <span>Market Yönetimi</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
-                            <a class="drawer-item" routerLink="/vardiya/tanimlamalar/istasyon" (click)="showProfileDrawer = false">
-                                <i class="pi pi-map-marker"></i>
-                                <span>İstasyon Tanımları</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Settings Section -->
-                    <div class="drawer-section">
-                        <div class="section-title">Ayarlar</div>
-                        <div class="drawer-menu">
-                            <a class="drawer-item" routerLink="/sistem/ayarlar" (click)="showProfileDrawer = false">
-                                <i class="pi pi-cog"></i>
-                                <span>Uygulama Ayarları</span>
-                                <i class="pi pi-chevron-right arrow"></i>
-                            </a>
-                            <button class="drawer-item logout" (click)="logout()">
-                                <i class="pi pi-sign-out"></i>
-                                <span>Çıkış Yap</span>
-                            </button>
+                        <!-- Logout Section (Always present) -->
+                        <div class="drawer-section">
+                            <div class="section-title">Hesap</div>
+                            <div class="drawer-menu">
+                                <button class="drawer-item logout" (click)="logout()">
+                                    <i class="pi pi-sign-out"></i>
+                                    <span>Çıkış Yap</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -199,7 +192,21 @@ interface BottomNavItem {
                 border-top-left-radius: 20px;
                 border-top-right-radius: 20px;
                 padding-bottom: env(safe-area-inset-bottom);
-                animation: slideUp 0.3s ease;
+                max-height: 85vh;
+                display: flex;
+                flex-direction: column;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                will-change: transform;
+
+                &.dragging {
+                    transition: none;
+                }
+            }
+
+            .drawer-scroll-area {
+                overflow-y: auto;
+                flex: 1;
+                -webkit-overflow-scrolling: touch;
             }
 
             @keyframes slideUp {
@@ -295,6 +302,8 @@ interface BottomNavItem {
                 display: flex;
                 justify-content: center;
                 padding: 0.75rem 0 0.5rem;
+                cursor: grab;
+                touch-action: none;
             }
 
             .handle-bar {
@@ -325,60 +334,212 @@ interface BottomNavItem {
         }
     `]
 })
-export class AppBottomNav implements OnInit {
+export class AppBottomNav implements OnInit, OnDestroy {
     navItems: BottomNavItem[] = [];
+    drawerSections: DrawerSection[] = [];
     isVisible = false;
     showProfileDrawer = false;
     currentUser: User | null = null;
+    private subscription: Subscription = new Subscription();
 
-    constructor(private authService: AuthService, private router: Router) { }
+    // Swipe properties
+    private startY = 0;
+    private currentDeltaY = 0;
+    isDragging = false;
+    drawerTransform = '';
+
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private permissionService: PermissionService,
+        private settingsService: SettingsService
+    ) { }
 
     ngOnInit() {
+        this.subscription = this.permissionService.permissions$.subscribe(() => {
+            this.updateMenu();
+        });
+
+        // Listen to settings changes too (e.g. if user updates menu in Ayarlar)
+        this.settingsService.settings$.subscribe(() => {
+            this.updateMenu();
+        });
+
+        this.updateMenu();
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+    }
+
+    updateMenu() {
         this.currentUser = this.authService.getCurrentUser();
         if (!this.currentUser) {
             this.isVisible = false;
             return;
         }
 
-        const role = this.currentUser.role?.toLowerCase();
-        const isPatron = role === 'patron';
-        const isAdmin = role === 'admin';
-
-        if (isAdmin) {
-            this.isVisible = false;
-            return;
-        }
+        const role = this.currentUser.role?.toLowerCase() || '';
+        // Admin check removed to allow mobile menu
+        // if (role === 'admin') {
+        //     this.isVisible = false;
+        //     return;
+        // }
 
         this.isVisible = true;
+        const hasAccess = (resource: string) => this.permissionService.hasAccess(role, resource);
 
-        if (isPatron) {
-            this.navItems = [
-                { label: 'Özet', icon: 'pi-home', route: '/dashboard' },
-                { label: 'Onaylar', icon: 'pi-check-circle', route: '/vardiya/onay-bekleyenler' },
-                { label: 'İşlemler', icon: 'pi-history', route: '/vardiya/loglar' },
-                { label: 'İstasyonlar', icon: 'pi-building', route: '/admin/istasyonlar' },
-                {
-                    label: 'Diğer',
-                    icon: 'pi-ellipsis-h',
-                    action: () => this.showProfileDrawer = true
-                }
-            ];
-        } else {
-            this.navItems = [
-                { label: 'Anasayfa', icon: 'pi-home', route: '/dashboard' },
-                { label: 'Vardiyalar', icon: 'pi-list', route: '/vardiya' },
-                { label: 'Raporlar', icon: 'pi-chart-bar', route: '/vardiya/raporlar/vardiya' },
-                {
-                    label: 'Diğer',
-                    icon: 'pi-ellipsis-h',
-                    action: () => this.showProfileDrawer = true
-                }
-            ];
+        // Define ALL available menu items with their permission checks
+        const allItems = [
+            { id: '/dashboard', label: 'Özet', drawerLabel: 'Genel Bakış', icon: 'pi-home', route: '/dashboard', visible: true, group: 'Ana Sayfa' },
+            { id: '/vardiya', label: 'Vardiyalar', drawerLabel: 'Vardiya Listesi', icon: 'pi-list', route: '/vardiya', visible: hasAccess('VARDIYA_LISTESI'), group: 'Vardiya İşlemleri' },
+            { id: '/vardiya/onay-bekleyenler', label: 'Onaylar', drawerLabel: 'Onay Bekleyenler', icon: 'pi-check-circle', route: '/vardiya/onay-bekleyenler', visible: hasAccess('VARDIYA_ONAY_BEKLEYENLER'), group: 'Yönetim' },
+            { id: '/vardiya/loglar', label: 'Geçmiş', drawerLabel: 'İşlem Geçmişi', icon: 'pi-history', route: '/vardiya/loglar', visible: hasAccess('VARDIYA_LOGLAR'), group: 'Yönetim' },
+            { id: '/vardiya/raporlar/vardiya', label: 'Raporlar', drawerLabel: 'Vardiya Raporları', icon: 'pi-chart-bar', route: '/vardiya/raporlar/vardiya', visible: hasAccess('RAPOR_VARDIYA'), group: 'Raporlar' },
+            { id: '/vardiya/market', label: 'Market', drawerLabel: 'Market Satışları', icon: 'pi-shopping-bag', route: '/vardiya/market', visible: hasAccess('VARDIYA_MARKET'), group: 'Vardiya İşlemleri' },
+            { id: '/vardiya/stok', label: 'Yakıt Stok', drawerLabel: 'Yakıt Stok Yönetimi', icon: 'pi-filter-fill', route: '/vardiya/stok', visible: hasAccess('VARDIYA_STOK'), group: 'Vardiya İşlemleri' },
+            { id: '/vardiya/karsilastirma', label: 'Kıyasla', drawerLabel: 'Karşılaştırma Raporu', icon: 'pi-chart-line', route: '/vardiya/karsilastirma', visible: hasAccess('VARDIYA_KARSILASTIRMA'), group: 'Vardiya İşlemleri' },
+            { id: '/vardiya/raporlar/personel', label: 'Personel', drawerLabel: 'Personel Raporları', icon: 'pi-users', route: '/vardiya/raporlar/personel', visible: hasAccess('RAPOR_PERSONEL'), group: 'Raporlar' },
+            { id: '/vardiya/raporlar/fark', label: 'Farklar', drawerLabel: 'Fark Raporları', icon: 'pi-exclamation-triangle', route: '/vardiya/raporlar/fark', visible: hasAccess('RAPOR_FARK'), group: 'Raporlar' },
+            { id: '/yonetim/kullanici', label: 'Kullanıcılar', drawerLabel: 'Kullanıcı Yönetimi', icon: 'pi-user-edit', route: '/yonetim/kullanici', visible: hasAccess('YONETIM_KULLANICI'), group: 'Yönetim' },
+            { id: '/vardiya/tanimlamalar/personel', label: 'Personel Tnm', drawerLabel: 'Personel Tanımları', icon: 'pi-user', route: '/vardiya/tanimlamalar/personel', visible: hasAccess('TANIMLAMA_PERSONEL'), group: 'Yönetim' },
+            { id: '/yonetim/istasyon', label: 'İstasyon', drawerLabel: 'İstasyon Yönetimi', icon: 'pi-building', route: '/yonetim/istasyon', visible: hasAccess('YONETIM_ISTASYON'), group: 'Yönetim' },
+            { id: '/yonetim/yetki', label: 'Yetkiler', drawerLabel: 'Yetki Yönetimi', icon: 'pi-lock', route: '/yonetim/yetki', visible: hasAccess('YONETIM_YETKI'), group: 'Yönetim' },
+            { id: '/admin/health', label: 'Sağlık', drawerLabel: 'Sistem Sağlığı', icon: 'pi-heart', route: '/admin/health', visible: hasAccess('SISTEM_SAGLIK'), group: 'Sistem' },
+            { id: '/settings/roles', label: 'Roller', drawerLabel: 'Rol Yönetimi', icon: 'pi-shield', route: '/settings/roles', visible: hasAccess('SISTEM_ROLLER'), group: 'Sistem' },
+            { id: '/admin/notifications', label: 'Bildirim', drawerLabel: 'Bildirim Gönder', icon: 'pi-bell', route: '/admin/notifications', visible: hasAccess('SISTEM_BILDIRIM'), group: 'Sistem' }
+        ];
+
+        // Filter items accessible by the user
+        const accessibleItems = allItems.filter(i => i.visible);
+
+        // Get user preferences (or default)
+        // Default: Dashboard, Vardiyalar, Onaylar (if capable) or Loglar, Raporlar
+        let userMenuRoutes = this.settingsService.getMobileMenu();
+
+        if (!userMenuRoutes || userMenuRoutes.length === 0) {
+            // Smart defaults based on role if no custom setting
+            userMenuRoutes = ['/dashboard'];
+            if (hasAccess('VARDIYA_LISTESI')) userMenuRoutes.push('/vardiya');
+            if (hasAccess('VARDIYA_ONAY_BEKLEYENLER')) userMenuRoutes.push('/vardiya/onay-bekleyenler');
+            if (hasAccess('RAPOR_VARDIYA') && userMenuRoutes.length < 4) userMenuRoutes.push('/vardiya/raporlar/vardiya');
         }
+
+        // Limit to 4 checks done in settings, but enforce here too just in case
+        const preferredRoutes = userMenuRoutes.slice(0, 4);
+
+        // 1. POPULATE BOTTOM NAV (max 4 + Other)
+        this.navItems = [];
+
+        // Add preferred items that are accessible
+        preferredRoutes.forEach(route => {
+            const item = accessibleItems.find(i => i.route === route);
+            if (item) {
+                // Bottom Nav uses the short 'label'
+                this.navItems.push({ label: item.label, icon: item.icon, route: item.route });
+            }
+        });
+
+        // Always add 'Diğer'
+        this.navItems.push({
+            label: 'Diğer',
+            icon: 'pi-ellipsis-h',
+            action: () => {
+                this.showProfileDrawer = true;
+                this.drawerTransform = 'translateY(0)';
+            }
+        });
+
+        // 2. POPULATE DRAWER (All accessible items NOT in bottom nav)
+        const bottomNavPacket = this.navItems.map(i => i.route); // routes already in bottom nav
+        const drawerItems = accessibleItems.filter(i => !bottomNavPacket.includes(i.route));
+
+        // Group them
+        this.drawerSections = [];
+        const groups = [...new Set(drawerItems.map(i => i.group))]; // unique groups
+
+        // Sort groups logically (optional custom order or just by list definition order)
+        const groupOrder = ['Vardiya İşlemleri', 'Raporlar', 'Yönetim', 'Ana Sayfa'];
+        groups.sort((a, b) => groupOrder.indexOf(a) - groupOrder.indexOf(b));
+
+        groups.forEach(groupName => {
+            const itemsInGroup = drawerItems.filter(i => i.group === groupName);
+            if (itemsInGroup.length > 0) {
+                this.drawerSections.push({
+                    label: groupName,
+                    items: itemsInGroup.map(i => ({
+                        // Drawer uses 'drawerLabel' if available, otherwise 'label'
+                        label: i.drawerLabel || i.label,
+                        icon: i.icon,
+                        route: i.route
+                    }))
+                });
+            }
+        });
+
+        // Always add Ayarlar
+        this.drawerSections.push({
+            label: 'Sistem',
+            items: [
+                { label: 'Uygulama Ayarları', icon: 'pi-cog', route: '/sistem/ayarlar' }
+            ]
+        });
+    }
+
+    // Touch handlers for swipe to close
+    onTouchStart(event: TouchEvent) {
+        event.stopPropagation();
+        this.startY = event.touches[0].clientY;
+        this.isDragging = true;
+    }
+
+    onTouchMove(event: TouchEvent) {
+        event.stopPropagation();
+        if (!this.isDragging) return;
+
+        const currentY = event.touches[0].clientY;
+        this.currentDeltaY = currentY - this.startY;
+
+        // Only allow pulling down (deltaY > 0)
+        if (this.currentDeltaY > 0) {
+            this.drawerTransform = `translateY(${this.currentDeltaY}px)`;
+            // Prevent body scroll
+            event.preventDefault();
+        } else {
+            this.drawerTransform = 'translateY(0)';
+            this.currentDeltaY = 0;
+        }
+    }
+
+    onTouchEnd(event: TouchEvent) {
+        event.stopPropagation();
+        this.isDragging = false;
+
+        // If pulled down more than 100px, close it
+        if (this.currentDeltaY > 100) {
+            this.closeDrawer(event);
+        } else {
+            // Reset position
+            this.drawerTransform = 'translateY(0)';
+        }
+        this.currentDeltaY = 0;
     }
 
     closeDrawer(event: Event) {
         this.showProfileDrawer = false;
+        this.drawerTransform = 'translateY(100%)';
+    }
+
+    getAvatarColor(role: string | undefined): string {
+        if (!role) return 'var(--primary-100)';
+        const r = role.toLowerCase();
+        if (r === 'patron') return 'var(--purple-100)';
+        if (r === 'istasyon sorumlusu') return 'var(--blue-100)';
+        if (r === 'market sorumlusu') return 'var(--green-100)';
+        if (r === 'vardiya sorumlusu') return 'var(--orange-100)';
+        return 'var(--primary-100)';
     }
 
     getRoleLabel(role: string | undefined): string {

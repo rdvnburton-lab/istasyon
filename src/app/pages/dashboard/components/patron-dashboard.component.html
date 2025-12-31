@@ -10,8 +10,9 @@
                 <p class="dashboard-subtitle text-sm text-surface-500">İşletmenizin gerçek zamanlı performans metrikleri
                 </p>
             </div>
-            <button pButton pRipple icon="pi pi-refresh" class="p-button-rounded p-button-text refresh-btn"
-                (click)="loadDashboard()" [loading]="loading" pTooltip="Yenile" tooltipPosition="left"></button>
+            <button pButton pRipple icon="pi pi-refresh"
+                class="p-button-rounded p-button-text refresh-btn hidden md:block" (click)="loadDashboard()"
+                [loading]="loading" pTooltip="Yenile" tooltipPosition="left"></button>
         </div>
     </div>
 

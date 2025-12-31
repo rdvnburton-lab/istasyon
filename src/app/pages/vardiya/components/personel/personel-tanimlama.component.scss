@@ -3,6 +3,19 @@
 }
 
 // ============================================
+// MOBILE STYLING
+// ============================================
+@media screen and (max-width: 768px) {
+    .p-iconfield {
+        width: 100%;
+
+        .p-inputtext {
+            width: 100% !important;
+        }
+    }
+}
+
+// ============================================
 // DESKTOP STYLING
 // ============================================
 @media screen and (min-width: 992px) {

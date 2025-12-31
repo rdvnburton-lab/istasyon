@@ -23,7 +23,9 @@ import {
     FiloSatis,
     GiderTuru,
     GelirTuru,
-    MarketOzet
+    MarketOzet,
+    GenelOzet,
+    PompaOzet
 } from '../models/vardiya.model';
 
 import { VardiyaApiService } from './vardiya-api.service';
@@ -342,33 +344,49 @@ export class VardiyaService {
     }
 
     getVardiyaOzet(vardiyaId: number): Observable<VardiyaOzet> {
-        const vardiya = this.aktifVardiya.value;
-        const tahsilatlar = this.tahsilatlar.value;
-        const otomasyonSatislari = this.yuklenenSatislar.value;
+        return this.vardiyaApiService.getOnayDetay(vardiyaId).pipe(
+            map(data => ({
+                vardiya: data.vardiya,
+                pompaOzet: {
+                    personelSayisi: data.personelSayisi,
+                    toplamOtomasyonSatis: data.genelOzet.pompaToplam,
+                    toplamPusulaTahsilat: data.genelOzet.pusulaToplam,
+                    toplamFark: data.genelOzet.toplamFark,
+                    farkDurum: Math.abs(data.genelOzet.toplamFark) < 10 ? FarkDurum.UYUMLU : (data.genelOzet.toplamFark < 0 ? FarkDurum.ACIK : FarkDurum.FAZLA),
+                    personelFarklari: data.farkAnalizi,
+                    giderToplam: 0,
+                    netTahsilat: data.genelOzet.pusulaToplam
+                },
+                marketOzet: null,
+                genelToplam: data.genelOzet.genelToplam,
+                genelFark: data.genelOzet.toplamFark
+            }))
+        );
+    }
 
-        if (!vardiya) {
-            throw new Error('Vardiya bulunamadı');
-        }
+    getGenelOzet(vardiyaId: number): Observable<GenelOzet> {
+        return this.vardiyaApiService.getOnayDetay(vardiyaId).pipe(
+            map(data => ({
+                ...data.genelOzet,
+                toplamGider: 0,
+                toplamVeresiye: data.genelOzet.toplamVeresiye || 0
+            }))
+        );
+    }
 
-        const toplamSatis = otomasyonSatislari.reduce((sum, s) => sum + s.toplamTutar, 0);
-        const toplamTahsilat = tahsilatlar.reduce((sum, t) => sum + t.tutar, 0);
-
-        return of({
-            vardiya,
-            pompaOzet: {
-                personelSayisi: 3,
-                toplamOtomasyonSatis: toplamSatis,
-                toplamPusulaTahsilat: toplamTahsilat,
-                toplamFark: toplamTahsilat - toplamSatis,
-                farkDurum: FarkDurum.UYUMLU,
-                personelFarklari: [],
+    getPompaOzet(vardiyaId: number): Observable<PompaOzet> {
+        return this.vardiyaApiService.getOnayDetay(vardiyaId).pipe(
+            map(data => ({
+                personelSayisi: data.personelSayisi,
+                toplamOtomasyonSatis: data.genelOzet.pompaToplam,
+                toplamPusulaTahsilat: data.genelOzet.pusulaToplam,
+                toplamFark: data.genelOzet.toplamFark,
+                farkDurum: Math.abs(data.genelOzet.toplamFark) < 10 ? FarkDurum.UYUMLU : (data.genelOzet.toplamFark < 0 ? FarkDurum.ACIK : FarkDurum.FAZLA),
+                personelFarklari: data.farkAnalizi,
                 giderToplam: 0,
-                netTahsilat: toplamTahsilat
-            },
-            marketOzet: null,
-            genelToplam: toplamSatis,
-            genelFark: toplamTahsilat - toplamSatis
-        }).pipe(delay(500));
+                netTahsilat: data.genelOzet.pusulaToplam
+            }))
+        );
     }
 
     getGiderTurleri() {

@@ -26,6 +26,8 @@ namespace IstasyonDemo.Api.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<OtomatikDosya> OtomatikDosyalar { get; set; }
         public DbSet<UserSettings> UserSettings { get; set; }
+        public DbSet<TankGiris> TankGirisler { get; set; }
+        public DbSet<Yakit> Yakitlar { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -254,6 +256,26 @@ namespace IstasyonDemo.Api.Data
                 .WithOne()
                 .HasForeignKey<UserSettings>(us => us.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // TankGiris Indexes
+            modelBuilder.Entity<TankGiris>()
+                .HasIndex(t => t.Tarih)
+                .HasDatabaseName("IX_TankGirisler_Tarih")
+                .IsDescending();
+            
+            modelBuilder.Entity<TankGiris>()
+                .HasOne(t => t.Yakit)
+                .WithMany()
+                .HasForeignKey(t => t.YakitId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            // Seed Yakitlar
+            modelBuilder.Entity<Yakit>().HasData(
+                new Yakit { Id = 1, Ad = "Motorin", OtomasyonUrunAdi = "MOTORIN,DIZEL", Renk = "#F59E0B", Sira = 1 },
+                new Yakit { Id = 2, Ad = "Benzin (Kurşunsuz 95)", OtomasyonUrunAdi = "BENZIN,KURŞUNSUZ,KURSUNSUZ", Renk = "#EF4444", Sira = 2 },
+                 new Yakit { Id = 3, Ad = "LPG", OtomasyonUrunAdi = "LPG,OTOGAZ", Renk = "#3B82F6", Sira = 3 }
+            );
         }
     }
 }

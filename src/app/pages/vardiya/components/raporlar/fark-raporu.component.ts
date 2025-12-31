@@ -25,7 +25,7 @@ import { VardiyaApiService } from '../../services/vardiya-api.service';
         ToolbarModule
     ],
     templateUrl: './fark-raporu.component.html',
-    styles: [`:host { display: block; }`]
+    styleUrls: ['./fark-raporu.component.scss']
 })
 export class FarkRaporuComponent implements OnInit {
     baslangicTarihi: Date = new Date();

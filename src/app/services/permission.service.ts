@@ -16,11 +16,13 @@ export const RESOURCES: Resource[] = [
     { key: 'VARDIYA_MARKET', name: 'Market Yönetimi', group: 'Vardiya Yönetimi' },
     { key: 'VARDIYA_KARSILASTIRMA', name: 'Karşılaştırma Raporu', group: 'Vardiya Yönetimi' },
     { key: 'VARDIYA_ONAY_BEKLEYENLER', name: 'Onay Bekleyenler', group: 'Vardiya Yönetimi' },
+    { key: 'VARDIYA_STOK', name: 'Yakıt Stok Girişi', group: 'Vardiya Yönetimi' },
     { key: 'VARDIYA_LOGLAR', name: 'İşlem Geçmişi', group: 'Vardiya Yönetimi' },
 
     // Tanımlamalar
     { key: 'TANIMLAMA_ISTASYON', name: 'İstasyon Tanımlama', group: 'Tanımlamalar' },
     { key: 'TANIMLAMA_PERSONEL', name: 'Personel Tanımlama', group: 'Tanımlamalar' },
+    { key: 'TANIMLAMA_YAKIT', name: 'Yakıt Türü Tanımlama', group: 'Tanımlamalar' },
 
     // Raporlar
     { key: 'RAPOR_VARDIYA', name: 'Vardiya Raporu', group: 'Raporlar' },
@@ -44,19 +46,20 @@ const DEFAULT_PERMISSIONS: { [role: string]: string[] } = {
     'admin': RESOURCES.map(r => r.key), // Admin her şeye erişir
     'patron': [
         'VARDIYA_LISTESI', 'VARDIYA_POMPA', 'VARDIYA_MARKET', 'VARDIYA_KARSILASTIRMA',
-        'VARDIYA_ONAY_BEKLEYENLER', 'VARDIYA_LOGLAR',
-        'TANIMLAMA_ISTASYON', 'TANIMLAMA_PERSONEL',
+        'VARDIYA_ONAY_BEKLEYENLER', 'VARDIYA_STOK', 'VARDIYA_LOGLAR',
+        'TANIMLAMA_ISTASYON', 'TANIMLAMA_PERSONEL', 'TANIMLAMA_YAKIT',
         'RAPOR_VARDIYA', 'RAPOR_PERSONEL', 'RAPOR_FARK',
         'YONETIM_ISTASYON', 'YONETIM_KULLANICI',
         'SISTEM_AYARLAR'
     ],
     'istasyon sorumlusu': [
         'VARDIYA_LISTESI', 'VARDIYA_POMPA', 'VARDIYA_MARKET', 'VARDIYA_KARSILASTIRMA',
-        'TANIMLAMA_PERSONEL',
+        'VARDIYA_STOK',
+        'TANIMLAMA_PERSONEL', 'TANIMLAMA_YAKIT',
         'RAPOR_VARDIYA', 'RAPOR_PERSONEL', 'RAPOR_FARK'
     ],
     'vardiya sorumlusu': [
-        'VARDIYA_LISTESI', 'VARDIYA_POMPA',
+        'VARDIYA_LISTESI', 'VARDIYA_POMPA', 'VARDIYA_STOK',
         'RAPOR_VARDIYA'
     ],
     'market sorumlusu': [

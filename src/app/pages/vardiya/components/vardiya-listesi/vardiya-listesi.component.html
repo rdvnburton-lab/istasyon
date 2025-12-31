@@ -154,10 +154,10 @@
         <div class="card">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-surface-800 dark:text-surface-100 m-0">
+                    <h2 class="text-2xl font-bold text-[var(--text-color)] dark:text-surface-100 m-0">
                         <i class="pi pi-list mr-2 text-blue-500"></i>Vardiya Mutabakatı
                     </h2>
-                    <p class="text-surface-500 mt-2">
+                    <p class="text-[var(--text-color-secondary)] mt-2">
                         Otomasyon TXT dosyasını yükleyin ve mutabakat işlemini gerçekleştirin
                     </p>
                 </div>
@@ -168,107 +168,116 @@
 
     <!-- Özet Kartları -->
     <div class="col-span-12 md:col-span-6 lg:col-span-3">
-        <div class="p-4 rounded-xl h-full cursor-pointer transition-all duration-300 hover:scale-105"
-            style="background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #2563eb 100%); box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);"
+        <div class="card h-full cursor-pointer transition-all duration-300 hover:shadow-lg border-t-4 border-t-blue-500 p-0 overflow-hidden"
             (click)="dosyaDialogAc()">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style="background: rgba(255,255,255,0.2);">
-                    <i class="pi pi-folder-open text-2xl" style="color: white;"></i>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,0.7);">Yüklenen</span>
-                    <h3 class="text-4xl font-bold m-0" style="color: white !important;">{{ vardiyalar.length }}</h3>
-                </div>
-            </div>
-            <div class="pt-3 mt-3" style="border-top: 1px solid rgba(255,255,255,0.2);">
-                <div class="flex items-center gap-2">
-                    <i class="pi pi-plus-circle text-sm" style="color: rgba(255,255,255,0.7);"></i>
-                    <span class="text-sm" style="color: rgba(255,255,255,0.9);">Yeni dosya yüklemek için tıklayın</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-12 md:col-span-6 lg:col-span-3">
-        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
-            style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ea580c 100%); box-shadow: 0 10px 40px rgba(249, 115, 22, 0.3);">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style="background: rgba(255,255,255,0.2);">
-                    <i class="pi pi-hourglass text-2xl" style="color: white;"></i>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,0.7);">Bekleyen</span>
-                    <h3 class="text-4xl font-bold m-0" style="color: white !important;">{{ getMutabakatBekleyenSayisi()
-                        }}</h3>
-                </div>
-            </div>
-            <div class="pt-3 mt-3" style="border-top: 1px solid rgba(255,255,255,0.2);">
-                <div class="flex items-center gap-2">
-                    <i class="pi pi-exclamation-triangle text-sm" style="color: #fef08a;"></i>
-                    <span class="text-sm" style="color: rgba(255,255,255,0.9);">
-                        {{ getMutabakatBekleyenSayisi() > 0 ? 'Mutabakat işlemi bekliyor!' : 'Tüm işlemler tamam' }}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-12 md:col-span-6 lg:col-span-3">
-        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
-            style="background: linear-gradient(135deg, #10b981 0%, #22c55e 50%, #16a34a 100%); box-shadow: 0 10px 40px rgba(34, 197, 94, 0.3);">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style="background: rgba(255,255,255,0.2);">
-                    <i class="pi pi-check-circle text-2xl" style="color: white;"></i>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs uppercase tracking-wider"
-                        style="color: rgba(255,255,255,0.7);">Tamamlanan</span>
-                    <h3 class="text-4xl font-bold m-0" style="color: white !important;">{{ getTamamlananSayisi() }}</h3>
-                </div>
-            </div>
-            <div class="pt-3 mt-3" style="border-top: 1px solid rgba(255,255,255,0.2);">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm" style="color: rgba(255,255,255,0.9);">Başarı Oranı</span>
-                    <span class="font-bold text-lg" style="color: white !important;">{{ getBasariOrani() }}%</span>
-                </div>
-                <div class="w-full rounded-full h-2" style="background: rgba(255,255,255,0.2);">
-                    <div class="rounded-full h-2 transition-all" style="background: white;"
-                        [style.width.%]="getBasariOrani()"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-12 md:col-span-6 lg:col-span-3">
-        <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
-            style="background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%); box-shadow: 0 10px 40px rgba(168, 85, 247, 0.3);">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style="background: rgba(255,255,255,0.2);">
-                    <i class="pi pi-wallet text-2xl" style="color: white;"></i>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs uppercase tracking-wider" style="color: rgba(255,255,255,0.7);">Toplam
-                        Ciro</span>
-                    <h3 class="text-3xl font-bold m-0" style="color: white !important;">
-                        {{ formatShortNumber(summary.toplamCiro) }} ₺
-                    </h3>
-                </div>
-            </div>
-            <div class="pt-3 mt-3" style="border-top: 1px solid rgba(255,255,255,0.2);">
-                <div class="flex items-center gap-4 text-sm">
-                    <div class="flex items-center gap-1">
-                        <i class="pi pi-receipt" style="color: rgba(255,255,255,0.7);"></i>
-                        <span style="color: rgba(255,255,255,0.9);">{{ formatShortNumber(summary.toplamIslem) }}
-                            işlem</span>
+            <div class="p-4">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                        <i class="pi pi-folder-open text-xl"></i>
                     </div>
-                    <div class="flex items-center gap-1">
-                        <i class="pi pi-users" style="color: rgba(255,255,255,0.7);"></i>
-                        <span style="color: rgba(255,255,255,0.9);">{{ summary.benzersizPersonelSayisi }}
-                            personel</span>
+                    <div class="text-right">
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wider text-[var(--text-color-secondary)]">Yüklenen</span>
+                        <h3 class="text-3xl font-bold m-0 text-[var(--text-color)]">{{ vardiyalar.length }}</h3>
+                    </div>
+                </div>
+                <div class="pt-3 border-t border-[var(--surface-border)]">
+                    <div class="flex items-center gap-2 text-[var(--text-color-secondary)]">
+                        <i class="pi pi-plus-circle text-xs"></i>
+                        <span class="text-xs font-medium">Yeni dosya yüklemek için tıklayın</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div
+            class="card h-full transition-all duration-300 hover:shadow-lg border-t-4 border-t-amber-500 p-0 overflow-hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                        <i class="pi pi-hourglass text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wider text-[var(--text-color-secondary)]">Bekleyen</span>
+                        <h3 class="text-3xl font-bold m-0 text-[var(--text-color)]">{{ getMutabakatBekleyenSayisi() }}
+                        </h3>
+                    </div>
+                </div>
+                <div class="pt-3 border-t border-[var(--surface-border)]">
+                    <div class="flex items-center gap-2"
+                        [ngClass]="getMutabakatBekleyenSayisi() > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[var(--text-color-secondary)]'">
+                        <i class="pi pi-exclamation-triangle text-xs"></i>
+                        <span class="text-xs font-medium">
+                            {{ getMutabakatBekleyenSayisi() > 0 ? 'Mutabakat işlemi bekliyor!' : 'Tüm işlemler tamam' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div
+            class="card h-full transition-all duration-300 hover:shadow-lg border-t-4 border-t-emerald-500 p-0 overflow-hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                        <i class="pi pi-check-circle text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wider text-[var(--text-color-secondary)]">Tamamlanan</span>
+                        <h3 class="text-3xl font-bold m-0 text-[var(--text-color)]">{{ getTamamlananSayisi() }}</h3>
+                    </div>
+                </div>
+                <div class="pt-3 border-t border-[var(--surface-border)]">
+                    <div
+                        class="flex items-center justify-between mb-2 text-xs font-medium text-[var(--text-color-secondary)]">
+                        <span>Başarı Oranı</span>
+                        <span class="text-[var(--text-color)]">{{ getBasariOrani() }}%</span>
+                    </div>
+                    <div class="w-full bg-[var(--surface-ground)] rounded-full h-1.5">
+                        <div class="bg-emerald-500 rounded-full h-1.5 transition-all duration-500"
+                            [style.width.%]="getBasariOrani()"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <div
+            class="card h-full transition-all duration-300 hover:shadow-lg border-t-4 border-t-violet-500 p-0 overflow-hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl flex items-center justify-center bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400">
+                        <i class="pi pi-wallet text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wider text-[var(--text-color-secondary)]">Toplam
+                            Ciro</span>
+                        <h3 class="text-2xl font-bold m-0 text-[var(--text-color)]">{{
+                            formatShortNumber(summary.toplamCiro) }} ₺</h3>
+                    </div>
+                </div>
+                <div class="pt-3 border-t border-[var(--surface-border)]">
+                    <div class="flex items-center gap-3 text-xs font-medium text-[var(--text-color-secondary)]">
+                        <div class="flex items-center gap-1">
+                            <i class="pi pi-receipt"></i>
+                            <span>{{ formatShortNumber(summary.toplamIslem) }} işlem</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="pi pi-users"></i>
+                            <span>{{ summary.benzersizPersonelSayisi }} personel</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,7 +301,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div *ngFor="let file of otomatikDosyalar"
-                    class="p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-white dark:bg-surface-900 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+                    class="p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-[var(--surface-card)] dark:bg-surface-900 shadow-sm hover:shadow-md transition-all cursor-pointer group"
                     (click)="otomatikDosyaIsle(file)">
                     <div class="flex items-center gap-4">
                         <div
@@ -300,10 +309,12 @@
                             <i class="pi pi-file-import text-blue-600 dark:text-blue-400 group-hover:text-white"></i>
                         </div>
                         <div class="flex-1 overflow-hidden">
-                            <p class="font-bold m-0 text-surface-800 dark:text-surface-100 truncate">{{ file.dosyaAdi }}
+                            <p class="font-bold m-0 text-[var(--text-color)] dark:text-surface-100 truncate">{{
+                                file.dosyaAdi }}
                             </p>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-xs text-surface-500">{{ file.yuklemeTarihi | date:'dd.MM.yyyy HH:mm'
+                                <span class="text-xs text-[var(--text-color-secondary)]">{{ file.yuklemeTarihi |
+                                    date:'dd.MM.yyyy HH:mm'
                                     }}</span>
                                 <span
                                     class="text-xs px-1.5 py-0.5 rounded bg-blue-100/50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800/50">
@@ -371,10 +382,10 @@
                                     <i class="pi pi-file text-white text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold m-0 text-surface-800 dark:text-surface-100">
+                                    <p class="font-bold m-0 text-[var(--text-color)] dark:text-surface-100">
                                         {{ vardiya.dosyaAdi
                                         }}</p>
-                                    <p class="text-surface-500 text-xs m-0 flex items-center gap-1">
+                                    <p class="text-[var(--text-color-secondary)] text-xs m-0 flex items-center gap-1">
                                         <i class="pi pi-clock text-xs"></i>
                                         {{ vardiya.yuklemeTarihi | date:'dd.MM.yyyy HH:mm' }}
                                     </p>
@@ -383,7 +394,7 @@
                         </td>
                         <td>
                             <div *ngIf="vardiya.baslangicTarih" class="flex flex-col">
-                                <span class="font-bold text-surface-800 dark:text-surface-100">{{
+                                <span class="font-bold text-[var(--text-color)] dark:text-surface-100">{{
                                     vardiya.baslangicTarih
                                     | date:'dd MMMM yyyy':'':'tr' }}</span>
                                 <span class="text-sm flex items-center gap-1" style="color: #6366f1;">
@@ -605,7 +616,7 @@
             <strong>{{ secilenVardiya?.dosyaAdi }}</strong> dosyasını silmek istediğinize emin
             misiniz?
         </p>
-        <p class="text-sm text-surface-500">
+        <p class="text-sm text-[var(--text-color-secondary)]">
             Bu işlem onaya gönderilecek ve patron/admin onayından sonra vardiya silinmiş olarak
             işaretlenecektir.
         </p>
@@ -615,7 +626,7 @@
                 class="w-full p-3 border border-surface-300 dark:border-surface-600 rounded-lg"
                 placeholder="Örn: Yanlış dosya yüklendi, tekrar yüklenecek..." [required]="true">
             </textarea>
-            <small class="text-surface-500">En az 10 karakter giriniz</small>
+            <small class="text-[var(--text-color-secondary)]">En az 10 karakter giriniz</small>
         </div>
     </div>
     <ng-template pTemplate="footer">
@@ -990,7 +1001,7 @@
                                     <tr
                                         [ngClass]="{'border-t-2 border-dashed border-surface-300 dark:border-surface-600': item.showSeparator}">
                                         <td
-                                            [ngClass]="{'font-bold text-surface-900 dark:text-surface-0': item.isSpecial}">
+                                            [ngClass]="{'font-bold text-[var(--text-color)] dark:text-surface-0': item.isSpecial}">
                                             {{item.banka}}
                                         </td>
                                         <td class="text-right font-bold"

@@ -1,4 +1,315 @@
-// Kullanıcı yönetimi için stil dosyası
+:host {
+    display: block;
+}
+
+// ============================================
+// MOBILE NATIVE APP STYLING
+// ============================================
+@media screen and (max-width: 991px) {
+    :host {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+    }
+
+    // ===== PAGE CONTAINER =====
+    .user-page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    // ===== NATIVE PAGE HEADER =====
+    .mobile-page-header {
+        padding: 1rem;
+        padding-top: calc(1rem + env(safe-area-inset-top));
+        background: white;
+    }
+
+    .page-title-section {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .add-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+
+    // Hide desktop elements
+    .grid.grid-cols-12 {
+        display: none !important;
+    }
+
+    // ===== USER LIST =====
+    .user-list {
+        padding: 0.5rem;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .user-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        i {
+            font-size: 1.5rem;
+            color: white;
+        }
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .user-username {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.125rem;
+    }
+
+    .user-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .user-field {
+        padding: 0.5rem;
+        background: #f8fafc;
+        border-radius: 8px;
+
+        &.full-width {
+            grid-column: 1 / -1;
+        }
+    }
+
+    .field-label {
+        font-size: 0.65rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .field-value {
+        font-size: 0.85rem;
+        color: #1e293b;
+        font-weight: 500;
+        margin-top: 0.125rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #f1f5f9;
+        justify-content: flex-end;
+    }
+
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.edit-btn {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        &.delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+
+    // ===== EMPTY STATE =====
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                font-size: 2rem;
+                color: #94a3b8;
+            }
+        }
+
+        .empty-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+    }
+
+    // Search bar adjustment for Native feel
+    .p-iconfield {
+        width: 100%;
+        margin-bottom: 0.5rem;
+
+        .p-inputtext {
+            width: 100% !important;
+            border-radius: 12px !important;
+            background: #f1f5f9 !important;
+            border: none !important;
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
+
+            &:focus {
+                background: white !important;
+                box-shadow: 0 0 0 2px #e2e8f0 !important;
+            }
+        }
+    }
+
+    // ===== DIALOG OPTIMIZATION =====
+    ::ng-deep .p-dialog {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+
+        .p-dialog-header {
+            padding: 1rem !important;
+            padding-top: calc(1rem + env(safe-area-inset-top)) !important;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            color: white !important;
+            border-radius: 0 !important;
+
+            .p-dialog-title {
+                color: white !important;
+                font-weight: 700 !important;
+            }
+
+            .p-dialog-header-icon {
+                color: white !important;
+            }
+        }
+
+        .p-dialog-content {
+            padding: 1rem !important;
+            background: #f8fafc !important;
+            padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+        }
+
+        .p-dialog-footer {
+            padding: 1rem !important;
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
+            background: white !important;
+            border-top: 1px solid #e2e8f0 !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+
+            .p-button {
+                flex: 1 !important;
+            }
+        }
+    }
+}
 
 // ============================================
 // DESKTOP STYLING

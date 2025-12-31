@@ -456,48 +456,7 @@
 
         // ===== HEADER - Native App Style =====
         .dashboard-header {
-            padding: 1rem 1rem 0.5rem 1rem;
-            margin-bottom: 0;
-            background: var(--surface-ground);
-            box-shadow: none;
-            border-radius: 0;
-
-            .header-content {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .header-text {
-                flex: 1;
-            }
-
-            .dashboard-title {
-                font-size: 1.375rem;
-                font-weight: 700;
-                margin: 0;
-
-                i {
-                    display: none; // Hide icon for cleaner mobile look
-                }
-            }
-
-            .dashboard-subtitle {
-                display: none;
-            }
-
-            .refresh-btn {
-                width: 2.5rem;
-                height: 2.5rem;
-                border-radius: 50%;
-                background: var(--surface-card);
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-                border: none;
-
-                &:hover {
-                    background: var(--surface-hover);
-                }
-            }
+            display: none !important;
         }
 
         // ===== STAT CARDS - Horizontal Carousel =====
@@ -507,12 +466,14 @@
             flex-wrap: nowrap !important;
             flex-direction: row !important;
             overflow-x: auto !important;
-            gap: 0.75rem !important;
+            gap: 1rem !important; // Match bottom grid gap
             margin: 0 !important;
-            padding: 0.75rem 1rem 1rem 1rem !important;
+            // Precise padding alignment with bottom grid
+            padding: 1rem calc(1.5rem + env(safe-area-inset-right)) 1rem calc(1.5rem + env(safe-area-inset-left)) !important;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            scroll-padding-left: 1rem;
+            // Scroll padding ensures snap alignment matches visual start
+            scroll-padding-left: calc(1.5rem + env(safe-area-inset-left));
 
             // Hide scrollbar
             &::-webkit-scrollbar {
@@ -567,7 +528,8 @@
         .grid {
             display: flex !important;
             flex-direction: column !important;
-            padding: 0 1rem;
+            // Exact same padding as top container
+            padding: 0 calc(1.5rem + env(safe-area-inset-right)) 0 calc(1.5rem + env(safe-area-inset-left)) !important;
             gap: 1rem !important;
 
             &.mb-6 {
@@ -579,6 +541,7 @@
             [class*="col-span"] {
                 width: 100% !important;
                 max-width: 100% !important;
+                padding: 0; // Ensure no default padding on columns
             }
         }
 
@@ -588,6 +551,8 @@
             padding: 1rem;
             margin-bottom: 0;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            height: auto !important; // Allow auto height
+            background: var(--surface-card);
 
             .chart-header {
                 padding-bottom: 0.75rem;
@@ -607,14 +572,19 @@
             }
 
             .chart-content {
-                height: auto;
+                height: 300px; // Fixed container height
+                position: relative;
+                width: 100%;
+                overflow: visible; // Allow chart to breathe
 
                 p-chart {
                     display: block;
-                    height: 220px !important;
+                    height: 100% !important;
+                    width: 100% !important;
 
                     canvas {
-                        max-height: 220px !important;
+                        height: 100% !important;
+                        width: 100% !important;
                     }
                 }
             }

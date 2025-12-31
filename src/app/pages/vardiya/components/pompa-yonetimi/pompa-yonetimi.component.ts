@@ -328,6 +328,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
             const image = await Camera.getPhoto({
                 quality: 90,
                 allowEditing: false,
+                width: 1024, // Resize to reduce token usage
                 resultType: CameraResultType.Base64,
                 source: CameraSource.Prompt // Ask user: Camera or Photos
             });

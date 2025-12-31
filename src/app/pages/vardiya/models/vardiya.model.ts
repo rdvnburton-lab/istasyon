@@ -349,6 +349,7 @@ export interface GenelOzet {
     toplamParoPuan: number;
     toplamMobilOdeme: number;
     toplamGider: number;
+    toplamVeresiye: number;
     toplamFark: number;
     durumRenk: 'success' | 'warn' | 'danger';
 }

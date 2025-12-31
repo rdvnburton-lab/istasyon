@@ -7,7 +7,7 @@
 // ============================================
 @media screen and (max-width: 991px) {
     :host {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        background: var(--surface-ground);
         min-height: 100vh;
     }
 
@@ -22,7 +22,7 @@
     .mobile-page-header {
         padding: 1rem;
         padding-top: calc(1rem + env(safe-area-inset-top));
-        background: white;
+        background: var(--surface-card);
     }
 
     .page-title-row {
@@ -34,25 +34,25 @@
     .page-title {
         font-size: 1.5rem;
         font-weight: 800;
-        color: #1e293b;
+        color: var(--text-color);
         margin: 0;
     }
 
     .page-subtitle {
         font-size: 0.8rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
         margin-top: 0.25rem;
     }
 
     // ===== SEGMENT CONTROL =====
     .segment-container {
         padding: 0 1rem 1rem;
-        background: white;
+        background: var(--surface-card);
     }
 
     .segment-control {
         display: flex;
-        background: #f1f5f9;
+        background: var(--surface-ground);
         border-radius: 10px;
         padding: 4px;
         gap: 4px;
@@ -67,7 +67,7 @@
         padding: 0.75rem 0.5rem;
         border: none;
         background: transparent;
-        color: #64748b;
+        color: var(--text-color-secondary);
         font-size: 0.85rem;
         font-weight: 600;
         border-radius: 8px;
@@ -79,8 +79,8 @@
         }
 
         &.active {
-            background: white;
-            color: #1e293b;
+            background: var(--surface-card);
+            color: var(--text-color);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
@@ -92,7 +92,7 @@
     // ===== DATE FILTERS =====
     .filter-container {
         padding: 0 1rem 1rem;
-        background: white;
+        background: var(--surface-card);
     }
 
     .date-row {
@@ -107,7 +107,7 @@
 
     .date-label {
         font-size: 0.65rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 0.25rem;
@@ -116,10 +116,10 @@
     .date-input {
         width: 100%;
         padding: 0.625rem 0.75rem;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--surface-border);
         border-radius: 8px;
         font-size: 0.875rem;
-        background: #f8fafc;
+        background: var(--surface-ground);
     }
 
     .quick-filters {
@@ -137,10 +137,10 @@
     .quick-btn {
         flex-shrink: 0;
         padding: 0.5rem 0.875rem;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--surface-border);
         border-radius: 20px;
-        background: white;
-        color: #64748b;
+        background: var(--surface-card);
+        color: var(--text-color-secondary);
         font-size: 0.8rem;
         font-weight: 500;
         cursor: pointer;
@@ -149,9 +149,9 @@
 
         &.active,
         &:active {
-            background: #3b82f6;
-            border-color: #3b82f6;
-            color: white;
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--primary-color-text);
         }
     }
 
@@ -170,50 +170,65 @@
 
     .summary-card {
         flex-shrink: 0;
-        width: 140px;
+        width: 130px;
         padding: 1rem;
-        border-radius: 12px;
+        background: var(--surface-card);
+        border-radius: 16px;
+        border: 1px solid var(--surface-border);
+        border-top: 4px solid;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s ease;
 
         &.blue {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-top-color: #3b82f6;
         }
 
         &.green {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-top-color: #22c55e;
         }
 
         &.orange {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border-top-color: #f97316;
         }
 
         &.purple {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-top-color: #8b5cf6;
         }
 
         &.indigo {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-top-color: #6366f1;
         }
 
         &.red {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-top-color: #ef4444;
         }
 
         &.teal {
-            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            border-top-color: #14b8a6;
+        }
+
+        &:active {
+            transform: scale(0.96);
+            background: var(--surface-hover);
         }
     }
 
     .summary-label {
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 500;
-        margin-bottom: 0.5rem;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--text-color-secondary);
+        margin-bottom: 0.4rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .summary-value {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: white;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-color);
+        line-height: 1;
     }
 
     // ===== VARDIYA CARDS =====
@@ -225,10 +240,11 @@
     }
 
     .vardiya-card {
-        background: white;
+        background: var(--surface-card);
         border-radius: 12px;
         padding: 1rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--surface-border);
     }
 
     .vardiya-header {
@@ -238,9 +254,39 @@
         margin-bottom: 0.75rem;
     }
 
+    // ===== PERSONEL DETAY (Expanded) =====
+    .personel-detay-list {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--surface-border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .personel-row {
+        padding: 0.5rem;
+        background: var(--surface-hover);
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .p-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .p-fark {
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    }
+
     .vardiya-date {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-color);
         font-size: 0.9rem;
     }
 
@@ -252,7 +298,7 @@
 
     .vardiya-field {
         padding: 0.5rem;
-        background: #f8fafc;
+        background: var(--surface-ground);
         border-radius: 8px;
 
         &.full-width {
@@ -262,14 +308,14 @@
 
     .field-label {
         font-size: 0.65rem;
-        color: #94a3b8;
+        color: var(--text-color-secondary);
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
     .field-value {
         font-size: 0.9rem;
-        color: #1e293b;
+        color: var(--text-color);
         font-weight: 600;
         margin-top: 0.125rem;
 
@@ -286,7 +332,7 @@
     .section-title {
         font-size: 0.95rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-color);
         padding: 0.5rem 1rem;
     }
 
@@ -299,7 +345,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #f1f5f9;
+            background: var(--surface-ground);
             margin: 0 auto 1rem;
             display: flex;
             align-items: center;
@@ -307,20 +353,20 @@
 
             i {
                 font-size: 2rem;
-                color: #94a3b8;
+                color: var(--text-color-secondary);
             }
         }
 
         .empty-title {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--text-color);
             margin-bottom: 0.5rem;
         }
 
         .empty-text {
             font-size: 0.875rem;
-            color: #64748b;
+            color: var(--text-color-secondary);
         }
     }
 
