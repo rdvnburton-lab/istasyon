@@ -18,10 +18,14 @@ namespace IstasyonDemo.Api.Services
         public async Task<GeminiOcrResponse?> AnalyzeReceiptAsync(string base64Image)
         {
             var apiKey = _configuration["GeminiSettings:ApiKey"];
-            var modelUrl = _configuration["GeminiSettings:ModelUrl"];
+            var modelId = _configuration["GeminiSettings:ModelId"];
 
             if (string.IsNullOrEmpty(apiKey))
                 throw new Exception("Gemini API Key is missing.");
+            
+            // Default to gemini-1.5-flash if not set
+            if (string.IsNullOrEmpty(modelId))
+                modelId = "gemini-1.5-flash";
 
             // Clean base64 string if it contains header (e.g., "data:image/jpeg;base64,")
             if (base64Image.Contains(","))
@@ -53,7 +57,9 @@ namespace IstasyonDemo.Api.Services
 
             var jsonContent = new StringContent( JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync($"{modelUrl}?key={apiKey}", jsonContent);
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelId}:generateContent?key={apiKey}";
+
+            var response = await _httpClient.PostAsync(url, jsonContent);
             
             if (!response.IsSuccessStatusCode)
             {
@@ -76,10 +82,10 @@ namespace IstasyonDemo.Api.Services
             {
                 return JsonSerializer.Deserialize<GeminiOcrResponse>(textContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            catch
+            catch (Exception ex)
             {
-                // Fallback or logging could go here
-                return null;
+                // Log the text content to see what went wrong with parsing
+                throw new Exception($"JSON Parse Error. Content: {textContent}. Error: {ex.Message}");
             }
         }
     }

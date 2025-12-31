@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, NgZone } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -124,7 +124,8 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         private personelApiService: PersonelApiService,
         private messageService: MessageService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private ngZone: NgZone
     ) { }
 
     ngOnInit(): void {
@@ -326,46 +327,60 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         try {
             const image = await Camera.getPhoto({
                 quality: 90,
-                allowEditing: true,
+                allowEditing: false,
                 resultType: CameraResultType.Base64,
                 source: CameraSource.Prompt // Ask user: Camera or Photos
             });
 
             if (image.base64String) {
-                this.analyzing = true;
-                this.messageService.add({ severity: 'info', summary: 'İşleniyor', detail: 'Fiş taranıyor, lütfen bekleyin...' });
+                // Capacitor plugins runs outside Angular zone, need to re-enter
+                this.ngZone.run(() => {
+                    this.analyzing = true;
+                    this.messageService.add({ severity: 'info', summary: 'İşleniyor', detail: 'Fiş taranıyor, lütfen bekleyin...' });
 
-                this.pusulaApiService.analyzeImage(image.base64String).subscribe({
-                    next: (data) => {
-                        this.analyzing = false;
+                    this.pusulaApiService.analyzeImage(image.base64String!).subscribe({
+                        next: (data) => {
+                            this.analyzing = false;
 
-                        // Patch values
-                        if (data.nakit) this.pusulaForm.nakit = data.nakit;
-                        if (data.krediKarti) this.pusulaForm.krediKarti = data.krediKarti;
-                        if (data.paroPuan) this.pusulaForm.paroPuan = data.paroPuan;
-                        if (data.mobilOdeme) this.pusulaForm.mobilOdeme = data.mobilOdeme;
+                            // Patch values
+                            if (data.nakit) this.pusulaForm.nakit = data.nakit;
+                            if (data.krediKarti) this.pusulaForm.krediKarti = data.krediKarti;
+                            if (data.paroPuan) this.pusulaForm.paroPuan = data.paroPuan;
+                            if (data.mobilOdeme) this.pusulaForm.mobilOdeme = data.mobilOdeme;
 
-                        // Kredi kartı detaylarını işle
-                        if (data.krediKartiDetay && data.krediKartiDetay.length > 0) {
-                            // Mevcut detayları temizle veya üzerine ekle? Genelde temizleyip eklemek daha mantıklı ocr için
-                            this.pusulaForm.krediKartiDetay = data.krediKartiDetay.map((d: any) => ({
-                                banka: d.banka,
-                                tutar: d.tutar
-                            }));
+                            // Kredi kartı detaylarını işle
+                            if (data.krediKartiDetay && data.krediKartiDetay.length > 0) {
+                                // Mevcut detayları temizle veya üzerine ekle? Genelde temizleyip eklemek daha mantıklı ocr için
+                                this.pusulaForm.krediKartiDetay = data.krediKartiDetay.map((d: any) => ({
+                                    banka: d.banka,
+                                    tutar: d.tutar
+                                }));
+                            }
+
+                            this.messageService.add({ severity: 'success', summary: 'Tamamlandı', detail: 'Fiş bilgileri forma dolduruldu.' });
+                        },
+                        error: (err) => {
+                            this.analyzing = false;
+                            console.error('OCR Error Full:', JSON.stringify(err));
+                            console.error('OCR Error Status:', err.status);
+                            console.error('OCR Error Message:', err.message);
+                            if (err.error) {
+                                console.error('OCR Error Body:', JSON.stringify(err.error));
+                            }
+                            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Fiş okunamadı veya bir hata oluştu. Detaylar konsolda.' });
                         }
-
-                        this.messageService.add({ severity: 'success', summary: 'Tamamlandı', detail: 'Fiş bilgileri forma dolduruldu.' });
-                    },
-                    error: (err) => {
-                        this.analyzing = false;
-                        console.error('OCR Error:', err);
-                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Fiş okunamadı veya bir hata oluştu.' });
-                    }
+                    });
                 });
+            } else {
+                console.warn('Image capture returned no base64 string');
+                this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Fotoğraf verisi alınamadı.' });
             }
         } catch (error) {
             console.error('Camera Error:', error);
-            // User cancelled or permission denied, ignore
+            // User cancelled or permission denied
+            if (error !== 'User cancelled photos app') {
+                this.messageService.add({ severity: 'error', summary: 'Kamera Hatası', detail: 'Kamera açılamadı veya işlem iptal edildi.' });
+            }
         }
     }
 
