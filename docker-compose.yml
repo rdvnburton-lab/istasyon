@@ -12,6 +12,7 @@ services:
       - AllowedOrigins__0=https://istasyon.tiginteknoloji.tr
       - AllowedOrigins__1=https://istasyonapi.tiginteknoloji.tr
       - JwtSettings__SecretKey=${JWT_SECRET}
+      - GeminiSettings__ApiKey=${GEMINI_API_KEY}
       - TZ=Europe/Istanbul
     healthcheck:
       test: curl -f http://localhost:8080/health || exit 1

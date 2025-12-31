@@ -84,6 +84,10 @@ export class PusulaApiService {
         return this.http.get<PusulaOzet>(`${this.baseUrl}/${vardiyaId}/pusula/ozet`);
     }
 
+    analyzeImage(base64Image: string): Observable<any> {
+        return this.http.post<any>(`${environment.apiUrl}/pusula-ocr/analyze`, { imageBase64: base64Image });
+    }
+
     private mapFromBackend(data: any): Pusula {
         return {
             ...data,

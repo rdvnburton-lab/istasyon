@@ -1,0 +1,10 @@
+2025-12-31 08:13:06.283 +00:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2025-12-31 08:13:06.445 +00:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2025-12-31 08:13:07.164 +00:00 [ERR] Failed executing DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-12-31 08:13:08.630 +00:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2025-12-31 08:13:08.838 +00:00 [WRN] Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+2025-12-31 08:13:08.848 +00:00 [WRN] No XML encryptor configured. Key {b04f0fee-c5ae-4c67-a777-0d1bde17ef21} may be persisted to storage in unencrypted form.
+2025-12-31 08:13:08.854 +00:00 [WRN] Overriding HTTP_PORTS '8080' and HTTPS_PORTS ''. Binding to values defined by URLS instead 'http://+:8080'.

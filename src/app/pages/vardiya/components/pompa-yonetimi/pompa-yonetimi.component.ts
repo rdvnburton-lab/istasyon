@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -73,6 +74,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     pusulaDialogVisible = false;
     krediKartiDialogVisible = false;
     loading = false;
+    analyzing = false;
 
     // Form
     seciliPersonel: PersonelOtomasyonOzet | null = null;
@@ -316,6 +318,54 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     this.loading = false;
                 }
             });
+        }
+    }
+
+
+    async scanReceipt() {
+        try {
+            const image = await Camera.getPhoto({
+                quality: 90,
+                allowEditing: true,
+                resultType: CameraResultType.Base64,
+                source: CameraSource.Prompt // Ask user: Camera or Photos
+            });
+
+            if (image.base64String) {
+                this.analyzing = true;
+                this.messageService.add({ severity: 'info', summary: 'İşleniyor', detail: 'Fiş taranıyor, lütfen bekleyin...' });
+
+                this.pusulaApiService.analyzeImage(image.base64String).subscribe({
+                    next: (data) => {
+                        this.analyzing = false;
+
+                        // Patch values
+                        if (data.nakit) this.pusulaForm.nakit = data.nakit;
+                        if (data.krediKarti) this.pusulaForm.krediKarti = data.krediKarti;
+                        if (data.paroPuan) this.pusulaForm.paroPuan = data.paroPuan;
+                        if (data.mobilOdeme) this.pusulaForm.mobilOdeme = data.mobilOdeme;
+
+                        // Kredi kartı detaylarını işle
+                        if (data.krediKartiDetay && data.krediKartiDetay.length > 0) {
+                            // Mevcut detayları temizle veya üzerine ekle? Genelde temizleyip eklemek daha mantıklı ocr için
+                            this.pusulaForm.krediKartiDetay = data.krediKartiDetay.map((d: any) => ({
+                                banka: d.banka,
+                                tutar: d.tutar
+                            }));
+                        }
+
+                        this.messageService.add({ severity: 'success', summary: 'Tamamlandı', detail: 'Fiş bilgileri forma dolduruldu.' });
+                    },
+                    error: (err) => {
+                        this.analyzing = false;
+                        console.error('OCR Error:', err);
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Fiş okunamadı veya bir hata oluştu.' });
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Camera Error:', error);
+            // User cancelled or permission denied, ignore
         }
     }
 

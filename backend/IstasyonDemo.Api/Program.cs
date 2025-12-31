@@ -26,6 +26,8 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services to the container.
+builder.Services.AddHttpClient<IstasyonDemo.Api.Services.GeminiService>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IVardiyaService, VardiyaService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
