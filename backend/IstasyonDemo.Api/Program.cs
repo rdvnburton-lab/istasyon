@@ -43,37 +43,47 @@ try
     
     if (!string.IsNullOrEmpty(credentialContent))
     {
-        // 1. Temizlik: Başındaki/sonundaki boşlukları temizle
-        credentialContent = credentialContent.Trim();
-
-        // 2. Yaygın Hata: Kullanıcı JSON'ı tırnak içine almış olabilir ("{...}")
-        if (credentialContent.StartsWith("\"") && credentialContent.EndsWith("\""))
+        try 
         {
-            credentialContent = credentialContent.Substring(1, credentialContent.Length - 2);
+            // 1. Düz deneme (İdeal durum)
+            CreateFirebaseApp(credentialContent);
+            Log.Information("Firebase Admin SDK ortam değişkeninden (raw) başarıyla başlatıldı.");
         }
+        catch
+        {
+            Log.Warning("Raw Firebase credential denenirken hata alındı, temizleme uygulanıyor...");
+            
+            string sanitized = credentialContent.Trim();
+            
+            // 2. Tırnak temizliği: "{\"type\":...}" -> {\"type\":...}
+            if (sanitized.StartsWith("\"") && sanitized.EndsWith("\""))
+            {
+                sanitized = sanitized.Substring(1, sanitized.Length - 2);
+            }
 
-        // 3. Yaygın Hata: JSON içeriği escape edilmiş olabilir ({\"...})
-        // Bu durum genellikle JSON string olarak kopyalandığında olur.
-        if (credentialContent.Contains("\\\""))
-        {
-             credentialContent = credentialContent.Replace("\\\"", "\"");
-        }
-        
-        // 4. Private Key içerisindeki \n karakterlerinin doğru işlenmesi
-        // Bazen environment variable'da \\n olarak gelebilir, bunu \n'e çevirmek gerekebilir
-        // Ancak Google Library bunu bazen kendi hallediyor, yine de replace yapmak safer olabilir
-        // Dikkat: Bu işlem sadece escape edilmiş string durumunda gerekli olabilir, 
-        // ama raw JSON'da zaten \n literal olarak varsa bozulmaz. 
-        if (credentialContent.Contains("\\n"))
-        {
-             credentialContent = credentialContent.Replace("\\n", "\n");
-        }
+            // 3. Unescape: {\"type\" -> {"type"
+            // Sadece tüm içerik escape edilmişse bu mantıklıdır
+            if (sanitized.Contains("\\\""))
+            {
+                sanitized = sanitized.Replace("\\\"", "\"");
+            }
 
-         FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
-        {
-            Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(credentialContent)
-        });
-        Log.Information("Firebase Admin SDK ortam değişkeninden başarıyla başlatıldı.");
+            // Not: \n replace işlemi KALDIRILDI. JSON standartlarına göre \n (literal) kalmalı,
+            // GoogleCredential.FromJson bunu doğru işler. Raw newline'a çevirmek JSON'ı bozar.
+            
+            try
+            {
+                CreateFirebaseApp(sanitized);
+                Log.Information("Firebase Admin SDK temizlenmiş credential ile başarıyla başlatıldı.");
+            }
+            catch (Exception exSanitized)
+            {
+                 // Hata ayıklama için içeriğin başını logla (Güvenlik için tamamını basma)
+                 var debugContent = sanitized.Length > 50 ? sanitized.Substring(0, 50) + "..." : sanitized;
+                 Log.Error(exSanitized, $"Firebase Admin SDK başlatılamadı. Format hatası olabilir. İçerik Başı: {debugContent}");
+                 // Ana akışı bozmamak için throw etmiyoruz, sadece logluyoruz (uygulama çalışmaya devam etsin)
+            }
+        }
     }
     else if (File.Exists(credentialPath))
     {
@@ -81,7 +91,7 @@ try
         {
             Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(credentialPath)
         });
-        Log.Information("Firebase Admin SDK başarıyla başlatıldı.");
+        Log.Information("Firebase Admin SDK dosyasından başarıyla başlatıldı.");
     }
     else
     {
@@ -90,7 +100,16 @@ try
 }
 catch (Exception ex)
 {
-    Log.Error(ex, "Firebase Admin SDK başlatılırken hata oluştu.");
+    Log.Error(ex, "Firebase Admin SDK genel blokta hata oluştu.");
+}
+
+void CreateFirebaseApp(string json) {
+    if (FirebaseAdmin.FirebaseApp.DefaultInstance != null) return;
+    
+    FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+    {
+        Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(json)
+    });
 }
 
 // Proxy arkasında gerçek IP'yi görmek için gerekli (Rate Limiting için kritik)
