@@ -43,6 +43,32 @@ try
     
     if (!string.IsNullOrEmpty(credentialContent))
     {
+        // 1. Temizlik: Başındaki/sonundaki boşlukları temizle
+        credentialContent = credentialContent.Trim();
+
+        // 2. Yaygın Hata: Kullanıcı JSON'ı tırnak içine almış olabilir ("{...}")
+        if (credentialContent.StartsWith("\"") && credentialContent.EndsWith("\""))
+        {
+            credentialContent = credentialContent.Substring(1, credentialContent.Length - 2);
+        }
+
+        // 3. Yaygın Hata: JSON içeriği escape edilmiş olabilir ({\"...})
+        // Bu durum genellikle JSON string olarak kopyalandığında olur.
+        if (credentialContent.Contains("\\\""))
+        {
+             credentialContent = credentialContent.Replace("\\\"", "\"");
+        }
+        
+        // 4. Private Key içerisindeki \n karakterlerinin doğru işlenmesi
+        // Bazen environment variable'da \\n olarak gelebilir, bunu \n'e çevirmek gerekebilir
+        // Ancak Google Library bunu bazen kendi hallediyor, yine de replace yapmak safer olabilir
+        // Dikkat: Bu işlem sadece escape edilmiş string durumunda gerekli olabilir, 
+        // ama raw JSON'da zaten \n literal olarak varsa bozulmaz. 
+        if (credentialContent.Contains("\\n"))
+        {
+             credentialContent = credentialContent.Replace("\\n", "\n");
+        }
+
          FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
         {
             Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(credentialContent)

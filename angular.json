@@ -33,6 +33,7 @@
                             "src/assets"
                         ],
                         "styles": [
+                            "src/assets/tailwind.css",
                             "src/assets/styles.scss"
                         ],
                         "scripts": []

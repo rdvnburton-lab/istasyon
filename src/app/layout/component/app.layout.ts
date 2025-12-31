@@ -7,6 +7,7 @@ import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { AppBottomNav } from './app.bottomnav';
 import { LayoutService } from '../service/layout.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
     selector: 'app-layout',
@@ -37,8 +38,11 @@ export class AppLayout {
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        public router: Router,
+        private notificationService: NotificationService
     ) {
+        this.notificationService.initPush();
+
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
                 this.menuOutsideClickListener = this.renderer.listen('document', 'click', (event) => {

@@ -20,6 +20,9 @@ const config: CapacitorConfig = {
     NativeBiometric: {
       allowDOAuthentication: true // Android cihaz şifresiyle girişe izin ver (Opsiyonel)
     },
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
     CapacitorHttp: {
       enabled: true,
     }
