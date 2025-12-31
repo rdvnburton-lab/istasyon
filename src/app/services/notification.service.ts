@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { Capacitor } from '@capacitor/core';
 
 export interface Notification {
@@ -39,38 +40,65 @@ export class NotificationService {
         // AppLayout veya AuthService üzerinden tetiklenecek
     }
 
+    private isListenersAdded = false;
+
     async initPush() {
+        console.log('🔔 initPush: Başlatılıyor...');
         if (!Capacitor.isNativePlatform()) {
-            console.log('Push bildirimleri sadece mobil cihazlarda çalışır.');
+            console.log('🔔 initPush: Sadece mobil cihazlarda çalışır.');
             return;
         }
         try {
             const permStatus = await PushNotifications.checkPermissions();
+            console.log('🔔 initPush: Mevcut izin durumu:', JSON.stringify(permStatus));
 
             if (permStatus.receive === 'prompt') {
+                console.log('🔔 initPush: İzin isteniyor...');
                 const newPerm = await PushNotifications.requestPermissions();
+                console.log('🔔 initPush: Yeni izin sonucu:', JSON.stringify(newPerm));
                 if (newPerm.receive !== 'granted') {
-                    console.warn('Push bildirim izni verilmedi.');
+                    console.warn('🔔 initPush: İzin verilmedi.');
                     return;
                 }
             } else if (permStatus.receive !== 'granted') {
-                console.warn('Push bildirim izni daha önce reddedilmiş.');
+                console.warn('🔔 initPush: İzin daha önce reddedilmiş.');
                 return;
             }
 
-            await PushNotifications.register();
-
+            // Listeners must be added BEFORE register()
             this.addListeners();
+
+            console.log('🔔 initPush: PushNotifications.register() çağrılıyor...');
+            await PushNotifications.register();
+            console.log('🔔 initPush: PushNotifications.register() başarılı.');
         } catch (error) {
-            console.error('Push notification başlatma hatası:', error);
+            console.error('🔔 initPush: HATA:', error);
         }
     }
 
     private addListeners() {
-        PushNotifications.addListener('registration', token => {
-            console.log('Push Registration Token: ', token.value);
-            this.fcmToken.next(token.value);
-            this.saveTokenToBackend(token.value);
+        if (this.isListenersAdded) {
+            console.log('🔔 addListeners: Listenerlar zaten eklenmiş, atlanıyor.');
+            return;
+        }
+        console.log('🔔 addListeners: Dinleyiciler ekleniyor...');
+        this.isListenersAdded = true;
+        PushNotifications.addListener('registration', async token => {
+            console.log('Push Registration Token (APNs): ', token.value);
+
+            let fcmToken = token.value;
+            if (Capacitor.getPlatform() === 'ios') {
+                try {
+                    const res = await FirebaseMessaging.getToken();
+                    fcmToken = res.token;
+                    console.log('FCM Token (iOS): ', fcmToken);
+                } catch (e) {
+                    console.error('FCM Token alma hatası:', e);
+                }
+            }
+
+            this.fcmToken.next(fcmToken);
+            this.saveTokenToBackend(fcmToken);
         });
 
         PushNotifications.addListener('registrationError', error => {

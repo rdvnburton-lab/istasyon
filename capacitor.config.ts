@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.tiginteknoloji.tishift',
-  appName: 'Ti-Shift',
+  appId: 'com.tiginteknoloji.tishiftapp',
+  appName: 'TiShift',
   webDir: 'dist/tigin/browser',
   server: {
     androidScheme: 'https',

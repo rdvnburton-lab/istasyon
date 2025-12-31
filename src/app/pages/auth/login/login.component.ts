@@ -82,14 +82,20 @@ export class Login {
 
         this.authService.login(this.username.toLowerCase(), this.password).subscribe({
             next: async () => {
+                console.log('Giriş başarılı, bildirim ve biyometri kontrolleri başlıyor...');
                 // Push Notification izni iste ve başlat
                 this.notificationService.initPush();
 
                 // Başarılı girişte bilgileri biometrik depoya kaydetmek için sor
                 const hardwareAvailable = await this.authService.checkBiometricAvailability();
+                console.log('Donanım biyometri desteği:', hardwareAvailable);
+
                 if (hardwareAvailable) {
                     const hasCredentials = await this.authService.hasBiometricCredentials();
+                    console.log('Kayıtlı biyometrik veri var mı:', hasCredentials);
+
                     if (!hasCredentials) {
+                        console.log('Biyometrik kayıt için onay kutusu açılıyor...');
                         this.confirmationService.confirm({
                             header: 'Biyometrik Giriş',
                             message: 'Sonraki girişlerinizde Face ID / Touch ID kullanmak ister misiniz?',
@@ -97,12 +103,22 @@ export class Login {
                             acceptLabel: 'Evet',
                             rejectLabel: 'Hayır',
                             accept: async () => {
+                                console.log('Biyometrik kayıt onaylandı.');
                                 await this.authService.saveCredentialsForBiometric(this.username, this.password);
+                                this.loading = false;
+                                this.router.navigate(['/']);
+                            },
+                            reject: () => {
+                                console.log('Biyometrik kayıt reddedildi.');
+                                this.loading = false;
+                                this.router.navigate(['/']);
                             }
                         });
+                        return; // Dialog açıldı, navigasyonu dialog yönetiyor
                     }
                 }
 
+                console.log('Biyometri gereksinimi yok, ana sayfaya yönlendiriliyor.');
                 this.loading = false;
                 this.router.navigate(['/']);
             },

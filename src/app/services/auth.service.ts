@@ -239,7 +239,7 @@ export class AuthService {
                 await NativeBiometric.setCredentials({
                     username,
                     password,
-                    server: 'com.tiginteknoloji.tishift',
+                    server: 'com.tiginteknoloji.tishiftapp',
                 });
             }
         } catch (e) {
@@ -262,7 +262,7 @@ export class AuthService {
 
             // If we are here, verification was successful (otherwise it throws)
             const credentials = await NativeBiometric.getCredentials({
-                server: 'com.tiginteknoloji.tishift',
+                server: 'com.tiginteknoloji.tishiftapp',
             });
 
             if (credentials && credentials.username && credentials.password) {
@@ -284,7 +284,7 @@ export class AuthService {
         if (!Capacitor.isNativePlatform()) return false;
         try {
             const result = await NativeBiometric.getCredentials({
-                server: 'com.tiginteknoloji.tishift',
+                server: 'com.tiginteknoloji.tishiftapp',
             });
             return !!(result && result.username && result.password);
         } catch (e) {
@@ -297,7 +297,7 @@ export class AuthService {
         if (!Capacitor.isNativePlatform()) return;
         try {
             await NativeBiometric.deleteCredentials({
-                server: 'com.tiginteknoloji.tishift',
+                server: 'com.tiginteknoloji.tishiftapp',
             });
         } catch (e) {
             // Ignore
