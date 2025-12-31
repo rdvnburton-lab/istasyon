@@ -51,37 +51,60 @@ try
         }
         catch
         {
-            Log.Warning("Raw Firebase credential denenirken hata alındı, temizleme uygulanıyor...");
-            
-            string sanitized = credentialContent.Trim();
-            
-            // 2. Tırnak temizliği: "{\"type\":...}" -> {\"type\":...}
-            if (sanitized.StartsWith("\"") && sanitized.EndsWith("\""))
-            {
-                sanitized = sanitized.Substring(1, sanitized.Length - 2);
-            }
+            Log.Warning("Raw Firebase credential denenirken hata alındı veya format bozuk olabilir. JSON parse edilerek onarılmaya çalışılıyor...");
 
-            // 3. Unescape: {\"type\" -> {"type"
-            // Sadece tüm içerik escape edilmişse bu mantıklıdır
-            if (sanitized.Contains("\\\""))
-            {
-                sanitized = sanitized.Replace("\\\"", "\"");
-            }
-
-            // Not: \n replace işlemi KALDIRILDI. JSON standartlarına göre \n (literal) kalmalı,
-            // GoogleCredential.FromJson bunu doğru işler. Raw newline'a çevirmek JSON'ı bozar.
-            
             try
             {
-                CreateFirebaseApp(sanitized);
-                Log.Information("Firebase Admin SDK temizlenmiş credential ile başarıyla başlatıldı.");
+                // 1. Olası tırnak hatalarını temizle
+                string sanitized = credentialContent.Trim();
+                if (sanitized.StartsWith("\"") && sanitized.EndsWith("\""))
+                {
+                    sanitized = sanitized.Substring(1, sanitized.Length - 2);
+                }
+                // Unescape
+                if (sanitized.Contains("\\\""))
+                {
+                    sanitized = sanitized.Replace("\\\"", "\"");
+                }
+
+                // 2. JSON olarak parse et ve private_key'i düzelt
+                using (var doc = System.Text.Json.JsonDocument.Parse(sanitized))
+                {
+                    var root = doc.RootElement.Clone(); // Clone to get a mutable copy check usually needs reconstruction
+                    // JsonDocument is readonly. We'll use a dictionary/object approach for modification
+                    
+                    var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(sanitized);
+                    if (dict != null && dict.ContainsKey("private_key"))
+                    {
+                        string pk = dict["private_key"].ToString();
+                        // Literal " \n " stringini gerçek newline karakterine çevir
+                        if (pk.Contains("\\n"))
+                        {
+                            pk = pk.Replace("\\n", "\n");
+                            dict["private_key"] = pk;
+                        }
+                        
+                        // Tekrar JSON stringe çevir
+                        string fixedJson = System.Text.Json.JsonSerializer.Serialize(dict);
+                        
+                        CreateFirebaseApp(fixedJson);
+                        Log.Information("Firebase Admin SDK, onarılmış JSON credential ile başarıyla başlatıldı.");
+                    }
+                    else
+                    {
+                        // private_key yoksa belki de onarılması gerekmiyordur veya farklı bir formattır
+                        // Yine de sanitized halini deneyelim
+                         CreateFirebaseApp(sanitized);
+                         Log.Information("Firebase Admin SDK, temizlenmiş (sanitized) credential ile başarıyla başlatıldı.");
+                    }
+                }
             }
-            catch (Exception exSanitized)
+            catch (Exception exFix)
             {
-                 // Hata ayıklama için içeriğin başını logla (Güvenlik için tamamını basma)
-                 var debugContent = sanitized.Length > 50 ? sanitized.Substring(0, 50) + "..." : sanitized;
-                 Log.Error(exSanitized, $"Firebase Admin SDK başlatılamadı. Format hatası olabilir. İçerik Başı: {debugContent}");
-                 // Ana akışı bozmamak için throw etmiyoruz, sadece logluyoruz (uygulama çalışmaya devam etsin)
+                Log.Error(exFix, "Firebase credential onarma girişimi başarısız oldu.");
+                // Son çare log verisi
+                var debugContent = credentialContent.Length > 100 ? credentialContent.Substring(0, 100) + "..." : credentialContent;
+                 Log.Error($"Başarısız içerik başı: {debugContent}");
             }
         }
     }
