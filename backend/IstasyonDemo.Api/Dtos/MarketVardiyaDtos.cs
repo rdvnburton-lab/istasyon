@@ -56,7 +56,7 @@ namespace IstasyonDemo.Api.Dtos
 
     public class MarketGiderDto
     {
-        public GiderTuru GiderTuru { get; set; }
+        public string GiderTuru { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public string Aciklama { get; set; } = string.Empty;
         public DateTime? BelgeTarihi { get; set; }
@@ -64,7 +64,7 @@ namespace IstasyonDemo.Api.Dtos
 
     public class MarketGelirDto
     {
-        public GelirTuru GelirTuru { get; set; }
+        public string GelirTuru { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public string Aciklama { get; set; } = string.Empty;
         public DateTime? BelgeTarihi { get; set; }

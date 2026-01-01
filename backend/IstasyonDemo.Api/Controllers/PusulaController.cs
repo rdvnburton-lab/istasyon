@@ -44,7 +44,9 @@ namespace IstasyonDemo.Api.Controllers
 
             var pusulalar = await _context.Pusulalar
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(p => p.KrediKartiDetaylari)
+                .Include(p => p.DigerOdemeler)
                 .Where(p => p.VardiyaId == vardiyaId)
                 .OrderBy(p => p.PersonelAdi)
                 .ToListAsync();
@@ -58,7 +60,9 @@ namespace IstasyonDemo.Api.Controllers
             if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
 
             var pusula = await _context.Pusulalar
+                .AsSplitQuery()
                 .Include(p => p.KrediKartiDetaylari)
+                .Include(p => p.DigerOdemeler)
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
 
             if (pusula == null)
@@ -73,7 +77,9 @@ namespace IstasyonDemo.Api.Controllers
             if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
 
             var pusula = await _context.Pusulalar
+                .AsSplitQuery()
                 .Include(p => p.KrediKartiDetaylari)
+                .Include(p => p.DigerOdemeler)
                 .FirstOrDefaultAsync(p => p.VardiyaId == vardiyaId && p.PersonelAdi == personelAdi);
 
             if (pusula == null)
@@ -105,10 +111,10 @@ namespace IstasyonDemo.Api.Controllers
                 PersonelId = dto.PersonelId,
                 Nakit = dto.Nakit,
                 KrediKarti = dto.KrediKarti,
-                ParoPuan = dto.ParoPuan,
-                MobilOdeme = dto.MobilOdeme,
+
                 KrediKartiDetay = dto.KrediKartiDetay,
                 Aciklama = dto.Aciklama,
+                PusulaTuru = dto.PusulaTuru ?? "TAHSILAT",
                 OlusturmaTarihi = DateTime.UtcNow
             };
 
@@ -124,6 +130,22 @@ namespace IstasyonDemo.Api.Controllers
                     {
                         PusulaId = pusula.Id,
                         BankaAdi = detay.BankaAdi,
+                        Tutar = detay.Tutar
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // Diğer Ödeme Detaylarını Kaydet
+            if (dto.DigerOdemeList != null && dto.DigerOdemeList.Any())
+            {
+                foreach (var detay in dto.DigerOdemeList)
+                {
+                    _context.PusulaDigerOdemeleri.Add(new PusulaDigerOdeme
+                    {
+                        PusulaId = pusula.Id,
+                        TurKodu = detay.TurKodu,
+                        TurAdi = detay.TurAdi,
                         Tutar = detay.Tutar
                     });
                 }
@@ -146,10 +168,10 @@ namespace IstasyonDemo.Api.Controllers
 
             pusula.Nakit = dto.Nakit;
             pusula.KrediKarti = dto.KrediKarti;
-            pusula.ParoPuan = dto.ParoPuan;
-            pusula.MobilOdeme = dto.MobilOdeme;
+
             pusula.KrediKartiDetay = dto.KrediKartiDetay;
             pusula.Aciklama = dto.Aciklama;
+            pusula.PusulaTuru = dto.PusulaTuru ?? "TAHSILAT";
             pusula.GuncellemeTarihi = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -169,6 +191,28 @@ namespace IstasyonDemo.Api.Controllers
                     {
                         PusulaId = pusula.Id,
                         BankaAdi = detay.BankaAdi,
+                        Tutar = detay.Tutar
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // Diğer Ödeme Detaylarını Güncelle
+            if (dto.DigerOdemeList != null)
+            {
+                var existingOtherPayments = await _context.PusulaDigerOdemeleri
+                    .Where(p => p.PusulaId == id)
+                    .ToListAsync();
+
+                _context.PusulaDigerOdemeleri.RemoveRange(existingOtherPayments);
+
+                foreach (var detay in dto.DigerOdemeList)
+                {
+                    _context.PusulaDigerOdemeleri.Add(new PusulaDigerOdeme
+                    {
+                        PusulaId = pusula.Id,
+                        TurKodu = detay.TurKodu,
+                        TurAdi = detay.TurAdi,
                         Tutar = detay.Tutar
                     });
                 }
@@ -213,8 +257,6 @@ namespace IstasyonDemo.Api.Controllers
                 toplamPusula = pusulalar.Count,
                 toplamNakit = pusulalar.Sum(p => p.Nakit),
                 toplamKrediKarti = pusulalar.Sum(p => p.KrediKarti),
-                toplamParoPuan = pusulalar.Sum(p => p.ParoPuan),
-                toplamMobilOdeme = pusulalar.Sum(p => p.MobilOdeme),
                 genelToplam = pusulalar.Sum(p => p.Toplam)
             };
 

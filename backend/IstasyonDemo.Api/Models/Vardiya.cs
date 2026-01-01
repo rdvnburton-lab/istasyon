@@ -24,6 +24,9 @@ namespace IstasyonDemo.Api.Models
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal GenelToplam { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Fark { get; set; }
         
         public DateTime OlusturmaTarihi { get; set; } = DateTime.UtcNow;
         
@@ -56,5 +59,25 @@ namespace IstasyonDemo.Api.Models
         public ICollection<OtomasyonSatis> OtomasyonSatislar { get; set; } = new List<OtomasyonSatis>();
         public ICollection<FiloSatis> FiloSatislar { get; set; } = new List<FiloSatis>();
         public ICollection<Pusula> Pusulalar { get; set; } = new List<Pusula>();
+        public ICollection<PompaGider> Giderler { get; set; } = new List<PompaGider>();
+    }
+
+    public class PompaGider
+    {
+        public int Id { get; set; }
+        public int VardiyaId { get; set; }
+        public Vardiya? Vardiya { get; set; }
+
+        [MaxLength(50)]
+        public string GiderTuru { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Tutar { get; set; }
+
+        [MaxLength(255)]
+        public string Aciklama { get; set; } = string.Empty;
+
+        public DateTime? BelgeTarihi { get; set; }
+        public DateTime OlusturmaTarihi { get; set; } = DateTime.UtcNow;
     }
 }

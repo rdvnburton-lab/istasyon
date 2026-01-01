@@ -19,7 +19,7 @@ namespace IstasyonDemo.Api.Dtos
         public string? PersonelAdi { get; set; }
         public string? PersonelKeyId { get; set; }
         public int PompaNo { get; set; }
-        public YakitTuru YakitTuru { get; set; }
+        public string YakitTuru { get; set; } = string.Empty;
         public decimal Litre { get; set; }
         public decimal BirimFiyat { get; set; }
         public decimal ToplamTutar { get; set; }
@@ -33,7 +33,7 @@ namespace IstasyonDemo.Api.Dtos
         public DateTime Tarih { get; set; }
         public string FiloKodu { get; set; } = string.Empty;
         public string Plaka { get; set; } = string.Empty;
-        public YakitTuru YakitTuru { get; set; }
+        public string YakitTuru { get; set; } = string.Empty;
         public decimal Litre { get; set; }
         public decimal Tutar { get; set; }
         public int PompaNo { get; set; }

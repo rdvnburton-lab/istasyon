@@ -130,11 +130,10 @@ namespace IstasyonDemo.Api.Controllers
                             p.PersonelId,
                             p.Nakit,
                             p.KrediKarti,
-                            p.ParoPuan,
-                            p.MobilOdeme,
+                            // ParoPuan ve MobilOdeme kaldırıldı
                             p.KrediKartiDetay,
                             p.Aciklama,
-                            p.Toplam
+                            Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar)
                         }).ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -274,7 +273,7 @@ namespace IstasyonDemo.Api.Controllers
                         .Select(g => new { g.Key.PersonelKeyId, g.Key.PersonelAdi, Toplam = g.Sum(s => s.ToplamTutar) })
                         .ToList(),
                     PusulaOzet = v.Pusulalar
-                        .Select(p => new { p.PersonelAdi, p.PersonelId, Toplam = p.Nakit + p.KrediKarti + p.ParoPuan + p.MobilOdeme })
+                        .Select(p => new { p.PersonelAdi, p.PersonelId, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) })
                         .ToList(),
                     FiloToplam = v.FiloSatislar.Sum(f => f.Tutar)
                 })
@@ -365,14 +364,14 @@ namespace IstasyonDemo.Api.Controllers
 
             var pusulalar = await _context.Pusulalar
                 .Where(p => p.PersonelId == personelId && p.Vardiya!.BaslangicTarihi >= start && p.Vardiya!.BaslangicTarihi <= end && p.Vardiya!.Durum != VardiyaDurum.SILINDI)
-                .Select(p => new { p.VardiyaId, p.Nakit, p.KrediKarti, p.ParoPuan, p.MobilOdeme, p.Aciklama, p.Vardiya!.BaslangicTarihi })
+                .Select(p => new { p.VardiyaId, p.Nakit, p.KrediKarti, p.Aciklama, p.Vardiya!.BaslangicTarihi })
                 .ToListAsync();
 
             var hareketler = satislar.GroupBy(s => new { s.VardiyaId, s.BaslangicTarihi })
                 .Select(g => {
                     var pPusula = pusulalar.FirstOrDefault(p => p.VardiyaId == g.Key.VardiyaId);
                     var otomasyonSatis = g.Sum(s => s.ToplamTutar);
-                    var manuelTahsilat = pPusula != null ? (pPusula.Nakit + pPusula.KrediKarti + pPusula.ParoPuan + pPusula.MobilOdeme) : 0;
+                    var manuelTahsilat = pPusula != null ? (pPusula.Nakit + pPusula.KrediKarti) : 0;
                     
                     return new PersonelHareketDto
                     {
@@ -391,7 +390,7 @@ namespace IstasyonDemo.Api.Controllers
             var satisVardiyaIds = satislar.Select(s => s.VardiyaId).ToHashSet();
             foreach (var p in pusulalar.Where(p => !satisVardiyaIds.Contains(p.VardiyaId)))
             {
-                var manuelTahsilat = p.Nakit + p.KrediKarti + p.ParoPuan + p.MobilOdeme;
+                var manuelTahsilat = p.Nakit + p.KrediKarti;
                 hareketler.Add(new PersonelHareketDto
                 {
                     Tarih = p.BaslangicTarihi,
@@ -456,7 +455,7 @@ namespace IstasyonDemo.Api.Controllers
                     v.Id,
                     v.BaslangicTarihi,
                     v.PompaToplam,
-                    PusulaOzet = v.Pusulalar.Select(p => new { p.Nakit, p.KrediKarti, p.ParoPuan, p.MobilOdeme, p.Toplam }).ToList(),
+                    PusulaOzet = v.Pusulalar.Select(p => new { p.Nakit, p.KrediKarti, p.Toplam }).ToList(),
                     FiloToplam = v.FiloSatislar.Sum(f => f.Tutar),
                     PompaOzetleri = v.OtomasyonSatislar
                         .GroupBy(s => new { s.PompaNo, s.YakitTuru })
@@ -494,18 +493,6 @@ namespace IstasyonDemo.Api.Controllers
                     SistemTutar = 0, 
                     TahsilatTutar = vardiyaOzet.PusulaOzet.Sum(p => p.KrediKarti),
                     Fark = vardiyaOzet.PusulaOzet.Sum(p => p.KrediKarti)
-                },
-                new KarsilastirmaDetayDto { 
-                    OdemeYontemi = "PARO_PUAN", 
-                    SistemTutar = 0, 
-                    TahsilatTutar = vardiyaOzet.PusulaOzet.Sum(p => p.ParoPuan),
-                    Fark = vardiyaOzet.PusulaOzet.Sum(p => p.ParoPuan)
-                },
-                new KarsilastirmaDetayDto { 
-                    OdemeYontemi = "MOBIL_ODEME", 
-                    SistemTutar = 0, 
-                    TahsilatTutar = vardiyaOzet.PusulaOzet.Sum(p => p.MobilOdeme),
-                    Fark = vardiyaOzet.PusulaOzet.Sum(p => p.MobilOdeme)
                 },
                 new KarsilastirmaDetayDto { 
                     OdemeYontemi = "FILO", 
@@ -779,15 +766,33 @@ namespace IstasyonDemo.Api.Controllers
                     p.PersonelId,
                     p.Nakit,
                     p.KrediKarti,
-                    p.ParoPuan,
-                    p.MobilOdeme,
+                    // ParoPuan ve MobilOdeme kaldırıldı
                     p.KrediKartiDetay,
+                    DigerOdemeler = p.DigerOdemeler.Select(d => new
+                    {
+                        d.TurKodu,
+                        d.TurAdi,
+                        d.Tutar
+                    }).ToList(),
                     p.Aciklama,
                     p.Toplam
                 })
                 .ToListAsync();
 
             stopwatch.Stop();
+
+            // 6. Giderler
+            var giderler = await _context.PompaGiderler
+                .AsNoTracking()
+                .Where(g => g.VardiyaId == id)
+                .Select(g => new
+                {
+                    g.Id,
+                    g.GiderTuru,
+                    g.Tutar,
+                    g.Aciklama
+                })
+                .ToListAsync();
             Console.WriteLine($"✅ GetMutabakat tamamlandı: {stopwatch.ElapsedMilliseconds}ms toplam");
 
             return Ok(new
@@ -797,6 +802,7 @@ namespace IstasyonDemo.Api.Controllers
                 FiloOzet = filoOzet,
                 FiloDetaylari = filoDetaylari,
                 Pusulalar = pusulalar,
+                Giderler = giderler,
                 _performanceMs = stopwatch.ElapsedMilliseconds
             });
         }
@@ -882,11 +888,16 @@ namespace IstasyonDemo.Api.Controllers
                     p.PersonelId,
                     p.Nakit,
                     p.KrediKarti,
-                    p.ParoPuan,
-                    p.MobilOdeme,
+                    // ParoPuan ve MobilOdeme kaldırıldı
                     p.KrediKartiDetay,
+                    DigerOdemeler = p.DigerOdemeler.Select(d => new
+                    {
+                        d.TurKodu,
+                        d.TurAdi,
+                        d.Tutar
+                    }).ToList(),
                     p.Aciklama,
-                    p.Toplam
+                    Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar)
                 })
                 .ToListAsync();
 
@@ -934,9 +945,9 @@ namespace IstasyonDemo.Api.Controllers
                     {
                         Nakit = pusula.Nakit,
                         KrediKarti = pusula.KrediKarti,
-                        ParoPuan = pusula.ParoPuan,
-                        MobilOdeme = pusula.MobilOdeme,
-                        KrediKartiDetay = pusula.KrediKartiDetay
+                        // ParoPuan ve MobilOdeme kaldırıldı
+                        KrediKartiDetay = pusula.KrediKartiDetay,
+                        DigerOdemeler = pusula.DigerOdemeler
                     } : null
                 });
 
@@ -962,8 +973,7 @@ namespace IstasyonDemo.Api.Controllers
                         {
                             Nakit = pusula.Nakit,
                             KrediKarti = pusula.KrediKarti,
-                            ParoPuan = pusula.ParoPuan,
-                            MobilOdeme = pusula.MobilOdeme,
+                            // ParoPuan ve MobilOdeme kaldırıldı
                             KrediKartiDetay = pusula.KrediKartiDetay
                         }
                     });
@@ -985,9 +995,10 @@ namespace IstasyonDemo.Api.Controllers
                     {
                         Nakit = 0m,
                         KrediKarti = 0m,
-                        ParoPuan = 0m,
-                        MobilOdeme = 0m,
-                        KrediKartiDetay = (string?)null
+
+                        // ParoPuan ve MobilOdeme kaldırıldı
+                        KrediKartiDetay = (string?)null,
+                        DigerOdemeler = (object?)null
                     }
                 });
             }
@@ -995,9 +1006,21 @@ namespace IstasyonDemo.Api.Controllers
             // 5. Genel özet hesapla
             var toplamNakit = pusulalar.Sum(p => p.Nakit);
             var toplamKrediKarti = pusulalar.Sum(p => p.KrediKarti);
-            var toplamParoPuan = pusulalar.Sum(p => p.ParoPuan);
-            var toplamMobilOdeme = pusulalar.Sum(p => p.MobilOdeme);
-            var pusulaToplami = toplamNakit + toplamKrediKarti + toplamParoPuan + toplamMobilOdeme;
+            // ParoPuan ve MobilOdeme toplamları kaldırıldı
+
+            var digerOdemelerOzet = pusulalar
+                .SelectMany(p => p.DigerOdemeler)
+                .GroupBy(d => new { d.TurKodu, d.TurAdi })
+                .Select(g => new
+                {
+                    TurKodu = g.Key.TurKodu,
+                    TurAdi = g.Key.TurAdi,
+                    Toplam = g.Sum(d => d.Tutar)
+                })
+                .ToList();
+
+            var digerOdemelerToplam = digerOdemelerOzet.Sum(x => x.Toplam);
+            var pusulaToplami = toplamNakit + toplamKrediKarti + digerOdemelerToplam;
             
             // Fark = (Pusula Toplamı + Filo Satışları) - Pompa Toplamı
             var toplamFark = (pusulaToplami + filoToplam) - vardiya.PompaToplam;
@@ -1010,8 +1033,8 @@ namespace IstasyonDemo.Api.Controllers
                 GenelToplam = vardiya.GenelToplam,
                 ToplamNakit = toplamNakit,
                 ToplamKrediKarti = toplamKrediKarti,
-                ToplamParoPuan = toplamParoPuan,
-                ToplamMobilOdeme = toplamMobilOdeme,
+                // ToplamParoPuan ve ToplamMobilOdeme kaldırıldı
+                DigerOdemeler = digerOdemelerOzet, // Frontend için özet listesi
                 PusulaToplam = pusulaToplami,
                 FiloToplam = filoToplam,
                 ToplamFark = toplamFark,
@@ -1076,14 +1099,13 @@ namespace IstasyonDemo.Api.Controllers
                 krediKartiDetaylari["Genel / Detaysız"] = detaysizKrediKarti;
             }
 
-            // Paro Puan ve Mobil Ödeme'yi de ekle
-            var toplamParoPuanDetay = pusulalar.Sum(p => p.ParoPuan);
-            var toplamMobilOdemeDetay = pusulalar.Sum(p => p.MobilOdeme);
-            
-            if (toplamParoPuanDetay > 0)
-                krediKartiDetaylari["Paro Puan"] = toplamParoPuanDetay;
-            if (toplamMobilOdemeDetay > 0)
-                krediKartiDetaylari["Mobil Ödeme"] = toplamMobilOdemeDetay;
+            // Diğer Ödemeler'i de ekle
+            foreach(var doz in digerOdemelerOzet) {
+                var key = doz.TurAdi ?? doz.TurKodu ?? "Diğer";
+                if (!krediKartiDetaylari.ContainsKey(key))
+                    krediKartiDetaylari[key] = 0;
+                krediKartiDetaylari[key] += doz.Toplam;
+            }
 
             var bankaDetaylari = krediKartiDetaylari.Select(kvp => new { Banka = kvp.Key, Tutar = kvp.Value }).OrderByDescending(x => x.Tutar).ToList();
 
@@ -1095,6 +1117,7 @@ namespace IstasyonDemo.Api.Controllers
                 Vardiya = vardiya,
                 GenelOzet = genelOzet,
                 FarkAnalizi = farkAnalizi,
+                Pusulalar = pusulalar,
                 KrediKartiDetaylari = bankaDetaylari,
                 PersonelSayisi = farkAnalizi.Count,
                 _performanceMs = stopwatch.ElapsedMilliseconds

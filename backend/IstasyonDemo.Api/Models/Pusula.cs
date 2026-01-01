@@ -16,6 +16,9 @@ namespace IstasyonDemo.Api.Models
         
         public int? PersonelId { get; set; } // Opsiyonel personel ID
         
+        [MaxLength(50)]
+        public string PusulaTuru { get; set; } = "TAHSILAT"; // Default to TAHSILAT from SystemDefinitions
+        
         // Ödeme Türleri
         [Column(TypeName = "decimal(18,2)")]
         public decimal Nakit { get; set; }
@@ -23,11 +26,7 @@ namespace IstasyonDemo.Api.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal KrediKarti { get; set; }
         
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal ParoPuan { get; set; }
-        
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal MobilOdeme { get; set; }
+
         
         // Kredi Kartı Detayları (JSON olarak saklanacak)
         [MaxLength(2000)]
@@ -42,8 +41,10 @@ namespace IstasyonDemo.Api.Models
         
         // Computed property
         [NotMapped]
-        public decimal Toplam => Nakit + KrediKarti + ParoPuan + MobilOdeme;
+        public decimal Toplam => Nakit + KrediKarti + (DigerOdemeler?.Sum(x => x.Tutar) ?? 0);
 
         public ICollection<PusulaKrediKartiDetay> KrediKartiDetaylari { get; set; } = new List<PusulaKrediKartiDetay>();
+        
+        public ICollection<PusulaDigerOdeme> DigerOdemeler { get; set; } = new List<PusulaDigerOdeme>();
     }
 }

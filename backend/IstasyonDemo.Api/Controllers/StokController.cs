@@ -1,5 +1,6 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Models;
+using IstasyonDemo.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ namespace IstasyonDemo.Api.Controllers
     {
         private readonly AppDbContext _context;
         private readonly AutoMapper.IMapper _mapper;
+        private readonly StokHesaplamaService _stokHesaplama;
 
-        public StokController(AppDbContext context, AutoMapper.IMapper mapper)
+        public StokController(AppDbContext context, AutoMapper.IMapper mapper, StokHesaplamaService stokHesaplama)
         {
             _context = context;
             _mapper = mapper;
+            _stokHesaplama = stokHesaplama;
         }
 
         [HttpGet("girisler")]
@@ -111,10 +114,23 @@ namespace IstasyonDemo.Api.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            // FIFO stok takip kaydı oluştur - her yakıt türü için ayrı kayıt
+            foreach (var item in dto.Kalemler)
+            {
+                await _stokHesaplama.FaturaStokKaydiOlustur(
+                    dto.FaturaNo, 
+                    item.YakitId, 
+                    dto.Tarih, 
+                    item.Litre
+                );
+            }
+
             return Ok(new { message = "Fatura girişi başarıyla kaydedildi." });
         }
 
         [HttpDelete("giris/{id}")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> DeleteGiris(Guid id)
         {
             var giris = await _context.TankGirisler.FindAsync(id);
@@ -127,6 +143,7 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpDelete("fatura/{faturaNo}")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> DeleteFatura(string faturaNo)
         {
             var items = await _context.TankGirisler.Where(x => x.FaturaNo == faturaNo).ToListAsync();
@@ -139,6 +156,7 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpPut("fatura-giris/{oldFaturaNo}")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> UpdateFatura(string oldFaturaNo, [FromBody] IstasyonDemo.Api.Dtos.CreateFaturaGirisDto dto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -193,60 +211,209 @@ namespace IstasyonDemo.Api.Controllers
             var startDate = DateTime.SpecifyKind(new DateTime(year, month, 1), DateTimeKind.Utc);
             var nextMonth = startDate.AddMonths(1);
 
-            // Fetch Fuel Types (Yakit Definitions)
+            // 1. Fetch Fuel Definitions
             var yakitlar = await _context.Yakitlar.OrderBy(y => y.Sira).ToListAsync();
             
-            // --- INPUTS (TankGiris) ---
-            var allInputs = await _context.TankGirisler.Where(t => t.Tarih < nextMonth).ToListAsync();
-
-            // --- SALES (OtomasyonSatis) ---
-            // OtomasyonSatis table has 'YakitTuru' (Enum). We convert it to string to match with 'OtomasyonUrunAdi' keywords.
-            var allSales = await _context.OtomasyonSatislar
-                .Include(s => s.Vardiya)
-                .Where(s => s.Vardiya != null && s.Vardiya.BaslangicTarihi < nextMonth)
-                .Select(s => new { s.Vardiya.BaslangicTarihi, YakitTuruStr = s.YakitTuru.ToString(), s.Litre })
+            // 2. Aggregate Inputs (TankGiris) by YakitId
+            // Using separate queries to ensure cleaner Translation to SQL for different date ranges
+            var inputsBefore = await _context.TankGirisler
+                .Where(t => t.Tarih < startDate)
+                .GroupBy(t => t.YakitId)
+                .Select(g => new { YakitId = g.Key, Total = g.Sum(t => t.Litre) })
                 .ToListAsync();
 
-            var ozetList = new List<object>();
+            var inputsThisMonth = await _context.TankGirisler
+                .Where(t => t.Tarih >= startDate && t.Tarih < nextMonth)
+                .GroupBy(t => t.YakitId)
+                .Select(g => new { YakitId = g.Key, Total = g.Sum(t => t.Litre) })
+                .ToListAsync();
+
+            // 3. Aggregate Sales (OtomasyonSatis) by YakitTuru
+            // OtomasyonSatis relates to Vardiya for Date info
+            var salesBefore = await _context.OtomasyonSatislar
+                // Sadece ONAYLANAN vardiyaların satışlarını stoktan düş
+                .Where(s => s.Vardiya != null && s.Vardiya.Durum == VardiyaDurum.ONAYLANDI && s.Vardiya.BaslangicTarihi < startDate)
+                .GroupBy(s => s.YakitTuru)
+                .Select(g => new { YakitTuru = g.Key, Total = g.Sum(s => s.Litre) })
+                .ToListAsync();
+
+            var salesThisMonth = await _context.OtomasyonSatislar
+                // Sadece ONAYLANAN vardiyaların satışlarını stoktan düş
+                .Where(s => s.Vardiya != null && s.Vardiya.Durum == VardiyaDurum.ONAYLANDI && s.Vardiya.BaslangicTarihi >= startDate && s.Vardiya.BaslangicTarihi < nextMonth)
+                .GroupBy(s => s.YakitTuru)
+                .Select(g => new { YakitTuru = g.Key, Total = g.Sum(s => s.Litre) })
+                .ToListAsync();
+
+            var ozetList = new List<IstasyonDemo.Api.Dtos.TankStokOzetDto>();
 
             foreach (var yakit in yakitlar)
             {
-                // Inputs for this specific Fuel Type
-                var inputsBefore = allInputs.Where(x => x.YakitId == yakit.Id && x.Tarih < startDate).Sum(x => x.Litre);
-                var inputsThisMonth = allInputs.Where(x => x.YakitId == yakit.Id && x.Tarih >= startDate && x.Tarih < nextMonth).Sum(x => x.Litre);
+                // Match Inputs
+                var inBefore = inputsBefore.FirstOrDefault(x => x.YakitId == yakit.Id)?.Total ?? 0;
+                var inMonth = inputsThisMonth.FirstOrDefault(x => x.YakitId == yakit.Id)?.Total ?? 0;
 
-                // Sales Matching Logic
-                // yakit.OtomasyonUrunAdi example: "MOTORIN,DIZEL"
-                // OtomasyonSatis.YakitTuru.ToString() example: "MOTORIN", "EURO_DIESEL"
-                var keywords = (yakit.OtomasyonUrunAdi ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(k => k.Trim().ToUpper()).ToList();
+                // Match Sales
+                // Parse keywords from Yakit definition (e.g. "MOTORIN,DIZEL")
+                var keywords = (yakit.OtomasyonUrunAdi ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(k => k.Trim().ToUpper())
+                    .ToList();
 
-                // Helper func to check if sale matches this fuel type
-                bool Matches(string saleYakitStr) 
+                // Helper to check if an aggregated sale group belongs to this fuel type
+                bool Matches(string saleYakitTuruStr) 
                 {
-                    if (string.IsNullOrEmpty(saleYakitStr)) return false;
-                    var u = saleYakitStr.ToUpper();
-                    // Match if Enum String contains any keyword (e.g. EURO_DIESEL contains DIESEL)
+                    if (string.IsNullOrEmpty(saleYakitTuruStr)) return false;
+                    
+                    // Convert numeric values to enum names for matching
+                    string normalizedValue = saleYakitTuruStr;
+                    if (int.TryParse(saleYakitTuruStr, out var intValue) && Enum.IsDefined(typeof(YakitTuru), intValue))
+                    {
+                        normalizedValue = ((YakitTuru)intValue).ToString();
+                    }
+                    
+                    var u = normalizedValue.ToUpper();
                     return keywords.Any(k => u.Contains(k));
                 }
 
-                var salesBefore = allSales.Where(x => x.BaslangicTarihi < startDate && Matches(x.YakitTuruStr)).Sum(x => x.Litre);
-                var salesThisMonth = allSales.Where(x => x.BaslangicTarihi >= startDate && x.BaslangicTarihi < nextMonth && Matches(x.YakitTuruStr)).Sum(x => x.Litre);
+                var outBefore = salesBefore
+                    .Where(x => Matches(x.YakitTuru.ToString()))
+                    .Sum(x => x.Total);
+                
+                var outMonth = salesThisMonth
+                    .Where(x => Matches(x.YakitTuru.ToString()))
+                    .Sum(x => x.Total);
 
-                var devir = inputsBefore - salesBefore;
+                var devir = inBefore - outBefore;
+                var kalan = devir + inMonth - outMonth;
 
                 ozetList.Add(new IstasyonDemo.Api.Dtos.TankStokOzetDto
                 {
                     YakitId = yakit.Id,
                     YakitTuru = yakit.Ad,
-                    Renk = yakit.Renk, // Pass color to UI
+                    Renk = yakit.Renk,
                     GecenAyDevir = devir,
-                    BuAyGiris = inputsThisMonth,
-                    BuAySatis = salesThisMonth,
-                    KalanStok = devir + inputsThisMonth - salesThisMonth
+                    BuAyGiris = inMonth,
+                    BuAySatis = outMonth,
+                    KalanStok = kalan
                 });
             }
 
-            return Ok(ozetList);
+            // Helper function to convert YakitTuru value to readable Turkish name from Yakitlar table
+            string GetYakitTuruAdi(string yakitTuruValue)
+            {
+                if (string.IsNullOrEmpty(yakitTuruValue)) return yakitTuruValue;
+                
+                // First convert numeric to enum name if needed
+                string normalizedValue = yakitTuruValue;
+                if (int.TryParse(yakitTuruValue, out var intValue) && Enum.IsDefined(typeof(YakitTuru), intValue))
+                {
+                    normalizedValue = ((YakitTuru)intValue).ToString();
+                }
+                
+                // Now find matching Yakit from the database using keyword matching
+                var upperValue = normalizedValue.ToUpper();
+                foreach (var yakit in yakitlar)
+                {
+                    var keywords = (yakit.OtomasyonUrunAdi ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(k => k.Trim().ToUpper());
+                    if (keywords.Any(k => upperValue.Contains(k)))
+                    {
+                        return yakit.Ad; // Return Turkish name from database
+                    }
+                }
+                
+                // Return normalized value if no match found
+                return normalizedValue;
+            }
+
+            // Debug: Include raw data for troubleshooting (Turkish labels)
+            return Ok(new {
+                Ozet = ozetList,
+                Debug = new {
+                    BuAyOnaylananSatislar = salesThisMonth.Select(s => new { YakitTuru = GetYakitTuruAdi(s.YakitTuru), ToplamLitre = s.Total }),
+                    GecmisOnaylananSatislar = salesBefore.Select(s => new { YakitTuru = GetYakitTuruAdi(s.YakitTuru), ToplamLitre = s.Total }),
+                    YakitEslestirmeAnahtarlari = yakitlar.Select(y => new { YakitAdi = y.Ad, OtomasyonAnahtarlari = y.OtomasyonUrunAdi }),
+                    OnaylananVardiyaSayisi = _context.Vardiyalar.Count(v => v.Durum == VardiyaDurum.ONAYLANDI),
+                    Aciklama = "Bu ay satış verisi yoksa, seçilen dönemde onaylanmış vardiya bulunmuyor olabilir. OtomasyonAnahtarlari değerleri, vardiya dosyasındaki YakitTuru değerleri ile eşleşmelidir."
+                }
+            });
+        }
+
+        /// <summary>
+        /// Aylık stok raporu - hesaplanmış verileri döndürür
+        /// </summary>
+        [HttpGet("aylik-rapor")]
+        public async Task<IActionResult> GetAylikRapor([FromQuery] int yil, [FromQuery] int ay)
+        {
+            // Hesapla veya mevcut veriyi getir
+            var ozetler = await _stokHesaplama.HesaplaTumYakitlar(yil, ay);
+            
+            return Ok(ozetler.Select(o => new {
+                o.Id,
+                o.YakitId,
+                YakitAdi = o.Yakit?.Ad ?? "?",
+                Renk = o.Yakit?.Renk ?? "#666",
+                o.Yil,
+                o.Ay,
+                o.DevirStok,
+                o.AyGiris,
+                o.AySatis,
+                o.KalanStok,
+                o.HesaplamaZamani,
+                o.Kilitli
+            }));
+        }
+
+        /// <summary>
+        /// Fatura bazında stok durumu - FIFO takibi
+        /// </summary>
+        [HttpGet("fatura-stok-durumu")]
+        public async Task<IActionResult> GetFaturaStokDurumu([FromQuery] int? yakitId = null)
+        {
+            var faturalar = await _stokHesaplama.GetFaturaStokDurumu(yakitId);
+            
+            return Ok(faturalar.Select(f => new {
+                f.Id,
+                f.FaturaNo,
+                f.YakitId,
+                YakitAdi = f.Yakit?.Ad ?? "?",
+                f.FaturaTarihi,
+                f.GirenMiktar,
+                f.KalanMiktar,
+                TuketilenMiktar = f.GirenMiktar - f.KalanMiktar,
+                TuketimYuzdesi = f.GirenMiktar > 0 ? Math.Round((f.GirenMiktar - f.KalanMiktar) / f.GirenMiktar * 100, 1) : 0,
+                f.Tamamlandi
+            }));
+        }
+
+        /// <summary>
+        /// Stoku yeniden hesapla (düzeltme için)
+        /// </summary>
+        [HttpPost("yeniden-hesapla")]
+        public async Task<IActionResult> YenidenHesapla([FromQuery] int yil, [FromQuery] int ay)
+        {
+            // Kilidi kaldır ve yeniden hesapla
+            var mevcutlar = await _context.AylikStokOzetleri
+                .Where(a => a.Yil == yil && a.Ay == ay)
+                .ToListAsync();
+            
+            foreach (var m in mevcutlar)
+            {
+                m.Kilitli = false;
+            }
+            await _context.SaveChangesAsync();
+
+            var sonuc = await _stokHesaplama.HesaplaTumYakitlar(yil, ay);
+            return Ok(new { message = "Stok başarıyla yeniden hesaplandı.", sonuc });
+        }
+
+        /// <summary>
+        /// Ay kapatma işlemi
+        /// </summary>
+        [HttpPost("ay-kapat")]
+        public async Task<IActionResult> AyKapat([FromQuery] int yil, [FromQuery] int ay)
+        {
+            await _stokHesaplama.AyiKapat(yil, ay);
+            return Ok(new { message = $"{ay}/{yil} ayı başarıyla kapatıldı." });
         }
     }
 }

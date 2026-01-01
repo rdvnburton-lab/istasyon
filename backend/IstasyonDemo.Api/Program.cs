@@ -33,6 +33,9 @@ builder.Services.AddScoped<IVardiyaService, VardiyaService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFcmService, FcmService>();
+builder.Services.AddScoped<IMarketVardiyaService, MarketVardiyaService>();
+builder.Services.AddScoped<IDefinitionsService, DefinitionsService>();
+builder.Services.AddScoped<StokHesaplamaService>();
 
 // Firebase Admin SDK Başlatma
 try
@@ -300,6 +303,10 @@ using (var scope = app.Services.CreateScope())
             context.Users.Add(new User { Username = "admin", RoleId = adminRole.Id, PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123") });
             context.SaveChanges();
         }
+        
+        // 3. Seed System Definitions
+        var definitionsService = services.GetRequiredService<IDefinitionsService>();
+        definitionsService.SeedInitialDataAsync().Wait();
     }
     catch (Exception ex)
     {
@@ -342,30 +349,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+// Health Checks
 app.MapHealthChecks("/health");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

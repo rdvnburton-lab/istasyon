@@ -325,7 +325,7 @@ namespace IstasyonDemo.Api.Controllers
                 .Where(v => v.Durum != VardiyaDurum.SILINDI)
                 .Select(v => new {
                     Vardiya = v,
-                    PusulaToplam = _context.Pusulalar.Where(p => p.VardiyaId == v.Id).Sum(p => p.Nakit + p.KrediKarti + p.ParoPuan + p.MobilOdeme),
+                    PusulaToplam = _context.Pusulalar.Where(p => p.VardiyaId == v.Id).Sum(p => p.Nakit + p.KrediKarti + (p.DigerOdemeler.Sum(d => d.Tutar))),
                     FiloToplam = _context.FiloSatislar.Where(f => f.VardiyaId == v.Id).Sum(f => f.Tutar)
                 })
                 .Select(x => new {

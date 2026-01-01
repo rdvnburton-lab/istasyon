@@ -59,6 +59,13 @@ namespace IstasyonDemo.Api.Services
                         await _context.SaveChangesAsync();
                     }
 
+                    // Validation: Sanity Check
+                    var calculatedTotal = satisDto.Litre * satisDto.BirimFiyat;
+                    if (Math.Abs(calculatedTotal - satisDto.ToplamTutar) > 0.1m) // 10 kuruş tolerance for rounding
+                    {
+                         throw new InvalidOperationException($"Hatalı Satış Verisi: Pompa {satisDto.PompaNo} için {satisDto.Litre} lt * {satisDto.BirimFiyat} != {satisDto.ToplamTutar}");
+                    }
+
                     var satis = _mapper.Map<OtomasyonSatis>(satisDto);
                     satis.VardiyaId = vardiya.Id;
                     satis.PersonelId = personel?.Id;
@@ -169,6 +176,12 @@ namespace IstasyonDemo.Api.Services
             var vardiya = await _context.Vardiyalar
                 .Include(v => v.Istasyon)
                 .ThenInclude(i => i.Firma)
+                .Include(v => v.Istasyon)
+                .ThenInclude(i => i.Firma)
+                // Removed heavy Includes (OtomasyonSatislar, FiloSatislar) for performance
+                // Optimized: Only load Pusulalar for logic, others via aggregation
+                .Include(v => v.Pusulalar)
+                    .ThenInclude(p => p.DigerOdemeler)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
@@ -183,6 +196,43 @@ namespace IstasyonDemo.Api.Services
             {
                 throw new InvalidOperationException("Sadece AÇIK veya REDDEDİLMİŞ vardiyalar onaya gönderilebilir.");
             }
+
+            // --- Server-Side Validation & Recording: Calculate Shift Difference ---
+            var otomasyonToplam = vardiya.GenelToplam; // System Sales
+            
+            var pusulaNakit = vardiya.Pusulalar.Sum(p => p.Nakit);
+            var pusulaKredi = vardiya.Pusulalar.Sum(p => p.KrediKarti);
+            var pusulaDiger = vardiya.Pusulalar.Sum(p => p.DigerOdemeler?.Sum(d => d.Tutar) ?? 0);
+            
+            // Optimized: Calculate aggregations via DB
+            var filoToplam = await _context.FiloSatislar.Where(f => f.VardiyaId == vardiya.Id).SumAsync(f => f.Tutar);
+            var giderToplam = await _context.PompaGiderler.Where(g => g.VardiyaId == vardiya.Id).SumAsync(g => g.Tutar);
+
+            // Added GiderToplam to calculation
+            var toplamTahsilat = pusulaNakit + pusulaKredi + pusulaDiger + filoToplam + giderToplam;
+            
+            // Fark = Tahsilat - Satış. 
+            // Negatif ise AÇIK (Eksik), Pozitif ise FAZLA.
+            var fark = toplamTahsilat - otomasyonToplam;
+
+            vardiya.Fark = fark; // Save the difference
+            
+            // Log logic if needed, or just persist as we do above.
+            if (Math.Abs(fark) > 0.5m)
+            {
+                // Just log to history for audit, but don't block
+                 await LogVardiyaIslem(
+                    vardiya.Id,
+                    "FARKLI_ONAY_ISTEGI",
+                    $"Vardiya fark ile onaya gönderildi. Fark: {fark:N2} TL",
+                    userId,
+                    "", 
+                    userRole,
+                    vardiya.Durum.ToString(),
+                    VardiyaDurum.ONAY_BEKLIYOR.ToString()
+                );
+            }
+            // -------------------------------------------------------------
 
             vardiya.Durum = VardiyaDurum.ONAY_BEKLIYOR;
             vardiya.GuncellemeTarihi = DateTime.UtcNow;
@@ -202,7 +252,7 @@ namespace IstasyonDemo.Api.Services
             // Adminlere bildirim gönder
             await _notificationService.NotifyAdminsAsync(
                 "Yeni Vardiya Onayı",
-                $"{vardiya.DosyaAdi} için onay bekleniyor.",
+                $"{vardiya.DosyaAdi} için onay bekleniyor." + (Math.Abs(fark) > 0.5m ? $" (Fark: {fark:N2} TL)" : ""),
                 "VARDIYA_ONAY_BEKLIYOR",
                 "info",
                 relatedVardiyaId: vardiya.Id
@@ -214,7 +264,7 @@ namespace IstasyonDemo.Api.Services
                 await _notificationService.NotifyUserAsync(
                     vardiya.Istasyon.Firma.PatronId.Value,
                     "Yeni Vardiya Onayı",
-                    $"{vardiya.DosyaAdi} onayınızı bekliyor.",
+                    $"{vardiya.DosyaAdi} onayınızı bekliyor." + (Math.Abs(fark) > 0.5m ? $" (Fark: {fark:N2} TL)" : ""),
                     "VARDIYA_ONAY_BEKLIYOR",
                     "info",
                     relatedVardiyaId: vardiya.Id

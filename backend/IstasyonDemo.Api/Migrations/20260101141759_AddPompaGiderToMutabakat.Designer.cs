@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260101141759_AddPompaGiderToMutabakat")]
+    partial class AddPompaGiderToMutabakat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,92 +24,6 @@ namespace IstasyonDemo.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("IstasyonDemo.Api.Models.AylikStokOzeti", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Ay")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("AyGiris")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("AySatis")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("DevirStok")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("HesaplamaZamani")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("KalanStok")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("Kilitli")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("YakitId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Yil")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("YakitId", "Yil", "Ay")
-                        .IsUnique()
-                        .HasDatabaseName("IX_AylikStokOzeti_YakitYilAy");
-
-                    b.ToTable("AylikStokOzetleri");
-                });
-
-            modelBuilder.Entity("IstasyonDemo.Api.Models.FaturaStokTakip", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FaturaNo")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("FaturaTarihi")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("GirenMiktar")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("GuncellenmeTarihi")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("KalanMiktar")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("OlusturmaTarihi")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("Tamamlandi")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("YakitId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("YakitId", "FaturaTarihi")
-                        .HasDatabaseName("IX_FaturaStokTakip_YakitFaturaTarihi");
-
-                    b.ToTable("FaturaStokTakipleri");
-                });
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.FiloSatis", b =>
                 {
@@ -741,11 +658,17 @@ namespace IstasyonDemo.Api.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
+                    b.Property<decimal>("MobilOdeme")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("Nakit")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("OlusturmaTarihi")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ParoPuan")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PersonelAdi")
                         .IsRequired()
@@ -772,37 +695,6 @@ namespace IstasyonDemo.Api.Migrations
                         .HasDatabaseName("IX_Pusulalar_VardiyaId");
 
                     b.ToTable("Pusulalar");
-                });
-
-            modelBuilder.Entity("IstasyonDemo.Api.Models.PusulaDigerOdeme", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PusulaId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TurAdi")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("TurKodu")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<decimal>("Tutar")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PusulaId");
-
-                    b.ToTable("PusulaDigerOdemeleri");
                 });
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.PusulaKrediKartiDetay", b =>
@@ -1257,28 +1149,6 @@ namespace IstasyonDemo.Api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.AylikStokOzeti", b =>
-                {
-                    b.HasOne("IstasyonDemo.Api.Models.Yakit", "Yakit")
-                        .WithMany()
-                        .HasForeignKey("YakitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Yakit");
-                });
-
-            modelBuilder.Entity("IstasyonDemo.Api.Models.FaturaStokTakip", b =>
-                {
-                    b.HasOne("IstasyonDemo.Api.Models.Yakit", "Yakit")
-                        .WithMany()
-                        .HasForeignKey("YakitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Yakit");
-                });
-
             modelBuilder.Entity("IstasyonDemo.Api.Models.FiloSatis", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Vardiya", "Vardiya")
@@ -1485,17 +1355,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Vardiya");
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.PusulaDigerOdeme", b =>
-                {
-                    b.HasOne("IstasyonDemo.Api.Models.Pusula", "Pusula")
-                        .WithMany("DigerOdemeler")
-                        .HasForeignKey("PusulaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pusula");
-                });
-
             modelBuilder.Entity("IstasyonDemo.Api.Models.PusulaKrediKartiDetay", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Pusula", "Pusula")
@@ -1607,8 +1466,6 @@ namespace IstasyonDemo.Api.Migrations
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.Pusula", b =>
                 {
-                    b.Navigation("DigerOdemeler");
-
                     b.Navigation("KrediKartiDetaylari");
                 });
 

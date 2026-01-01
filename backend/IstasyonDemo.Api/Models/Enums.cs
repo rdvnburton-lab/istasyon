@@ -27,18 +27,7 @@ namespace IstasyonDemo.Api.Models
         MARKET_SORUMLUSU
     }
 
-    public enum PusulaTuru
-    {
-        KASA_ACILIS,        // Kasa açılış pusulası
-        KASA_DEVIR,         // Kasa devir pusulası
-        NAKIT_TAHSILAT,     // Nakit tahsilat
-        KREDI_KARTI,        // Kredi kartı tahsilat
-        HAVALE_EFT,         // Havale/EFT
-        FARK_FAZLA,         // Fazla para
-        FARK_EKSIK,         // Eksik para
-        MASRAF,             // Masraf pusulası
-        DIGER               // Diğer
-    }
+
     public enum GiderTuru
     {
         EKMEK,

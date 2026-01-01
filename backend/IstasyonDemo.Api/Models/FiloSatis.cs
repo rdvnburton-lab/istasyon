@@ -17,7 +17,8 @@ namespace IstasyonDemo.Api.Models
         [MaxLength(20)]
         public string Plaka { get; set; } = string.Empty;
         
-        public YakitTuru YakitTuru { get; set; }
+        [MaxLength(50)]
+        public string YakitTuru { get; set; } = string.Empty;
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal Litre { get; set; }

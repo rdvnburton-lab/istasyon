@@ -1,10 +1,8 @@
-using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Dtos;
-using IstasyonDemo.Api.Models;
+using IstasyonDemo.Api.Models; // For Enums if needed
+using IstasyonDemo.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace IstasyonDemo.Api.Controllers
 {
@@ -13,506 +11,146 @@ namespace IstasyonDemo.Api.Controllers
     [Authorize]
     public class MarketVardiyaController : BaseController
     {
-        private readonly AppDbContext _context;
+        private readonly IMarketVardiyaService _service;
 
-        public MarketVardiyaController(AppDbContext context)
+        public MarketVardiyaController(IMarketVardiyaService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MarketVardiyaDto>>> GetMarketVardiyalar()
         {
-            IQueryable<MarketVardiya> query = _context.MarketVardiyalar
-                .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
-                .Include(m => m.Sorumlu);
-
-            if (!IsAdmin)
-            {
-                if (IsPatron)
-                {
-                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == CurrentUserId);
-                }
-                else if (CurrentUserRole == "vardiya_sorumlusu")
-                {
-                    // Vardiya sorumlusu should not see market shifts
-                    return Ok(new List<MarketVardiyaDto>());
-                }
-                else
-                {
-                    if (CurrentIstasyonId.HasValue)
-                    {
-                        query = query.Where(m => m.IstasyonId == CurrentIstasyonId.Value);
-                    }
-                    else
-                    {
-                         return Ok(new List<MarketVardiyaDto>());
-                    }
-                }
-            }
-
-            var result = await query
-                .OrderByDescending(m => m.Tarih)
-                .Select(m => new MarketVardiyaDto
-                {
-                    Id = m.Id,
-                    IstasyonId = m.IstasyonId,
-                    IstasyonAdi = m.Istasyon!.Ad,
-                    SorumluId = m.SorumluId,
-                    SorumluAdi = m.Sorumlu!.Username,
-                    Tarih = m.Tarih,
-                    Durum = m.Durum,
-                    ToplamSatisTutari = m.ToplamSatisTutari,
-                    ToplamTeslimatTutari = m.ToplamTeslimatTutari,
-                    ToplamFark = m.ToplamFark,
-                    ZRaporuTutari = m.ZRaporuTutari,
-                    ZRaporuNo = m.ZRaporuNo,
-                    OlusturmaTarihi = m.OlusturmaTarihi
-                })
-                .ToListAsync();
-
+            var result = await _service.GetMarketVardiyalarAsync(CurrentUserId, CurrentUserRole, CurrentIstasyonId);
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult<MarketVardiya>> CreateMarketVardiya(CreateMarketVardiyaDto dto)
         {
-            if (!CurrentIstasyonId.HasValue) 
-                return BadRequest("Kullanıcı istasyon bilgisi bulunamadı.");
-
-            // Aynı tarihte başka vardiya var mı kontrol et
-            var tarih = dto.Tarih.Date;
-            var mevcut = await _context.MarketVardiyalar
-                .AnyAsync(m => m.IstasyonId == CurrentIstasyonId.Value && m.Tarih.Date == tarih && m.Durum != VardiyaDurum.SILINDI);
-
-            if (mevcut)
-                return BadRequest($"{tarih:dd.MM.yyyy} tarihi için zaten bir market mutabakatı mevcut.");
-
-            var marketVardiya = new MarketVardiya
+            try 
             {
-                IstasyonId = CurrentIstasyonId.Value,
-                SorumluId = CurrentUserId,
-                Tarih = dto.Tarih,
-                ZRaporuTutari = dto.ZRaporuTutari,
-                ZRaporuNo = dto.ZRaporuNo,
-                Durum = VardiyaDurum.ACIK,
-                OlusturmaTarihi = DateTime.UtcNow
-            };
-
-            // Z Raporları
-            foreach (var z in dto.ZRaporlari)
-            {
-                marketVardiya.ZRaporlari.Add(new MarketZRaporu
-                {
-                    Tarih = dto.Tarih,
-                    GenelToplam = z.GenelToplam,
-                    Kdv0 = z.Kdv0,
-                    Kdv1 = z.Kdv1,
-                    Kdv10 = z.Kdv10,
-                    Kdv20 = z.Kdv20,
-                    KdvToplam = z.KdvToplam,
-                    KdvHaricToplam = z.KdvHaricToplam
-                });
+                var vardiya = await _service.CreateMarketVardiyaAsync(dto, CurrentUserId, CurrentIstasyonId);
+                return Ok(new { id = vardiya.Id, message = "Market vardiyası başarıyla kaydedildi." });
             }
-
-            // Tahsilatlar
-            foreach (var t in dto.Tahsilatlar)
+            catch (InvalidOperationException ex)
             {
-                marketVardiya.Tahsilatlar.Add(new MarketTahsilat
-                {
-                    PersonelId = t.PersonelId,
-                    Nakit = t.Nakit,
-                    KrediKarti = t.KrediKarti,
-                    ParoPuan = t.ParoPuan,
-                    Toplam = t.Toplam,
-                    Aciklama = t.Aciklama
-                });
+                return BadRequest(ex.Message);
             }
-
-            // Giderler
-            foreach (var g in dto.Giderler)
-            {
-                marketVardiya.Giderler.Add(new MarketGider
-                {
-                    GiderTuru = g.GiderTuru,
-                    Tutar = g.Tutar,
-                    Aciklama = g.Aciklama,
-                    BelgeTarihi = g.BelgeTarihi
-                });
-            }
-
-            // Gelirler
-            foreach (var g in dto.Gelirler)
-            {
-                marketVardiya.Gelirler.Add(new MarketGelir
-                {
-                    GelirTuru = g.GelirTuru,
-                    Tutar = g.Tutar,
-                    Aciklama = g.Aciklama,
-                    BelgeTarihi = g.BelgeTarihi
-                });
-            }
-
-            // Hesaplamalar
-            marketVardiya.ToplamSatisTutari = marketVardiya.ZRaporlari.Sum(z => z.GenelToplam);
-            marketVardiya.ToplamTeslimatTutari = marketVardiya.Tahsilatlar.Sum(t => t.Toplam) + marketVardiya.Gelirler.Sum(g => g.Tutar) - marketVardiya.Giderler.Sum(g => g.Tutar);
-            marketVardiya.ToplamFark = marketVardiya.ToplamTeslimatTutari - marketVardiya.ToplamSatisTutari;
-
-            _context.MarketVardiyalar.Add(marketVardiya);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { id = marketVardiya.Id, message = "Market vardiyası başarıyla kaydedildi." });
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetMarketVardiyaDetay(int id)
         {
-            var vardiya = await _context.MarketVardiyalar
-                .Include(m => m.ZRaporlari)
-                .Include(m => m.Tahsilatlar).ThenInclude(t => t.Personel)
-                .Include(m => m.Giderler)
-                .Include(m => m.Gelirler)
-                .Include(m => m.Istasyon).ThenInclude(i => i.Firma)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
+            try
             {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
+                var vardiya = await _service.GetMarketVardiyaByIdAsync(id, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                if (vardiya == null) return NotFound();
+                return Ok(vardiya);
             }
-
-            return Ok(vardiya);
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         [HttpPost("{id}/z-raporu")]
         public async Task<ActionResult> SaveZRaporu(int id, MarketZRaporuDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.ZRaporlari).Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            // Mevcut Z raporlarını temizle (genelde bir tane olur ama liste olarak tutuyoruz)
-            _context.MarketZRaporlari.RemoveRange(vardiya.ZRaporlari);
-
-            var zRaporu = new MarketZRaporu
-            {
-                MarketVardiyaId = id,
-                Tarih = vardiya.Tarih,
-                GenelToplam = dto.GenelToplam,
-                Kdv0 = dto.Kdv0,
-                Kdv1 = dto.Kdv1,
-                Kdv10 = dto.Kdv10,
-                Kdv20 = dto.Kdv20,
-                KdvToplam = dto.KdvToplam,
-                KdvHaricToplam = dto.KdvHaricToplam
-            };
-
-            _context.MarketZRaporlari.Add(zRaporu);
-            
-            // Toplamları güncelle
-            await _context.SaveChangesAsync(); // Önce kaydet ki Sum doğru çalışsın veya manuel hesapla
-            vardiya.ToplamSatisTutari = dto.GenelToplam;
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-            
-            await _context.SaveChangesAsync();
-
-            return Ok(zRaporu);
+            try {
+                var result = await _service.AddZRaporuAsync(id, dto, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok(result);
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpPost("{id}/tahsilat")]
         public async Task<ActionResult> SaveTahsilat(int id, MarketTahsilatDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Tahsilatlar).Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            // Aynı personel için mükerrer kaydı önle veya güncelle
-            var mevcut = vardiya.Tahsilatlar.FirstOrDefault(t => t.PersonelId == dto.PersonelId);
-            if (mevcut != null)
-            {
-                mevcut.Nakit = dto.Nakit;
-                mevcut.KrediKarti = dto.KrediKarti;
-                mevcut.ParoPuan = dto.ParoPuan;
-                mevcut.SistemSatisTutari = dto.SistemSatisTutari;
-                mevcut.Toplam = dto.Toplam;
-                mevcut.Aciklama = dto.Aciklama;
-            }
-            else
-            {
-                var tahsilat = new MarketTahsilat
-                {
-                    MarketVardiyaId = id,
-                    PersonelId = dto.PersonelId,
-                    Nakit = dto.Nakit,
-                    KrediKarti = dto.KrediKarti,
-                    ParoPuan = dto.ParoPuan,
-                    SistemSatisTutari = dto.SistemSatisTutari,
-                    Toplam = dto.Toplam,
-                    Aciklama = dto.Aciklama
-                };
-                _context.MarketTahsilatlar.Add(tahsilat);
-            }
-
-            await _context.SaveChangesAsync();
-            
-            // Toplamları güncelle
-            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(id);
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-            
-            await _context.SaveChangesAsync();
-
-            return Ok();
+             try {
+                await _service.AddTahsilatAsync(id, dto, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok();
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpPost("{id}/gider")]
         public async Task<ActionResult> AddGider(int id, MarketGiderDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            var gider = new MarketGider
-            {
-                MarketVardiyaId = id,
-                GiderTuru = dto.GiderTuru,
-                Tutar = dto.Tutar,
-                Aciklama = dto.Aciklama,
-                BelgeTarihi = dto.BelgeTarihi
-            };
-
-            _context.MarketGiderler.Add(gider);
-            await _context.SaveChangesAsync();
-
-            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(id);
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-            
-            await _context.SaveChangesAsync();
-
-            return Ok(gider);
+             try {
+                var result = await _service.AddGiderAsync(id, dto, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok(result);
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpDelete("gider/{giderId}")]
         public async Task<ActionResult> DeleteGider(int giderId)
         {
-            var gider = await _context.MarketGiderler.Include(g => g.MarketVardiya).ThenInclude(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(g => g.Id == giderId);
-            if (gider == null) return NotFound();
-
-            var vardiya = gider.MarketVardiya;
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            var vardiyaId = gider.MarketVardiyaId;
-            _context.MarketGiderler.Remove(gider);
-            await _context.SaveChangesAsync();
-
-            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(vardiyaId);
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-            await _context.SaveChangesAsync();
-
-            return Ok();
+             try {
+                await _service.DeleteGiderAsync(giderId, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok();
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpPost("{id}/gelir")]
         public async Task<ActionResult> AddGelir(int id, MarketGelirDto dto)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            var gelir = new MarketGelir
-            {
-                MarketVardiyaId = id,
-                GelirTuru = dto.GelirTuru,
-                Tutar = dto.Tutar,
-                Aciklama = dto.Aciklama,
-                BelgeTarihi = dto.BelgeTarihi
-            };
-
-            _context.MarketGelirler.Add(gelir);
-            await _context.SaveChangesAsync();
-
-            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(id);
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-            
-            await _context.SaveChangesAsync();
-
-            return Ok(gelir);
+             try {
+                var result = await _service.AddGelirAsync(id, dto, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok(result);
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpDelete("gelir/{gelirId}")]
         public async Task<ActionResult> DeleteGelir(int gelirId)
         {
-            var gelir = await _context.MarketGelirler.Include(g => g.MarketVardiya).ThenInclude(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(g => g.Id == gelirId);
-            if (gelir == null) return NotFound();
-
-            var vardiya = gelir.MarketVardiya;
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            var vardiyaId = gelir.MarketVardiyaId;
-            _context.MarketGelirler.Remove(gelir);
-            await _context.SaveChangesAsync();
-
-            vardiya.ToplamTeslimatTutari = await CalculateTotalTeslimat(vardiyaId);
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
-            await _context.SaveChangesAsync();
-
-            return Ok();
-        }
-
-        private async Task<decimal> CalculateTotalTeslimat(int vardiyaId)
-        {
-            var tahsilat = await _context.MarketTahsilatlar.Where(t => t.MarketVardiyaId == vardiyaId).SumAsync(t => t.Toplam);
-            var gelir = await _context.MarketGelirler.Where(g => g.MarketVardiyaId == vardiyaId).SumAsync(g => g.Tutar);
-            var gider = await _context.MarketGiderler.Where(g => g.MarketVardiyaId == vardiyaId).SumAsync(g => g.Tutar);
-            
-            return tahsilat + gelir - gider;
+             try {
+                await _service.DeleteGelirAsync(gelirId, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok();
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpGet("rapor")]
         public async Task<IActionResult> GetMarketRaporu([FromQuery] DateTimeOffset baslangic, [FromQuery] DateTimeOffset bitis)
         {
-            var start = baslangic.UtcDateTime;
-            var end = bitis.UtcDateTime;
-
-            var query = _context.MarketVardiyalar
-                .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
-                .Where(m => m.Tarih >= start && m.Tarih <= end && m.Durum != VardiyaDurum.SILINDI);
-
-            if (!IsAdmin)
-            {
-                if (IsPatron)
-                {
-                    query = query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == CurrentUserId);
-                }
-                else
-                {
-                    if (CurrentIstasyonId.HasValue)
-                    {
-                        query = query.Where(m => m.IstasyonId == CurrentIstasyonId.Value);
-                    }
-                    else
-                    {
-                        return Ok(new { Ozet = new {}, Vardiyalar = new List<object>() });
-                    }
-                }
-            }
-
-            var vardiyalar = await query
-                .OrderByDescending(m => m.Tarih)
-                .Select(m => new
-                {
-                    m.Id,
-                    Tarih = m.Tarih,
-                    m.ToplamSatisTutari,
-                    m.ToplamTeslimatTutari,
-                    m.ToplamFark,
-                    Durum = m.Durum.ToString()
-                })
-                .ToListAsync();
-
-            var ozet = new
-            {
-                ToplamVardiya = vardiyalar.Count,
-                ToplamSatis = vardiyalar.Sum(v => v.ToplamSatisTutari),
-                ToplamTeslimat = vardiyalar.Sum(v => v.ToplamTeslimatTutari),
-                ToplamFark = vardiyalar.Sum(v => v.ToplamFark)
-            };
-
-            return Ok(new { Ozet = ozet, Vardiyalar = vardiyalar });
+            var result = await _service.GetMarketRaporuAsync(baslangic, bitis, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+            return Ok(result);
         }
 
         [HttpPost("{id}/onaya-gonder")]
         public async Task<ActionResult> OnayaGonder(int id)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-            if (!IsAdmin && !IsPatron)
-            {
-                if (CurrentIstasyonId != vardiya.IstasyonId) return Forbid();
-            }
-
-            vardiya.Durum = VardiyaDurum.ONAY_BEKLIYOR;
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Market mutabakatı onaya gönderildi." });
+             try {
+                await _service.OnayaGonderAsync(id, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok(new { message = "Market mutabakatı onaya gönderildi." });
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpPost("{id}/onayla")]
         [Authorize(Roles = "admin,patron")]
         public async Task<ActionResult> Onayla(int id)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-
-            vardiya.Durum = VardiyaDurum.ONAYLANDI;
-            vardiya.OnaylayanId = CurrentUserId;
-            vardiya.OnayTarihi = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Vardiya onaylandı." });
+             try {
+                await _service.OnaylaAsync(id, CurrentUserId, CurrentUserRole);
+                return Ok(new { message = "Vardiya onaylandı." });
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
         [HttpPost("{id}/reddet")]
         [Authorize(Roles = "admin,patron")]
         public async Task<ActionResult> Reddet(int id, [FromBody] string neden)
         {
-            var vardiya = await _context.MarketVardiyalar.Include(m => m.Istasyon).ThenInclude(i => i.Firma).FirstOrDefaultAsync(m => m.Id == id);
-            if (vardiya == null) return NotFound();
-
-            // Authorization Check
-            if (IsPatron && (vardiya.Istasyon == null || vardiya.Istasyon.Firma == null || vardiya.Istasyon.Firma.PatronId != CurrentUserId)) return Forbid();
-
-            vardiya.Durum = VardiyaDurum.REDDEDILDI;
-            vardiya.RedNedeni = neden;
-
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Vardiya reddedildi." });
+             try {
+                await _service.ReddetAsync(id, neden, CurrentUserId, CurrentUserRole);
+                return Ok(new { message = "Vardiya reddedildi." });
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
         }
     }
 }

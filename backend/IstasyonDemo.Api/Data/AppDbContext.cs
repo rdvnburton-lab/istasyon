@@ -28,6 +28,11 @@ namespace IstasyonDemo.Api.Data
         public DbSet<UserSettings> UserSettings { get; set; }
         public DbSet<TankGiris> TankGirisler { get; set; }
         public DbSet<Yakit> Yakitlar { get; set; }
+        public DbSet<SystemDefinition> SystemDefinitions { get; set; }
+        public DbSet<PompaGider> PompaGiderler { get; set; }
+        public DbSet<PusulaDigerOdeme> PusulaDigerOdemeleri { get; set; }
+        public DbSet<AylikStokOzeti> AylikStokOzetleri { get; set; }
+        public DbSet<FaturaStokTakip> FaturaStokTakipleri { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -56,11 +61,16 @@ namespace IstasyonDemo.Api.Data
                 .HasForeignKey(p => p.VardiyaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Pusula Kredi Kartı Detay İlişkisi
             modelBuilder.Entity<PusulaKrediKartiDetay>()
                 .HasOne(pk => pk.Pusula)
                 .WithMany(p => p.KrediKartiDetaylari)
                 .HasForeignKey(pk => pk.PusulaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PompaGider>()
+                .HasOne(g => g.Vardiya)
+                .WithMany(v => v.Giderler)
+                .HasForeignKey(g => g.VardiyaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // PERFORMANCE INDEXES
@@ -96,6 +106,29 @@ namespace IstasyonDemo.Api.Data
             modelBuilder.Entity<Personel>()
                 .HasIndex(p => p.IstasyonId)
                 .HasDatabaseName("IX_Personeller_IstasyonId");
+
+            // AylikStokOzeti - Unique constraint for (YakitId, Yil, Ay)
+            modelBuilder.Entity<AylikStokOzeti>()
+                .HasIndex(a => new { a.YakitId, a.Yil, a.Ay })
+                .IsUnique()
+                .HasDatabaseName("IX_AylikStokOzeti_YakitYilAy");
+
+            modelBuilder.Entity<AylikStokOzeti>()
+                .HasOne(a => a.Yakit)
+                .WithMany()
+                .HasForeignKey(a => a.YakitId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // FaturaStokTakip - Index for FIFO ordering
+            modelBuilder.Entity<FaturaStokTakip>()
+                .HasIndex(f => new { f.YakitId, f.FaturaTarihi })
+                .HasDatabaseName("IX_FaturaStokTakip_YakitFaturaTarihi");
+
+            modelBuilder.Entity<FaturaStokTakip>()
+                .HasOne(f => f.Yakit)
+                .WithMany()
+                .HasForeignKey(f => f.YakitId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Firma Relations
             modelBuilder.Entity<Firma>()

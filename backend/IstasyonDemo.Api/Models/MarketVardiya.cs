@@ -115,7 +115,8 @@ namespace IstasyonDemo.Api.Models
         public int MarketVardiyaId { get; set; }
         public MarketVardiya? MarketVardiya { get; set; }
         
-        public GiderTuru GiderTuru { get; set; }
+        [MaxLength(50)]
+        public string GiderTuru { get; set; } = string.Empty;
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal Tutar { get; set; }
@@ -133,7 +134,8 @@ namespace IstasyonDemo.Api.Models
         public int MarketVardiyaId { get; set; }
         public MarketVardiya? MarketVardiya { get; set; }
         
-        public GelirTuru GelirTuru { get; set; }
+        [MaxLength(50)]
+        public string GelirTuru { get; set; } = string.Empty;
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal Tutar { get; set; }
