@@ -33,6 +33,7 @@ export const RESOURCES: Resource[] = [
     { key: 'YONETIM_ISTASYON', name: 'İstasyon Yönetimi', group: 'Yönetim' },
     { key: 'YONETIM_KULLANICI', name: 'Kullanıcı Yönetimi', group: 'Yönetim' },
     { key: 'YONETIM_YETKI', name: 'Yetki Yönetimi', group: 'Yönetim' },
+    { key: 'YONETIM_TANIMLAR', name: 'Sistem Tanımları', group: 'Yönetim' },
 
     // Sistem
     { key: 'SISTEM_AYARLAR', name: 'Sistem Ayarları', group: 'Sistem' },
@@ -49,7 +50,7 @@ const DEFAULT_PERMISSIONS: { [role: string]: string[] } = {
         'VARDIYA_ONAY_BEKLEYENLER', 'VARDIYA_STOK', 'VARDIYA_LOGLAR',
         'TANIMLAMA_ISTASYON', 'TANIMLAMA_PERSONEL', 'TANIMLAMA_YAKIT',
         'RAPOR_VARDIYA', 'RAPOR_PERSONEL', 'RAPOR_FARK',
-        'YONETIM_ISTASYON', 'YONETIM_KULLANICI',
+        'YONETIM_ISTASYON', 'YONETIM_KULLANICI', 'YONETIM_TANIMLAR',
         'SISTEM_AYARLAR'
     ],
     'istasyon sorumlusu': [

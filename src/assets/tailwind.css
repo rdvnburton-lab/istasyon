@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
+/* Override Tailwind's default dark mode to use class-based detection */
+/* This fixes dark: prefix using prefers-color-scheme instead of .app-dark class */
+@custom-variant dark (&:where(.dark, .app-dark, .dark *, .app-dark *));
 
 @theme {
     --breakpoint-sm: 576px;

@@ -39,6 +39,7 @@ import {
 } from '../../models/vardiya.model';
 import { PersonelApiService, Personel } from '../../../../services/personel-api.service';
 import { AuthService, User } from '../../../../services/auth.service';
+import { DefinitionsService, DefinitionType } from '../../../../services/definitions.service';
 
 @Component({
     selector: 'app-market-yonetimi',
@@ -92,6 +93,40 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     redNedeni: string = '';
     reddedilecekVardiyaId: number | null = null;
 
+    get personelListesi() {
+        return this.marketPersonelleri;
+    }
+
+    get listOzet() {
+        const ozet = {
+            toplamSatis: 0,
+            toplamTeslimat: 0,
+            toplamFark: 0,
+            onayBekleyen: 0
+        };
+
+        this.marketVardiyalar.forEach(v => {
+            ozet.toplamSatis += v.toplamSatisTutari || 0;
+            ozet.toplamTeslimat += v.toplamTeslimatTutari || 0;
+            ozet.toplamFark += v.toplamFark || 0;
+            if (v.durum === 'ONAY_BEKLIYOR') {
+                ozet.onayBekleyen++;
+            }
+        });
+
+        return ozet;
+    }
+
+    formSifirla(): void {
+        this.personelIslemForm = {
+            personelId: null,
+            sistemSatisTutari: 0,
+            nakit: 0,
+            krediKarti: 0,
+            gider: 0
+        };
+    }
+
     mutabakatBaslat(): void {
         if (!this.secilenTarih) {
             this.messageService.add({
@@ -141,12 +176,13 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     kdvKontrolSonuc = { gecerli: false, mesaj: 'Z Raporu bilgilerini girin', sinif: 'bg-surface-100 dark:bg-surface-800', icon: 'pi-info-circle' };
 
     giderDialogVisible = false;
-    giderTurleri: { label: string; value: GiderTuru }[] = [];
-    giderForm = { giderTuru: null as GiderTuru | null, tutar: 0, aciklama: '' };
+    giderTurleri: { label: string; value: any }[] = [];
+    giderForm = { giderTuru: null as any, tutar: 0, aciklama: '' };
 
     gelirDialogVisible = false;
-    gelirTurleri: { label: string; value: GelirTuru }[] = [];
-    gelirForm = { gelirTuru: null as GelirTuru | null, tutar: 0, aciklama: '' };
+    pusulaDialogVisible = false;
+    gelirTurleri: { label: string; value: any }[] = [];
+    gelirForm = { gelirTuru: null as any, tutar: 0, aciklama: '' };
 
     private subscriptions = new Subscription();
 
@@ -157,12 +193,12 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private router: Router,
-        private authService: AuthService
+        private authService: AuthService,
+        private definitionsService: DefinitionsService
     ) { }
 
     ngOnInit(): void {
-        this.giderTurleri = this.vardiyaService.getGiderTurleri();
-        this.gelirTurleri = this.vardiyaService.getGelirTurleri();
+        this.loadDefinitions();
 
         this.authService.currentUser$.subscribe(user => {
             this.currentUser = user;
@@ -179,6 +215,15 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         });
 
         this.loadMarketVardiyalar();
+    }
+
+    loadDefinitions(): void {
+        this.definitionsService.getDropdownList(DefinitionType.GIDER).subscribe(list => {
+            this.giderTurleri = list;
+        });
+        this.definitionsService.getDropdownList(DefinitionType.GELIR).subscribe(list => {
+            this.gelirTurleri = list;
+        });
     }
 
     loadMarketVardiyalar(): void {
@@ -313,32 +358,36 @@ export class MarketYonetimi implements OnInit, OnDestroy {
 
     // KDV Kontrol
     kdvKontrol(): void {
-        const genelToplam = this.zRaporuForm.genelToplam || 0;
-        const kdvToplam = this.getKdvToplam();
+        this.hesaplaZTotals();
+    }
 
-        if (genelToplam === 0) {
-            this.kdvKontrolSonuc = { gecerli: false, mesaj: 'Genel toplam giriniz', sinif: 'bg-surface-100 dark:bg-surface-800', icon: 'pi-info-circle' };
-            return;
-        }
+    hesaplaZTotals(): void {
+        const kdv0 = this.zRaporuForm.kdv0 || 0;
+        const kdv1 = this.zRaporuForm.kdv1 || 0;
+        const kdv10 = this.zRaporuForm.kdv10 || 0;
+        const kdv20 = this.zRaporuForm.kdv20 || 0;
 
-        // Basit kontrol: KDV toplamı genel toplamdan küçük olmalı ve mantıklı bir aralıkta olmalı
-        const kdvOrani = (kdvToplam / genelToplam) * 100;
+        const tax1 = kdv1 * 0.01;
+        const tax10 = kdv10 * 0.10;
+        const tax20 = kdv20 * 0.20;
 
-        if (kdvToplam === 0) {
-            this.kdvKontrolSonuc = { gecerli: false, mesaj: 'KDV kırılımlarını giriniz', sinif: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700', icon: 'pi-exclamation-triangle' };
-        } else if (kdvOrani > 0 && kdvOrani <= 25) {
-            this.kdvKontrolSonuc = { gecerli: true, mesaj: 'KDV oranları uygun', sinif: 'bg-green-100 dark:bg-green-900/30 text-green-700', icon: 'pi-check-circle' };
-        } else {
-            this.kdvKontrolSonuc = { gecerli: false, mesaj: 'KDV oranları tutarsız görünüyor', sinif: 'bg-red-100 dark:bg-red-900/30 text-red-700', icon: 'pi-times-circle' };
-        }
+        const totalTax = tax1 + tax10 + tax20;
+        const totalBase = kdv0 + kdv1 + kdv10 + kdv20;
+
+        this.zRaporuForm.genelToplam = totalBase + totalTax;
+
+        // UI feedback handled by binding
     }
 
     getKdvToplam(): number {
-        return (this.zRaporuForm.kdv0 || 0) + (this.zRaporuForm.kdv1 || 0) + (this.zRaporuForm.kdv10 || 0) + (this.zRaporuForm.kdv20 || 0);
+        const kdv1 = this.zRaporuForm.kdv1 || 0;
+        const kdv10 = this.zRaporuForm.kdv10 || 0;
+        const kdv20 = this.zRaporuForm.kdv20 || 0;
+        return (kdv1 * 0.01) + (kdv10 * 0.10) + (kdv20 * 0.20);
     }
 
     getKdvHaric(): number {
-        return (this.zRaporuForm.genelToplam || 0) - this.getKdvToplam();
+        return (this.zRaporuForm.kdv0 || 0) + (this.zRaporuForm.kdv1 || 0) + (this.zRaporuForm.kdv10 || 0) + (this.zRaporuForm.kdv20 || 0);
     }
 
     getTahsilatToplam(): number {
@@ -362,12 +411,15 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     zRaporuKaydet(): void {
         if (!this.seciliMarketVardiya) return;
 
+        // Ensure totals are fresh
+        this.hesaplaZTotals();
+
         const data = {
             genelToplam: this.zRaporuForm.genelToplam,
-            kdv0: this.zRaporuForm.kdv0,
-            kdv1: this.zRaporuForm.kdv1,
-            kdv10: this.zRaporuForm.kdv10,
-            kdv20: this.zRaporuForm.kdv20,
+            kdv0: this.zRaporuForm.kdv0 || 0,
+            kdv1: this.zRaporuForm.kdv1 || 0,
+            kdv10: this.zRaporuForm.kdv10 || 0,
+            kdv20: this.zRaporuForm.kdv20 || 0,
             kdvToplam: this.getKdvToplam(),
             kdvHaricToplam: this.getKdvHaric()
         };
@@ -406,8 +458,20 @@ export class MarketYonetimi implements OnInit, OnDestroy {
                 krediKarti: 0,
                 gider: 0
             };
+            this.pusulaDialogVisible = false;
             this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
         });
+    }
+
+    personelDialogAc(): void {
+        this.personelIslemForm = {
+            personelId: null,
+            sistemSatisTutari: 0,
+            nakit: 0,
+            krediKarti: 0,
+            gider: 0
+        };
+        this.pusulaDialogVisible = true;
     }
 
     // Düzenlemek için personel seç
@@ -419,6 +483,7 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             krediKarti: kayit.krediKarti,
             gider: kayit.gider || 0
         };
+        this.pusulaDialogVisible = true;
     }
 
     getPersonelIslemToplam(): number {
@@ -526,42 +591,6 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         if (Math.abs(this.marketOzet.fark) < 1) return 'bg-gradient-to-br from-green-500 to-green-600';
         if (this.marketOzet.fark < 0) return 'bg-gradient-to-br from-red-500 to-red-600';
         return 'bg-gradient-to-br from-blue-500 to-blue-600';
-    }
-
-    // Yeni stil fonksiyonları
-    getFarkBackground(): string {
-        if (!this.marketOzet) return 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
-        if (Math.abs(this.marketOzet.fark) < 1) return 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
-        if (this.marketOzet.fark < 0) return 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-        return 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
-    }
-
-    getFarkShadow(): string {
-        if (!this.marketOzet) return '0 10px 40px rgba(107, 114, 128, 0.3)';
-        if (Math.abs(this.marketOzet.fark) < 1) return '0 10px 40px rgba(34, 197, 94, 0.3)';
-        if (this.marketOzet.fark < 0) return '0 10px 40px rgba(239, 68, 68, 0.3)';
-        return '0 10px 40px rgba(59, 130, 246, 0.3)';
-    }
-
-    getFarkIcon(): string {
-        if (!this.marketOzet) return 'pi-chart-line';
-        if (Math.abs(this.marketOzet.fark) < 1) return 'pi-check-circle';
-        if (this.marketOzet.fark < 0) return 'pi-exclamation-triangle';
-        return 'pi-arrow-up';
-    }
-
-    getFarkAciklama(): string {
-        if (!this.marketOzet) return 'Veri bekleniyor';
-        if (Math.abs(this.marketOzet.fark) < 1) return 'Mutabakat tamam';
-        if (this.marketOzet.fark < 0) return 'Kasa açığı';
-        return 'Kasa fazlası';
-    }
-
-    getMutabakatBackground(): string {
-        if (this.zRaporu && this.tahsilat) {
-            return 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
-        }
-        return 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)';
     }
 
     // Onay İşlemleri

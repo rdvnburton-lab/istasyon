@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
 export interface TankGiris {
@@ -90,7 +91,20 @@ export class StokService {
     }
 
     getStokDurumu(month: number, year: number): Observable<TankStokOzet[]> {
-        return this.http.get<TankStokOzet[]>(`${this.apiUrl}/ozet?month=${month + 1}&year=${year}`);
+        return this.http.get<any>(`${this.apiUrl}/ozet?month=${month + 1}&year=${year}`).pipe(
+            tap((response: any) => {
+                // Log debug info for troubleshooting
+                if (response.debug) {
+                    console.log('📊 STOK DEBUG:', response.debug);
+                }
+            }),
+            map((response: any) => response.ozet || response) // Handle both new {Ozet, Debug} and legacy array formats
+        );
+    }
+
+    // Returns full response including debug info for UI display
+    getStokDurumuWithDebug(month: number, year: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/ozet?month=${month + 1}&year=${year}`);
     }
 
     deleteGiris(id: string): Observable<any> {
@@ -99,5 +113,28 @@ export class StokService {
 
     deleteFatura(faturaNo: string): Observable<any> {
         return this.http.delete(`${this.apiUrl}/fatura/${faturaNo}`);
+    }
+
+    // Kapsamlı Stok Yönetimi API'leri
+
+    // Aylık stok raporu - hesaplanmış değerler
+    getAylikRapor(yil: number, ay: number): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/aylik-rapor?yil=${yil}&ay=${ay}`);
+    }
+
+    // Fatura bazında stok durumu - FIFO takibi
+    getFaturaStokDurumu(yakitId?: number): Observable<any[]> {
+        const query = yakitId ? `?yakitId=${yakitId}` : '';
+        return this.http.get<any[]>(`${this.apiUrl}/fatura-stok-durumu${query}`);
+    }
+
+    // Stoku yeniden hesapla
+    yenidenHesapla(yil: number, ay: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/yeniden-hesapla?yil=${yil}&ay=${ay}`, {});
+    }
+
+    // Ay kapatma işlemi
+    ayKapat(yil: number, ay: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/ay-kapat?yil=${yil}&ay=${ay}`, {});
     }
 }

@@ -8,6 +8,12 @@ export interface KrediKartiDetay {
     tutar: number;
 }
 
+export interface DigerOdeme {
+    turKodu: string;
+    turAdi: string;
+    tutar: number;
+}
+
 export interface Pusula {
     id?: number;
     vardiyaId: number;
@@ -15,11 +21,13 @@ export interface Pusula {
     personelId?: number;
     nakit: number;
     krediKarti: number;
-    paroPuan: number;
-    mobilOdeme: number;
+
     krediKartiDetay?: KrediKartiDetay[];
     krediKartiDetayList?: KrediKartiDetay[];
+    digerOdemeler?: DigerOdeme[];
+    digerOdemeList?: DigerOdeme[];
     aciklama?: string;
+    pusulaTuru?: string;
     olusturmaTarihi?: Date;
     guncellemeTarihi?: Date;
     toplam?: number;
@@ -29,8 +37,7 @@ export interface PusulaOzet {
     toplamPusula: number;
     toplamNakit: number;
     toplamKrediKarti: number;
-    toplamParoPuan: number;
-    toplamMobilOdeme: number;
+
     genelToplam: number;
 }
 
@@ -96,6 +103,8 @@ export class PusulaApiService {
                 : (data.krediKartiDetaylari && data.krediKartiDetaylari.length > 0)
                     ? data.krediKartiDetaylari.map((d: any) => ({ banka: d.bankaAdi, tutar: d.tutar }))
                     : (data.krediKartiDetay ? JSON.parse(data.krediKartiDetay) : []),
+            digerOdemeler: data.digerOdemeler || [],
+            pusulaTuru: data.pusulaTuru || 'TAHSILAT',
             olusturmaTarihi: data.olusturmaTarihi ? new Date(data.olusturmaTarihi) : undefined,
             guncellemeTarihi: data.guncellemeTarihi ? new Date(data.guncellemeTarihi) : undefined
         };
@@ -108,11 +117,12 @@ export class PusulaApiService {
             personelId: pusula.personelId,
             nakit: pusula.nakit,
             krediKarti: pusula.krediKarti,
-            paroPuan: pusula.paroPuan,
-            mobilOdeme: pusula.mobilOdeme,
+
             krediKartiDetay: pusula.krediKartiDetay ? JSON.stringify(pusula.krediKartiDetay) : null,
             krediKartiDetayList: pusula.krediKartiDetay ? pusula.krediKartiDetay.map(d => ({ bankaAdi: d.banka, tutar: d.tutar })) : [],
-            aciklama: pusula.aciklama
+            digerOdemeList: pusula.digerOdemeler ? pusula.digerOdemeler : [],
+            aciklama: pusula.aciklama,
+            pusulaTuru: pusula.pusulaTuru || 'TAHSILAT'
         };
     }
 }

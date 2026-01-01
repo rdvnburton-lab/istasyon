@@ -16,7 +16,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { AccordionModule } from 'primeng/accordion';
 import { StokService, TankGiris, TankStokOzet, StokGirisFis, CreateFaturaGiris } from '../../services/stok.service';
-import { YakitService, Yakit } from '../../../../services/yakit.service'; // Import YakitService
+import { YakitService, Yakit } from '../../../../services/yakit.service';
+import { DefinitionsService, DefinitionType } from '../../../../services/definitions.service';
 
 @Component({
     selector: 'app-yakit-stok',
@@ -65,8 +66,12 @@ export class YakitStokComponent implements OnInit {
 
     // Data
     stokOzet: TankStokOzet[] = [];
+    debugInfo: any = null; // Debug bilgisi ekranında göstermek için
+    aylikRapor: any[] = []; // Kapsamlı aylık stok raporu
+    faturaStokDurumu: any[] = []; // Fatura bazında stok takibi (FIFO)
     girisler: StokGirisFis[] = [];
     yakitList: Yakit[] = [];
+    gelisYontemleri: { label: string; value: string }[] = [];
 
     // Form - Invoice Based
     yeniFatura: {
@@ -106,6 +111,7 @@ export class YakitStokComponent implements OnInit {
     constructor(
         private stokService: StokService,
         private yakitService: YakitService,
+        private definitionsService: DefinitionsService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService
     ) {
@@ -125,6 +131,10 @@ export class YakitStokComponent implements OnInit {
             this.addItem();
         });
 
+        this.definitionsService.getDropdownList(DefinitionType.GELIS_YONTEMI).subscribe(data => {
+            this.gelisYontemleri = data;
+        });
+
         this.loadData();
     }
 
@@ -132,9 +142,26 @@ export class YakitStokComponent implements OnInit {
         this.loading = true;
 
         if (this.activeTab === '0') {
-            this.stokService.getStokDurumu(this.selectedMonth.value, this.selectedYear.value).subscribe({
-                next: (data) => { this.stokOzet = data; this.loading = false; },
+            // Fetch both legacy ozet and new aylik rapor
+            this.stokService.getStokDurumuWithDebug(this.selectedMonth.value, this.selectedYear.value).subscribe({
+                next: (response) => {
+                    this.stokOzet = response.ozet || response;
+                    this.debugInfo = response.debug || null;
+                    this.loading = false;
+                },
                 error: (err) => { console.error(err); this.loading = false; }
+            });
+
+            // Kapsamlı aylık rapor (ay 1-indexed olarak gönderilmeli)
+            this.stokService.getAylikRapor(this.selectedYear.value, this.selectedMonth.value + 1).subscribe({
+                next: (data) => { this.aylikRapor = data; },
+                error: (err) => { console.error('Aylık rapor yüklenemedi:', err); }
+            });
+
+            // Fatura stok durumu
+            this.stokService.getFaturaStokDurumu().subscribe({
+                next: (data) => { this.faturaStokDurumu = data; },
+                error: (err) => { console.error('Fatura stok durumu yüklenemedi:', err); }
             });
         }
 

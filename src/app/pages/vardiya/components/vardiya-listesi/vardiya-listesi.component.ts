@@ -107,7 +107,9 @@ export class VardiyaListesi implements OnInit {
     activeTab = '0';
     pusulaKrediKartiDetaylari: any[] = [];
     toplamKrediKarti = 0;
+    digerOdemelerToplamTutar = 0;
     pompaciSatisTutar = 0;
+    pompaCiroGosterim = 0;
     pompaciNakitToplam = 0;
     pompaFark = 0;
     pompaFarkDurumRenk: 'success' | 'warn' | 'danger' = 'success';
@@ -537,8 +539,9 @@ export class VardiyaListesi implements OnInit {
                     genelToplam: data.genelOzet.genelToplam,
                     toplamNakit: data.genelOzet.toplamNakit,
                     toplamKrediKarti: data.genelOzet.toplamKrediKarti,
-                    toplamParoPuan: data.genelOzet.toplamParoPuan,
-                    toplamMobilOdeme: data.genelOzet.toplamMobilOdeme,
+                    // toplamParoPuan ve toplamMobilOdeme removed
+                    digerOdemeler: data.genelOzet.digerOdemeler || [],
+                    filoToplam: data.genelOzet.filoToplam || 0,
                     toplamGider: 0,
                     toplamVeresiye: data.genelOzet.toplamVeresiye || 0,
                     toplamFark: data.genelOzet.toplamFark,
@@ -554,7 +557,7 @@ export class VardiyaListesi implements OnInit {
                     fark: item.fark,
                     farkDurum: item.farkDurum === 'UYUMLU' ? FarkDurum.UYUMLU :
                         (item.farkDurum === 'ACIK' ? FarkDurum.ACIK : FarkDurum.FAZLA),
-                    pusulaDokum: item.pusulaDokum || { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0 }
+                    pusulaDokum: item.pusulaDokum || { nakit: 0, krediKarti: 0, digerOdemeler: [] }
                 }));
 
                 // 3. İstatistikler
@@ -562,6 +565,9 @@ export class VardiyaListesi implements OnInit {
                 this.pompaciSatisTutar = this.farkAnalizi
                     .filter(item => item.personelAdi?.toUpperCase() !== 'OTOMASYON')
                     .reduce((sum, item) => sum + (item.otomasyonToplam || 0), 0);
+                // Pompa Cirosu = Pompacı Satışları - Filo Satışları
+                this.pompaCiroGosterim = this.pompaciSatisTutar - (data.genelOzet.filoToplam || 0);
+
                 this.pompaFark = data.genelOzet.toplamFark;
 
                 if (Math.abs(this.pompaFark) < 10) {
@@ -573,14 +579,20 @@ export class VardiyaListesi implements OnInit {
                 }
 
                 // 4. Kredi Kartı Detayları
-                this.pusulaKrediKartiDetaylari = (data.krediKartiDetaylari || []).map((item: any) => ({
-                    banka: item.banka,
-                    tutar: item.tutar,
-                    isSpecial: item.banka === 'Paro Puan' || item.banka === 'Mobil Ödeme',
-                    showSeparator: false
-                }));
+                // Diğer ödemeleri listeden çıkar (zaten yukarıda özet olarak var)
+                const digerOdemeIsimleri = new Set((this.genelOzet?.digerOdemeler || []).map(d => d.turAdi));
 
-                this.toplamKrediKarti = data.genelOzet.toplamKrediKarti + data.genelOzet.toplamParoPuan + data.genelOzet.toplamMobilOdeme;
+                this.pusulaKrediKartiDetaylari = (data.krediKartiDetaylari || [])
+                    .filter((item: any) => !digerOdemeIsimleri.has(item.banka))
+                    .map((item: any) => ({
+                        banka: item.banka,
+                        tutar: item.tutar,
+                        isSpecial: false,
+                        showSeparator: false
+                    }));
+
+                this.toplamKrediKarti = data.genelOzet.toplamKrediKarti;
+                this.digerOdemelerToplamTutar = (this.genelOzet?.digerOdemeler || []).reduce((acc, item) => acc + item.toplam, 0);
 
                 this.yukleniyor = false;
                 this.detayVisible = true;

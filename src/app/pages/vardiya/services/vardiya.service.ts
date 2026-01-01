@@ -133,9 +133,9 @@ export class VardiyaService {
                         personelAdi: p.personelAdi,
                         nakit: p.nakit,
                         krediKarti: p.krediKarti,
-                        paroPuan: p.paroPuan,
-                        mobilOdeme: p.mobilOdeme,
-                        toplam: (p.nakit + p.krediKarti + p.paroPuan + p.mobilOdeme),
+                        // ParoPuan ve MobilOdeme removed
+                        digerOdemeler: p.digerOdemeler || [],
+                        toplam: (p.nakit + p.krediKarti + (p.digerOdemeler ? p.digerOdemeler.reduce((s: number, d: any) => s + d.tutar, 0) : 0)),
                         krediKartiDetay: p.krediKartiDetay || [],
                         olusturmaTarihi: p.olusturmaTarihi || new Date()
                     }));
@@ -307,8 +307,9 @@ export class VardiyaService {
         // Calculate totals from Pusula
         const nakitToplam = pusulalar.reduce((sum, p) => sum + p.nakit, 0);
         const kkToplam = pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
-        const paroPuanToplam = pusulalar.reduce((sum, p) => sum + p.paroPuan, 0);
-        const mobilOdemeToplam = pusulalar.reduce((sum, p) => sum + p.mobilOdeme, 0);
+        const digerOdemelerFlat = pusulalar.flatMap(p => p.digerOdemeler || []);
+        const paroPuanToplam = digerOdemelerFlat.filter(d => d.turKodu === 'PARO_PUAN').reduce((sum, d) => sum + d.tutar, 0);
+        const mobilOdemeToplam = digerOdemelerFlat.filter(d => d.turKodu === 'MOBIL_ODEME').reduce((sum, d) => sum + d.tutar, 0);
 
         const tahsilatToplam = nakitToplam + kkToplam + paroPuanToplam + mobilOdemeToplam;
 
@@ -387,14 +388,6 @@ export class VardiyaService {
                 netTahsilat: data.genelOzet.pusulaToplam
             }))
         );
-    }
-
-    getGiderTurleri() {
-        return Object.keys(GiderTuru).map(key => ({ label: key, value: GiderTuru[key as keyof typeof GiderTuru] }));
-    }
-
-    getGelirTurleri() {
-        return Object.keys(GelirTuru).map(key => ({ label: key, value: GelirTuru[key as keyof typeof GelirTuru] }));
     }
 
     getMarketOzet(): Observable<MarketOzet | null> {

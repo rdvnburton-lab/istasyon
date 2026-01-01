@@ -161,6 +161,12 @@ export class AppMenu implements OnInit, OnDestroy {
                 routerLink: ['/vardiya/tanimlamalar/yakit'],
                 visible: hasAccess('TANIMLAMA_YAKIT')
             },
+            {
+                label: 'Sistem Tanımları',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/yonetim/tanimlar'],
+                visible: hasAccess('YONETIM_TANIMLAR')
+            },
         ].filter(item => item.visible);
 
         if (yonetimItems.length > 0) {

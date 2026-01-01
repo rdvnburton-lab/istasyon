@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { IstasyonYonetimiComponent } from './istasyon-yonetimi/istasyon-yonetimi.component';
 import { KullaniciYonetimiComponent } from './kullanici-yonetimi/kullanici-yonetimi.component';
 import { YetkiYonetimiComponent } from './yetki-yonetimi/yetki-yonetimi.component';
+import { DefinitionsComponent } from '../tanimlar/definitions/definitions.component';
 
 import { roleGuard } from '../../services/role.guard';
 
@@ -23,5 +24,11 @@ export const YONETIM_ROUTES: Routes = [
         component: YetkiYonetimiComponent,
         canActivate: [roleGuard],
         data: { resource: 'YONETIM_YETKI' }
+    },
+    {
+        path: 'tanimlar',
+        component: DefinitionsComponent,
+        canActivate: [roleGuard],
+        data: { resource: 'YONETIM_TANIMLAR' }
     }
 ];

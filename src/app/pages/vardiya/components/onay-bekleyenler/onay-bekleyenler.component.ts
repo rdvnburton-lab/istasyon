@@ -107,8 +107,10 @@ export class OnayBekleyenlerComponent implements OnInit {
     activeTab: string = '0';
     pusulaKrediKartiDetaylari: { banka: string; tutar: number; showSeparator?: boolean; isSpecial?: boolean }[] = [];
     toplamKrediKarti: number = 0;
+    digerOdemelerToplamTutar: number = 0;
 
     // Yeni eklenen alanlar
+    pompaCiroGosterim: number = 0;
     pompaciSatisTutar: number = 0;
     pompaciNakitToplam: number = 0;
     pompaFark: number = 0;
@@ -139,11 +141,12 @@ export class OnayBekleyenlerComponent implements OnInit {
                 this.genelOzet = {
                     pompaToplam: data.genelOzet.pompaToplam,
                     marketToplam: data.genelOzet.marketToplam,
+                    digerOdemeler: data.genelOzet.digerOdemeler || [],
+                    filoToplam: data.genelOzet.filoToplam || 0,
                     genelToplam: data.genelOzet.genelToplam,
                     toplamNakit: data.genelOzet.toplamNakit,
                     toplamKrediKarti: data.genelOzet.toplamKrediKarti,
-                    toplamParoPuan: data.genelOzet.toplamParoPuan,
-                    toplamMobilOdeme: data.genelOzet.toplamMobilOdeme,
+
                     toplamGider: 0,
                     toplamVeresiye: data.genelOzet.toplamVeresiye || 0,
                     toplamFark: data.genelOzet.toplamFark,
@@ -159,7 +162,7 @@ export class OnayBekleyenlerComponent implements OnInit {
                     fark: item.fark,
                     farkDurum: item.farkDurum === 'UYUMLU' ? FarkDurum.UYUMLU :
                         (item.farkDurum === 'ACIK' ? FarkDurum.ACIK : FarkDurum.FAZLA),
-                    pusulaDokum: item.pusulaDokum || { nakit: 0, krediKarti: 0, paroPuan: 0, mobilOdeme: 0 }
+                    pusulaDokum: item.pusulaDokum || { nakit: 0, krediKarti: 0, digerOdemeler: [] }
                 }));
 
                 // 3. İstatistikler
@@ -167,6 +170,10 @@ export class OnayBekleyenlerComponent implements OnInit {
                 this.pompaciSatisTutar = this.farkAnalizi
                     .filter(item => item.personelAdi?.toUpperCase() !== 'OTOMASYON')
                     .reduce((sum, item) => sum + (item.otomasyonToplam || 0), 0);
+
+                // Pompa Cirosu = Pompacı Satışları - Filo Satışları
+                this.pompaCiroGosterim = this.pompaciSatisTutar - (data.genelOzet.filoToplam || 0);
+
                 this.pompaFark = data.genelOzet.toplamFark;
 
                 if (Math.abs(this.pompaFark) < 10) {
@@ -196,15 +203,22 @@ export class OnayBekleyenlerComponent implements OnInit {
                 };
 
                 // 5. Kredi Kartı Detayları - Zaten gruplu geliyor
-                this.pusulaKrediKartiDetaylari = (data.krediKartiDetaylari || []).map((item: any) => ({
-                    banka: item.banka,
-                    tutar: item.tutar,
-                    isSpecial: item.banka === 'Paro Puan' || item.banka === 'Mobil Ödeme',
-                    showSeparator: false
-                }));
+                // Diğer ödemeleri listeden çıkar (zaten yukarıda özet olarak var)
+                const digerOdemeIsimleri = new Set((this.genelOzet?.digerOdemeler || []).map(d => d.turAdi));
+
+                this.pusulaKrediKartiDetaylari = (data.krediKartiDetaylari || [])
+                    .filter((item: any) => !digerOdemeIsimleri.has(item.banka))
+                    .map((item: any) => ({
+                        banka: item.banka,
+                        tutar: item.tutar,
+                        isSpecial: false,
+                        showSeparator: false
+                    }));
 
                 // toplamKrediKarti'yi genelOzet'ten al (daha güvenilir)
-                this.toplamKrediKarti = data.genelOzet.toplamKrediKarti + data.genelOzet.toplamParoPuan + data.genelOzet.toplamMobilOdeme;
+                // toplamKrediKarti'yi genelOzet'ten al (daha güvenilir)
+                this.toplamKrediKarti = data.genelOzet.toplamKrediKarti;
+                this.digerOdemelerToplamTutar = (data.genelOzet.digerOdemeler || []).reduce((acc: number, item: any) => acc + item.toplam, 0);
 
                 this.loading = false;
                 this.detayVisible = true;
@@ -217,61 +231,7 @@ export class OnayBekleyenlerComponent implements OnInit {
         });
     }
 
-    private hesaplaKrediKartiDetaylari(pusulalar: any[]) {
-        const bankaMap = new Map<string, number>();
-        this.toplamKrediKarti = 0;
-
-        pusulalar.forEach(pusula => {
-            if (pusula.krediKartiDetay && Array.isArray(pusula.krediKartiDetay)) {
-                pusula.krediKartiDetay.forEach((detay: any) => {
-                    const banka = detay.banka || 'Diğer';
-                    const tutar = detay.tutar || 0;
-
-                    const mevcut = bankaMap.get(banka) || 0;
-                    bankaMap.set(banka, mevcut + tutar);
-                    this.toplamKrediKarti += tutar;
-                });
-            } else if (pusula.krediKarti > 0) {
-                const banka = 'Genel / Detaysız';
-                const mevcut = bankaMap.get(banka) || 0;
-                bankaMap.set(banka, mevcut + pusula.krediKarti);
-                this.toplamKrediKarti += pusula.krediKarti;
-            }
-
-            if (pusula.paroPuan > 0) {
-                const banka = 'Paro Puan';
-                const mevcut = bankaMap.get(banka) || 0;
-                bankaMap.set(banka, mevcut + pusula.paroPuan);
-                this.toplamKrediKarti += pusula.paroPuan;
-            }
-
-            if (pusula.mobilOdeme > 0) {
-                const banka = 'Mobil Ödeme';
-                const mevcut = bankaMap.get(banka) || 0;
-                bankaMap.set(banka, mevcut + pusula.mobilOdeme);
-                this.toplamKrediKarti += pusula.mobilOdeme;
-            }
-        });
-
-        const tumKayitlar = Array.from(bankaMap.entries()).map(([banka, tutar]) => {
-            const isSpecial = banka === 'Paro Puan' || banka === 'Mobil Ödeme';
-            return {
-                banka,
-                tutar,
-                isSpecial,
-                showSeparator: false
-            };
-        });
-
-        const normalKayitlar = tumKayitlar.filter(x => !x.isSpecial).sort((a, b) => b.tutar - a.tutar);
-        const ozelKayitlar = tumKayitlar.filter(x => x.isSpecial).sort((a, b) => b.tutar - a.tutar);
-
-        if (ozelKayitlar.length > 0 && normalKayitlar.length > 0) {
-            ozelKayitlar[0].showSeparator = true;
-        }
-
-        this.pusulaKrediKartiDetaylari = [...normalKayitlar, ...ozelKayitlar];
-    }
+    // hesaplaKrediKartiDetaylari removed as it is handled backend side or redundant
 
     onayla(vardiya: Vardiya) {
         const isDeletion = vardiya.durum === 'SILINME_ONAYI_BEKLIYOR';

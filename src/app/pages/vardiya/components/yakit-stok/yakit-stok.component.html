@@ -29,37 +29,106 @@
         <div class="content-wrapper px-4 pb-4">
             <!-- TAB 0: ÖZET (Cards) -->
             <div *ngIf="activeTab === '0'" class="animate-fade-in space-y-4">
-                <ng-container *ngFor="let item of stokOzet">
-                    <div class="stok-card" [style.border-top-color]="item.renk">
-                        <div class="card-header">
-                            <span class="fuel-type">{{ item.yakitTuru }}</span>
-                            <span class="badge" [style.background]="item.renk">Stokta</span>
+                <!-- Mobile Date Filter for Özet -->
+                <div class="filter-container mb-4 bg-white p-3 rounded-xl border border-gray-100">
+                    <div class="flex gap-2">
+                        <div class="flex-1">
+                            <div class="text-xs text-gray-500 mb-1">Ay</div>
+                            <p-select [options]="months" [(ngModel)]="selectedMonth" optionLabel="label"
+                                (onChange)="loadData()" styleClass="w-full text-sm"
+                                [style]="{'min-width': '140px'}"></p-select>
                         </div>
-                        <div class="card-body">
-                            <div class="main-stat">
-                                <span class="value">{{ item.kalanStok | number:'1.0-0' }}</span>
-                                <span class="unit">Litre</span>
+                        <div class="flex-1">
+                            <div class="text-xs text-gray-500 mb-1">Yıl</div>
+                            <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
+                                (onChange)="loadData()" styleClass="w-full text-sm"
+                                [style]="{'min-width': '100px'}"></p-select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aylık Stok Kartları - 3'lü yatay düzen -->
+                <div *ngIf="aylikRapor.length > 0" class="grid grid-cols-1 gap-4">
+                    <div *ngFor="let item of aylikRapor"
+                        class="stok-card bg-white rounded-xl shadow-sm border-l-4 overflow-hidden"
+                        [style.border-left-color]="item.renk || '#666'">
+                        <div class="p-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <div class="text-lg font-bold text-gray-800">{{ item.yakitAdi }}</div>
+                                    <div class="text-xs text-gray-400">{{ selectedMonth.label }} {{ selectedYear.label
+                                        }}</div>
+                                </div>
+                                <span *ngIf="item.kilitli"
+                                    class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
+                                    <i class="pi pi-lock text-xs"></i>
+                                </span>
                             </div>
-                            <div class="sub-stats">
-                                <div class="stat-item">
-                                    <label>Geçen Ay</label>
-                                    <span>{{ item.gecenAyDevir | number:'1.0-0' }}</span>
+
+                            <!-- Ana Stok Değeri -->
+                            <div class="text-center py-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl mb-3">
+                                <span class="text-3xl font-bold" [style.color]="item.renk || '#333'">
+                                    {{ item.kalanStok | number:'1.0-0' }}
+                                </span>
+                                <span class="text-gray-500 text-sm ml-1">Litre</span>
+                            </div>
+
+                            <!-- Detaylı Bilgiler -->
+                            <div class="grid grid-cols-3 gap-2 text-center text-sm">
+                                <div class="p-2 bg-gray-50 rounded-lg">
+                                    <div class="text-gray-400 text-xs">Devir</div>
+                                    <div class="font-semibold text-gray-700">{{ item.devirStok | number:'1.0-0' }}</div>
                                 </div>
-                                <div class="stat-item">
-                                    <label>Giriş</label>
-                                    <span class="positive">+{{ item.buAyGiris | number:'1.0-0' }}</span>
+                                <div class="p-2 bg-green-50 rounded-lg">
+                                    <div class="text-green-500 text-xs">Giriş</div>
+                                    <div class="font-semibold text-green-600">+{{ item.ayGiris | number:'1.0-0' }}</div>
                                 </div>
-                                <div class="stat-item">
-                                    <label>Satış</label>
-                                    <span class="negative">-{{ item.buAySatis | number:'1.0-0' }}</span>
+                                <div class="p-2 bg-red-50 rounded-lg">
+                                    <div class="text-red-400 text-xs">Satış</div>
+                                    <div class="font-semibold text-red-600">-{{ item.aySatis | number:'1.0-0' }}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </ng-container>
-                <div *ngIf="stokOzet.length === 0 && !loading" class="empty-state">
-                    <i class="pi pi-info-circle text-2xl mb-2"></i>
-                    <p>Veri yok.</p>
+                </div>
+
+                <div *ngIf="aylikRapor.length === 0 && !loading" class="empty-state text-center py-8">
+                    <i class="pi pi-info-circle text-2xl mb-2 text-gray-400"></i>
+                    <p class="text-gray-500">Bu dönem için stok verisi bulunamadı.</p>
+                </div>
+
+                <!-- Fatura Stok Durumu (FIFO) Paneli -->
+                <div *ngIf="faturaStokDurumu.length > 0"
+                    class="mt-4 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="pi pi-file text-purple-600"></i>
+                        <span class="font-bold text-purple-800">Fatura Stok Durumu (FIFO)</span>
+                    </div>
+
+                    <div class="space-y-2 max-h-60 overflow-y-auto">
+                        <div *ngFor="let f of faturaStokDurumu"
+                            class="p-2 bg-white rounded-lg border shadow-sm flex justify-between items-center"
+                            [class.opacity-50]="f.tamamlandi">
+                            <div>
+                                <div class="font-medium text-gray-800">{{ f.faturaNo }}</div>
+                                <div class="text-xs text-gray-500">{{ f.yakitAdi }} • {{ f.faturaTarihi |
+                                    date:'dd/MM/yyyy' }}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm">
+                                    <span class="text-gray-500">{{ f.kalanMiktar | number:'1.0-0' }}</span>
+                                    <span class="text-gray-400">/</span>
+                                    <span class="font-medium">{{ f.girenMiktar | number:'1.0-0' }}</span>
+                                    <span class="text-gray-500"> Lt</span>
+                                </div>
+                                <div class="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-purple-500 rounded-full" [style.width.%]="f.tuketimYuzdesi">
+                                    </div>
+                                </div>
+                            </div>
+                            <i *ngIf="f.tamamlandi" class="pi pi-check-circle text-green-500 ml-2"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -71,12 +140,14 @@
                         <div class="flex-1">
                             <div class="text-xs text-gray-500 mb-1">Ay</div>
                             <p-select [options]="months" [(ngModel)]="selectedMonth" optionLabel="label"
-                                (onChange)="onDateChange()" styleClass="w-full text-sm"></p-select>
+                                (onChange)="onDateChange()" styleClass="w-full text-sm"
+                                [style]="{'min-width': '140px'}"></p-select>
                         </div>
-                        <div class="w-1/3">
+                        <div class="flex-1">
                             <div class="text-xs text-gray-500 mb-1">Yıl</div>
                             <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
-                                (onChange)="onDateChange()" styleClass="w-full text-sm"></p-select>
+                                (onChange)="onDateChange()" styleClass="w-full text-sm"
+                                [style]="{'min-width': '100px'}"></p-select>
                         </div>
                     </div>
                 </div>
@@ -105,6 +176,26 @@
                                     </div>
                                     <i [class]="expandedRows[fis.faturaNo] ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
                                         class="text-gray-400"></i>
+                                </div>
+                            </div>
+
+                            <!-- Additional Info (If present) -->
+                            <div *ngIf="fis.gelisYontemi || fis.plaka || fis.urunGirisTarihi"
+                                class="mx-3 mb-2 p-2 bg-blue-50/50 rounded-lg border border-dashed border-blue-100 text-[10px]">
+                                <div class="flex flex-wrap gap-x-3 gap-y-1">
+                                    <div *ngIf="fis.gelisYontemi" class="flex items-center gap-1">
+                                        <span class="text-gray-400">Yöntem:</span>
+                                        <span class="font-medium text-gray-700">{{ fis.gelisYontemi }}</span>
+                                    </div>
+                                    <div *ngIf="fis.plaka" class="flex items-center gap-1">
+                                        <span class="text-gray-400">Plaka:</span>
+                                        <span class="font-medium text-gray-700">{{ fis.plaka }}</span>
+                                    </div>
+                                    <div *ngIf="fis.urunGirisTarihi" class="flex items-center gap-1">
+                                        <span class="text-gray-400">Ürün Giriş:</span>
+                                        <span class="font-medium text-gray-700">{{ fis.urunGirisTarihi |
+                                            date:'dd.MM.yyyy HH:mm' }}</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -159,8 +250,9 @@
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-500 mb-1">Geliş
                                         Yöntemi</label>
-                                    <input pInputText [(ngModel)]="yeniFatura.gelisYontemi"
-                                        class="w-full p-inputtext-sm" placeholder="Örn: Gemi" />
+                                    <p-select [options]="gelisYontemleri" [(ngModel)]="yeniFatura.gelisYontemi"
+                                        placeholder="Seçin" styleClass="w-full p-inputtext-sm"
+                                        appendTo="body"></p-select>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-500 mb-1">Araç Plaka</label>
@@ -272,31 +364,122 @@
 
         <!-- Desktop Content - Özet -->
         <div *ngIf="activeTab === '0'" class="col-span-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Summary Cards -->
-                <div *ngFor="let item of stokOzet" class="card mb-0 h-full border-t-4 p-4"
-                    [style.border-top-color]="item.renk">
-                    <div class="flex justify-between items-start mb-2">
-                        <span
-                            class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">{{
-                            item.yakitTuru }}</span>
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                            <i class="pi pi-database text-sm"></i>
+            <!-- Desktop Date Filter for Özet -->
+            <div class="card mb-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="pi pi-calendar text-blue-500"></i>
+                        <span class="font-semibold text-[var(--text-color)]">Dönem Seçimi</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <p-select [options]="months" [(ngModel)]="selectedMonth" optionLabel="label"
+                            (onChange)="loadData()" styleClass="w-40" [style]="{'min-width': '160px'}"></p-select>
+                        <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
+                            (onChange)="loadData()" styleClass="w-28" [style]="{'min-width': '100px'}"></p-select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Aylık Stok Kartları - 3 sütun -->
+            <div *ngIf="aylikRapor.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let item of aylikRapor"
+                    class="card mb-0 h-full p-0 overflow-hidden border-l-4 hover:shadow-lg transition-shadow"
+                    [style.border-left-color]="item.renk || '#666'">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 m-0">{{ item.yakitAdi }}</h3>
+                                <p class="text-xs text-gray-400 m-0">{{ selectedMonth.label }} {{ selectedYear.label }}
+                                </p>
+                            </div>
+                            <span *ngIf="item.kilitli"
+                                class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
+                                <i class="pi pi-lock text-xs mr-1"></i>Kilitli
+                            </span>
+                        </div>
+
+                        <!-- Ana Stok Değeri -->
+                        <div class="text-center py-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl mb-4">
+                            <span class="text-4xl font-bold" [style.color]="item.renk || '#333'">
+                                {{ item.kalanStok | number:'1.0-0' }}
+                            </span>
+                            <span class="text-gray-500 text-lg ml-1">Lt</span>
+                        </div>
+
+                        <!-- Detaylı Bilgiler -->
+                        <div class="grid grid-cols-3 gap-3 text-center">
+                            <div class="p-3 bg-gray-50 rounded-xl">
+                                <div class="text-gray-400 text-xs mb-1">Devir</div>
+                                <div class="font-bold text-gray-700">{{ item.devirStok | number:'1.0-0' }}</div>
+                            </div>
+                            <div class="p-3 bg-green-50 rounded-xl">
+                                <div class="text-green-500 text-xs mb-1">Giriş</div>
+                                <div class="font-bold text-green-600">+{{ item.ayGiris | number:'1.0-0' }}</div>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded-xl">
+                                <div class="text-red-400 text-xs mb-1">Satış</div>
+                                <div class="font-bold text-red-600">-{{ item.aySatis | number:'1.0-0' }}</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="text-3xl font-bold text-[var(--text-color)] mb-4">
-                        {{ item.kalanStok | number:'1.0-0' }} <span class="text-lg text-gray-500">Lt</span>
+                </div>
+            </div>
+
+            <div *ngIf="aylikRapor.length === 0 && !loading" class="card text-center py-12">
+                <i class="pi pi-info-circle text-4xl mb-3 text-gray-300"></i>
+                <p class="text-gray-500 m-0">Bu dönem için stok verisi bulunamadı.</p>
+            </div>
+
+            <!-- Desktop Fatura Stok Durumu (FIFO) Paneli -->
+            <div *ngIf="faturaStokDurumu.length > 0"
+                class="mt-6 card p-6 bg-gradient-to-br from-purple-50/50 to-indigo-50/50 border border-purple-200">
+                <div class="flex items-center gap-3 mb-4 pb-3 border-b border-purple-200">
+                    <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                        <i class="pi pi-file text-purple-600 text-xl"></i>
                     </div>
-                    <div class="flex justify-between text-sm pt-2 border-t border-dashed border-gray-200">
-                        <div class="text-center">
-                            <div class="text-gray-400 text-xs">Giriş</div>
-                            <div class="font-bold text-green-500">+{{ item.buAyGiris | number }}</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-gray-400 text-xs">Satış</div>
-                            <div class="font-bold text-red-500">-{{ item.buAySatis | number }}</div>
-                        </div>
+                    <div>
+                        <h3 class="font-bold text-purple-900 m-0">Fatura Stok Durumu (FIFO)</h3>
+                        <p class="text-purple-700 text-sm m-0">Hangi faturadan ne kadar stok kaldı</p>
                     </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-purple-50 text-purple-800">
+                                <th class="text-left p-3 rounded-tl-lg">Fatura No</th>
+                                <th class="text-left p-3">Yakıt</th>
+                                <th class="text-left p-3">Tarih</th>
+                                <th class="text-right p-3">Giren</th>
+                                <th class="text-right p-3">Kalan</th>
+                                <th class="text-center p-3 rounded-tr-lg">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let f of faturaStokDurumu" class="border-b border-gray-100 hover:bg-gray-50"
+                                [class.opacity-50]="f.tamamlandi">
+                                <td class="p-3 font-medium">{{ f.faturaNo }}</td>
+                                <td class="p-3">{{ f.yakitAdi }}</td>
+                                <td class="p-3 text-gray-500">{{ f.faturaTarihi | date:'dd/MM/yyyy' }}</td>
+                                <td class="p-3 text-right">{{ f.girenMiktar | number:'1.0-0' }} Lt</td>
+                                <td class="p-3 text-right font-bold" [class.text-green-600]="f.kalanMiktar > 0"
+                                    [class.text-gray-400]="f.kalanMiktar <= 0">
+                                    {{ f.kalanMiktar | number:'1.0-0' }} Lt
+                                </td>
+                                <td class="p-3 text-center">
+                                    <div class="inline-flex items-center gap-2">
+                                        <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-purple-500 rounded-full transition-all"
+                                                [style.width.%]="f.tuketimYuzdesi"></div>
+                                        </div>
+                                        <span *ngIf="f.tamamlandi" class="text-green-500">
+                                            <i class="pi pi-check-circle"></i>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -315,15 +498,18 @@
                         <!-- Month/Year Filters -->
                         <ng-container *ngIf="filterType === 'MONTH'">
                             <p-select [options]="months" [(ngModel)]="selectedMonth" optionLabel="label"
-                                (onChange)="onDateChange()" styleClass="w-32"></p-select>
+                                (onChange)="onDateChange()" styleClass="w-40"
+                                [style]="{'min-width': '160px'}"></p-select>
                             <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
-                                (onChange)="onDateChange()" styleClass="w-24"></p-select>
+                                (onChange)="onDateChange()" styleClass="w-28"
+                                [style]="{'min-width': '100px'}"></p-select>
                         </ng-container>
 
                         <!-- Year Filter -->
                         <ng-container *ngIf="filterType === 'YEAR'">
                             <p-select [options]="years" [(ngModel)]="selectedYear" optionLabel="label"
-                                (onChange)="onDateChange()" styleClass="w-24"></p-select>
+                                (onChange)="onDateChange()" styleClass="w-28"
+                                [style]="{'min-width': '100px'}"></p-select>
                         </ng-container>
 
                         <!-- Range Filter -->
@@ -470,8 +656,8 @@
                 <div class="flex gap-4 mb-6">
                     <div class="flex-1">
                         <label class="block font-bold mb-2">Geliş Yöntemi</label>
-                        <input pInputText [(ngModel)]="yeniFatura.gelisYontemi" class="w-full"
-                            placeholder="Örn: Gemi, Tanker" />
+                        <p-select [options]="gelisYontemleri" [(ngModel)]="yeniFatura.gelisYontemi" placeholder="Seçin"
+                            styleClass="w-full"></p-select>
                     </div>
                     <div class="flex-1">
                         <label class="block font-bold mb-2">Araç Plaka</label>
@@ -554,8 +740,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="flex-1">
                     <label class="block font-bold mb-2">Geliş Yöntemi</label>
-                    <input pInputText [(ngModel)]="yeniFatura.gelisYontemi" class="w-full"
-                        placeholder="Örn: Gemi, Tanker" />
+                    <p-select [options]="gelisYontemleri" [(ngModel)]="yeniFatura.gelisYontemi" placeholder="Seçin"
+                        styleClass="w-full"></p-select>
                 </div>
                 <div class="flex-1">
                     <label class="block font-bold mb-2">Araç Plaka</label>

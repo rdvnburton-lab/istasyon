@@ -26,6 +26,7 @@ import { VardiyaApiService } from '../../services/vardiya-api.service';
 import { PersonelApiService } from '../../services/personel-api.service';
 
 import { PusulaApiService, Pusula, KrediKartiDetay } from '../../../../services/pusula-api.service';
+import { DefinitionsService, DefinitionType } from '../../../../services/definitions.service';
 
 interface PersonelOtomasyonOzet {
     personelAdi: string;
@@ -81,7 +82,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     pusulaForm: Pusula = this.getEmptyPusula();
 
     // Kredi Kartı Detayları
-    bankalar = ['Ziraat Bankası', 'Garanti BBVA', 'İş Bankası', 'Yapı Kredi', 'Akbank', 'Halkbank', 'Vakıfbank', 'QNB Finansbank', 'Denizbank'];
+    bankalar: string[] = [];
     yeniKrediKarti: KrediKartiDetay = { banka: '', tutar: 0 };
     anlikKrediKartiDetaylari: KrediKartiDetay[] = [];
 
@@ -95,8 +96,24 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     // Ödeme Türü Özetleri
     toplamNakit = 0;
     toplamKrediKarti = 0;
-    toplamParoPuan = 0;
-    toplamMobilOdeme = 0;
+
+
+    // Dinamik Diğer Ödemeler Toplamları (TurKodu -> Toplam)
+    digerOdemelerToplam: { turKodu: string, turAdi: string, toplam: number }[] = [];
+
+    // Dinamik Tanımlar
+    odemeYontemleri: any[] = [];
+    pusulaTurleri: any[] = [];
+    giderTurleri: any[] = [];
+    giderler: any[] = [];
+
+    // Gider Dialog
+    giderDialogVisible = false;
+    giderForm: any = { giderTuru: '', tutar: 0, aciklama: '' };
+
+    // Diğer Ödeme Yöntemleri
+    yeniDigerOdeme: any = { tur: null, tutar: 0 };
+    digerOdemeDialogVisible = false;
 
     // Önizleme
     onizlemeDialogVisible = false;
@@ -112,6 +129,10 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         );
     }
 
+    getToplamLitre(): number {
+        return this.personelOzetler.reduce((sum, p) => sum + (p.toplamLitre || 0), 0);
+    }
+
     // Personel Düzenleme
     personelDuzenleDialogVisible = false;
     duzenlenecekPersonel: any = {};
@@ -125,7 +146,8 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         private messageService: MessageService,
         private router: Router,
         private route: ActivatedRoute,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private definitionsService: DefinitionsService
     ) { }
 
     ngOnInit(): void {
@@ -138,6 +160,37 @@ export class PompaYonetimi implements OnInit, OnDestroy {
             } else {
                 this.router.navigate(['/vardiya']);
             }
+        });
+
+        this.loadBankalar();
+    }
+
+    loadBankalar() {
+        this.definitionsService.getByType(DefinitionType.BANKA).subscribe(data => {
+            this.bankalar = data.map(b => b.name);
+        });
+
+        // Ödeme Yöntemleri
+        this.definitionsService.getByType(DefinitionType.ODEME).subscribe(data => {
+            this.odemeYontemleri = data;
+        });
+
+        // Pusula Türleri (Pusula için 'Diğer' ödeme tipleri)
+        this.definitionsService.getByType(DefinitionType.PUSULA_TURU).subscribe(data => {
+            // Ödeme yöntemlerinden Paro ve Mobil'i de ekle (eğer yoksa)
+            const methods = [...data];
+            if (!methods.find(m => m.code === 'PARO_PUAN')) {
+                methods.push({ name: 'Paro Puan', code: 'PARO_PUAN' } as any);
+            }
+            if (!methods.find(m => m.code === 'MOBIL_ODEME')) {
+                methods.push({ name: 'Mobil Ödeme', code: 'MOBIL_ODEME' } as any);
+            }
+            this.pusulaTurleri = methods;
+        });
+
+        // Gider Türleri
+        this.definitionsService.getByType(DefinitionType.POMPA_GIDER).subscribe(data => {
+            this.giderTurleri = data;
         });
     }
 
@@ -190,20 +243,22 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     .filter(p => p.personelAdi !== 'FİLO SATIŞLARI')
                     .reduce((sum, p) => sum + p.toplamTutar, 0);
 
-                // Pusulalar zaten geliyor
-                this.pusulalar = (data.pusulalar || []).map((p: any) => ({
-                    id: p.id,
-                    vardiyaId: this.vardiyaId,
-                    personelAdi: p.personelAdi,
-                    personelId: p.personelId,
-                    nakit: p.nakit,
-                    krediKarti: p.krediKarti,
-                    paroPuan: p.paroPuan,
-                    mobilOdeme: p.mobilOdeme,
-                    krediKartiDetay: p.krediKartiDetay ? JSON.parse(p.krediKartiDetay) : [],
-                    aciklama: p.aciklama,
-                    toplam: p.toplam
-                }));
+                // Pusulalar (Paro ve Mobil'i DigerOdemeler listesine konsolide et)
+                this.pusulalar = (data.pusulalar || []).map((p: any) => {
+                    const mappedDigerOdemeler = [...(p.digerOdemeler || [])];
+
+                    return {
+                        ...p,
+                        nakit: p.nakit,
+                        krediKarti: p.krediKarti,
+                        krediKartiDetay: p.krediKartiDetay ? (typeof p.krediKartiDetay === 'string' ? JSON.parse(p.krediKartiDetay) : p.krediKartiDetay) : [],
+                        digerOdemeler: mappedDigerOdemeler,
+                        aciklama: p.aciklama,
+                        toplam: p.toplam
+                    };
+                });
+
+                this.giderler = data.giderler || [];
 
                 this.calculateOzet();
                 this.loading = false;
@@ -226,13 +281,37 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     calculateOzet(): void {
         this.toplamNakit = this.pusulalar.reduce((sum, p) => sum + p.nakit, 0);
         this.toplamKrediKarti = this.pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
-        this.toplamParoPuan = this.pusulalar.reduce((sum, p) => sum + p.paroPuan, 0);
-        this.toplamMobilOdeme = this.pusulalar.reduce((sum, p) => sum + p.mobilOdeme, 0);
 
-        this.pusulaToplam = this.toplamNakit + this.toplamKrediKarti + this.toplamParoPuan + this.toplamMobilOdeme;
 
-        // Fark = (Pusula Toplamı + Filo Satışları) - Otomasyon Toplamı
-        this.fark = (this.pusulaToplam + this.filoToplam) - this.otomasyonToplam;
+        const toplamDigerOdemeler = this.pusulalar.reduce((sum, p) =>
+            sum + (p.digerOdemeler?.reduce((subSum, d) => subSum + (d.tutar || 0), 0) || 0), 0);
+
+        // Diğer ödemeleri türe göre grupla
+        const digerOdemelerMap = new Map<string, { turAdi: string, toplam: number }>();
+        this.pusulalar.forEach(p => {
+            p.digerOdemeler?.forEach(d => {
+                const existing = digerOdemelerMap.get(d.turKodu);
+                if (existing) {
+                    existing.toplam += d.tutar;
+                } else {
+                    digerOdemelerMap.set(d.turKodu, { turAdi: d.turAdi, toplam: d.tutar });
+                }
+            });
+        });
+
+        // Map'i array'e çevir
+        this.digerOdemelerToplam = Array.from(digerOdemelerMap.entries()).map(([turKodu, data]) => ({
+            turKodu,
+            turAdi: data.turAdi,
+            toplam: data.toplam
+        }));
+
+        this.pusulaToplam = this.toplamNakit + this.toplamKrediKarti + toplamDigerOdemeler;
+
+        const toplamGider = this.getToplamGider();
+
+        // Fark = (Pusula Toplamı + Filo Satışları + Giderler) - Otomasyon Toplamı
+        this.fark = (this.pusulaToplam + this.filoToplam + toplamGider) - this.otomasyonToplam;
     }
 
     personelSec(personel: PersonelOtomasyonOzet): void {
@@ -242,7 +321,12 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         const mevcutPusula = this.pusulalar.find(p => p.personelAdi === personel.personelAdi);
 
         if (mevcutPusula) {
-            this.pusulaForm = { ...mevcutPusula };
+            // Arrays need deep copy
+            this.pusulaForm = {
+                ...mevcutPusula,
+                digerOdemeler: [...(mevcutPusula.digerOdemeler || [])],
+                krediKartiDetay: [...(mevcutPusula.krediKartiDetay || [])]
+            };
         } else {
             this.pusulaForm = this.getEmptyPusula();
             this.pusulaForm.personelAdi = personel.personelAdi;
@@ -253,8 +337,57 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     }
 
     getPusulaFormToplam(): number {
-        return this.pusulaForm.nakit + this.pusulaForm.krediKarti +
-            this.pusulaForm.paroPuan + this.pusulaForm.mobilOdeme;
+        if (!this.pusulaForm) return 0;
+        const digerToplam = this.pusulaForm.digerOdemeler?.reduce((sum, d) => sum + (d.tutar || 0), 0) || 0;
+        return (this.pusulaForm.nakit || 0) +
+            (this.pusulaForm.krediKarti || 0) +
+            digerToplam;
+    }
+
+    // Diğer Ödeme İşlemleri
+    digerOdemeEkle() {
+        if (!this.yeniDigerOdeme.tur || this.yeniDigerOdeme.tutar <= 0) {
+            this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Lütfen tür ve tutar giriniz' });
+            return;
+        }
+
+        if (!this.pusulaForm.digerOdemeler) {
+            this.pusulaForm.digerOdemeler = [];
+        }
+
+        this.pusulaForm.digerOdemeler.push({
+            turKodu: this.yeniDigerOdeme.tur.code,
+            turAdi: this.yeniDigerOdeme.tur.name,
+            tutar: this.yeniDigerOdeme.tutar
+        });
+
+        this.yeniDigerOdeme = { tur: null, tutar: 0 };
+    }
+
+    addDigerOdemeByCode(code: string, tutar: number) {
+        if (!this.pusulaForm.digerOdemeler) {
+            this.pusulaForm.digerOdemeler = [];
+        }
+
+        const existing = this.pusulaForm.digerOdemeler.find(d => d.turKodu === code);
+        if (existing) {
+            existing.tutar += tutar;
+        } else {
+            const def = this.pusulaTurleri.find(t => t.code === code);
+            this.pusulaForm.digerOdemeler.push({
+                turKodu: code,
+                turAdi: def ? def.name : code,
+                tutar: tutar
+            });
+        }
+    }
+
+    digerOdemeSil(index: number) {
+        this.pusulaForm.digerOdemeler?.splice(index, 1);
+    }
+
+    getDigerOdemeToplam(): number {
+        return this.pusulaForm.digerOdemeler?.reduce((sum, item) => sum + (item.tutar || 0), 0) || 0;
     }
 
     getPusulaFormFark(): number {
@@ -274,6 +407,8 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
         this.loading = true;
         this.pusulaForm.vardiyaId = this.vardiyaId;
+
+
 
         if (this.pusulaForm.id) {
             // Güncelleme
@@ -346,8 +481,10 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                             // Patch values
                             if (data.nakit) this.pusulaForm.nakit = data.nakit;
                             if (data.krediKarti) this.pusulaForm.krediKarti = data.krediKarti;
-                            if (data.paroPuan) this.pusulaForm.paroPuan = data.paroPuan;
-                            if (data.mobilOdeme) this.pusulaForm.mobilOdeme = data.mobilOdeme;
+                            // OCR: Paro ve Mobil artık diğer ödemelerde işlenmeli, ancak basitlik için şimdilik atlıyoruz
+                            // Veya data.paroPuan varsa digerOdemelere eklemeliyiz
+                            if (data.paroPuan > 0) this.addDigerOdemeByCode('PARO_PUAN', data.paroPuan);
+                            if (data.mobilOdeme > 0) this.addDigerOdemeByCode('MOBIL_ODEME', data.mobilOdeme);
 
                             // Kredi kartı detaylarını işle
                             if (data.krediKartiDetay && data.krediKartiDetay.length > 0) {
@@ -468,7 +605,10 @@ export class PompaYonetimi implements OnInit, OnDestroy {
             return filo ? filo.toplamTutar : 0;
         }
         const pusula = this.pusulalar.find(p => p.personelAdi === personelAdi);
-        return pusula ? (pusula.nakit + pusula.krediKarti + pusula.paroPuan + pusula.mobilOdeme) : 0;
+        if (!pusula) return 0;
+
+        const digerToplam = pusula.digerOdemeler?.reduce((sum, d) => sum + (d.tutar || 0), 0) || 0;
+        return (pusula.nakit || 0) + (pusula.krediKarti || 0) + digerToplam;
     }
 
     getPusulaFark(personelAdi: string, otomasyonTutar: number): number {
@@ -488,10 +628,16 @@ export class PompaYonetimi implements OnInit, OnDestroy {
             personelAdi: '',
             nakit: 0,
             krediKarti: 0,
-            paroPuan: 0,
-            mobilOdeme: 0,
-            krediKartiDetay: []
+
+            krediKartiDetay: [],
+            digerOdemeler: [],
+            aciklama: ''
         };
+    }
+
+    getOdemeAdi(code: string): string {
+        const item = this.odemeYontemleri.find(x => x.code === code);
+        return item ? item.name : code;
     }
 
     onizle(personel: PersonelOtomasyonOzet): void {
@@ -518,8 +664,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 pusula: { // Dummy pusula objesi
                     nakit: 0,
                     krediKarti: 0,
-                    paroPuan: 0,
-                    mobilOdeme: 0,
+
                     aciklama: 'Otomatik Filo Tahsilatı'
                 },
                 fark: 0 // Filo satışlarında fark olmaz (teorik olarak)
@@ -531,7 +676,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         const pusula = this.pusulalar.find(p => p.personelAdi === personel.personelAdi);
         if (!pusula) return;
 
-        const toplamTahsilat = pusula.nakit + pusula.krediKarti + pusula.paroPuan + pusula.mobilOdeme;
+        const toplamTahsilat = this.getPusulaTutar(personel.personelAdi);
 
         this.onizlemeData = {
             personel: personel,
@@ -615,5 +760,54 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 this.loading = false;
             }
         });
+    }
+
+    // Gider İşlemleri
+    giderEkle(): void {
+        this.giderForm = { giderTuru: '', tutar: 0, aciklama: '' };
+        this.giderDialogVisible = true;
+    }
+
+    saveGider(): void {
+        if (!this.vardiyaId || !this.giderForm.giderTuru || this.giderForm.tutar <= 0) {
+            this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Lütfen tür ve tutar girin' });
+            return;
+        }
+
+        this.loading = true;
+        this.vardiyaApiService.addPompaGider(this.vardiyaId, this.giderForm).subscribe({
+            next: () => {
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider eklendi' });
+                this.giderDialogVisible = false;
+                this.loadVardiyaData();
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Gider eklenemedi' });
+                this.loading = false;
+            }
+        });
+    }
+
+    deleteGider(id: number): void {
+        if (!confirm('Bu gideri silmek istediğinize emin misiniz?')) return;
+
+        this.vardiyaApiService.deletePompaGider(this.vardiyaId!, id).subscribe({
+            next: () => {
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider silindi' });
+                this.loadVardiyaData();
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Gider silinemedi' });
+            }
+        });
+    }
+
+    getGiderAdi(code: string): string {
+        const item = this.giderTurleri.find(x => x.code === code);
+        return item ? item.name : code;
+    }
+
+    getToplamGider(): number {
+        return this.giderler.reduce((sum, item) => sum + item.tutar, 0);
     }
 }

@@ -118,7 +118,7 @@
                             <i class="pi pi-download"></i>
                         </button>
                         <button
-                            *ngIf="vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"
+                            *ngIf="vardiya.durum !== 'ONAY_BEKLIYOR' && vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"
                             class="action-btn danger" (click)="vardiyaSil(vardiya)">
                             <i class="pi pi-trash"></i>
                         </button>
@@ -456,7 +456,7 @@
                                 <button pButton pRipple icon="pi pi-trash"
                                     class="p-button-rounded p-button-danger p-button-text" (click)="vardiyaSil(vardiya)"
                                     pTooltip="Sil" tooltipPosition="top"
-                                    *ngIf="vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"></button>
+                                    *ngIf="vardiya.durum !== 'ONAY_BEKLIYOR' && vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"></button>
                             </div>
                         </td>
                     </tr>
@@ -647,7 +647,7 @@
         <div class="summary-scroll block md:hidden">
             <div class="summary-card blue">
                 <div class="summary-icon"><i class="pi pi-chart-line"></i></div>
-                <div class="summary-value">{{ genelOzet.pompaToplam | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaCiroGosterim | number:'1.0-0' }}₺</div>
                 <div class="summary-label">Pompa Cirosu</div>
             </div>
             <div class="summary-card green">
@@ -664,6 +664,12 @@
                 <div class="summary-icon"><i class="pi pi-money-bill"></i></div>
                 <div class="summary-value">{{ pompaciNakitToplam | number:'1.0-0' }}₺</div>
                 <div class="summary-label">Nakit</div>
+            </div>
+            <!-- Dinamik Kartlar (Mobile) -->
+            <div *ngIf="digerOdemelerToplamTutar > 0" class="summary-card purple">
+                <div class="summary-icon"><i class="pi pi-tags"></i></div>
+                <div class="summary-value">{{ digerOdemelerToplamTutar | number:'1.0-0' }}₺</div>
+                <div class="summary-label">Diğer Tahsilatlar</div>
             </div>
             <div class="summary-card" [ngClass]="{
                 'green': pompaFarkDurumRenk === 'success',
@@ -687,7 +693,7 @@
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
                 <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompa
                     Cirosu</span>
-                <span class="text-3xl font-bold text-primary">{{ genelOzet.pompaToplam |
+                <span class="text-3xl font-bold text-primary">{{ pompaCiroGosterim |
                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
             </div>
             <div
@@ -713,6 +719,13 @@
                 <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Toplam
                     Nakit</span>
                 <span class="text-3xl font-bold text-red-500">{{ pompaciNakitToplam |
+                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+            </div>
+            <!-- Dinamik Kartlar (Desktop) -->
+            <div *ngIf="digerOdemelerToplamTutar > 0"
+                class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
+                <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Diğer Tahsilatlar</span>
+                <span class="text-3xl font-bold text-indigo-600">{{ digerOdemelerToplamTutar |
                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
             </div>
             <div
@@ -797,15 +810,10 @@
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                                 </div>
                                 <!-- Paro Puan -->
-                                <div class="personel-stat">
-                                    <div class="personel-stat-label">Paro Puan</div>
-                                    <div class="personel-stat-value">{{ item.pusulaDokum.paroPuan |
-                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
-                                </div>
-                                <!-- Mobil Ödeme -->
-                                <div class="personel-stat">
-                                    <div class="personel-stat-label">Mobil Ödeme</div>
-                                    <div class="personel-stat-value">{{ item.pusulaDokum.mobilOdeme |
+                                <!-- Dinamik Diğer Ödemeler -->
+                                <div *ngFor="let odeme of item.pusulaDokum.digerOdemeler" class="personel-stat">
+                                    <div class="personel-stat-label">{{ odeme.turAdi }}</div>
+                                    <div class="personel-stat-value">{{ odeme.tutar |
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                                 </div>
                             </div>
@@ -838,8 +846,7 @@
                                     <th class="text-right">Otomasyon Satış</th>
                                     <th class="text-right">Nakit</th>
                                     <th class="text-right">Kredi Kartı</th>
-                                    <th class="text-right">Paro Puan</th>
-                                    <th class="text-right">Mobil Ödeme</th>
+                                    <th class="text-right">Diğer Ödemeler</th>
                                     <th class="text-right">Pusula Toplam</th>
                                     <th class="text-right">Fark</th>
                                     <th class="text-center">Durum</th>
@@ -855,10 +862,17 @@
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
                                     <td class="text-right">{{ item.pusulaDokum.krediKarti |
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
-                                    <td class="text-right">{{ item.pusulaDokum.paroPuan |
-                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
-                                    <td class="text-right">{{ item.pusulaDokum.mobilOdeme |
-                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
+                                    <td class="text-right">
+                                        <div *ngIf="item.pusulaDokum.digerOdemeler?.length > 0">
+                                            <div *ngFor="let odeme of item.pusulaDokum.digerOdemeler"
+                                                class="flex justify-end gap-1 text-xs">
+                                                <span class="font-semibold text-gray-500">{{ odeme.turAdi }}:</span>
+                                                <span>{{ odeme.tutar | number:'1.2-2' }}</span>
+                                            </div>
+                                        </div>
+                                        <span *ngIf="!item.pusulaDokum.digerOdemeler?.length"
+                                            class="text-gray-300">-</span>
+                                    </td>
                                     <td class="text-right font-bold">{{ item.pusulaToplam |
                                         currency:'TRY':'symbol-narrow':'1.2-2' }}</td>
                                     <td class="text-right"
@@ -900,14 +914,11 @@
                                         <div class="personel-stat-value">{{ genelOzet.toplamKrediKarti |
                                             currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                                     </div>
-                                    <div class="personel-stat highlight-orange">
-                                        <div class="personel-stat-label">Paro Puan</div>
-                                        <div class="personel-stat-value">{{ genelOzet.toplamParoPuan |
-                                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
-                                    </div>
-                                    <div class="personel-stat">
-                                        <div class="personel-stat-label">Mobil Ödeme</div>
-                                        <div class="personel-stat-value">{{ genelOzet.toplamMobilOdeme |
+                                    <!-- Dinamik Kartlar (Mobile) -->
+                                    <div *ngFor="let item of genelOzet.digerOdemeler"
+                                        class="personel-stat highlight-purple">
+                                        <div class="personel-stat-label">{{ item.turAdi }}</div>
+                                        <div class="personel-stat-value">{{ item.toplam |
                                             currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                                     </div>
                                 </div>
@@ -915,8 +926,8 @@
                                     style="justify-content: space-between; margin-top: 0.5rem;">
                                     <span>Toplam Tahsilat</span>
                                     <span style="font-size: 1rem;">{{ (genelOzet.toplamNakit +
-                                        genelOzet.toplamKrediKarti + genelOzet.toplamParoPuan +
-                                        genelOzet.toplamMobilOdeme) | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
+                                        genelOzet.toplamKrediKarti + digerOdemelerToplamTutar) |
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -966,21 +977,17 @@
                                     genelOzet.toplamKrediKarti |
                                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
-                            <div class="flex justify-between p-3 bg-surface-50 rounded">
-                                <span>Paro Puan</span>
-                                <span class="font-bold">{{ genelOzet.toplamParoPuan |
-                                    currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
-                            </div>
-                            <div class="flex justify-between p-3 rounded">
-                                <span>Mobil Ödeme</span>
-                                <span class="font-bold">{{ genelOzet.toplamMobilOdeme |
+                            <!-- Dinamik Liste (Desktop) -->
+                            <div *ngFor="let item of genelOzet.digerOdemeler"
+                                class="flex justify-between p-3 bg-surface-50 rounded">
+                                <span>{{ item.turAdi }}</span>
+                                <span class="font-bold">{{ item.toplam |
                                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
                             <div class="flex justify-between p-3 bg-green-50 rounded border border-green-100 mt-2">
                                 <span class="font-bold text-green-800">Toplam Tahsilat</span>
                                 <span class="font-bold text-green-800">{{ (genelOzet.toplamNakit +
-                                    genelOzet.toplamKrediKarti + genelOzet.toplamParoPuan +
-                                    genelOzet.toplamMobilOdeme) |
+                                    genelOzet.toplamKrediKarti + digerOdemelerToplamTutar) |
                                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                             </div>
                         </div>
