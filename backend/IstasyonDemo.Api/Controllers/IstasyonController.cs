@@ -89,7 +89,10 @@ namespace IstasyonDemo.Api.Controllers
                     : null,
                     
                 RegisteredDeviceId = i.RegisteredDeviceId,
-                LastConnectionTime = i.LastConnectionTime
+                LastConnectionTime = i.LastConnectionTime,
+                IstasyonKodu = i.IstasyonKodu,
+                OtomasyonFiloKodu = i.OtomasyonFiloKodu,
+                OtomatikDosyaYolu = i.OtomatikDosyaYolu
             }).ToListAsync();
 
             return Ok(istasyonlar);
@@ -158,7 +161,10 @@ namespace IstasyonDemo.Api.Controllers
                 IstasyonSorumluId = request.IstasyonSorumluId,
                 VardiyaSorumluId = request.VardiyaSorumluId,
                 MarketSorumluId = request.MarketSorumluId,
-                ApiKey = (IsAdmin || IsPatron) ? request.ApiKey : null
+                ApiKey = (IsAdmin || IsPatron) ? request.ApiKey : null,
+                IstasyonKodu = request.IstasyonKodu,
+                OtomasyonFiloKodu = request.OtomasyonFiloKodu ?? "C0000",
+                OtomatikDosyaYolu = request.OtomatikDosyaYolu
             };
 
             _context.Istasyonlar.Add(istasyon);
@@ -209,7 +215,10 @@ namespace IstasyonDemo.Api.Controllers
                 IstasyonSorumluId = istasyon.IstasyonSorumluId,
                 VardiyaSorumluId = istasyon.VardiyaSorumluId,
                 MarketSorumluId = istasyon.MarketSorumluId,
-                ApiKey = (IsAdmin || IsPatron) ? istasyon.ApiKey : null
+                ApiKey = (IsAdmin || IsPatron) ? istasyon.ApiKey : null,
+                IstasyonKodu = istasyon.IstasyonKodu,
+                OtomasyonFiloKodu = istasyon.OtomasyonFiloKodu,
+                OtomatikDosyaYolu = istasyon.OtomatikDosyaYolu
             });
         }
 
@@ -282,7 +291,14 @@ namespace IstasyonDemo.Api.Controllers
             istasyon.MarketSorumluId = request.MarketSorumluId;
             if (IsAdmin)
             {
-            istasyon.ApiKey = request.ApiKey;
+                istasyon.ApiKey = request.ApiKey;
+            }
+            // Allow Admin AND Patron to update technical codes
+            if (IsAdmin || IsPatron)
+            {
+                istasyon.IstasyonKodu = request.IstasyonKodu;
+                istasyon.OtomasyonFiloKodu = request.OtomasyonFiloKodu ?? "C0000";
+                istasyon.OtomatikDosyaYolu = request.OtomatikDosyaYolu;
             }
 
             // Handle User Updates - Sync IstasyonId

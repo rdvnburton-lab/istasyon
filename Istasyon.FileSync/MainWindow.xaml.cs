@@ -126,7 +126,7 @@ public partial class MainWindow : Window
     {
         _configService.SaveConfig(config);
         _configService.LoadConfig(); 
-        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId);
+        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId, config.StationCode);
         MessageBox.Show($"Kurulum Başarılı!\nİstasyon: {stationName}", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
@@ -262,9 +262,42 @@ public partial class MainWindow : Window
     {
         try
         {
-            var logs = _databaseService.GetAllLogs();
-            DgLogs.ItemsSource = logs;
-            TxtStatusSummary.Text = $"Toplam {logs.Count} işlem bulundu. Son güncelleme: {DateTime.Now:HH:mm:ss}";
+            var dbLogs = _databaseService.GetAllLogs();
+            var watchPath = _configService.Config.WatchFolderPath;
+
+            var mergedLogs = new System.Collections.Generic.List<FileLog>();
+            mergedLogs.AddRange(dbLogs);
+
+            if (!string.IsNullOrEmpty(watchPath) && Directory.Exists(watchPath))
+            {
+                var files = Directory.GetFiles(watchPath);
+                foreach (var filePath in files)
+                {
+                    var fileName = Path.GetFileName(filePath);
+                    // Check if exists in DB (matches by Name) - take the latest one if multiple
+                    var exists = dbLogs.Any(l => l.FileName.Equals(fileName, StringComparison.OrdinalIgnoreCase));
+
+                    if (!exists)
+                    {
+                        var extension = Path.GetExtension(fileName);
+                        bool isValidExtension = extension.StartsWith(".D1", StringComparison.OrdinalIgnoreCase) ||
+                                              extension.Equals(".zip", StringComparison.OrdinalIgnoreCase) ||
+                                              extension.Equals(".xml", StringComparison.OrdinalIgnoreCase);
+
+                        mergedLogs.Add(new FileLog
+                        {
+                            FileName = fileName,
+                            FilePath = filePath,
+                            Status = isValidExtension ? "Klasörde (Bekliyor)" : "Gözardı Edildi (Uzantı)",
+                            LastAttempt = File.GetLastWriteTime(filePath),
+                            ErrorMessage = isValidExtension ? "Henüz işlenmedi." : "Desteklenmeyen dosya türü."
+                        });
+                    }
+                }
+            }
+
+            DgLogs.ItemsSource = mergedLogs.OrderByDescending(x => x.LastAttempt).ToList();
+            TxtStatusSummary.Text = $"Listelenen: {mergedLogs.Count} (DB: {dbLogs.Count}). Güncelleme: {DateTime.Now:HH:mm:ss}";
         }
         catch (Exception ex)
         {
@@ -297,12 +330,13 @@ public partial class MainWindow : Window
             ApiUrl = TxtApiUrl.Text,
             ApiKey = TxtApiKey.Text,
             IstasyonId = istasyonId,
+            StationCode = _configService.Config.StationCode, // Preserve existing code or fetch?
             AutoStart = ChkAutoStart.IsChecked ?? false
         };
 
         _configService.SaveConfig(config);
         StartupService.SetAutoStart(config.AutoStart);
-        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId);
+        _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId, config.StationCode);
         
         _fileWatcherService.Stop();
         _fileWatcherService.Start(config.WatchFolderPath);
@@ -339,6 +373,14 @@ public partial class MainWindow : Window
             TxtDashStationManager.Text = info.IstasyonSorumlusu;
             TxtDashShiftSupervisor.Text = info.VardiyaSorumlusu;
             TxtDashBoss.Text = info.PatronAdi;
+            
+            // Auto Update Station Code
+            if (!string.IsNullOrEmpty(info.IstasyonKodu))
+            {
+                config.StationCode = info.IstasyonKodu;
+                _configService.SaveConfig(config);
+                 _fileWatcherService.UpdateApiConfig(config.ApiUrl, config.ApiKey, config.IstasyonId, config.ClientUniqueId, config.StationCode);
+            }
         }
         else if (verifyCheck != null && verifyCheck.IsSuccess)
         {

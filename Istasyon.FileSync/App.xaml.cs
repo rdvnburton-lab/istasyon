@@ -47,7 +47,7 @@ public partial class App : Application
         _apiService = new ApiService(_databaseService);
         _fileWatcherService = new FileWatcherService(_databaseService, _apiService);
 
-        _apiService.Initialize(_configService.Config.ApiUrl, _configService.Config.ApiKey, _configService.Config.IstasyonId, _configService.Config.ClientUniqueId);
+        _apiService.Initialize(_configService.Config.ApiUrl, _configService.Config.ApiKey, _configService.Config.IstasyonId, _configService.Config.ClientUniqueId, _configService.Config.StationCode);
         
         if (!string.IsNullOrEmpty(_configService.Config.WatchFolderPath))
         {

@@ -1,0 +1,1235 @@
+2026-01-03 00:04:28.997 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:04:29.125 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:04:29.755 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:07:22.964 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:07:23.092 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:07:23.702 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:08:39.652 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 00:14:51.457 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:15:02.262 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:16:25.017 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:16:25.146 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:16:25.795 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:16:46.833 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:16:46.962 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:16:47.599 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:18:35.378 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:18:35.510 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:18:36.126 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:23:47.658 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:23:47.781 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:23:48.397 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:33:51.317 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-03 00:33:51.319 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:33:51.336 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:33:51.339 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-03 00:33:51.340 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:33:51.342 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:33:51.343 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-03 00:33:51.345 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-03 00:33:51.395 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-03 00:33:51.401 +03:00 [INF] DTO Oluşturuldu: 927 Otomasyon, 129 Filo satışı eklendi.
+2026-01-03 00:33:51.404 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 755.180,38 + Filo: 267.026,38)
+2026-01-03 00:34:12.010 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 00:39:21.266 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:39:21.448 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:39:22.113 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:43:24.450 +03:00 [INF] XML Dosyası İşleniyor: 2025051601.zip, Boyut: 815894 bytes
+2026-01-03 00:43:24.452 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:43:24.468 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:43:24.471 +03:00 [INF] XML Parsing Debug: Toplam 1083 adet 'Txn' elementi bulundu.
+2026-01-03 00:43:24.473 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250517000116</DateTime>
+    <ReceiptNr>32899</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4686</UnitPrice>
+    <Amount>3468</Amount>
+    <Total>162510</Total>
+    <PumpNr>6</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06CLD688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46860</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:43:24.474 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:43:24.475 +03:00 [INF] İlk Txn ReceiptNr Değeri: 32899
+2026-01-03 00:43:24.477 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1083 Satış bulundu.
+2026-01-03 00:43:24.567 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=17.05.2025 00:01:16, Bitiş=17.05.2025 23:43:17
+2026-01-03 00:43:24.572 +03:00 [INF] DTO Oluşturuldu: 991 Otomasyon, 92 Filo satışı eklendi.
+2026-01-03 00:43:24.575 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 990.165,69 TL (Oto: 816.700,99 + Filo: 173.464,70)
+2026-01-03 00:47:04.323 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 00:47:04.469 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 00:47:05.172 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 00:48:01.088 +03:00 [INF] XML Dosyası İşleniyor: 2025051701.zip, Boyut: 641469 bytes
+2026-01-03 00:48:01.090 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:01.114 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:01.117 +03:00 [INF] XML Parsing Debug: Toplam 850 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:01.118 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250518000031</DateTime>
+    <ReceiptNr>33984</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4748</UnitPrice>
+    <Amount>489</Amount>
+    <Total>23218</Total>
+    <PumpNr>4</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>10BV327</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47480</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:01.120 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:01.121 +03:00 [INF] İlk Txn ReceiptNr Değeri: 33984
+2026-01-03 00:48:01.122 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 850 Satış bulundu.
+2026-01-03 00:48:01.171 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=18.05.2025 00:00:31, Bitiş=18.05.2025 23:46:16
+2026-01-03 00:48:01.176 +03:00 [INF] DTO Oluşturuldu: 817 Otomasyon, 33 Filo satışı eklendi.
+2026-01-03 00:48:01.179 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 707.644,27 TL (Oto: 636.667,83 + Filo: 70.976,44)
+2026-01-03 00:48:10.349 +03:00 [INF] XML Dosyası İşleniyor: 2025051801.zip, Boyut: 700414 bytes
+2026-01-03 00:48:10.349 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:10.355 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:10.361 +03:00 [INF] XML Parsing Debug: Toplam 929 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:10.362 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250519000052</DateTime>
+    <ReceiptNr>34834</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4748</UnitPrice>
+    <Amount>1053</Amount>
+    <Total>50000</Total>
+    <PumpNr>7</PumpNr>
+    <NozzleNr>4</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>45AV557</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47480</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:10.364 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:10.364 +03:00 [INF] İlk Txn ReceiptNr Değeri: 34834
+2026-01-03 00:48:10.366 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 929 Satış bulundu.
+2026-01-03 00:48:10.376 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=19.05.2025 00:00:52, Bitiş=19.05.2025 23:43:31
+2026-01-03 00:48:10.381 +03:00 [INF] DTO Oluşturuldu: 861 Otomasyon, 68 Filo satışı eklendi.
+2026-01-03 00:48:10.381 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 794.966,16 TL (Oto: 668.701,70 + Filo: 126.264,46)
+2026-01-03 00:48:19.302 +03:00 [INF] XML Dosyası İşleniyor: 2025051901.zip, Boyut: 719210 bytes
+2026-01-03 00:48:19.302 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:19.307 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:19.309 +03:00 [INF] XML Parsing Debug: Toplam 954 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:19.310 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>FD8A2EB1</TagNr>
+    <Plate>U.ZEYLEK</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250520000456</DateTime>
+    <ReceiptNr>35763</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>2828</Amount>
+    <Total>65016</Total>
+    <PumpNr>13</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>16P6842</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:19.311 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:19.312 +03:00 [INF] İlk Txn ReceiptNr Değeri: 35763
+2026-01-03 00:48:19.313 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 954 Satış bulundu.
+2026-01-03 00:48:19.321 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=20.05.2025 00:04:56, Bitiş=20.05.2025 23:47:02
+2026-01-03 00:48:19.324 +03:00 [INF] DTO Oluşturuldu: 840 Otomasyon, 114 Filo satışı eklendi.
+2026-01-03 00:48:19.325 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 847.740,53 TL (Oto: 631.273,87 + Filo: 216.466,66)
+2026-01-03 00:48:24.917 +03:00 [INF] XML Dosyası İşleniyor: 2025052001.zip, Boyut: 736357 bytes
+2026-01-03 00:48:24.917 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:24.921 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:24.924 +03:00 [INF] XML Parsing Debug: Toplam 977 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:24.925 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250521000749</DateTime>
+    <ReceiptNr>36717</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4694</UnitPrice>
+    <Amount>2130</Amount>
+    <Total>100000</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>2</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06ESL44</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46940</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:24.926 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:24.927 +03:00 [INF] İlk Txn ReceiptNr Değeri: 36717
+2026-01-03 00:48:24.928 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 977 Satış bulundu.
+2026-01-03 00:48:24.935 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=21.05.2025 00:07:49, Bitiş=21.05.2025 23:48:31
+2026-01-03 00:48:24.937 +03:00 [INF] DTO Oluşturuldu: 857 Otomasyon, 120 Filo satışı eklendi.
+2026-01-03 00:48:24.938 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 885.418,24 TL (Oto: 652.095,00 + Filo: 233.323,24)
+2026-01-03 00:48:29.417 +03:00 [INF] XML Dosyası İşleniyor: 2025052101.zip, Boyut: 741076 bytes
+2026-01-03 00:48:29.418 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:29.423 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:29.426 +03:00 [INF] XML Parsing Debug: Toplam 983 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:29.427 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250522000553</DateTime>
+    <ReceiptNr>37694</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>4148</Amount>
+    <Total>95363</Total>
+    <PumpNr>9</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06BT9160</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:29.428 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:29.429 +03:00 [INF] İlk Txn ReceiptNr Değeri: 37694
+2026-01-03 00:48:29.430 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 983 Satış bulundu.
+2026-01-03 00:48:29.438 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=22.05.2025 00:05:53, Bitiş=22.05.2025 23:46:09
+2026-01-03 00:48:29.443 +03:00 [INF] DTO Oluşturuldu: 847 Otomasyon, 136 Filo satışı eklendi.
+2026-01-03 00:48:29.444 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 998.988,62 TL (Oto: 718.473,43 + Filo: 280.515,19)
+2026-01-03 00:48:33.603 +03:00 [INF] XML Dosyası İşleniyor: 2025052201.zip, Boyut: 778992 bytes
+2026-01-03 00:48:33.603 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:33.607 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:33.610 +03:00 [INF] XML Parsing Debug: Toplam 1034 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:33.611 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250523000531</DateTime>
+    <ReceiptNr>38677</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4694</UnitPrice>
+    <Amount>4261</Amount>
+    <Total>200000</Total>
+    <PumpNr>8</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>54AKS688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46940</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:33.612 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:33.613 +03:00 [INF] İlk Txn ReceiptNr Değeri: 38677
+2026-01-03 00:48:33.614 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1034 Satış bulundu.
+2026-01-03 00:48:33.621 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=23.05.2025 00:05:31, Bitiş=23.05.2025 23:49:10
+2026-01-03 00:48:33.624 +03:00 [INF] DTO Oluşturuldu: 926 Otomasyon, 108 Filo satışı eklendi.
+2026-01-03 00:48:33.625 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 948.042,79 TL (Oto: 737.963,26 + Filo: 210.079,53)
+2026-01-03 00:48:42.875 +03:00 [INF] XML Dosyası İşleniyor: 2025052301.zip, Boyut: 819402 bytes
+2026-01-03 00:48:42.876 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:42.880 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:42.883 +03:00 [INF] XML Parsing Debug: Toplam 1088 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:42.883 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250524000152</DateTime>
+    <ReceiptNr>39711</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4697</UnitPrice>
+    <Amount>426</Amount>
+    <Total>20000</Total>
+    <PumpNr>8</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06BVC905</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46970</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:42.885 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:42.886 +03:00 [INF] İlk Txn ReceiptNr Değeri: 39711
+2026-01-03 00:48:42.887 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1088 Satış bulundu.
+2026-01-03 00:48:42.894 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=24.05.2025 00:01:52, Bitiş=24.05.2025 23:46:44
+2026-01-03 00:48:42.897 +03:00 [INF] DTO Oluşturuldu: 1004 Otomasyon, 84 Filo satışı eklendi.
+2026-01-03 00:48:42.898 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 913.992,56 TL (Oto: 768.754,72 + Filo: 145.237,84)
+2026-01-03 00:48:47.472 +03:00 [INF] XML Dosyası İşleniyor: 2025052401.zip, Boyut: 726187 bytes
+2026-01-03 00:48:47.472 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:47.476 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:47.479 +03:00 [INF] XML Parsing Debug: Toplam 963 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:47.480 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250525000111</DateTime>
+    <ReceiptNr>40799</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4751</UnitPrice>
+    <Amount>1052</Amount>
+    <Total>50000</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>4</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06DT7389</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47510</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:47.481 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:47.482 +03:00 [INF] İlk Txn ReceiptNr Değeri: 40799
+2026-01-03 00:48:47.483 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 963 Satış bulundu.
+2026-01-03 00:48:47.491 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=25.05.2025 00:01:11, Bitiş=25.05.2025 23:48:48
+2026-01-03 00:48:47.494 +03:00 [INF] DTO Oluşturuldu: 917 Otomasyon, 46 Filo satışı eklendi.
+2026-01-03 00:48:47.495 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 796.064,10 TL (Oto: 713.228,28 + Filo: 82.835,82)
+2026-01-03 00:48:51.566 +03:00 [INF] XML Dosyası İşleniyor: 2025052501.zip, Boyut: 733525 bytes
+2026-01-03 00:48:51.567 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:48:51.570 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:48:51.573 +03:00 [INF] XML Parsing Debug: Toplam 973 adet 'Txn' elementi bulundu.
+2026-01-03 00:48:51.574 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250526000203</DateTime>
+    <ReceiptNr>41762</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>870</Amount>
+    <Total>20000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06KA3188</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:48:51.576 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:48:51.576 +03:00 [INF] İlk Txn ReceiptNr Değeri: 41762
+2026-01-03 00:48:51.578 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 973 Satış bulundu.
+2026-01-03 00:48:51.585 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=26.05.2025 00:02:03, Bitiş=26.05.2025 23:49:28
+2026-01-03 00:48:51.587 +03:00 [INF] DTO Oluşturuldu: 842 Otomasyon, 131 Filo satışı eklendi.
+2026-01-03 00:48:51.588 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 915.432,36 TL (Oto: 653.133,45 + Filo: 262.298,91)
+2026-01-03 00:50:23.472 +03:00 [INF] XML Dosyası İşleniyor: 2025052601.zip, Boyut: 749257 bytes
+2026-01-03 00:50:23.473 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:50:23.477 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:50:23.480 +03:00 [INF] XML Parsing Debug: Toplam 994 adet 'Txn' elementi bulundu.
+2026-01-03 00:50:23.480 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>FE1FADE1</TagNr>
+    <Plate>Y.E.KOCA</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250527000216</DateTime>
+    <ReceiptNr>42735</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1374</Amount>
+    <Total>31588</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06AG255</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:50:23.482 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:50:23.483 +03:00 [INF] İlk Txn ReceiptNr Değeri: 42735
+2026-01-03 00:50:23.484 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 994 Satış bulundu.
+2026-01-03 00:50:23.491 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=27.05.2025 00:02:16, Bitiş=27.05.2025 23:46:51
+2026-01-03 00:50:23.494 +03:00 [INF] DTO Oluşturuldu: 877 Otomasyon, 117 Filo satışı eklendi.
+2026-01-03 00:50:23.495 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 940.701,45 TL (Oto: 723.501,75 + Filo: 217.199,70)
+2026-01-03 00:50:29.971 +03:00 [INF] XML Dosyası İşleniyor: 2025052701.zip, Boyut: 715699 bytes
+2026-01-03 00:50:29.971 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:50:29.977 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:50:29.979 +03:00 [INF] XML Parsing Debug: Toplam 949 adet 'Txn' elementi bulundu.
+2026-01-03 00:50:29.980 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250528000349</DateTime>
+    <ReceiptNr>43729</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>3126</Amount>
+    <Total>71867</Total>
+    <PumpNr>10</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06T2130</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:50:29.981 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:50:29.982 +03:00 [INF] İlk Txn ReceiptNr Değeri: 43729
+2026-01-03 00:50:29.983 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 949 Satış bulundu.
+2026-01-03 00:50:29.991 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=28.05.2025 00:03:49, Bitiş=28.05.2025 23:47:30
+2026-01-03 00:50:29.994 +03:00 [INF] DTO Oluşturuldu: 847 Otomasyon, 102 Filo satışı eklendi.
+2026-01-03 00:50:29.995 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 877.641,77 TL (Oto: 668.783,99 + Filo: 208.857,78)
+2026-01-03 00:50:34.062 +03:00 [INF] XML Dosyası İşleniyor: 2025052801.zip, Boyut: 752153 bytes
+2026-01-03 00:50:34.063 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:50:34.067 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 00:50:34.069 +03:00 [INF] XML Parsing Debug: Toplam 998 adet 'Txn' elementi bulundu.
+2026-01-03 00:50:34.070 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250529000235</DateTime>
+    <ReceiptNr>44678</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>2931</Amount>
+    <Total>67384</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06T3341</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:50:34.071 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:50:34.072 +03:00 [INF] İlk Txn ReceiptNr Değeri: 44678
+2026-01-03 00:50:34.073 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 998 Satış bulundu.
+2026-01-03 00:50:34.081 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=29.05.2025 00:02:35, Bitiş=29.05.2025 23:41:03
+2026-01-03 00:50:34.084 +03:00 [INF] DTO Oluşturuldu: 869 Otomasyon, 129 Filo satışı eklendi.
+2026-01-03 00:50:34.084 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 922.924,11 TL (Oto: 688.794,48 + Filo: 234.129,63)
+2026-01-03 00:50:38.787 +03:00 [INF] XML Dosyası İşleniyor: 2025052901.zip, Boyut: 798755 bytes
+2026-01-03 00:50:38.788 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:50:38.792 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-03 00:50:38.794 +03:00 [INF] XML Parsing Debug: Toplam 1060 adet 'Txn' elementi bulundu.
+2026-01-03 00:50:38.795 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250530000251</DateTime>
+    <ReceiptNr>45676</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>3562</Amount>
+    <Total>81890</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06KB1008</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:50:38.796 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:50:38.797 +03:00 [INF] İlk Txn ReceiptNr Değeri: 45676
+2026-01-03 00:50:38.798 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1060 Satış bulundu.
+2026-01-03 00:50:38.805 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=30.05.2025 00:02:51, Bitiş=30.05.2025 23:40:17
+2026-01-03 00:50:38.808 +03:00 [INF] DTO Oluşturuldu: 946 Otomasyon, 114 Filo satışı eklendi.
+2026-01-03 00:50:38.808 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 926.597,41 TL (Oto: 714.621,69 + Filo: 211.975,72)
+2026-01-03 00:50:51.285 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 00:51:09.786 +03:00 [INF] XML Dosyası İşleniyor: 2025053001.zip, Boyut: 837350 bytes
+2026-01-03 00:51:09.787 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 00:51:09.791 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-03 00:51:09.794 +03:00 [INF] XML Parsing Debug: Toplam 1112 adet 'Txn' elementi bulundu.
+2026-01-03 00:51:09.794 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250531000134</DateTime>
+    <ReceiptNr>46736</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4694</UnitPrice>
+    <Amount>3600</Amount>
+    <Total>169000</Total>
+    <PumpNr>6</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>34SR8074</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46940</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 00:51:09.796 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 00:51:09.797 +03:00 [INF] İlk Txn ReceiptNr Değeri: 46736
+2026-01-03 00:51:09.798 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1112 Satış bulundu.
+2026-01-03 00:51:09.805 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=31.05.2025 00:01:34, Bitiş=31.05.2025 23:49:15
+2026-01-03 00:51:09.808 +03:00 [INF] DTO Oluşturuldu: 1042 Otomasyon, 70 Filo satışı eklendi.
+2026-01-03 00:51:09.809 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 943.643,60 TL (Oto: 828.452,57 + Filo: 115.191,03)
+2026-01-03 01:06:58.093 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 01:07:15.088 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 01:11:18.302 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 01:11:18.440 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 01:11:19.092 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 01:14:39.593 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-03 01:14:39.595 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:14:39.614 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:14:39.618 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-03 01:14:39.619 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:14:39.621 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:14:39.622 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-03 01:14:39.624 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-03 01:14:39.675 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-03 01:14:39.681 +03:00 [INF] DTO Oluşturuldu: 927 Otomasyon, 129 Filo satışı eklendi.
+2026-01-03 01:14:39.683 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 755.180,38 + Filo: 267.026,38)
+2026-01-03 01:14:43.117 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:15:52.115 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 01:21:10.843 +03:00 [INF] XML Dosyası İşleniyor: 2025051601.zip, Boyut: 815894 bytes
+2026-01-03 01:21:10.843 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:21:10.850 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:21:10.852 +03:00 [INF] XML Parsing Debug: Toplam 1083 adet 'Txn' elementi bulundu.
+2026-01-03 01:21:10.853 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250517000116</DateTime>
+    <ReceiptNr>32899</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4686</UnitPrice>
+    <Amount>3468</Amount>
+    <Total>162510</Total>
+    <PumpNr>6</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06CLD688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46860</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:21:10.855 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:21:10.856 +03:00 [INF] İlk Txn ReceiptNr Değeri: 32899
+2026-01-03 01:21:10.857 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1083 Satış bulundu.
+2026-01-03 01:21:10.867 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=17.05.2025 00:01:16, Bitiş=17.05.2025 23:43:17
+2026-01-03 01:21:10.870 +03:00 [INF] DTO Oluşturuldu: 991 Otomasyon, 92 Filo satışı eklendi.
+2026-01-03 01:21:10.871 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 990.165,69 TL (Oto: 816.700,99 + Filo: 173.464,70)
+2026-01-03 01:21:14.117 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:21:33.644 +03:00 [INF] XML Dosyası İşleniyor: 2025051701.zip, Boyut: 641469 bytes
+2026-01-03 01:21:33.645 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:21:33.650 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:21:33.652 +03:00 [INF] XML Parsing Debug: Toplam 850 adet 'Txn' elementi bulundu.
+2026-01-03 01:21:33.653 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250518000031</DateTime>
+    <ReceiptNr>33984</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4748</UnitPrice>
+    <Amount>489</Amount>
+    <Total>23218</Total>
+    <PumpNr>4</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>10BV327</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47480</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:21:33.655 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:21:33.656 +03:00 [INF] İlk Txn ReceiptNr Değeri: 33984
+2026-01-03 01:21:33.657 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 850 Satış bulundu.
+2026-01-03 01:21:33.666 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=18.05.2025 00:00:31, Bitiş=18.05.2025 23:46:16
+2026-01-03 01:21:33.668 +03:00 [INF] DTO Oluşturuldu: 817 Otomasyon, 33 Filo satışı eklendi.
+2026-01-03 01:21:33.669 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 707.644,27 TL (Oto: 636.667,83 + Filo: 70.976,44)
+2026-01-03 01:21:36.242 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:21:45.418 +03:00 [INF] XML Dosyası İşleniyor: 2025051801.zip, Boyut: 700414 bytes
+2026-01-03 01:21:45.419 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:21:45.424 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:21:45.427 +03:00 [INF] XML Parsing Debug: Toplam 929 adet 'Txn' elementi bulundu.
+2026-01-03 01:21:45.427 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250519000052</DateTime>
+    <ReceiptNr>34834</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4748</UnitPrice>
+    <Amount>1053</Amount>
+    <Total>50000</Total>
+    <PumpNr>7</PumpNr>
+    <NozzleNr>4</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>45AV557</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47480</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:21:45.429 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:21:45.430 +03:00 [INF] İlk Txn ReceiptNr Değeri: 34834
+2026-01-03 01:21:45.431 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 929 Satış bulundu.
+2026-01-03 01:21:45.443 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=19.05.2025 00:00:52, Bitiş=19.05.2025 23:43:31
+2026-01-03 01:21:45.445 +03:00 [INF] DTO Oluşturuldu: 861 Otomasyon, 68 Filo satışı eklendi.
+2026-01-03 01:21:45.446 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 794.966,16 TL (Oto: 668.701,70 + Filo: 126.264,46)
+2026-01-03 01:21:48.289 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:21:56.934 +03:00 [INF] XML Dosyası İşleniyor: 2025051901.zip, Boyut: 719210 bytes
+2026-01-03 01:21:56.935 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:21:56.940 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:21:56.942 +03:00 [INF] XML Parsing Debug: Toplam 954 adet 'Txn' elementi bulundu.
+2026-01-03 01:21:56.943 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>FD8A2EB1</TagNr>
+    <Plate>U.ZEYLEK</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250520000456</DateTime>
+    <ReceiptNr>35763</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>2828</Amount>
+    <Total>65016</Total>
+    <PumpNr>13</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>16P6842</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:21:56.945 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:21:56.945 +03:00 [INF] İlk Txn ReceiptNr Değeri: 35763
+2026-01-03 01:21:56.946 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 954 Satış bulundu.
+2026-01-03 01:21:56.955 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=20.05.2025 00:04:56, Bitiş=20.05.2025 23:47:02
+2026-01-03 01:21:56.957 +03:00 [INF] DTO Oluşturuldu: 840 Otomasyon, 114 Filo satışı eklendi.
+2026-01-03 01:21:56.958 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 847.740,53 TL (Oto: 631.273,87 + Filo: 216.466,66)
+2026-01-03 01:21:59.655 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:22:09.821 +03:00 [INF] XML Dosyası İşleniyor: 2025052001.zip, Boyut: 736357 bytes
+2026-01-03 01:22:09.822 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:22:09.827 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:22:09.829 +03:00 [INF] XML Parsing Debug: Toplam 977 adet 'Txn' elementi bulundu.
+2026-01-03 01:22:09.830 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250521000749</DateTime>
+    <ReceiptNr>36717</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4694</UnitPrice>
+    <Amount>2130</Amount>
+    <Total>100000</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>2</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06ESL44</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46940</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:22:09.831 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:22:09.832 +03:00 [INF] İlk Txn ReceiptNr Değeri: 36717
+2026-01-03 01:22:09.833 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 977 Satış bulundu.
+2026-01-03 01:22:09.841 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=21.05.2025 00:07:49, Bitiş=21.05.2025 23:48:31
+2026-01-03 01:22:09.844 +03:00 [INF] DTO Oluşturuldu: 857 Otomasyon, 120 Filo satışı eklendi.
+2026-01-03 01:22:09.844 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 885.418,24 TL (Oto: 652.095,00 + Filo: 233.323,24)
+2026-01-03 01:22:12.561 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:22:20.570 +03:00 [INF] XML Dosyası İşleniyor: 2025052101.zip, Boyut: 741076 bytes
+2026-01-03 01:22:20.570 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:22:20.575 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:22:20.578 +03:00 [INF] XML Parsing Debug: Toplam 983 adet 'Txn' elementi bulundu.
+2026-01-03 01:22:20.579 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250522000553</DateTime>
+    <ReceiptNr>37694</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>4148</Amount>
+    <Total>95363</Total>
+    <PumpNr>9</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06BT9160</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:22:20.581 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:22:20.581 +03:00 [INF] İlk Txn ReceiptNr Değeri: 37694
+2026-01-03 01:22:20.583 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 983 Satış bulundu.
+2026-01-03 01:22:20.591 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=22.05.2025 00:05:53, Bitiş=22.05.2025 23:46:09
+2026-01-03 01:22:20.595 +03:00 [INF] DTO Oluşturuldu: 847 Otomasyon, 136 Filo satışı eklendi.
+2026-01-03 01:22:20.596 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 998.988,62 TL (Oto: 718.473,43 + Filo: 280.515,19)
+2026-01-03 01:22:23.440 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:24:53.319 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 01:24:53.448 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 01:24:54.097 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 01:24:55.416 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 01:26:45.253 +03:00 [INF] XML Dosyası İşleniyor: 2025052201.zip, Boyut: 778992 bytes
+2026-01-03 01:26:45.254 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:26:45.274 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:26:45.277 +03:00 [INF] XML Parsing Debug: Toplam 1034 adet 'Txn' elementi bulundu.
+2026-01-03 01:26:45.278 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250523000531</DateTime>
+    <ReceiptNr>38677</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4694</UnitPrice>
+    <Amount>4261</Amount>
+    <Total>200000</Total>
+    <PumpNr>8</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>54AKS688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46940</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:26:45.280 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:26:45.281 +03:00 [INF] İlk Txn ReceiptNr Değeri: 38677
+2026-01-03 01:26:45.284 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1034 Satış bulundu.
+2026-01-03 01:26:45.378 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=23.05.2025 00:05:31, Bitiş=23.05.2025 23:49:10
+2026-01-03 01:26:45.384 +03:00 [INF] DTO Oluşturuldu: 926 Otomasyon, 108 Filo satışı eklendi.
+2026-01-03 01:26:45.385 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 948.042,79 TL (Oto: 737.963,26 + Filo: 210.079,53)
+2026-01-03 01:26:48.860 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=8771, Bitiş=2145, Delta=6626, Sevkiyat=0, BeklenenTüketim=6626, GerçekSatılan=6626, FARK=0
+2026-01-03 01:26:48.861 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=2684, Bitiş=2663, Delta=21, Sevkiyat=0, BeklenenTüketim=21, GerçekSatılan=21, FARK=0
+2026-01-03 01:26:48.862 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4879, Bitiş=4869, Delta=10, Sevkiyat=0, BeklenenTüketim=10, GerçekSatılan=10, FARK=0
+2026-01-03 01:26:48.863 +03:00 [INF] Tank 4 (Motorin): Başlangıç=9684, Bitiş=4981, Delta=4703, Sevkiyat=0, BeklenenTüketim=4703, GerçekSatılan=4703, FARK=0
+2026-01-03 01:26:48.864 +03:00 [INF] Tank 5 (Motorin): Başlangıç=8597, Bitiş=7023, Delta=1574, Sevkiyat=0, BeklenenTüketim=1574, GerçekSatılan=1574, FARK=0
+2026-01-03 01:26:48.864 +03:00 [INF] Tank 6 (Motorin): Başlangıç=5718, Bitiş=4374, Delta=1344, Sevkiyat=0, BeklenenTüketim=1344, GerçekSatılan=1344, FARK=0
+2026-01-03 01:26:48.882 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:27:19.064 +03:00 [INF] XML Dosyası İşleniyor: 2025052301.zip, Boyut: 819402 bytes
+2026-01-03 01:27:19.065 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:27:19.071 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:27:19.074 +03:00 [INF] XML Parsing Debug: Toplam 1088 adet 'Txn' elementi bulundu.
+2026-01-03 01:27:19.075 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250524000152</DateTime>
+    <ReceiptNr>39711</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4697</UnitPrice>
+    <Amount>426</Amount>
+    <Total>20000</Total>
+    <PumpNr>8</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06BVC905</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46970</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:27:19.077 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:27:19.078 +03:00 [INF] İlk Txn ReceiptNr Değeri: 39711
+2026-01-03 01:27:19.079 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1088 Satış bulundu.
+2026-01-03 01:27:19.090 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=24.05.2025 00:01:52, Bitiş=24.05.2025 23:46:44
+2026-01-03 01:27:19.094 +03:00 [INF] DTO Oluşturuldu: 1004 Otomasyon, 84 Filo satışı eklendi.
+2026-01-03 01:27:19.095 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 913.992,56 TL (Oto: 768.754,72 + Filo: 145.237,84)
+2026-01-03 01:27:22.460 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=2145, Bitiş=11057, Delta=2847,9954, Sevkiyat=11759,9954, BeklenenTüketim=2847,9954, GerçekSatılan=2847,9954, FARK=0,0000
+2026-01-03 01:27:22.461 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=2663, Bitiş=4451, Delta=3140,0054, Sevkiyat=4928,0054, BeklenenTüketim=3140,0054, GerçekSatılan=3140,0054, FARK=0,0000
+2026-01-03 01:27:22.462 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4869, Bitiş=4362, Delta=507, Sevkiyat=0, BeklenenTüketim=507, GerçekSatılan=507, FARK=0
+2026-01-03 01:27:22.462 +03:00 [INF] Tank 4 (Motorin): Başlangıç=4981, Bitiş=14445, Delta=2810,7559, Sevkiyat=12274,7559, BeklenenTüketim=2810,7559, GerçekSatılan=2810,7559, FARK=0,0000
+2026-01-03 01:27:22.463 +03:00 [INF] Tank 5 (Motorin): Başlangıç=7023, Bitiş=10643, Delta=2847,5405, Sevkiyat=6467,5405, BeklenenTüketim=2847,5405, GerçekSatılan=2847,5405, FARK=0,0000
+2026-01-03 01:27:22.464 +03:00 [INF] Tank 6 (Motorin): Başlangıç=4374, Bitiş=3289, Delta=1085, Sevkiyat=0, BeklenenTüketim=1085, GerçekSatılan=1085, FARK=0
+2026-01-03 01:27:22.472 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:32:15.040 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 01:32:15.173 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 01:32:15.864 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 01:33:29.807 +03:00 [INF] XML Dosyası İşleniyor: 2025052401.zip, Boyut: 726187 bytes
+2026-01-03 01:33:29.808 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:33:29.837 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:33:29.840 +03:00 [INF] XML Parsing Debug: Toplam 963 adet 'Txn' elementi bulundu.
+2026-01-03 01:33:29.841 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250525000111</DateTime>
+    <ReceiptNr>40799</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4751</UnitPrice>
+    <Amount>1052</Amount>
+    <Total>50000</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>4</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06DT7389</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47510</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:33:29.843 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:33:29.843 +03:00 [INF] İlk Txn ReceiptNr Değeri: 40799
+2026-01-03 01:33:29.846 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 963 Satış bulundu.
+2026-01-03 01:33:29.908 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=25.05.2025 00:01:11, Bitiş=25.05.2025 23:48:48
+2026-01-03 01:33:29.916 +03:00 [INF] DTO Oluşturuldu: 917 Otomasyon, 46 Filo satışı eklendi.
+2026-01-03 01:33:29.919 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 796.064,10 TL (Oto: 713.228,28 + Filo: 82.835,82)
+2026-01-03 01:33:33.992 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=11057, Bitiş=5256, Delta=5801, Sevkiyat=0, BeklenenTüketim=5801, SatilanMiktar=5801, FARK=0
+2026-01-03 01:33:33.993 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4451, Bitiş=4448, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-03 01:33:33.994 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4362, Bitiş=4361, Delta=1, Sevkiyat=0, BeklenenTüketim=1, SatilanMiktar=1, FARK=0
+2026-01-03 01:33:33.995 +03:00 [INF] Tank 4 (Motorin): Başlangıç=14445, Bitiş=10009, Delta=4436, Sevkiyat=0, BeklenenTüketim=4436, SatilanMiktar=4436, FARK=0
+2026-01-03 01:33:33.996 +03:00 [INF] Tank 5 (Motorin): Başlangıç=10643, Bitiş=10655, Delta=-12, Sevkiyat=0, BeklenenTüketim=-12, SatilanMiktar=-12, FARK=0
+2026-01-03 01:33:33.998 +03:00 [INF] Tank 6 (Motorin): Başlangıç=3289, Bitiş=2308, Delta=981, Sevkiyat=0, BeklenenTüketim=981, SatilanMiktar=981, FARK=0
+2026-01-03 01:33:34.034 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:33:35.989 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 01:34:12.135 +03:00 [INF] XML Dosyası İşleniyor: 2025052501.zip, Boyut: 733525 bytes
+2026-01-03 01:34:12.136 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:34:12.142 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:34:12.144 +03:00 [INF] XML Parsing Debug: Toplam 973 adet 'Txn' elementi bulundu.
+2026-01-03 01:34:12.145 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250526000203</DateTime>
+    <ReceiptNr>41762</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>870</Amount>
+    <Total>20000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06KA3188</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:34:12.146 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:34:12.147 +03:00 [INF] İlk Txn ReceiptNr Değeri: 41762
+2026-01-03 01:34:12.149 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 973 Satış bulundu.
+2026-01-03 01:34:12.160 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=26.05.2025 00:02:03, Bitiş=26.05.2025 23:49:28
+2026-01-03 01:34:12.163 +03:00 [INF] DTO Oluşturuldu: 842 Otomasyon, 131 Filo satışı eklendi.
+2026-01-03 01:34:12.164 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 915.432,36 TL (Oto: 653.133,45 + Filo: 262.298,91)
+2026-01-03 01:34:15.077 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=5256, Bitiş=1945, Delta=3311, Sevkiyat=0, BeklenenTüketim=3311, SatilanMiktar=3311, FARK=0
+2026-01-03 01:34:15.078 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4448, Bitiş=1212, Delta=3236, Sevkiyat=0, BeklenenTüketim=3236, SatilanMiktar=3236, FARK=0
+2026-01-03 01:34:15.078 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4361, Bitiş=4358, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-03 01:34:15.079 +03:00 [INF] Tank 4 (Motorin): Başlangıç=10009, Bitiş=2920, Delta=7089, Sevkiyat=0, BeklenenTüketim=7089, SatilanMiktar=7089, FARK=0
+2026-01-03 01:34:15.080 +03:00 [INF] Tank 5 (Motorin): Başlangıç=10655, Bitiş=10658, Delta=-3, Sevkiyat=0, BeklenenTüketim=-3, SatilanMiktar=-3, FARK=0
+2026-01-03 01:34:15.080 +03:00 [INF] Tank 6 (Motorin): Başlangıç=2308, Bitiş=1703, Delta=605, Sevkiyat=0, BeklenenTüketim=605, SatilanMiktar=605, FARK=0
+2026-01-03 01:34:15.087 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:34:31.819 +03:00 [INF] XML Dosyası İşleniyor: 2025052601.zip, Boyut: 749257 bytes
+2026-01-03 01:34:31.820 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 01:34:31.826 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 01:34:31.828 +03:00 [INF] XML Parsing Debug: Toplam 994 adet 'Txn' elementi bulundu.
+2026-01-03 01:34:31.829 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>FE1FADE1</TagNr>
+    <Plate>Y.E.KOCA</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250527000216</DateTime>
+    <ReceiptNr>42735</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1374</Amount>
+    <Total>31588</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06AG255</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 01:34:31.831 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 01:34:31.831 +03:00 [INF] İlk Txn ReceiptNr Değeri: 42735
+2026-01-03 01:34:31.833 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 994 Satış bulundu.
+2026-01-03 01:34:31.844 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=27.05.2025 00:02:16, Bitiş=27.05.2025 23:46:51
+2026-01-03 01:34:31.847 +03:00 [INF] DTO Oluşturuldu: 877 Otomasyon, 117 Filo satışı eklendi.
+2026-01-03 01:34:31.848 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 940.701,45 TL (Oto: 723.501,75 + Filo: 217.199,70)
+2026-01-03 01:34:34.641 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=1945, Bitiş=7547, Delta=5165,6256, Sevkiyat=10767,6256, BeklenenTüketim=5165,6256, SatilanMiktar=5165,6256, FARK=0,0000
+2026-01-03 01:34:34.642 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=1212, Bitiş=593, Delta=619, Sevkiyat=0, BeklenenTüketim=619, SatilanMiktar=619, FARK=0
+2026-01-03 01:34:34.643 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4358, Bitiş=3784, Delta=574, Sevkiyat=0, BeklenenTüketim=574, SatilanMiktar=574, FARK=0
+2026-01-03 01:34:34.644 +03:00 [INF] Tank 4 (Motorin): Başlangıç=2920, Bitiş=8849, Delta=463,4453, Sevkiyat=6392,4453, BeklenenTüketim=463,4453, SatilanMiktar=463,4453, FARK=0,0000
+2026-01-03 01:34:34.644 +03:00 [INF] Tank 5 (Motorin): Başlangıç=10658, Bitiş=4339, Delta=6319, Sevkiyat=0, BeklenenTüketim=6319, SatilanMiktar=6319, FARK=0
+2026-01-03 01:34:34.645 +03:00 [INF] Tank 6 (Motorin): Başlangıç=1703, Bitiş=6447, Delta=1626,155, Sevkiyat=6370,155, BeklenenTüketim=1626,155, SatilanMiktar=1626,155, FARK=0,000
+2026-01-03 01:34:34.653 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 01:44:46.004 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-03 02:02:51.697 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.

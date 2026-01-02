@@ -14,8 +14,10 @@ public class ApiService
     private string _apiUrl = string.Empty;
     private string _apiKey = string.Empty;
     private int _istasyonId;
+    private string _stationCode = string.Empty;
     private string _clientUniqueId = string.Empty;
     private string? _authToken;
+    public string CurrentStationCode => _stationCode;
 
     public ApiService(DatabaseService dbService)
     {
@@ -23,11 +25,12 @@ public class ApiService
         _dbService = dbService;
     }
 
-    public void Initialize(string apiUrl, string apiKey, int istasyonId, string clientUniqueId)
+    public void Initialize(string apiUrl, string apiKey, int istasyonId, string clientUniqueId, string stationCode = "")
     {
         _apiUrl = apiUrl;
         _apiKey = apiKey;
         _istasyonId = istasyonId;
+        _stationCode = stationCode;
         _clientUniqueId = clientUniqueId;
     }
 
@@ -296,6 +299,7 @@ public class ApiService
                         using var doc = System.Text.Json.JsonDocument.Parse(content);
                         stationInfo = new StationInfo();
                         if(doc.RootElement.TryGetProperty("istasyonAdi", out var name)) stationInfo.IstasyonAdi = name.GetString() ?? "";
+                        if(doc.RootElement.TryGetProperty("istasyonKodu", out var code)) stationInfo.IstasyonKodu = code.GetString() ?? "";
                         if(doc.RootElement.TryGetProperty("istasyonAdresi", out var adres)) stationInfo.IstasyonAdresi = adres.GetString() ?? "";
                         if(doc.RootElement.TryGetProperty("firmaAdi", out var firma)) stationInfo.FirmaAdi = firma.GetString() ?? "";
                         if(doc.RootElement.TryGetProperty("istasyonSorumlusu", out var sorumlu)) stationInfo.IstasyonSorumlusu = sorumlu.GetString() ?? "";

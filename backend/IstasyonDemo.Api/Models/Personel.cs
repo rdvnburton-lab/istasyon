@@ -16,6 +16,13 @@ namespace IstasyonDemo.Api.Models
         
         [MaxLength(20)]
         public string? KeyId { get; set; } // El terminali/Otomasyon Key ID
+        
+        [MaxLength(20)]
+        public string? EskiKeyId { get; set; } // Değişmeden önceki son Key ID
+        
+        public DateTime? KeyGuncellemeTarihi { get; set; } // Key ID'nin değiştiği tarih
+        
+        public DateTime? KeyOlusturmaTarihi { get; set; } // Key ID'nin ilk atandığı tarih
 
         [MaxLength(20)]
         public string? Telefon { get; set; }

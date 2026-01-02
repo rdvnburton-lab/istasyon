@@ -24,3 +24,975 @@ System.InvalidOperationException: Hatalı Satış Verisi: Pompa 4 için 17,82 lt
 2026-01-02 16:55:33.884 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
 2026-01-02 16:55:34.016 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
 2026-01-02 16:55:34.646 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 17:08:11.904 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 17:08:12.045 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 17:08:12.769 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 17:09:06.316 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-02 17:10:02.037 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 17:19:06.537 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-02 21:27:36.915 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:27:37.122 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:27:37.808 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 21:28:47.898 +03:00 [ERR] XML/ZIP işlenirken hata: 2025051501.zip
+System.Xml.XmlException: System does not support 'Windows-1254' encoding. Line 1, position 31.
+ ---> System.ArgumentException: 'Windows-1254' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+   at System.Text.EncodingTable.InternalGetCodePageFromName(String name)
+   at System.Text.EncodingTable.GetCodePageFromName(String name)
+   at System.Text.Encoding.GetEncoding(String name)
+   at System.Xml.XmlTextReaderImpl.CheckEncoding(String newEncodingName)
+   --- End of inner exception stack trace ---
+   at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args, Exception innerException)
+   at System.Xml.XmlTextReaderImpl.CheckEncoding(String newEncodingName)
+   at System.Xml.XmlTextReaderImpl.ParseXmlDeclarationAsync(Boolean isTextDecl)
+   at System.Xml.XmlTextReaderImpl._ReadAsync_SwitchToInteractiveXmlDecl(Task`1 task)
+   at System.Xml.Linq.XDocument.LoadAsyncInternal(XmlReader reader, LoadOptions options, CancellationToken cancellationToken)
+   at System.Xml.Linq.XDocument.LoadAsync(Stream stream, LoadOptions options, CancellationToken cancellationToken)
+   at IstasyonDemo.Api.Services.VardiyaService.ProcessXmlZipAsync(Stream zipStream, String fileName, Int32 userId, String userRole, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 564
+2026-01-02 21:30:41.895 +03:00 [ERR] XML/ZIP işlenirken hata: 2025051501.zip
+System.Xml.XmlException: System does not support 'Windows-1254' encoding. Line 1, position 31.
+ ---> System.ArgumentException: 'Windows-1254' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+   at System.Text.EncodingTable.InternalGetCodePageFromName(String name)
+   at System.Text.EncodingTable.GetCodePageFromName(String name)
+   at System.Text.Encoding.GetEncoding(String name)
+   at System.Xml.XmlTextReaderImpl.CheckEncoding(String newEncodingName)
+   --- End of inner exception stack trace ---
+   at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String[] args, Exception innerException)
+   at System.Xml.XmlTextReaderImpl.CheckEncoding(String newEncodingName)
+   at System.Xml.XmlTextReaderImpl.ParseXmlDeclarationAsync(Boolean isTextDecl)
+   at System.Xml.XmlTextReaderImpl._ReadAsync_SwitchToInteractiveXmlDecl(Task`1 task)
+   at System.Xml.Linq.XDocument.LoadAsyncInternal(XmlReader reader, LoadOptions options, CancellationToken cancellationToken)
+   at System.Xml.Linq.XDocument.LoadAsync(Stream stream, LoadOptions options, CancellationToken cancellationToken)
+   at IstasyonDemo.Api.Services.VardiyaService.ProcessXmlZipAsync(Stream zipStream, String fileName, Int32 userId, String userRole, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 564
+2026-01-02 21:43:54.557 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:44:04.640 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:45:39.718 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:45:39.871 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:45:40.507 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 21:46:26.250 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:46:26.409 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:46:27.081 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 21:46:40.110 +03:00 [ERR] XML/ZIP işlenirken hata: 2025051501.zip
+System.ArgumentException: 'windows-1254' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+   at System.Text.EncodingTable.InternalGetCodePageFromName(String name)
+   at System.Text.EncodingTable.GetCodePageFromName(String name)
+   at System.Text.Encoding.GetEncoding(String name)
+   at IstasyonDemo.Api.Services.VardiyaService.ProcessXmlZipAsync(Stream zipStream, String fileName, Int32 userId, String userRole, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 566
+2026-01-02 21:48:41.994 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:48:42.128 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:48:42.771 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 21:48:52.455 +03:00 [ERR] XML/ZIP işlenirken hata: 2025051501.zip
+System.InvalidOperationException: XML Header eksik
+   at IstasyonDemo.Api.Services.VardiyaService.ProcessXmlZipAsync(Stream zipStream, String fileName, Int32 userId, String userRole, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 666
+2026-01-02 21:50:13.261 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:50:13.390 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:50:14.023 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 21:50:22.099 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 21:57:11.105 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:57:11.246 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:57:11.987 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 21:57:23.994 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 21:59:52.603 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 21:59:52.736 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 21:59:53.476 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:00:22.874 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-02 22:00:26.007 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-02 22:01:45.669 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:01:45.799 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:01:46.422 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:04:57.302 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:05:43.941 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:05:43.942 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:05:43.944 +03:00 [INF] XML İstatistikleri: 0 Tank, 0 Pompa, 0 Satış bulundu.
+2026-01-02 22:05:44.035 +03:00 [WRN] Hiçbir satışta tarih bulunamadı! Başlangıç şu anki zaman olarak ayarlandı.
+2026-01-02 22:05:44.036 +03:00 [INF] DTO Oluşturuldu: 0 satış eklendi.
+2026-01-02 22:13:02.525 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:13:25.172 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:13:59.032 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:13:59.179 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:13:59.871 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:14:04.057 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:14:33.923 +03:00 [INF] XML Dosyası İşleniyor: 2025051601.zip, Boyut: 815894 bytes
+2026-01-02 22:14:33.924 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:14:33.925 +03:00 [INF] XML İstatistikleri: 0 Tank, 0 Pompa, 0 Satış bulundu.
+2026-01-02 22:14:33.987 +03:00 [WRN] Hiçbir satışta tarih bulunamadı! Başlangıç şu anki zaman olarak ayarlandı.
+2026-01-02 22:14:33.989 +03:00 [INF] DTO Oluşturuldu: 0 satış eklendi.
+2026-01-02 22:19:28.830 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:19:28.962 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:19:29.656 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:19:38.825 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:19:38.827 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:19:38.829 +03:00 [INF] XML İstatistikleri: 0 Tank, 0 Pompa, 0 Satış bulundu.
+2026-01-02 22:19:38.877 +03:00 [WRN] Hiçbir satışta tarih bulunamadı! Başlangıç şu anki zaman olarak ayarlandı.
+2026-01-02 22:19:38.879 +03:00 [INF] DTO Oluşturuldu: 0 satış eklendi.
+2026-01-02 22:19:38.881 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 0,00 TL
+2026-01-02 22:21:07.864 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:21:07.865 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:21:07.866 +03:00 [INF] XML İstatistikleri: 0 Tank, 0 Pompa, 0 Satış bulundu.
+2026-01-02 22:21:07.874 +03:00 [WRN] Hiçbir satışta tarih bulunamadı! Başlangıç şu anki zaman olarak ayarlandı.
+2026-01-02 22:21:07.875 +03:00 [INF] DTO Oluşturuldu: 0 satış eklendi.
+2026-01-02 22:21:07.876 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 0,00 TL
+2026-01-02 22:21:10.247 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:23:09.102 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:23:09.103 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:23:09.105 +03:00 [INF] XML İstatistikleri: 0 Tank, 0 Pompa, 0 Satış bulundu.
+2026-01-02 22:23:09.111 +03:00 [WRN] Hiçbir satışta tarih bulunamadı! Başlangıç şu anki zaman olarak ayarlandı.
+2026-01-02 22:23:09.112 +03:00 [INF] DTO Oluşturuldu: 0 satış eklendi.
+2026-01-02 22:23:09.113 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 0,00 TL
+2026-01-02 22:25:56.637 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:25:56.777 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:25:57.428 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:26:03.190 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:26:03.192 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:26:03.196 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 22:26:03.197 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 22:26:03.198 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 22:26:03.199 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 22:26:03.202 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 22:26:03.323 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 22:26:03.329 +03:00 [INF] DTO Oluşturuldu: 1056 satış eklendi.
+2026-01-02 22:26:03.332 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL
+2026-01-02 22:26:28.722 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:30:59.966 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:30:59.967 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:30:59.973 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 22:30:59.973 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 22:30:59.975 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 22:30:59.976 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 22:30:59.977 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 22:30:59.990 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 22:30:59.994 +03:00 [INF] DTO Oluşturuldu: 1056 satış eklendi.
+2026-01-02 22:30:59.995 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL
+2026-01-02 22:31:49.101 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:31:49.231 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:31:49.875 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:34:34.769 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:34:34.770 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:34:34.774 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 22:34:34.775 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 22:34:34.777 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 22:34:34.778 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 22:34:34.780 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 22:34:34.834 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 22:34:34.840 +03:00 [INF] DTO Oluşturuldu: 927 Otomasyon, 129 Filo satışı eklendi.
+2026-01-02 22:34:34.843 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 755.180,38 + Filo: 267.026,38)
+2026-01-02 22:34:37.462 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:38:14.179 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:38:33.218 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:38:50.486 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:38:50.614 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:38:51.277 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:39:05.165 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:40:03.965 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:40:04.091 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:40:04.719 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:40:25.820 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 22:40:25.821 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 22:40:25.825 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 22:40:25.826 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 22:40:25.828 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 22:40:25.829 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 22:40:25.831 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 22:40:25.887 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 22:40:25.893 +03:00 [INF] DTO Oluşturuldu: 927 Otomasyon, 129 Filo satışı eklendi.
+2026-01-02 22:40:25.895 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 755.180,38 + Filo: 267.026,38)
+2026-01-02 22:40:29.055 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 22:45:27.520 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-02 22:46:01.726 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:46:12.979 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:49:11.223 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:49:11.351 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 22:49:11.990 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 22:57:07.288 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 22:57:20.897 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:00:20.409 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:00:20.549 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:00:21.222 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:02:33.611 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 23:02:33.613 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:02:33.616 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 23:02:33.617 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:02:33.619 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:02:33.619 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 23:02:33.622 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 23:02:33.693 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 23:02:33.698 +03:00 [INF] DTO Oluşturuldu: 0 Otomasyon, 1056 Filo satışı eklendi.
+2026-01-02 23:02:33.700 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 0,00 + Filo: 1.022.206,76)
+2026-01-02 23:02:35.429 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 23:04:02.717 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:04:02.862 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:04:03.495 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:04:11.805 +03:00 [INF] XML Dosyası İşleniyor: 2025052301.zip, Boyut: 819402 bytes
+2026-01-02 23:04:11.807 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:04:11.851 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-02 23:04:11.855 +03:00 [INF] XML Parsing Debug: Toplam 1088 adet 'Txn' elementi bulundu.
+2026-01-02 23:04:11.856 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250524000152</DateTime>
+    <ReceiptNr>39711</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4697</UnitPrice>
+    <Amount>426</Amount>
+    <Total>20000</Total>
+    <PumpNr>8</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06BVC905</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46970</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:04:11.858 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:04:11.859 +03:00 [INF] İlk Txn ReceiptNr Değeri: 39711
+2026-01-02 23:04:11.862 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1088 Satış bulundu.
+2026-01-02 23:04:11.904 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=24.05.2025 00:01:52, Bitiş=24.05.2025 23:46:44
+2026-01-02 23:04:11.911 +03:00 [INF] DTO Oluşturuldu: 0 Otomasyon, 1088 Filo satışı eklendi.
+2026-01-02 23:04:11.914 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 913.992,56 TL (Oto: 0,00 + Filo: 913.992,56)
+2026-01-02 23:04:16.954 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 23:07:42.792 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:07:42.926 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:07:43.611 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:08:00.493 +03:00 [INF] XML Dosyası İşleniyor: 2025051601.zip, Boyut: 815894 bytes
+2026-01-02 23:08:00.495 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:08:00.518 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-02 23:08:00.522 +03:00 [INF] XML Parsing Debug: Toplam 1083 adet 'Txn' elementi bulundu.
+2026-01-02 23:08:00.523 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250517000116</DateTime>
+    <ReceiptNr>32899</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4686</UnitPrice>
+    <Amount>3468</Amount>
+    <Total>162510</Total>
+    <PumpNr>6</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06CLD688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46860</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:08:00.525 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:08:00.526 +03:00 [INF] İlk Txn ReceiptNr Değeri: 32899
+2026-01-02 23:08:00.528 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1083 Satış bulundu.
+2026-01-02 23:08:00.578 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=17.05.2025 00:01:16, Bitiş=17.05.2025 23:43:17
+2026-01-02 23:08:00.585 +03:00 [INF] DTO Oluşturuldu: 991 Otomasyon, 92 Filo satışı eklendi.
+2026-01-02 23:08:00.588 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 990.165,69 TL (Oto: 816.700,99 + Filo: 173.464,70)
+2026-01-02 23:08:06.988 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-02 23:08:23.861 +03:00 [INF] XML Dosyası İşleniyor: 2025052601.zip, Boyut: 749257 bytes
+2026-01-02 23:08:23.862 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:08:23.867 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-02 23:08:23.873 +03:00 [INF] XML Parsing Debug: Toplam 994 adet 'Txn' elementi bulundu.
+2026-01-02 23:08:23.874 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>FE1FADE1</TagNr>
+    <Plate>Y.E.KOCA</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250527000216</DateTime>
+    <ReceiptNr>42735</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1374</Amount>
+    <Total>31588</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06AG255</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:08:23.876 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:08:23.877 +03:00 [INF] İlk Txn ReceiptNr Değeri: 42735
+2026-01-02 23:08:23.879 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 994 Satış bulundu.
+2026-01-02 23:08:23.891 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=27.05.2025 00:02:16, Bitiş=27.05.2025 23:46:51
+2026-01-02 23:08:23.896 +03:00 [INF] DTO Oluşturuldu: 877 Otomasyon, 117 Filo satışı eklendi.
+2026-01-02 23:08:23.897 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 940.701,45 TL (Oto: 723.501,75 + Filo: 217.199,70)
+2026-01-02 23:08:44.822 +03:00 [INF] XML Dosyası İşleniyor: 2025081701.zip, Boyut: 754086 bytes
+2026-01-02 23:08:44.823 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:08:44.829 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-02 23:08:44.831 +03:00 [INF] XML Parsing Debug: Toplam 1000 adet 'Txn' elementi bulundu.
+2026-01-02 23:08:44.832 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>DD1400D3</TagNr>
+    <Plate>D.DUMAN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250818000307</DateTime>
+    <ReceiptNr>129057</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2359</UnitPrice>
+    <Amount>424</Amount>
+    <Total>10000</Total>
+    <PumpNr>11</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06T2897</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>23590</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:08:44.833 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:08:44.834 +03:00 [INF] İlk Txn ReceiptNr Değeri: 129057
+2026-01-02 23:08:44.836 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1000 Satış bulundu.
+2026-01-02 23:08:44.844 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=18.08.2025 00:03:07, Bitiş=18.08.2025 23:54:52
+2026-01-02 23:08:44.847 +03:00 [INF] DTO Oluşturuldu: 865 Otomasyon, 135 Filo satışı eklendi.
+2026-01-02 23:08:44.848 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.030.810,26 TL (Oto: 762.879,46 + Filo: 267.930,80)
+2026-01-02 23:08:45.111 +03:00 [WRN] Key Devri Tespit Edildi! Key: FE1FADE1 | Eski Sahip: Y.E.KOCA -> Yeni Sahip: P.NUR
+2026-01-02 23:08:45.174 +03:00 [WRN] Key Devri Tespit Edildi! Key: 0244211A | Eski Sahip: H.CIVGIN -> Yeni Sahip: B.KOC
+2026-01-02 23:08:46.276 +03:00 [WRN] Key Devri Tespit Edildi! Key: DD216AD3 | Eski Sahip: A.VURAL -> Yeni Sahip: I.YURT
+2026-01-02 23:09:18.048 +03:00 [INF] XML Dosyası İşleniyor: 2025070301.zip, Boyut: 732590 bytes
+2026-01-02 23:09:18.048 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:09:18.054 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-02 23:09:18.057 +03:00 [INF] XML Parsing Debug: Toplam 972 adet 'Txn' elementi bulundu.
+2026-01-02 23:09:18.058 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>DD1400D3</TagNr>
+    <Plate>D.DUMAN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250704000417</DateTime>
+    <ReceiptNr>81963</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>5182</UnitPrice>
+    <Amount>470</Amount>
+    <Total>24355</Total>
+    <PumpNr>7</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06CGB185</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>51820</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:09:18.059 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:09:18.060 +03:00 [INF] İlk Txn ReceiptNr Değeri: 81963
+2026-01-02 23:09:18.061 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 972 Satış bulundu.
+2026-01-02 23:09:18.069 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=4.07.2025 00:04:17, Bitiş=4.07.2025 23:45:25
+2026-01-02 23:09:18.073 +03:00 [INF] DTO Oluşturuldu: 866 Otomasyon, 106 Filo satışı eklendi.
+2026-01-02 23:09:18.074 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 947.461,81 TL (Oto: 725.543,15 + Filo: 221.918,66)
+2026-01-02 23:09:19.096 +03:00 [WRN] Key Devri Tespit Edildi! Key: DD288D93 | Eski Sahip: L.KOCAK -> Yeni Sahip: S.TEPE
+2026-01-02 23:09:19.357 +03:00 [WRN] Key Devri Tespit Edildi! Key: DD216AD3 | Eski Sahip: I.YURT -> Yeni Sahip: A.VURAL
+2026-01-02 23:09:19.358 +03:00 [WRN] Personel/Key Eşleşmesi: A.VURAL için yeni Key atandı. Eski: , Yeni: DD216AD3
+2026-01-02 23:09:19.383 +03:00 [WRN] Key Devri Tespit Edildi! Key: 0244211A | Eski Sahip: B.KOC -> Yeni Sahip: S.CAYIR
+2026-01-02 23:10:32.676 +03:00 [INF] XML Dosyası İşleniyor: 2025071101.zip, Boyut: 899927 bytes
+2026-01-02 23:10:32.677 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:10:32.682 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-02 23:10:32.684 +03:00 [INF] XML Parsing Debug: Toplam 1196 adet 'Txn' elementi bulundu.
+2026-01-02 23:10:32.685 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>DD1400D3</TagNr>
+    <Plate>D.DUMAN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250712000438</DateTime>
+    <ReceiptNr>90387</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>2610</Amount>
+    <Total>60000</Total>
+    <PumpNr>13</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06AFM778</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:10:32.687 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:10:32.687 +03:00 [INF] İlk Txn ReceiptNr Değeri: 90387
+2026-01-02 23:10:32.689 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1196 Satış bulundu.
+2026-01-02 23:10:32.699 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=12.07.2025 00:04:38, Bitiş=12.07.2025 23:52:08
+2026-01-02 23:10:32.702 +03:00 [INF] DTO Oluşturuldu: 1105 Otomasyon, 91 Filo satışı eklendi.
+2026-01-02 23:10:32.703 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.091.355,63 TL (Oto: 907.176,50 + Filo: 184.179,13)
+2026-01-02 23:12:46.049 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 23:12:46.050 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:12:46.056 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-02 23:12:46.059 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 23:12:46.060 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:12:46.061 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:12:46.062 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 23:12:46.063 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 23:12:46.073 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 23:12:46.076 +03:00 [INF] DTO Oluşturuldu: 927 Otomasyon, 129 Filo satışı eklendi.
+2026-01-02 23:12:46.077 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 755.180,38 + Filo: 267.026,38)
+2026-01-02 23:12:46.082 +03:00 [WRN] Key Devri Tespit Edildi! Key: 0244211A | Eski Sahip: S.CAYIR -> Yeni Sahip: H.CIVGIN
+2026-01-02 23:12:46.084 +03:00 [WRN] Personel/Key Eşleşmesi: H.CIVGIN için yeni Key atandı. Eski: , Yeni: 0244211A
+2026-01-02 23:12:47.371 +03:00 [WRN] Key Devri Tespit Edildi! Key: DD288D93 | Eski Sahip: S.TEPE -> Yeni Sahip: L.KOCAK
+2026-01-02 23:12:47.372 +03:00 [WRN] Personel/Key Eşleşmesi: L.KOCAK için yeni Key atandı. Eski: , Yeni: DD288D93
+2026-01-02 23:12:47.411 +03:00 [WRN] Key Devri Tespit Edildi! Key: FE1FADE1 | Eski Sahip: P.NUR -> Yeni Sahip: Y.E.KOCA
+2026-01-02 23:12:47.413 +03:00 [WRN] Personel/Key Eşleşmesi: Y.E.KOCA için yeni Key atandı. Eski: , Yeni: FE1FADE1
+2026-01-02 23:15:42.088 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:15:56.522 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:17:52.383 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:17:52.510 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:17:53.121 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:18:03.557 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-02 23:18:03.559 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-02 23:18:03.586 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-02 23:18:03.590 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-02 23:18:03.591 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-02 23:18:03.593 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-02 23:18:03.594 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-02 23:18:03.596 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1056 Satış bulundu.
+2026-01-02 23:18:03.705 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-02 23:18:03.711 +03:00 [INF] DTO Oluşturuldu: 927 Otomasyon, 129 Filo satışı eklendi.
+2026-01-02 23:18:03.715 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 755.180,38 + Filo: 267.026,38)
+2026-01-02 23:18:26.207 +03:00 [WRN] Mükerrer Dosya Yükleme Girişimi Engellendi. Hash: 427abb7f86870c6d00ab5673d24ef8ef741ed8bbda732a7f80721bb885f6b525, Dosya: 2025051501.zip
+2026-01-02 23:18:26.208 +03:00 [ERR] XML/ZIP işlenirken hata: 2025051501.zip
+System.InvalidOperationException: Bu dosya daha önce yüklenmiş! (Hash: 427abb7f86870c6d00ab5673d24ef8ef741ed8bbda732a7f80721bb885f6b525)
+   at IstasyonDemo.Api.Services.VardiyaService.ProcessXmlZipAsync(Stream zipStream, String fileName, Int32 userId, String userRole, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 644
+2026-01-02 23:20:14.445 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:20:14.583 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:20:15.226 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:20:18.889 +03:00 [WRN] Mükerrer Dosya Yükleme Girişimi Engellendi. Hash: 427abb7f86870c6d00ab5673d24ef8ef741ed8bbda732a7f80721bb885f6b525, Dosya: 2025051501.zip
+2026-01-02 23:20:18.891 +03:00 [ERR] XML/ZIP işlenirken hata: 2025051501.zip
+System.InvalidOperationException: Bu dosya daha önce yüklenmiş! (Hash: 427abb7f86870c6d00ab5673d24ef8ef741ed8bbda732a7f80721bb885f6b525)
+   at IstasyonDemo.Api.Services.VardiyaService.ProcessXmlZipAsync(Stream zipStream, String fileName, Int32 userId, String userRole, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 644
+2026-01-02 23:25:16.909 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:25:28.788 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:31:25.623 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:31:25.753 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:31:26.390 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:33:24.799 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:33:24.932 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:33:25.561 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:37:55.886 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:37:56.015 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:37:56.622 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:38:23.656 +03:00 [INF] İstasyon 1 için cihaz kilidi oluşturuldu: 33c4567e-8873-4a0a-b2f4-7457138b9ed7
+2026-01-02 23:43:00.397 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-02 23:44:41.023 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:44:41.154 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:44:41.767 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:45:17.048 +03:00 [INF] İstasyon 1 için cihaz kilidi oluşturuldu: 3a531259-2495-41d1-b367-e328713727ac
+2026-01-02 23:48:09.670 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-02 23:48:09.797 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-02 23:48:10.406 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-02 23:49:35.339 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 20251216.D1B (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:37.710 +03:00 [INF] İstasyon 1 için cihaz kilidi oluşturuldu: 899801fe-ba7c-410f-aeea-049bf0d683c6
+2026-01-02 23:54:56.259 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.264 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025051801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.270 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.287 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.291 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.295 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.306 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.311 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025123101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.323 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025053001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.354 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025123001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.370 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.384 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025051901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.424 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.430 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.445 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.518 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: Sale.XML (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.521 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.524 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.528 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.546 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.549 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.555 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.558 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121602.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.607 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.610 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.613 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025051501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.633 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025051601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.636 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.640 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025052801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.657 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.675 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.692 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.707 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.726 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.740 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.747 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.760 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.788 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.807 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.816 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.834 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025113001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.866 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025122001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:56.985 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.851 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.893 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.897 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.914 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.920 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.927 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.934 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.938 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.944 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.949 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.954 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.958 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.963 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.967 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025120301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.972 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.977 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.983 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.987 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.992 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:58.996 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.000 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.004 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.008 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.013 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.421 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.426 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.430 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.435 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025111001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.439 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025103101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.446 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.449 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.458 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.464 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.472 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.476 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.482 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.486 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.491 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025103001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.497 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.501 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.507 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.510 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.515 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.520 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.524 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.529 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.535 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.540 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.544 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025100101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.549 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025110801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.553 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.557 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.564 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.568 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.573 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.578 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091902.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.584 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.588 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.593 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.596 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.600 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.617 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.637 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.640 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.643 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.668 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.672 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.678 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.683 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.686 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.691 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025121601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.695 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.701 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082004.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.708 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.712 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.717 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.721 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.726 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.730 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.736 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.740 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.745 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.750 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.754 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.760 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025083101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.764 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.770 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.778 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.782 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.787 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.791 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025073101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.804 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.808 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091702.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.822 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.828 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.841 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.847 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.853 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.857 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.863 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.873 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.884 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.889 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025081501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.922 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.936 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.946 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.966 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.971 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.984 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:54:59.996 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.001 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.010 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.015 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.022 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.028 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.035 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.040 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025112901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.044 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.048 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.051 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.055 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.059 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.062 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.065 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.070 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.073 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025093001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.077 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025051701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.080 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.084 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.088 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.091 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.094 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025080701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.098 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.102 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.105 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025053101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.111 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025073001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.114 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.118 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.122 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.125 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.128 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.133 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.141 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.145 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062502.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.150 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.155 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.161 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.166 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.172 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.180 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.183 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.188 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.193 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.199 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.203 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.209 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.549 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082003.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.732 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025063001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.736 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.739 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.742 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.767 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.790 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.799 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101801.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.805 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025071001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.810 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.815 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025060201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.818 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025072701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.822 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.825 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.830 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025083001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.836 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.841 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.845 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025070201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.851 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.857 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025091401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.862 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102401.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.865 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082001.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.868 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061501.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.873 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.876 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025062601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.882 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082301.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.884 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082002.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.889 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.892 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082901.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.896 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025102101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.899 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025082101.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.903 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.907 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025090201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:00.910 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025092201.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:01.093 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025061701.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:55:01.405 +03:00 [INF] Dosya başarıyla veritabanına kaydedildi: 2025101601.zip (İstasyon: Özyön Opet Y.Mahalle)
+2026-01-02 23:58:14.340 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: d237b46a-94f6-4284-83d3-1650bee1dcb6
+2026-01-02 23:58:19.476 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: d237b46a-94f6-4284-83d3-1650bee1dcb6
+2026-01-02 23:58:41.906 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: d237b46a-94f6-4284-83d3-1650bee1dcb6
+2026-01-02 23:58:42.716 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: d237b46a-94f6-4284-83d3-1650bee1dcb6

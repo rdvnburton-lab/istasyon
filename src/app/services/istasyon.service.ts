@@ -16,9 +16,9 @@ export interface Istasyon {
     marketSorumluId?: number;
 
     apiKey?: string;
-    kod?: string;
-    pompaSayisi?: number;
-    marketVar?: boolean;
+    istasyonKodu?: string;
+    otomasyonFiloKodu?: string;
+    otomatikDosyaYolu?: string;
 
     // Backend'den gelen hazır sorumlu adları
     istasyonSorumlusu?: string;
@@ -39,6 +39,9 @@ export interface CreateIstasyonDto {
     vardiyaSorumluId?: number;
     marketSorumluId?: number;
     apiKey?: string;
+    istasyonKodu?: string;
+    otomasyonFiloKodu?: string;
+    otomatikDosyaYolu?: string;
 }
 
 export interface UpdateIstasyonDto {
@@ -49,6 +52,9 @@ export interface UpdateIstasyonDto {
     vardiyaSorumluId?: number;
     marketSorumluId?: number;
     apiKey?: string;
+    istasyonKodu?: string;
+    otomasyonFiloKodu?: string;
+    otomatikDosyaYolu?: string;
 }
 
 @Injectable({

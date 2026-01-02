@@ -35,6 +35,9 @@ namespace IstasyonDemo.Api.Models
         [MaxLength(255)]
         public string? DosyaAdi { get; set; }
 
+        [MaxLength(100)]
+        public string? DosyaHash { get; set; }
+
         public byte[]? DosyaIcerik { get; set; }
 
         // Onay Mekanizması
@@ -54,6 +57,12 @@ namespace IstasyonDemo.Api.Models
         public int? SilinmeTalebiOlusturanId { get; set; }
         [MaxLength(100)]
         public string? SilinmeTalebiOlusturanAdi { get; set; }
+
+        // Sorumlu (Vardiyayı Oluşturan)
+        public int? SorumluId { get; set; }
+        
+        [MaxLength(100)]
+        public string? SorumluAdi { get; set; }
         
         // Navigation Properties
         public ICollection<OtomasyonSatis> OtomasyonSatislar { get; set; } = new List<OtomasyonSatis>();

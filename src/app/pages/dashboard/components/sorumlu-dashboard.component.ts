@@ -108,7 +108,7 @@ export class SorumluDashboardComponent implements OnInit {
     }
 
     goToVardiya(id: number) {
-        this.router.navigate(['/vardiya/pompa', id]);
+        this.router.navigate(['/operasyon/pompa', id]);
     }
 
     startVardiya() {
@@ -160,7 +160,7 @@ export class SorumluDashboardComponent implements OnInit {
 
         if (role === 'market sorumlusu' || role === 'market_sorumlusu') {
             // Market sorumlusu market sayfasına gitsin
-            this.router.navigate(['/vardiya/market']);
+            this.router.navigate(['/operasyon/market']);
         } else {
             // Vardiya sorumlusu veya istasyon sorumlusu vardiya sayfasına gitsin
             this.router.navigate(['/vardiya']);

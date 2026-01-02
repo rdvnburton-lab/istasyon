@@ -25,6 +25,8 @@ interface DrawerItem {
     action?: () => void;
 }
 
+import { AppMenuService } from '../service/app.menu.service';
+
 @Component({
     selector: 'app-bottom-nav',
     standalone: true,
@@ -352,7 +354,8 @@ export class AppBottomNav implements OnInit, OnDestroy {
         private authService: AuthService,
         private router: Router,
         private permissionService: PermissionService,
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private appMenuService: AppMenuService
     ) { }
 
     ngOnInit() {
@@ -389,102 +392,106 @@ export class AppBottomNav implements OnInit, OnDestroy {
         // }
 
         this.isVisible = true;
-        const hasAccess = (resource: string) => this.permissionService.hasAccess(role, resource);
 
-        // Define ALL available menu items with their permission checks
-        const allItems = [
-            { id: '/dashboard', label: 'Özet', drawerLabel: 'Genel Bakış', icon: 'pi-home', route: '/dashboard', visible: true, group: 'Ana Sayfa' },
-            { id: '/vardiya', label: 'Vardiyalar', drawerLabel: 'Vardiya Listesi', icon: 'pi-list', route: '/vardiya', visible: hasAccess('VARDIYA_LISTESI'), group: 'Vardiya İşlemleri' },
-            { id: '/vardiya/onay-bekleyenler', label: 'Onaylar', drawerLabel: 'Onay Bekleyenler', icon: 'pi-check-circle', route: '/vardiya/onay-bekleyenler', visible: hasAccess('VARDIYA_ONAY_BEKLEYENLER'), group: 'Yönetim' },
-            { id: '/vardiya/loglar', label: 'Geçmiş', drawerLabel: 'İşlem Geçmişi', icon: 'pi-history', route: '/vardiya/loglar', visible: hasAccess('VARDIYA_LOGLAR'), group: 'Yönetim' },
-            { id: '/vardiya/raporlar/vardiya', label: 'Raporlar', drawerLabel: 'Vardiya Raporları', icon: 'pi-chart-bar', route: '/vardiya/raporlar/vardiya', visible: hasAccess('RAPOR_VARDIYA'), group: 'Raporlar' },
-            { id: '/vardiya/market', label: 'Market', drawerLabel: 'Market Satışları', icon: 'pi-shopping-bag', route: '/vardiya/market', visible: hasAccess('VARDIYA_MARKET'), group: 'Vardiya İşlemleri' },
-            { id: '/vardiya/stok', label: 'Yakıt Stok', drawerLabel: 'Yakıt Stok Yönetimi', icon: 'pi-filter-fill', route: '/vardiya/stok', visible: hasAccess('VARDIYA_STOK'), group: 'Vardiya İşlemleri' },
-            { id: '/vardiya/karsilastirma', label: 'Kıyasla', drawerLabel: 'Karşılaştırma Raporu', icon: 'pi-chart-line', route: '/vardiya/karsilastirma', visible: hasAccess('VARDIYA_KARSILASTIRMA'), group: 'Vardiya İşlemleri' },
-            { id: '/vardiya/raporlar/personel', label: 'Personel', drawerLabel: 'Personel Raporları', icon: 'pi-users', route: '/vardiya/raporlar/personel', visible: hasAccess('RAPOR_PERSONEL'), group: 'Raporlar' },
-            { id: '/vardiya/raporlar/fark', label: 'Farklar', drawerLabel: 'Fark Raporları', icon: 'pi-exclamation-triangle', route: '/vardiya/raporlar/fark', visible: hasAccess('RAPOR_FARK'), group: 'Raporlar' },
-            { id: '/yonetim/kullanici', label: 'Kullanıcılar', drawerLabel: 'Kullanıcı Yönetimi', icon: 'pi-user-edit', route: '/yonetim/kullanici', visible: hasAccess('YONETIM_KULLANICI'), group: 'Yönetim' },
-            { id: '/vardiya/tanimlamalar/personel', label: 'Personel Tnm', drawerLabel: 'Personel Tanımları', icon: 'pi-user', route: '/vardiya/tanimlamalar/personel', visible: hasAccess('TANIMLAMA_PERSONEL'), group: 'Yönetim' },
-            { id: '/yonetim/istasyon', label: 'İstasyon', drawerLabel: 'İstasyon Yönetimi', icon: 'pi-building', route: '/yonetim/istasyon', visible: hasAccess('YONETIM_ISTASYON'), group: 'Yönetim' },
-            { id: '/yonetim/yetki', label: 'Yetkiler', drawerLabel: 'Yetki Yönetimi', icon: 'pi-lock', route: '/yonetim/yetki', visible: hasAccess('YONETIM_YETKI'), group: 'Yönetim' },
-            { id: '/admin/health', label: 'Sağlık', drawerLabel: 'Sistem Sağlığı', icon: 'pi-heart', route: '/admin/health', visible: hasAccess('SISTEM_SAGLIK'), group: 'Sistem' },
-            { id: '/settings/roles', label: 'Roller', drawerLabel: 'Rol Yönetimi', icon: 'pi-shield', route: '/settings/roles', visible: hasAccess('SISTEM_ROLLER'), group: 'Sistem' },
-            { id: '/admin/notifications', label: 'Bildirim', drawerLabel: 'Bildirim Gönder', icon: 'pi-bell', route: '/admin/notifications', visible: hasAccess('SISTEM_BILDIRIM'), group: 'Sistem' }
-        ];
+        // Subscribe to menu service
+        this.appMenuService.menu$.subscribe((menuModel: any[]) => {
+            // Flatten the menu for easier processing
+            // Level 0: Group (e.g. 'Operasyonlar')
+            // Level 1: Items (e.g. 'Vardiya Listesi')
 
-        // Filter items accessible by the user
-        const accessibleItems = allItems.filter(i => i.visible);
+            // Map to internal format
+            const allItems: any[] = [];
 
-        // Get user preferences (or default)
-        // Default: Dashboard, Vardiyalar, Onaylar (if capable) or Loglar, Raporlar
-        let userMenuRoutes = this.settingsService.getMobileMenu();
+            menuModel.forEach((group: any) => {
+                if (group.items) {
+                    group.items.forEach((item: any) => {
+                        // Use short label for bottom nav if available
+                        const shortLabel = item.data?.shortLabel || item.label;
+                        const route = item.routerLink ? item.routerLink[0] : null;
 
-        if (!userMenuRoutes || userMenuRoutes.length === 0) {
-            // Smart defaults based on role if no custom setting
-            userMenuRoutes = ['/dashboard'];
-            if (hasAccess('VARDIYA_LISTESI')) userMenuRoutes.push('/vardiya');
-            if (hasAccess('VARDIYA_ONAY_BEKLEYENLER')) userMenuRoutes.push('/vardiya/onay-bekleyenler');
-            if (hasAccess('RAPOR_VARDIYA') && userMenuRoutes.length < 4) userMenuRoutes.push('/vardiya/raporlar/vardiya');
-        }
+                        allItems.push({
+                            label: shortLabel, // Short label for bottom nav
+                            drawerLabel: item.label, // Full label for drawer
+                            icon: item.icon ? item.icon.replace('pi pi-fw ', '') : '', // clean up icon class
+                            route: route,
+                            visible: item.visible !== false,
+                            group: group.label
+                        });
+                    });
+                }
+            });
 
-        // Limit to 4 checks done in settings, but enforce here too just in case
-        const preferredRoutes = userMenuRoutes.slice(0, 4);
+            // Filter items accessible by the user (already filtered in service, but check visible flag)
+            const accessibleItems = allItems.filter(i => i.visible);
 
-        // 1. POPULATE BOTTOM NAV (max 4 + Other)
-        this.navItems = [];
+            // Get user preferences
+            let userMenuRoutes = this.settingsService.getMobileMenu();
 
-        // Add preferred items that are accessible
-        preferredRoutes.forEach(route => {
-            const item = accessibleItems.find(i => i.route === route);
-            if (item) {
-                // Bottom Nav uses the short 'label'
-                this.navItems.push({ label: item.label, icon: item.icon, route: item.route });
+            if (!userMenuRoutes || userMenuRoutes.length === 0) {
+                // Smart defaults based on role if no custom setting
+                userMenuRoutes = ['/dashboard'];
+                // Hardcoded defaults based on what's available
+                if (accessibleItems.find(i => i.route === '/operasyon')) userMenuRoutes.push('/operasyon');
+                if (accessibleItems.find(i => i.route === '/raporlar/onay-bekleyenler')) userMenuRoutes.push('/raporlar/onay-bekleyenler');
+                if (accessibleItems.find(i => i.route === '/raporlar/vardiya') && userMenuRoutes.length < 4) userMenuRoutes.push('/raporlar/vardiya');
             }
-        });
 
-        // Always add 'Diğer'
-        this.navItems.push({
-            label: 'Diğer',
-            icon: 'pi-ellipsis-h',
-            action: () => {
-                this.showProfileDrawer = true;
-                this.drawerTransform = 'translateY(0)';
-            }
-        });
+            // Limit to 4 checks done in settings
+            const preferredRoutes = userMenuRoutes.slice(0, 4);
 
-        // 2. POPULATE DRAWER (All accessible items NOT in bottom nav)
-        const bottomNavPacket = this.navItems.map(i => i.route); // routes already in bottom nav
-        const drawerItems = accessibleItems.filter(i => !bottomNavPacket.includes(i.route));
+            // 1. POPULATE BOTTOM NAV 
+            this.navItems = [];
 
-        // Group them
-        this.drawerSections = [];
-        const groups = [...new Set(drawerItems.map(i => i.group))]; // unique groups
+            preferredRoutes.forEach(route => {
+                const item = accessibleItems.find(i => i.route === route);
+                if (item) {
+                    this.navItems.push({ label: item.label, icon: item.icon, route: item.route });
+                }
+            });
 
-        // Sort groups logically (optional custom order or just by list definition order)
-        const groupOrder = ['Vardiya İşlemleri', 'Raporlar', 'Yönetim', 'Ana Sayfa'];
-        groups.sort((a, b) => groupOrder.indexOf(a) - groupOrder.indexOf(b));
+            // Always add 'Diğer'
+            this.navItems.push({
+                label: 'Diğer',
+                icon: 'pi-ellipsis-h',
+                action: () => {
+                    this.showProfileDrawer = true;
+                    this.drawerTransform = 'translateY(0)';
+                }
+            });
 
-        groups.forEach(groupName => {
-            const itemsInGroup = drawerItems.filter(i => i.group === groupName);
-            if (itemsInGroup.length > 0) {
-                this.drawerSections.push({
-                    label: groupName,
-                    items: itemsInGroup.map(i => ({
-                        // Drawer uses 'drawerLabel' if available, otherwise 'label'
-                        label: i.drawerLabel || i.label,
-                        icon: i.icon,
-                        route: i.route
-                    }))
-                });
-            }
-        });
+            // 2. POPULATE DRAWER
+            const bottomNavPacket = this.navItems.map(i => i.route);
+            const drawerItems = accessibleItems.filter(i => !bottomNavPacket.includes(i.route));
 
-        // Always add Ayarlar
-        this.drawerSections.push({
-            label: 'Sistem',
-            items: [
-                { label: 'Uygulama Ayarları', icon: 'pi-cog', route: '/sistem/ayarlar' }
-            ]
+            this.drawerSections = [];
+            // Preserve the order from the service which is naturally logical
+            // Group by group name
+            const groups: { [key: string]: any[] } = {};
+            drawerItems.forEach(item => {
+                if (!groups[item.group]) {
+                    groups[item.group] = [];
+                }
+                groups[item.group].push(item);
+            });
+
+            // Iterate through original service groups to maintain order
+            menuModel.forEach((groupModel: any) => {
+                if (groups[groupModel.label!] && groups[groupModel.label!].length > 0) {
+                    this.drawerSections.push({
+                        label: groupModel.label!,
+                        items: groups[groupModel.label!].map(i => ({
+                            label: i.drawerLabel,
+                            icon: i.icon,
+                            route: i.route
+                        }))
+                    });
+                }
+            });
+
+            // Always add Ayarlar (if not already in menu model, currently it is but kept separate in drawer usually?)
+            // Actually 'Sistem Ayarları' is in the 'Sistem Yönetimi' group in AppMenuService.
+            // But if it was moved to BottomNav, it shouldn't show up here twice.
+            // Our logic handles that.
         });
     }
 

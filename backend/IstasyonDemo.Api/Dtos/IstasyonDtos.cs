@@ -24,6 +24,9 @@ namespace IstasyonDemo.Api.Dtos
         public string? RegisteredDeviceId { get; set; }
         public DateTime? LastConnectionTime { get; set; }
         public bool IsOnline => LastConnectionTime.HasValue && LastConnectionTime.Value > DateTime.UtcNow.AddMinutes(-5);
+        public string? IstasyonKodu { get; set; }
+        public string? OtomasyonFiloKodu { get; set; }
+        public string? OtomatikDosyaYolu { get; set; }
     }
 
     public class CreateIstasyonDto
@@ -35,6 +38,9 @@ namespace IstasyonDemo.Api.Dtos
         public int? VardiyaSorumluId { get; set; }
         public int? MarketSorumluId { get; set; }
         public string? ApiKey { get; set; }
+        public string? IstasyonKodu { get; set; }
+        public string? OtomasyonFiloKodu { get; set; }
+        public string? OtomatikDosyaYolu { get; set; }
     }
 
     public class UpdateIstasyonDto
@@ -46,5 +52,8 @@ namespace IstasyonDemo.Api.Dtos
         public int? VardiyaSorumluId { get; set; }
         public int? MarketSorumluId { get; set; }
         public string? ApiKey { get; set; }
+        public string? IstasyonKodu { get; set; }
+        public string? OtomasyonFiloKodu { get; set; }
+        public string? OtomatikDosyaYolu { get; set; }
     }
 }

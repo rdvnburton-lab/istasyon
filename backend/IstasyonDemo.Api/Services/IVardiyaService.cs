@@ -12,5 +12,6 @@ namespace IstasyonDemo.Api.Services
         Task SilmeTalebiOlusturAsync(int id, SilmeTalebiDto dto, int userId, string? userRole, string? userName);
         Task OnaylaAsync(int id, OnayDto dto, int userId, string? userRole);
         Task ReddetAsync(int id, RedDto dto, int userId, string? userRole);
+        Task ProcessXmlZipAsync(Stream zipStream, string fileName, int userId, string? userRole, string? userName);
     }
 }

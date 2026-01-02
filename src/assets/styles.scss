@@ -394,3 +394,31 @@
     }
   }
 }
+
+.pulse-badge {
+  background-color: #ef4444 !important;
+  color: white !important;
+  animation: pulse-red 2s infinite;
+  border-radius: 12px;
+  padding: 0.25rem 0.5rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: inline-block;
+  min-width: 1.5rem;
+  text-align: center;
+  line-height: normal;
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}

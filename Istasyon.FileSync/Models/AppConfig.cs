@@ -6,6 +6,7 @@ public class AppConfig
     public string ApiUrl { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
     public int IstasyonId { get; set; }
+    public string StationCode { get; set; } = string.Empty;
     public string ClientUniqueId { get; set; } = string.Empty;
     public bool AutoStart { get; set; } = true;
 }

@@ -33,6 +33,10 @@ namespace IstasyonDemo.Api.Data
         public DbSet<PusulaDigerOdeme> PusulaDigerOdemeleri { get; set; }
         public DbSet<AylikStokOzeti> AylikStokOzetleri { get; set; }
         public DbSet<FaturaStokTakip> FaturaStokTakipleri { get; set; }
+        public DbSet<IstasyonAyarlari> IstasyonAyarlari { get; set; }
+        public DbSet<VardiyaXmlLog> VardiyaXmlLoglari { get; set; }
+        public DbSet<DosyaYuklemeAyarlari> DosyaYuklemeAyarlari { get; set; }
+        public DbSet<VardiyaTankEnvanteri> VardiyaTankEnvanterleri { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -71,6 +75,12 @@ namespace IstasyonDemo.Api.Data
                 .HasOne(g => g.Vardiya)
                 .WithMany(v => v.Giderler)
                 .HasForeignKey(g => g.VardiyaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<VardiyaTankEnvanteri>()
+                .HasOne(t => t.Vardiya)
+                .WithMany()
+                .HasForeignKey(t => t.VardiyaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // PERFORMANCE INDEXES

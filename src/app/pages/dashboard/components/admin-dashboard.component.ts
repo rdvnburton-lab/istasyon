@@ -226,10 +226,10 @@ interface AdminDashboard {
                     <div class="card p-4 shadow-sm border-round bg-white">
                         <h3 class="m-0 mb-3">Hızlı Erişim</h3>
                         <div class="flex flex-wrap gap-3">
-                            <button pButton label="Kullanıcı Yönetimi" icon="pi pi-users" class="p-button-outlined" (click)="router.navigate(['/yonetim/kullanici'])"></button>
-                            <button pButton label="İstasyon Yönetimi" icon="pi pi-building" class="p-button-outlined" (click)="router.navigate(['/admin/istasyonlar'])"></button>
+                            <button pButton label="Kullanıcı Yönetimi" icon="pi pi-users" class="p-button-outlined" (click)="router.navigate(['/sistem/kullanici'])"></button>
+                            <button pButton label="İstasyon Yönetimi" icon="pi pi-building" class="p-button-outlined" (click)="router.navigate(['/sistem/istasyon'])"></button>
                             <button pButton label="Sistem Sağlığı" icon="pi pi-heart-fill" class="p-button-outlined p-button-danger" (click)="router.navigate(['/admin/health'])"></button>
-                            <button pButton label="Rol Yönetimi" icon="pi pi-id-card" class="p-button-outlined" (click)="router.navigate(['/settings/roles'])"></button>
+                            <button pButton label="Rol Yönetimi" icon="pi pi-id-card" class="p-button-outlined" (click)="router.navigate(['/sistem/roller'])"></button>
                         </div>
                     </div>
                 </div>

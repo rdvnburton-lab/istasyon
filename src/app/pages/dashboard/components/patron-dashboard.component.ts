@@ -62,6 +62,7 @@ export class PatronDashboardComponent implements OnInit {
     loading = true;
     aiLoading = false;
     aiInsight: { mood: string, tespit: string, tavsiye: string } | null = null;
+    aiError: string | null = null;
 
     trendChartData: any;
     trendChartOptions: any;
@@ -105,6 +106,7 @@ export class PatronDashboardComponent implements OnInit {
     loadAiAnalysis(): void {
         if (!this.dashboard) return;
         this.aiLoading = true;
+        this.aiError = null;
         this.http.post<any>(`${environment.apiUrl}/gemini/analyze-dashboard`, this.dashboard).subscribe({
             next: (res) => {
                 try {
@@ -112,11 +114,13 @@ export class PatronDashboardComponent implements OnInit {
                     this.aiInsight = typeof res === 'string' ? JSON.parse(res) : res;
                 } catch (e) {
                     console.error('AI Insight Parse Error:', e);
+                    this.aiError = 'Analiz verisi işlenemedi.';
                 }
                 this.aiLoading = false;
             },
             error: (err) => {
                 console.error('AI Insight Error:', err);
+                this.aiError = 'Yapay zeka analizi şu anda yapılamıyor. Lütfen daha sonra tekrar deneyin.';
                 this.aiLoading = false;
             }
         });
@@ -290,10 +294,10 @@ export class PatronDashboardComponent implements OnInit {
     }
 
     navigateToOnayBekleyenler(): void {
-        this.router.navigate(['/vardiya/onay-bekleyenler']);
+        this.router.navigate(['/raporlar/onay-bekleyenler']);
     }
 
     navigateToLoglar(): void {
-        this.router.navigate(['/vardiya/loglar']);
+        this.router.navigate(['/raporlar/loglar']);
     }
 }

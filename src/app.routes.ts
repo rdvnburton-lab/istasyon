@@ -13,35 +13,18 @@ export const appRoutes: Routes = [
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadChildren: () => import('./app/pages/dashboard/dashboard.routes') },
-            { path: 'vardiya', loadChildren: () => import('./app/pages/vardiya/vardiya.routes') },
-            {
-                path: 'sistem/ayarlar',
-                loadComponent: () => import('./app/pages/sistem/ayarlar/ayarlar.component').then(m => m.AyarlarComponent),
-                canActivate: [roleGuard]
-            },
-            { path: 'yonetim', loadChildren: () => import('./app/pages/yonetim/yonetim.routes').then(m => m.YONETIM_ROUTES) },
-
-            {
-                path: 'admin/health',
-                loadComponent: () => import('./app/pages/dashboard/components/system-health/system-health.component').then(m => m.SystemHealthComponent),
-                canActivate: [roleGuard],
-                data: { resource: 'SISTEM_SAGLIK' }
-            },
-            {
-                path: 'settings/roles',
-                loadComponent: () => import('./app/pages/settings/role-management/role-management.component').then(m => m.RoleManagementComponent),
-                canActivate: [roleGuard],
-                data: { resource: 'SISTEM_ROLLER' }
-            },
+            { path: 'operasyon', loadChildren: () => import('./app/pages/operasyon/operasyon.routes') },
+            { path: 'raporlar', loadChildren: () => import('./app/pages/raporlar/raporlar.routes') },
+            { path: 'tanimlar', loadChildren: () => import('./app/pages/tanimlar/tanimlar.routes') },
+            { path: 'sistem', loadChildren: () => import('./app/pages/sistem/sistem.routes') },
             {
                 path: 'profile',
                 loadComponent: () => import('./app/pages/profile/profile.component').then(m => m.ProfileComponent)
             },
+            // Admin health is now under sistem
             {
-                path: 'admin/notifications',
-                loadComponent: () => import('./app/pages/admin/notification-sender/notification-sender.component').then(m => m.NotificationSenderComponent),
-                canActivate: [roleGuard],
-                data: { resource: 'SISTEM_BILDIRIM' }
+                path: 'admin/health',
+                redirectTo: 'sistem/health'
             }
         ]
     },

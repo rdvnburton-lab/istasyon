@@ -152,8 +152,17 @@
                                                         <DataTrigger Binding="{Binding Status}" Value="Failed">
                                                             <Setter Property="Background" Value="#FADBD8"/>
                                                         </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Reddedildi">
+                                                            <Setter Property="Background" Value="#FADBD8"/>
+                                                        </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="Pending">
                                                             <Setter Property="Background" Value="#FCF3CF"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Klasörde (Bekliyor)">
+                                                            <Setter Property="Background" Value="#D6EAF8"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Gözardı Edildi (Uzantı)">
+                                                            <Setter Property="Background" Value="#EBEDEF"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -168,8 +177,17 @@
                                                             <DataTrigger Binding="{Binding Status}" Value="Failed">
                                                                 <Setter Property="Foreground" Value="#943126"/>
                                                             </DataTrigger>
+                                                             <DataTrigger Binding="{Binding Status}" Value="Reddedildi">
+                                                                <Setter Property="Foreground" Value="#943126"/>
+                                                            </DataTrigger>
                                                             <DataTrigger Binding="{Binding Status}" Value="Pending">
                                                                 <Setter Property="Foreground" Value="#9A7D0A"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Klasörde (Bekliyor)">
+                                                                <Setter Property="Foreground" Value="#2980B9"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Gözardı Edildi (Uzantı)">
+                                                                <Setter Property="Foreground" Value="#7F8C8D"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>

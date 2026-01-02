@@ -15,6 +15,9 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Fix for 'windows-1254' encoding support
+System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)

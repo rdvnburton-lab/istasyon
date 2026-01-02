@@ -3,8 +3,14 @@ using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO.Compression;
+using System.Xml.Linq;
+using System.Globalization;
+using System.Text.Json;
 
 namespace IstasyonDemo.Api.Services
 {
@@ -37,13 +43,82 @@ namespace IstasyonDemo.Api.Services
                 // 2. Otomasyon Satışlarını Ekle
                 foreach (var satisDto in dto.OtomasyonSatislar)
                 {
-                    var personel = await _context.Personeller
-                        .Where(p => p.IstasyonId == vardiya.IstasyonId)
-                        .FirstOrDefaultAsync(p => 
-                            (satisDto.PersonelKeyId != null && p.KeyId == satisDto.PersonelKeyId) || 
-                            (p.AdSoyad == satisDto.PersonelAdi) || 
-                            (p.OtomasyonAdi == satisDto.PersonelAdi));
+                    Personel? personel = null;
 
+                    // 1. Önce bu Key ID şu an kimde var?
+                    if (!string.IsNullOrEmpty(satisDto.PersonelKeyId))
+                    {
+                        var keyOwner = await _context.Personeller
+                            .Where(p => p.IstasyonId == vardiya.IstasyonId)
+                            .FirstOrDefaultAsync(p => p.KeyId == satisDto.PersonelKeyId);
+
+                        if (keyOwner != null)
+                        {
+                            // İsimler eşleşiyor mu?
+                            bool isNameMatch = keyOwner.AdSoyad == satisDto.PersonelAdi || keyOwner.OtomasyonAdi == satisDto.PersonelAdi;
+
+                            if (isNameMatch)
+                            {
+                                personel = keyOwner; // Her şey yolunda, aynı kişi
+                            }
+                            else
+                            {
+                                // KEY TRANSFERİ SENARYOSU: Key var ama başka isme ait.
+                                // KRONOLOJİ KONTROLÜ: Yüklenen vardiya, personelin son güncellemesinden YENİ mi?
+                                bool isNewerUpdate = vardiya.BaslangicTarihi > (keyOwner.KeyGuncellemeTarihi ?? DateTime.MinValue);
+
+                                if (isNewerUpdate)
+                                {
+                                    // SADECE GÜNCEL VERİYSE DEĞİŞTİR
+                                    _logger.LogWarning($"Key Devri (GÜNCEL): Key {satisDto.PersonelKeyId} | {keyOwner.AdSoyad} -> {satisDto.PersonelAdi}");
+
+                                    keyOwner.Aktif = false;
+                                    keyOwner.EskiKeyId = keyOwner.KeyId;
+                                    keyOwner.KeyId = null; 
+                                    keyOwner.KeyGuncellemeTarihi = DateTime.UtcNow;
+                                    // (Yeni sahibi aşağıda isimle aranacak/yaratılacak ve key atanacak)
+                                }
+                                else
+                                {
+                                    _logger.LogInformation($"Key Devri (GEÇMİŞ): {dto.DosyaAdi} dosyası eski. Mevcut sahip ({keyOwner.AdSoyad}) değiştirilmedi.");
+                                    // Bu durumda keyOwner şu anki sahip, ama geçmiteki satış başkasına ait.
+                                    // KeyOwner'ı personel olarak ATAMIYORUZ. Aşağıda isme göre gerçek sahibini arayacağız.
+                                }
+                            }
+                        }
+                    }
+
+                    // 2. Eğer personel hala belirlenmediyse (Key yoktu, devredildi veya geçmiş dosya), İsme göre ara
+                    if (personel == null)
+                    {
+                        personel = await _context.Personeller
+                            .Where(p => p.IstasyonId == vardiya.IstasyonId)
+                            .FirstOrDefaultAsync(p => 
+                                (p.AdSoyad == satisDto.PersonelAdi) || 
+                                (p.OtomasyonAdi == satisDto.PersonelAdi));
+                        
+                        // İsimle bulunduysa ve yeni bir Key ID geldiyse -> GÜNCELLE
+                        if (personel != null && !string.IsNullOrEmpty(satisDto.PersonelKeyId) && personel.KeyId != satisDto.PersonelKeyId)
+                        {
+                             // KRONOLOJİ KONTROLÜ
+                             bool isNewerUpdate = vardiya.BaslangicTarihi > (personel.KeyGuncellemeTarihi ?? DateTime.MinValue);
+                             
+                             if (isNewerUpdate)
+                             {
+                                _logger.LogWarning($"Personel/Key Güncelleme (GÜNCEL): {personel.AdSoyad} Key {personel.KeyId} -> {satisDto.PersonelKeyId}");
+                                personel.EskiKeyId = personel.KeyId;
+                                personel.KeyId = satisDto.PersonelKeyId;
+                                personel.KeyGuncellemeTarihi = DateTime.UtcNow;
+                                if (personel.KeyOlusturmaTarihi == null) personel.KeyOlusturmaTarihi = DateTime.UtcNow;
+                             }
+                             else
+                             {
+                                 _logger.LogInformation($"Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için {personel.AdSoyad} anahtarı güncellenmedi.");
+                             }
+                        }
+                    }
+
+                    // 3. Hala yoksa -> YENİ PERSONEL
                     if (personel == null && !string.IsNullOrWhiteSpace(satisDto.PersonelAdi))
                     {
                         personel = new Personel
@@ -53,11 +128,15 @@ namespace IstasyonDemo.Api.Services
                             KeyId = satisDto.PersonelKeyId,
                             Rol = PersonelRol.POMPACI,
                             Aktif = true,
-                            IstasyonId = vardiya.IstasyonId
+                            IstasyonId = vardiya.IstasyonId,
+                            KeyOlusturmaTarihi = DateTime.UtcNow
                         };
                         _context.Personeller.Add(personel);
                         await _context.SaveChangesAsync();
                     }
+                    
+                    // (Değişiklikleri kaydet - keyOwner pasife alınmış olabilir veya personel güncellenmiş olabilir)
+                    await _context.SaveChangesAsync();
 
                     // Validation: Sanity Check
                     var calculatedTotal = satisDto.Litre * satisDto.BirimFiyat;
@@ -98,6 +177,22 @@ namespace IstasyonDemo.Api.Services
                 await _context.SaveChangesAsync();
 
                 await _context.SaveChangesAsync();
+
+                // 2.a. VardiyaXmlLog Kaydı (Manual Upload için)
+                if (!string.IsNullOrEmpty(dto.DosyaIcerik))
+                {
+                    var xmlLog = new VardiyaXmlLog
+                    {
+                        IstasyonId = vardiya.IstasyonId,
+                        VardiyaId = vardiya.Id,
+                        DosyaAdi = dto.DosyaAdi ?? "Manual_Upload.xml",
+                        XmlIcerik = dto.DosyaIcerik, // Text olarak sakla
+                        YuklemeTarihi = DateTime.UtcNow
+                        // Parse edip Tank/Pump detaylarını doldurabiliriz ama şu anlık raw content yeterli
+                    };
+                    _context.VardiyaXmlLoglari.Add(xmlLog);
+                    await _context.SaveChangesAsync();
+                }
 
                 // Kullanıcıya bildirim gönder (Kendi işlemi)
                 await _notificationService.NotifyUserAsync(
@@ -543,6 +638,403 @@ namespace IstasyonDemo.Api.Services
             };
             _context.VardiyaLoglari.Add(log);
             await _context.SaveChangesAsync();
+        }
+        public async Task ProcessXmlZipAsync(Stream zipStream, string fileName, int userId, string? userRole, string? userName)
+        {
+            try
+            {
+                // 1. ZIP'i Belleğe (byte[]) Al - Veritabanında saklamak için
+                using var memoryStream = new MemoryStream();
+                await zipStream.CopyToAsync(memoryStream);
+                var zipBytes = memoryStream.ToArray();
+
+                // 0. Dosya Hash Hesapla ve Mükerrer Kontrolü (PROD-READY)
+                using var sha256 = System.Security.Cryptography.SHA256.Create();
+                var hashBytes = sha256.ComputeHash(zipBytes);
+                var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+
+                // Silinmiş olanları hariç tut, aktif bir kayıt varsa mükerrer say.
+                bool isDuplicate = await _context.Vardiyalar.AnyAsync(v => v.DosyaHash == hashString && v.Durum != VardiyaDurum.SILINDI);
+                if (isDuplicate)
+                {
+                    _logger.LogWarning($"Mükerrer Dosya Yükleme Girişimi Engellendi. Hash: {hashString}, Dosya: {fileName}");
+                    throw new InvalidOperationException($"Bu dosya daha önce yüklenmiş! (Hash: {hashString})");
+                }
+
+                // ZIP Çıkart
+                using var archive = new ZipArchive(new MemoryStream(zipBytes), ZipArchiveMode.Read);
+                
+                var xmlEntry = archive.Entries.FirstOrDefault(e => e.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase));
+
+                if (xmlEntry == null)
+                    throw new InvalidOperationException("ZIP dosyası içinde .xml uzantılı dosya bulunamadı.");
+
+                // 2. XML'i Belleğe Al (Parsing için string olarak)
+                string xmlContent;
+                using (var stream = xmlEntry.Open())
+                using (var reader = new StreamReader(stream, System.Text.Encoding.GetEncoding("windows-1254")))
+                {
+                    xmlContent = await reader.ReadToEndAsync();
+                }
+
+                var xdoc = XDocument.Parse(xmlContent);
+
+                // 2. İstasyon ve Ayarları Çözümle - Namespace Agnostic
+                var globalParams = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "GlobalParams");
+                // Element lookups also need to be namespace-agnostic if they are direct children
+                var stationCode = globalParams?.Elements().FirstOrDefault(x => x.Name.LocalName == "StationCode")?.Value;
+                var swVersion = globalParams?.Elements().FirstOrDefault(x => x.Name.LocalName == "Version")?.Value;
+
+                Istasyon? station = null;
+
+                if (!string.IsNullOrEmpty(stationCode))
+                {
+                    station = await _context.Istasyonlar.FirstOrDefaultAsync(i => i.IstasyonKodu == stationCode);
+                }
+
+                if (station == null)
+                {
+                    // Kullanıcının istasyonuna fallback
+                    var user = await _context.Users.FindAsync(userId);
+                    if (user?.IstasyonId != null)
+                    {
+                        station = await _context.Istasyonlar.FindAsync(user.IstasyonId);
+                        
+                        // İlk kez eşleşiyorsa kodu kaydet
+                        if (station != null && string.IsNullOrEmpty(station.IstasyonKodu) && !string.IsNullOrEmpty(stationCode))
+                        {
+                            station.IstasyonKodu = stationCode;
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                if (station == null)
+                    throw new InvalidOperationException($"İstasyon tanımlanamadı! XML StationCode: {stationCode}");
+
+                _logger.LogInformation($"XML Dosyası İşleniyor: {fileName}, Boyut: {xmlContent.Length} bytes");
+                _logger.LogInformation($"İstasyon Bulundu: {station.Ad} ({station.IstasyonKodu})");
+
+                // 3. İstasyon Ayarlarını Güncelle (GlobalParams)
+                // 3. İstasyon Ayarlarını Güncelle (GlobalParams) - ARTIK AKTİF
+                if (globalParams != null)
+                {
+                    var version = globalParams.Elements().FirstOrDefault(x => x.Name.LocalName == "Version")?.Value;
+                    var unitPriceDecimalStr = globalParams.Elements().FirstOrDefault(x => x.Name.LocalName == "UnitPriceDecimal")?.Value;
+                    var amountDecimalStr = globalParams.Elements().FirstOrDefault(x => x.Name.LocalName == "AmountDecimal")?.Value;
+                    var totalDecimalStr = globalParams.Elements().FirstOrDefault(x => x.Name.LocalName == "TotalDecimal")?.Value;
+
+                    int.TryParse(unitPriceDecimalStr, out int unitPriceDecimal);
+                    int.TryParse(amountDecimalStr, out int amountDecimal);
+                    int.TryParse(totalDecimalStr, out int totalDecimal);
+
+                    // Varsayılan değerler (eğer parse edilemezse 2 kullan)
+                    if (unitPriceDecimal == 0) unitPriceDecimal = 2;
+                    if (amountDecimal == 0) amountDecimal = 2;
+                    if (totalDecimal == 0) totalDecimal = 2;
+
+                    var ayarlar = await _context.IstasyonAyarlari.FirstOrDefaultAsync(a => a.IstasyonId == station.Id);
+                    if (ayarlar == null)
+                    {
+                        ayarlar = new IstasyonAyarlari
+                        {
+                            IstasyonId = station.Id,
+                            Version = version,
+                            UnitPriceDecimal = unitPriceDecimal,
+                            AmountDecimal = amountDecimal,
+                            TotalDecimal = totalDecimal,
+                            GuncellemeTarihi = DateTime.UtcNow
+                        };
+                        _context.IstasyonAyarlari.Add(ayarlar);
+                    }
+                    else
+                    {
+                        ayarlar.Version = version;
+                        ayarlar.UnitPriceDecimal = unitPriceDecimal;
+                        ayarlar.AmountDecimal = amountDecimal;
+                        ayarlar.TotalDecimal = totalDecimal;
+                        ayarlar.GuncellemeTarihi = DateTime.UtcNow;
+                    }
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"İstasyon Ayarları Güncellendi: Ver={version}, Decimals={unitPriceDecimal}/{amountDecimal}/{totalDecimal}");
+                }
+
+                // 4. Detayları JSON olarak hazırla
+                var tanks = xdoc.Descendants().Where(x => x.Name.LocalName == "TankDetails").Select(t => new 
+                {
+                    TankNo = t.Elements().FirstOrDefault(x => x.Name.LocalName == "TankNo")?.Value,
+                    FuelType = t.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value,
+                    Volume = t.Elements().FirstOrDefault(x => x.Name.LocalName == "CurrentVolume")?.Value
+                }).ToList();
+
+                var pumps = xdoc.Descendants().Where(x => x.Name.LocalName == "PumpDetails").Select(p => new
+                {
+                    PumpNr = p.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpNr")?.Value,
+                    Volume = p.Elements().FirstOrDefault(x => x.Name.LocalName == "Volume")?.Value,
+                    Amount = p.Elements().FirstOrDefault(x => x.Name.LocalName == "Amount")?.Value
+                }).ToList();
+
+                var rawTxns = xdoc.Descendants().Where(x => x.Name.LocalName.Equals("Txn", StringComparison.OrdinalIgnoreCase)).ToList();
+                _logger.LogInformation($"XML Parsing Debug: Toplam {rawTxns.Count} adet 'Txn' elementi bulundu.");
+
+                if (rawTxns.Any())
+                {
+                    var firstTxn = rawTxns.First();
+                    _logger.LogInformation($"İlk Txn Debug: {firstTxn}");
+                    var saleDebug = firstTxn.Elements().FirstOrDefault(x => x.Name.LocalName == "SaleDetails");
+                    _logger.LogInformation($"İlk Txn SaleDetails bulundu mu?: {saleDebug != null}");
+                    if(saleDebug != null)
+                    {
+                        var receiptDebug = saleDebug.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr");
+                        _logger.LogInformation($"İlk Txn ReceiptNr Değeri: {receiptDebug?.Value}");
+                    }
+                }
+
+                var txnList = rawTxns
+                    .Select(txn => {
+                        var s = txn.Elements().FirstOrDefault(x => x.Name.LocalName == "SaleDetails");
+                        var tag = txn.Elements().FirstOrDefault(x => x.Name.LocalName == "TagDetails");
+                        
+                        return new {
+                            ReceiptNr = s?.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value,
+                            DateTime = s?.Elements().FirstOrDefault(x => x.Name.LocalName == "DateTime")?.Value,
+                            Total = s?.Elements().FirstOrDefault(x => x.Name.LocalName == "Total")?.Value,
+                            Plate = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value 
+                                    ?? s?.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRPlate")?.Value
+                        };
+                    })
+                    .Where(x => x.ReceiptNr != null) // Filter out empty parses
+                    .ToList();
+
+                _logger.LogInformation($"XML İstatistikleri: {tanks.Count} Tank, {pumps.Count} Pompa, {txnList.Count} Satış bulundu.");
+
+                // 5. VardiyaXmlLog Kaydı
+                var xmlLog = new VardiyaXmlLog
+                {
+                    IstasyonId = station.Id,
+                    DosyaAdi = fileName,
+                    ZipDosyasi = zipBytes,
+                    TankDetailsJson = JsonSerializer.Serialize(tanks),
+                    PumpDetailsJson = JsonSerializer.Serialize(pumps),
+                    SaleDetailsJson = JsonSerializer.Serialize(txnList),
+                    YuklemeTarihi = DateTime.UtcNow
+                };
+
+                _context.VardiyaXmlLoglari.Add(xmlLog);
+                await _context.SaveChangesAsync(); 
+
+                // 6. Standart Vardiya Oluşturma
+                var header = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "Header");
+                
+                string dateFormat = "yyyyMMddHHmmss";
+                DateTime ParseDate(string? val) 
+                {
+                    if (string.IsNullOrEmpty(val)) return DateTime.UtcNow;
+                    if (val.Length == 8) val += "000000"; 
+                    return DateTime.ParseExact(val, dateFormat, CultureInfo.InvariantCulture);
+                }
+
+                DateTime baslangic;
+                DateTime? bitis;
+
+                if (header != null)
+                {
+                    var startDateStr = header.Elements().FirstOrDefault(x => x.Name.LocalName == "ShiftStartTime")?.Value 
+                                     ?? header.Elements().FirstOrDefault(x => x.Name.LocalName == "ReportDate")?.Value;
+                    var endDateStr = header.Elements().FirstOrDefault(x => x.Name.LocalName == "ShiftEndTime")?.Value;
+
+                    baslangic = ParseDate(startDateStr);
+                    bitis = !string.IsNullOrEmpty(endDateStr) ? ParseDate(endDateStr) : null;
+                }
+                else
+                {
+                    // Header yoksa transactionlardan tarih bul
+                    var validDates = txnList
+                        .Where(t => !string.IsNullOrEmpty(t.DateTime))
+                        .Select(t => ParseDate(t.DateTime))
+                        .OrderBy(d => d)
+                        .ToList();
+
+                    if (validDates.Any())
+                    {
+                        baslangic = validDates.First();
+                        bitis = validDates.Last();
+                        _logger.LogInformation($"Tarihler Satışlardan Türetildi: Başlangıç={baslangic}, Bitiş={bitis}");
+                    }
+                    else
+                    {
+                        baslangic = DateTime.UtcNow; 
+                        bitis = null;
+                        _logger.LogWarning("Hiçbir satışta tarih bulunamadı! Başlangıç şu anki zaman olarak ayarlandı.");
+                    }
+                }
+
+                var dto = new CreateVardiyaDto
+                {
+                    IstasyonId = station.Id,
+                    BaslangicTarihi = baslangic,
+                    BitisTarihi = bitis,
+                    DosyaAdi = fileName,
+                    DosyaHash = hashString,
+                    OtomasyonSatislar = new List<CreateOtomasyonSatisDto>()
+                };
+
+                foreach (var txn in rawTxns)
+                {
+                    var sale = txn.Elements().FirstOrDefault(x => x.Name.LocalName == "SaleDetails");
+                    if (sale == null) continue;
+                    
+                    var tag = txn.Elements().FirstOrDefault(x => x.Name.LocalName == "TagDetails");
+                    var fleetCode = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetCode")?.Value;
+
+                    var fuelType = MapFuelType(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value);
+                    var satisTarihi = ParseDate(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "DateTime")?.Value);
+
+                    var amountRaw = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Amount")?.Value ?? "0", CultureInfo.InvariantCulture);
+                    var priceRaw = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "UnitPrice")?.Value ?? "0", CultureInfo.InvariantCulture);
+                    var totalRaw = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Total")?.Value ?? "0", CultureInfo.InvariantCulture);
+
+                    // Dynamic Code = İstasyon/Pompacı Satışı -> OtomasyonSatislar
+                    string dynamicCode = !string.IsNullOrWhiteSpace(station!.OtomasyonFiloKodu) ? station.OtomasyonFiloKodu.Trim() : "C0000";
+                    var fleetCodeCheck = fleetCode?.Trim();
+
+                    if (string.IsNullOrEmpty(fleetCodeCheck) || fleetCodeCheck.Equals(dynamicCode, StringComparison.OrdinalIgnoreCase))
+                    {
+                        dto.OtomasyonSatislar.Add(new CreateOtomasyonSatisDto
+                        {
+                            PompaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpNr")?.Value ?? "0"),
+                            YakitTuru = fuelType,
+                            Litre = amountRaw / 100m,
+                            BirimFiyat = priceRaw / 100m,
+                            ToplamTutar = totalRaw / 100m,
+                            SatisTarihi = satisTarihi,
+                            FisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value ?? "0"),
+                            // Personel Ismi Mapping (TagDetails.Plate -> PersonelAdi)
+                            PersonelAdi = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value ?? "", 
+                            // Personel Key ID Mapping (TagDetails.TagNr)
+                            PersonelKeyId = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "",
+                            // Plaka Mapping Önceliği: ECRPlate > Sale.Plate >> NOT TagDetails.Plate (O Personel Ismi)
+                            Plaka = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRPlate")?.Value
+                                    ?? sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value 
+                        });
+                    }
+                    else
+                    {
+                        // Diğerleri -> FiloSatislar
+                        dto.FiloSatislar.Add(new CreateFiloSatisDto
+                        {
+                           Tarih = satisTarihi,
+                           FiloKodu = fleetCode,
+                           Plaka = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRPlate")?.Value
+                                   ?? sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value
+                                   ?? tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value ?? "",
+                           YakitTuru = fuelType,
+                           Litre = amountRaw / 100m,
+                           Tutar = totalRaw / 100m,
+                           PompaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpNr")?.Value ?? "0"),
+                           FisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value ?? "0")
+                        });
+                    }
+                }
+                
+                _logger.LogInformation($"DTO Oluşturuldu: {dto.OtomasyonSatislar.Count} Otomasyon, {dto.FiloSatislar.Count} Filo satışı eklendi.");
+                
+                // Genel Toplamı Hesapla (Otomasyon + Filo)
+                dto.GenelToplam = dto.OtomasyonSatislar.Sum(s => s.ToplamTutar) + dto.FiloSatislar.Sum(f => f.Tutar);
+                _logger.LogInformation($"Vardiya Genel Toplam Hesaplandı: {dto.GenelToplam:N2} TL (Oto: {dto.OtomasyonSatislar.Sum(s => s.ToplamTutar):N2} + Filo: {dto.FiloSatislar.Sum(f => f.Tutar):N2})");
+
+                // Vardiyayı Kaydet
+                var vardiya = await CreateVardiyaAsync(dto, userId, userRole, userName);
+
+                // Logu Güncelle
+                xmlLog.VardiyaId = vardiya.Id;
+                await _context.SaveChangesAsync();
+
+                // Tank Envanter Kayıtlarını Oluştur (Raw XElement kullan)
+                var tankElements = xdoc.Descendants().Where(x => x.Name.LocalName == "TankDetails").ToList();
+                var tankEnvanterleri = new List<VardiyaTankEnvanteri>();
+                
+                foreach (var tankElement in tankElements)
+                {
+                    var tankNo = int.Parse(tankElement.Elements().FirstOrDefault(x => x.Name.LocalName == "TankNo")?.Value ?? "0");
+                    var tankAdi = tankElement.Elements().FirstOrDefault(x => x.Name.LocalName == "TankName")?.Value ?? "";
+                    var previousVol = decimal.Parse(tankElement.Elements().FirstOrDefault(x => x.Name.LocalName == "PreviousVolume")?.Value ?? "0");
+                    var currentVol = decimal.Parse(tankElement.Elements().FirstOrDefault(x => x.Name.LocalName == "CurrentVolume")?.Value ?? "0");
+                    var delta = decimal.Parse(tankElement.Elements().FirstOrDefault(x => x.Name.LocalName == "Delta")?.Value ?? "0");
+                    var delivery = decimal.Parse(tankElement.Elements().FirstOrDefault(x => x.Name.LocalName == "DeliveryVolume")?.Value ?? "0");
+                    
+                    // Delta = PreviousVolume - CurrentVolume (XML'den gelen)
+                    // Pozitif Delta = Satış var (stok azaldı)
+                    // Negatif Delta = Stok arttı (sevkiyat veya ölçüm hatası)
+                    
+                    // Beklenen Tüketim = Başlangıç + Sevkiyat - Bitiş
+                    var beklenenTuketim = previousVol + delivery - currentVol;
+                    
+                    // Satılan Miktar = Delta (işaretli)
+                    // Pozitif ise satış, negatif ise stok artışı
+                    var satilanMiktar = delta;
+                    
+                    // Fark = Beklenen - Gerçek
+                    // Pozitif fark = Kayıp/kaçak
+                    // Negatif fark = Fazla stok (ölçüm hatası veya kayıt dışı sevkiyat)
+                    var fark = beklenenTuketim - satilanMiktar;
+                    
+                    // Debug logging
+                    _logger.LogInformation($"Tank {tankNo} ({tankAdi}): Başlangıç={previousVol}, Bitiş={currentVol}, Delta={delta}, Sevkiyat={delivery}, BeklenenTüketim={beklenenTuketim}, SatilanMiktar={satilanMiktar}, FARK={fark}");
+                    
+                    tankEnvanterleri.Add(new VardiyaTankEnvanteri
+                    {
+                        VardiyaId = vardiya.Id,
+                        TankNo = tankNo,
+                        TankAdi = tankAdi,
+                        YakitTipi = NormalizeYakitTipi(tankAdi),
+                        BaslangicStok = previousVol,
+                        BitisStok = currentVol,
+                        SatilanMiktar = satilanMiktar,  // İşaretli değer
+                        SevkiyatMiktar = delivery,
+                        BeklenenTuketim = beklenenTuketim,
+                        FarkMiktar = fark,
+                        KayitTarihi = DateTime.UtcNow
+                    });
+                }
+
+                if (tankEnvanterleri.Any())
+                {
+                    await _context.VardiyaTankEnvanterleri.AddRangeAsync(tankEnvanterleri);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Tank Envanteri Kaydedildi: {tankEnvanterleri.Count} tank kaydı oluşturuldu.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "XML/ZIP işlenirken hata: {FileName}", fileName);
+                throw new InvalidOperationException($"Dosya işlenemedi: {ex.Message}", ex);
+            }
+        }
+
+        private string MapFuelType(string? code)
+        {
+            return code switch
+            {
+                "4" => "MOTORIN", // Diesel
+                "5" => "BENZIN",  // Unleaded 95
+                "6" => "LPG",     // Autogas
+                "1" => "MOTORIN", // Sometimes 1 is Diesel too
+                "2" => "BENZIN",
+                _ => "DIGER"
+            };
+        }
+
+        private string NormalizeYakitTipi(string tankAdi)
+        {
+            if (string.IsNullOrEmpty(tankAdi)) return "DIGER";
+            
+            var normalized = tankAdi.ToUpperInvariant();
+            if (normalized.Contains("MOTORIN") || normalized.Contains("DIESEL")) return "MOTORIN";
+            if (normalized.Contains("BENZIN") || normalized.Contains("KURŞUNSUZ") || normalized.Contains("KURSUN")) return "BENZIN";
+            if (normalized.Contains("LPG") || normalized.Contains("AUTOGAS")) return "LPG";
+            
+            return "DIGER";
         }
     }
 }

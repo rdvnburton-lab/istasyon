@@ -63,7 +63,7 @@ export class AyarlarComponent implements OnInit {
             satirSayisi: 10,
             tema: 'light',
             varsayilanTarihAraligi: 'buAy',
-            mobilMenu: ['/dashboard', '/vardiya', '/vardiya/loglar', '/vardiya/raporlar/vardiya']
+            mobilMenu: ['/dashboard', '/operasyon', '/raporlar/loglar', '/raporlar/vardiya']
         },
         sistem: {
             otomatikYedekleme: false,
@@ -75,14 +75,14 @@ export class AyarlarComponent implements OnInit {
     // Mobile Menu Config
     sourceMenuItems = [
         { label: 'Özet', icon: 'pi pi-home', route: '/dashboard' },
-        { label: 'Vardiya Listesi', icon: 'pi pi-list', route: '/vardiya' },
-        { label: 'Onay Bekleyenler', icon: 'pi pi-check-circle', route: '/vardiya/onay-bekleyenler' },
-        { label: 'İşlem Geçmişi', icon: 'pi pi-history', route: '/vardiya/loglar' },
-        { label: 'Vardiya Raporu', icon: 'pi pi-chart-bar', route: '/vardiya/raporlar/vardiya' },
-        { label: 'Personel Karnesi', icon: 'pi pi-users', route: '/vardiya/raporlar/personel' },
-        { label: 'Fark Raporu', icon: 'pi pi-exclamation-triangle', route: '/vardiya/raporlar/fark' },
-        { label: 'Market', icon: 'pi pi-shopping-bag', route: '/vardiya/market' },
-        { label: 'Karşılaştırma', icon: 'pi pi-chart-line', route: '/vardiya/karsilastirma' }
+        { label: 'Vardiya Listesi', icon: 'pi pi-list', route: '/operasyon' },
+        { label: 'Onay Bekleyenler', icon: 'pi pi-check-circle', route: '/raporlar/onay-bekleyenler' },
+        { label: 'İşlem Geçmişi', icon: 'pi pi-history', route: '/raporlar/loglar' },
+        { label: 'Vardiya Raporu', icon: 'pi pi-chart-bar', route: '/raporlar/vardiya' },
+        { label: 'Personel Karnesi', icon: 'pi pi-users', route: '/raporlar/personel' },
+        { label: 'Fark Raporu', icon: 'pi pi-exclamation-triangle', route: '/raporlar/fark' },
+        { label: 'Market', icon: 'pi pi-shopping-bag', route: '/operasyon/market' },
+        { label: 'Karşılaştırma', icon: 'pi pi-chart-line', route: '/raporlar/karsilastirma' }
     ];
 
     selectedMenuItems: any[] = [];
@@ -261,7 +261,7 @@ export class AyarlarComponent implements OnInit {
                 satirSayisi: 10,
                 tema: 'light',
                 varsayilanTarihAraligi: 'buAy',
-                mobilMenu: ['/dashboard', '/vardiya', '/vardiya/loglar', '/vardiya/raporlar/vardiya']
+                mobilMenu: ['/dashboard', '/operasyon', '/raporlar/loglar', '/raporlar/vardiya']
             },
             sistem: {
                 otomatikYedekleme: false,

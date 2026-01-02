@@ -8,7 +8,9 @@ namespace IstasyonDemo.Api.Dtos
         public DateTime BaslangicTarihi { get; set; }
         public DateTime? BitisTarihi { get; set; }
         public string? DosyaAdi { get; set; }
+        public string? DosyaHash { get; set; }
         public string? DosyaIcerik { get; set; }
+        public decimal GenelToplam { get; set; } // Otomasyon Satışları Toplamı
         
         public List<CreateOtomasyonSatisDto> OtomasyonSatislar { get; set; } = new();
         public List<CreateFiloSatisDto> FiloSatislar { get; set; } = new();

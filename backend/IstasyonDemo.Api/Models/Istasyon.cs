@@ -11,8 +11,17 @@ namespace IstasyonDemo.Api.Models
         [MaxLength(100)]
         public string Ad { get; set; } = string.Empty;
 
+        [MaxLength(50)]
+        public string? IstasyonKodu { get; set; } // XML StationCode ile eşleşecek
+
+        [MaxLength(20)]
+        public string OtomasyonFiloKodu { get; set; } = "C0000"; // Varsayılan Otomasyon/Pompacı Kodu
+
         [MaxLength(200)]
         public string? Adres { get; set; }
+
+        [MaxLength(255)]
+        public string? OtomatikDosyaYolu { get; set; } // Local File Watcher Path
 
         public bool Aktif { get; set; } = true;
         

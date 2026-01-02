@@ -68,6 +68,33 @@ namespace IstasyonDemo.Api.Controllers
             }
         }
 
+        [HttpPost("upload-xml-zip")]
+        [Authorize]
+        public async Task<IActionResult> UploadXmlZip(IFormFile file)
+        {
+             if (file == null || file.Length == 0)
+                return BadRequest("Dosya yüklenmedi.");
+
+            if (!Path.GetExtension(file.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                return BadRequest("Sadece .zip dosyaları kabul edilir.");
+
+            using var stream = file.OpenReadStream();
+            try
+            {
+                await _vardiyaService.ProcessXmlZipAsync(stream, file.FileName, CurrentUserId, CurrentUserRole, User.Identity.Name);
+                return Ok(new { message = "Dosya başarıyla işlendi ve vardiya oluşturuldu." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Dosya işlenirken hata oluştu.", error = ex.Message });
+            }
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -607,7 +634,7 @@ namespace IstasyonDemo.Api.Controllers
 
 
         [HttpGet("onay-bekleyenler")]
-        [Authorize(Roles = "admin,patron")]
+        [Authorize(Roles = "admin,patron,vardiya sorumlusu,istasyon sorumlusu")]
         public async Task<IActionResult> GetOnayBekleyenler()
         {
             IQueryable<Vardiya> query = _context.Vardiyalar
@@ -617,6 +644,11 @@ namespace IstasyonDemo.Api.Controllers
             if (IsPatron)
             {
                 query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
+            }
+            else if (CurrentIstasyonId.HasValue && !IsAdmin)
+            {
+                // Vardiya sorumlusu veya istasyon sorumlusu sadece kendi istasyonunu görsün
+                query = query.Where(v => v.IstasyonId == CurrentIstasyonId.Value);
             }
 
             var list = await query.OrderByDescending(v => v.BaslangicTarihi).ToListAsync();
@@ -629,6 +661,18 @@ namespace IstasyonDemo.Api.Controllers
         {
             await _vardiyaService.OnayaGonderAsync(id, CurrentUserId, CurrentUserRole);
             return Ok(new { message = "Vardiya onaya gönderildi." });
+        }
+
+        [HttpGet("{id}/tank-envanter")]
+        [Authorize]
+        public async Task<IActionResult> GetTankEnvanter(int id)
+        {
+            var envanter = await _context.VardiyaTankEnvanterleri
+                .Where(t => t.VardiyaId == id)
+                .OrderBy(t => t.TankNo)
+                .ToListAsync();
+            
+            return Ok(envanter);
         }
 
 
