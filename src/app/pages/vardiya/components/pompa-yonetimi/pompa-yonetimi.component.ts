@@ -476,26 +476,38 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
                     this.pusulaApiService.analyzeImage(image.base64String!).subscribe({
                         next: (data) => {
-                            this.analyzing = false;
+                            this.ngZone.run(() => {
+                                this.analyzing = false;
 
-                            // Patch values
-                            if (data.nakit) this.pusulaForm.nakit = data.nakit;
-                            if (data.krediKarti) this.pusulaForm.krediKarti = data.krediKarti;
-                            // OCR: Paro ve Mobil artık diğer ödemelerde işlenmeli, ancak basitlik için şimdilik atlıyoruz
-                            // Veya data.paroPuan varsa digerOdemelere eklemeliyiz
-                            if (data.paroPuan > 0) this.addDigerOdemeByCode('PARO_PUAN', data.paroPuan);
-                            if (data.mobilOdeme > 0) this.addDigerOdemeByCode('MOBIL_ODEME', data.mobilOdeme);
+                                // Temel alanları doldur
+                                if (data.nakit !== undefined) this.pusulaForm.nakit = data.nakit;
+                                if (data.krediKarti !== undefined) this.pusulaForm.krediKarti = data.krediKarti;
 
-                            // Kredi kartı detaylarını işle
-                            if (data.krediKartiDetay && data.krediKartiDetay.length > 0) {
-                                // Mevcut detayları temizle veya üzerine ekle? Genelde temizleyip eklemek daha mantıklı ocr için
-                                this.pusulaForm.krediKartiDetay = data.krediKartiDetay.map((d: any) => ({
-                                    banka: d.banka,
-                                    tutar: d.tutar
-                                }));
-                            }
+                                // Listeleri temizle (yeni dolum için)
+                                this.pusulaForm.digerOdemeler = [];
+                                this.pusulaForm.krediKartiDetay = [];
 
-                            this.messageService.add({ severity: 'success', summary: 'Tamamlandı', detail: 'Fiş bilgileri forma dolduruldu.' });
+                                // Diğer Ödemeler (Paro, Mobil vs.) - Yeni yapı: digerOdemeler listesi
+                                if (data.digerOdemeler && Array.isArray(data.digerOdemeler)) {
+                                    data.digerOdemeler.forEach((d: any) => {
+                                        this.addDigerOdemeByCode(d.turKodu, d.tutar);
+                                    });
+                                } else {
+                                    // Fallback: Eski yapıdan gelen paroPuan ve mobilOdeme varsa ekle
+                                    if (data.paroPuan > 0) this.addDigerOdemeByCode('PARO_PUAN', data.paroPuan);
+                                    if (data.mobilOdeme > 0) this.addDigerOdemeByCode('MOBIL_ODEME', data.mobilOdeme);
+                                }
+
+                                // Kredi kartı detaylarını işle
+                                if (data.krediKartiDetay && data.krediKartiDetay.length > 0) {
+                                    this.pusulaForm.krediKartiDetay = data.krediKartiDetay.map((d: any) => ({
+                                        banka: d.banka,
+                                        tutar: d.tutar
+                                    }));
+                                }
+
+                                this.messageService.add({ severity: 'success', summary: 'Tamamlandı', detail: 'Fiş bilgileri forma dolduruldu.' });
+                            });
                         },
                         error: (err) => {
                             this.analyzing = false;

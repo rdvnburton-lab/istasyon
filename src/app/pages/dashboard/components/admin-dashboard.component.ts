@@ -49,8 +49,55 @@ interface AdminDashboard {
     ],
     template: `
         <div class="admin-dashboard p-4">
+            <!-- REFINED CORPORATE AI INSIGHT CARD -->
+            <div class="ai-insight-card mb-6" *ngIf="aiInsight || aiLoading">
+                <div class="relative overflow-hidden p-6 rounded-2xl border border-slate-700 shadow-xl bg-slate-900 text-slate-100">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px]"></div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                        <div class="ai-mood-wrapper shrink-0">
+                            <div class="w-16 h-16 rounded-xl bg-slate-800 flex items-center justify-center text-3xl shadow-inner border border-slate-700">
+                                <span *ngIf="!aiLoading">{{ (aiInsight?.mood || '').split(' ')[0] || '⚙️' }}</span>
+                                <i *ngIf="aiLoading" class="pi pi-spin pi-cog text-2xl text-indigo-400"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 text-center md:text-left">
+                            <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
+                                <span class="bg-indigo-900/40 text-indigo-300 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded border border-indigo-800/50">
+                                    Sistem Analiz Motoru
+                                </span>
+                                <span class="text-[10px] text-slate-500 font-medium">Motor: Gemini Pro</span>
+                            </div>
+
+                            <div *ngIf="aiLoading" class="space-y-3">
+                                <p-skeleton width="70%" height="1.2rem" styleClass="bg-slate-800"></p-skeleton>
+                                <p-skeleton width="90%" height="0.8rem" styleClass="bg-slate-800"></p-skeleton>
+                            </div>
+
+                            <div *ngIf="!aiLoading && aiInsight">
+                                <h2 class="text-lg md:text-xl font-bold mb-1 text-white">
+                                    {{ aiInsight.mood.includes(' ') ? aiInsight.mood.substring(aiInsight.mood.indexOf(' ') + 1) : aiInsight.mood }}
+                                </h2>
+                                <p class="text-slate-400 text-xs md:text-sm mb-4 leading-relaxed line-clamp-2 md:line-clamp-none">
+                                    <strong>Analitik Rapor:</strong> {{ aiInsight.tespit }}
+                                </p>
+                                <div class="inline-flex items-center gap-3 px-4 py-2.5 rounded-lg bg-indigo-900/20 border border-indigo-800/30">
+                                    <i class="pi pi-bolt text-indigo-400"></i>
+                                    <span class="text-xs md:text-sm font-semibold text-indigo-200 uppercase tracking-tight">
+                                        Öneri: {{ aiInsight.tavsiye }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <button *ngIf="!aiLoading" pButton icon="pi pi-refresh" (click)="loadAiAnalysis()" 
+                            class="p-button-sm p-button-outlined p-button-secondary border-slate-700 text-slate-400"></button>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-12 gap-4 mb-4">
-                <!-- Stats Cards -->
+                <!-- Stats Cards ... -->
                 <div class="col-span-12 md:col-span-6 lg:col-span-3">
                     <div class="card p-4 shadow-sm border-round bg-blue-50 border-blue-100 flex align-items-center">
                         <div class="p-3 border-round bg-blue-500 text-white mr-3">
@@ -202,6 +249,8 @@ interface AdminDashboard {
 export class AdminDashboardComponent implements OnInit {
     dashboard: AdminDashboard | null = null;
     loading = true;
+    aiLoading = false;
+    aiInsight: { mood: string, tespit: string, tavsiye: string } | null = null;
 
     roleChartData: any;
     roleChartOptions: any;
@@ -225,10 +274,30 @@ export class AdminDashboardComponent implements OnInit {
                 this.dashboard = data;
                 this.updateCharts();
                 this.loading = false;
+                this.loadAiAnalysis();
             },
             error: (err) => {
                 console.error('Admin Dashboard yüklenirken hata:', err);
                 this.loading = false;
+            }
+        });
+    }
+
+    loadAiAnalysis(): void {
+        if (!this.dashboard) return;
+        this.aiLoading = true;
+        this.http.post<any>(`${environment.apiUrl}/gemini/analyze-dashboard`, this.dashboard).subscribe({
+            next: (res) => {
+                try {
+                    this.aiInsight = typeof res === 'string' ? JSON.parse(res) : res;
+                } catch (e) {
+                    console.error('Admin AI Insight Parse Error:', e);
+                }
+                this.aiLoading = false;
+            },
+            error: (err) => {
+                console.error('Admin AI Insight Error:', err);
+                this.aiLoading = false;
             }
         });
     }

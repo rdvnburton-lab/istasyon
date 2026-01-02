@@ -27,7 +27,7 @@ namespace IstasyonDemo.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create(CreateVardiyaDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateVardiyaDto dto)
         {
             Console.WriteLine($"Create Vardiya - User Claims: {string.Join(", ", User.Claims.Select(c => c.Type + "=" + c.Value))}");
             

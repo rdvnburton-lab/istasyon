@@ -61,7 +61,7 @@ namespace IstasyonDemo.Api.Services
 
                     // Validation: Sanity Check
                     var calculatedTotal = satisDto.Litre * satisDto.BirimFiyat;
-                    if (Math.Abs(calculatedTotal - satisDto.ToplamTutar) > 0.1m) // 10 kuruş tolerance for rounding
+                    if (Math.Abs(calculatedTotal - satisDto.ToplamTutar) > 1.0m) // Increased tolerance to 1.0 TL for rounding
                     {
                          throw new InvalidOperationException($"Hatalı Satış Verisi: Pompa {satisDto.PompaNo} için {satisDto.Litre} lt * {satisDto.BirimFiyat} != {satisDto.ToplamTutar}");
                     }

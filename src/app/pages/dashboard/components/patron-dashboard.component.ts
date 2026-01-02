@@ -60,6 +60,8 @@ interface PatronDashboard {
 export class PatronDashboardComponent implements OnInit {
     dashboard: PatronDashboard | null = null;
     loading = true;
+    aiLoading = false;
+    aiInsight: { mood: string, tespit: string, tavsiye: string } | null = null;
 
     trendChartData: any;
     trendChartOptions: any;
@@ -91,10 +93,31 @@ export class PatronDashboardComponent implements OnInit {
                 };
                 this.updateCharts();
                 this.loading = false;
+                this.loadAiAnalysis();
             },
             error: (err) => {
                 console.error('Dashboard yüklenirken hata:', err);
                 this.loading = false;
+            }
+        });
+    }
+
+    loadAiAnalysis(): void {
+        if (!this.dashboard) return;
+        this.aiLoading = true;
+        this.http.post<any>(`${environment.apiUrl}/gemini/analyze-dashboard`, this.dashboard).subscribe({
+            next: (res) => {
+                try {
+                    // String to JSON if needed
+                    this.aiInsight = typeof res === 'string' ? JSON.parse(res) : res;
+                } catch (e) {
+                    console.error('AI Insight Parse Error:', e);
+                }
+                this.aiLoading = false;
+            },
+            error: (err) => {
+                console.error('AI Insight Error:', err);
+                this.aiLoading = false;
             }
         });
     }

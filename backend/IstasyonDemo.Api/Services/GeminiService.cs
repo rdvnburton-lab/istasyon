@@ -44,7 +44,7 @@ namespace IstasyonDemo.Api.Services
                     {
                         parts = new object[]
                         {
-                            new { text = $"Extract payment details from this receipt image. Return ONLY a JSON object with this structure: {{ \"nakit\": number, \"krediKarti\": number, \"krediKartiDetay\": [ {{ \"banka\": \"bank name\", \"tutar\": number }} ], \"paroPuan\": number, \"mobilOdeme\": number }}. Do not include any markdown formatting or backticks. IMPORTANT: For 'banka' field, map any detected bank name (e.g. 'Y.K.B.', 'Ziraat', 'Finans') to exactly one of these valid values: {validBanks}." },
+                            new { text = $"Extract payment details from this receipt image. Return ONLY a JSON object with this structure: {{ \"nakit\": number, \"krediKarti\": number, \"krediKartiDetay\": [ {{ \"banka\": \"bank name\", \"tutar\": number }} ], \"digerOdemeler\": [ {{ \"turKodu\": \"CODE\", \"tutar\": number }} ] }}. IMPORTANT: For 'digerOdemeler', use codes like 'PARO_PUAN' or 'MOBIL_ODEME'. For 'banka' field, map any detected bank name to exactly one of: {validBanks}. Do not include markdown formatting." },
                             new
                             {
                                 inline_data = new
@@ -59,7 +59,7 @@ namespace IstasyonDemo.Api.Services
                 generationConfig = new
                 {
                     temperature = 0.1,
-                    maxOutputTokens = 300,
+                    maxOutputTokens = 500,
                     responseMimeType = "application/json"
                 }
             };
@@ -97,6 +97,51 @@ namespace IstasyonDemo.Api.Services
                 throw new Exception($"JSON Parse Error. Content: {textContent}. Error: {ex.Message}");
             }
         }
+        public async Task<string?> AnalyzeDashboardAsync(object dashboardData)
+        {
+            var apiKey = _configuration["GeminiSettings:ApiKey"];
+            var modelId = _configuration["GeminiSettings:ModelId"];
+
+            if (string.IsNullOrEmpty(apiKey))
+                throw new Exception("Gemini API Key is missing.");
+            
+            if (string.IsNullOrEmpty(modelId))
+                modelId = "gemini-1.5-flash";
+
+            var dataJson = JsonSerializer.Serialize(dashboardData);
+
+            var requestBody = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new object[]
+                        {
+                            new { text = $"Sen bir petrol istasyonu stratejik iş analiz uzmanısın. Aşağıdaki dashboard verilerini (günlük ciro, trendler, personel durumu, onay bekleyenler) profesyonel bir bakış açısıyla analiz et ve istasyon sahibine kurumsal, ciddi ve yol gösterici bir özet sun. \n\nVERİLER: {dataJson}\n\nYanıtını şu JSON yapısında döndür: {{ \"mood\": \"emoji ve kurumsal durum başlığı\", \"tespit\": \"en önemli finansal veya operasyonel analiz bulgusu\", \"tavsiye\": \"stratejik bir aksiyon önerisi\" }}. Kesinlikle markdown kullanma, sadece saf JSON döndür. Dil ciddi ve kurumsal olsun." },
+                        }
+                    }
+                },
+                generationConfig = new
+                {
+                    temperature = 0.7,
+                    maxOutputTokens = 400,
+                    responseMimeType = "application/json"
+                }
+            };
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelId}:generateContent?key={apiKey}";
+
+            var response = await _httpClient.PostAsync(url, jsonContent);
+            
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var geminiResponse = JsonSerializer.Deserialize<GeminiApiResponse>(responseString);
+            return geminiResponse?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+        }
     }
 
     // API Response Models
@@ -127,16 +172,41 @@ namespace IstasyonDemo.Api.Services
     // Our Business Domain Model
     public class GeminiOcrResponse
     {
+        [JsonPropertyName("nakit")]
         public decimal Nakit { get; set; }
+
+        [JsonPropertyName("krediKarti")]
         public decimal KrediKarti { get; set; }
+
+        [JsonPropertyName("krediKartiDetay")]
         public List<GeminiKrediKartiDetay> KrediKartiDetay { get; set; } = new();
+
+        [JsonPropertyName("digerOdemeler")]
+        public List<GeminiDigerOdeme> DigerOdemeler { get; set; } = new();
+        
+        // Legacy fields for compatibility during transition
+        [JsonPropertyName("paroPuan")]
         public decimal ParoPuan { get; set; }
+
+        [JsonPropertyName("mobilOdeme")]
         public decimal MobilOdeme { get; set; }
     }
 
     public class GeminiKrediKartiDetay
     {
+        [JsonPropertyName("banka")]
         public string Banka { get; set; } = string.Empty;
+
+        [JsonPropertyName("tutar")]
+        public decimal Tutar { get; set; }
+    }
+
+    public class GeminiDigerOdeme
+    {
+        [JsonPropertyName("turKodu")]
+        public string TurKodu { get; set; } = string.Empty;
+
+        [JsonPropertyName("tutar")]
         public decimal Tutar { get; set; }
     }
 }
