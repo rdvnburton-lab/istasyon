@@ -161,6 +161,95 @@ namespace IstasyonDemo.Api.Services
                 }
 
                 await _context.SaveChangesAsync();
+
+                await _context.SaveChangesAsync();
+
+                // 4. OTOMATİK PUSULA OLUŞTURMA (Herkes İçin)
+                // Vardiyada satışı olan her personel için Pusula kaydı oluştur (Boş olsa bile)
+                var activePersonnelIds = await _context.OtomasyonSatislar
+                    .Where(s => s.VardiyaId == vardiya.Id && s.PersonelId.HasValue)
+                    .Select(s => s.PersonelId.Value)
+                    .Distinct()
+                    .ToListAsync();
+                
+                // M-ODEM listesindeki personelleri de ekle (eğer otomasyon satışında henüz yoksa)
+                foreach(var mo in dto.MobilOdemeler) {
+                    var p = await _context.Personeller.FirstOrDefaultAsync(x => x.IstasyonId == vardiya.IstasyonId && (x.KeyId == mo.PersonelKeyId || x.AdSoyad == mo.PersonelIsmi));
+                    if(p != null && !activePersonnelIds.Contains(p.Id)) activePersonnelIds.Add(p.Id);
+                }
+
+                foreach (var personelId in activePersonnelIds)
+                {
+                    bool exists = await _context.Pusulalar.AnyAsync(p => p.VardiyaId == vardiya.Id && p.PersonelId == personelId);
+                    if (!exists)
+                    {
+                        var personnel = await _context.Personeller.FindAsync(personelId);
+                        if (personnel != null)
+                        {
+                            var newPusula = new Pusula
+                            {
+                                VardiyaId = vardiya.Id,
+                                PersonelId = personnel.Id,
+                                PersonelAdi = personnel.AdSoyad,
+                                OlusturmaTarihi = DateTime.UtcNow,
+                                DigerOdemeler = new List<PusulaDigerOdeme>()
+                            };
+                            _context.Pusulalar.Add(newPusula);
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+
+
+                // 5. M-ODEM Otomatik Tahsilat İşleme
+                if (dto.MobilOdemeler != null && dto.MobilOdemeler.Any())
+                {
+                    foreach (var mobilOdeme in dto.MobilOdemeler)
+                    {
+                        // İlgili personeli bul
+                        var personel = await _context.Personeller
+                            .FirstOrDefaultAsync(p => p.IstasyonId == vardiya.IstasyonId && 
+                                                    (p.KeyId == mobilOdeme.PersonelKeyId || p.AdSoyad == mobilOdeme.PersonelIsmi));
+
+                        if (personel != null)
+                        {
+                            // Bu personelin bu vardiyadaki pusulasını bul (Artık KESİN var)
+                            var pusula = await _context.Pusulalar
+                                .Include(p => p.DigerOdemeler)
+                                .FirstOrDefaultAsync(p => p.VardiyaId == vardiya.Id && p.PersonelId == personel.Id);
+
+                            if (pusula != null)
+                            {
+                                if (pusula.DigerOdemeler == null) pusula.DigerOdemeler = new List<PusulaDigerOdeme>();
+
+                                if (pusula.DigerOdemeler == null) pusula.DigerOdemeler = new List<PusulaDigerOdeme>();
+
+                                    string turAdi = "Turpak Mobil Ödeme"; // Eski adı: Mobil Ödeme
+                                    if (mobilOdeme.TurKodu == "PARO_PUAN_POMPA") turAdi = "Pompa Paro Puan";
+                                    else if (mobilOdeme.TurKodu == "MOBIL_ODEME") turAdi = "Turpak Mobil Ödeme";
+
+                                    var existingItem = pusula.DigerOdemeler.FirstOrDefault(d => d.TurKodu == mobilOdeme.TurKodu);
+                                    if (existingItem != null)
+                                    {
+                                        existingItem.Tutar += mobilOdeme.Tutar;
+                                        existingItem.Silinemez = true; // Mevcutsa da kilitli olduğundan emin ol
+                                        existingItem.TurAdi = turAdi;  // Adı değiştiyse güncelle
+                                    }
+                                    else
+                                    {
+                                        pusula.DigerOdemeler.Add(new PusulaDigerOdeme
+                                        {
+                                            TurKodu = mobilOdeme.TurKodu,
+                                            TurAdi = turAdi,
+                                            Tutar = mobilOdeme.Tutar,
+                                            Silinemez = true // Yeni eklenen kesinlikle silinemez
+                                        });
+                                    }
+                            }
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                }
                 
                 var log = new VardiyaLog
                 {
@@ -897,8 +986,54 @@ namespace IstasyonDemo.Api.Services
                     // Dynamic Code = İstasyon/Pompacı Satışı -> OtomasyonSatislar
                     string dynamicCode = !string.IsNullOrWhiteSpace(station!.OtomasyonFiloKodu) ? station.OtomasyonFiloKodu.Trim() : "C0000";
                     var fleetCodeCheck = fleetCode?.Trim();
+                    
+                    
+                    // Paro Puan Kontrolü (Redemption > 0 && LoyaltyCardNo dolu)
+                    var redemptionRaw = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Redemption")?.Value ?? "0", CultureInfo.InvariantCulture);
+                    var loyaltyCardNo = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardNo")?.Value;
+                    bool isParoSale = redemptionRaw > 0 && !string.IsNullOrWhiteSpace(loyaltyCardNo);
 
-                    if (string.IsNullOrEmpty(fleetCodeCheck) || fleetCodeCheck.Equals(dynamicCode, StringComparison.OrdinalIgnoreCase))
+                    if (isParoSale)
+                    {
+                        var personelName = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value ?? "";
+                        var personelKey = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "";
+
+                        dto.MobilOdemeler.Add(new MobilOdemeDto 
+                        {
+                            PersonelIsmi = personelName,
+                            PersonelKeyId = personelKey,
+                            Tutar = redemptionRaw / 100m,
+                            Aciklama = $"Pompa Paro Puan (Kart: {loyaltyCardNo})",
+                            TurKodu = "PARO_PUAN_POMPA",
+                            Silinemez = true
+                        });
+                    }
+
+                    bool isAutomationSale = string.IsNullOrEmpty(fleetCodeCheck) || 
+                                            fleetCodeCheck.Equals(dynamicCode, StringComparison.OrdinalIgnoreCase) ||
+                                            isParoSale; // Paro satışları da otomasyon satışı sayılmalı
+
+                    // M-ODEM (Mobil Ödeme) Check -> Treat as Automation Sale + Auto Payment
+                    if (!isAutomationSale && fleetCodeCheck.Equals("M-ODEM", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isAutomationSale = true;
+                        
+                        // Add to Auto-Payment List
+                        var personelName = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value ?? "";
+                        var personelKey = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "";
+                        
+                        dto.MobilOdemeler.Add(new MobilOdemeDto 
+                        {
+                            PersonelIsmi = personelName,
+                            PersonelKeyId = personelKey,
+                            Tutar = totalRaw / 100m,
+                            Aciklama = $"Turpak Mobil Ödeme (Fiş: {sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value})",
+                            TurKodu = "MOBIL_ODEME",
+                            Silinemez = true
+                        });
+                    }
+
+                    if (isAutomationSale)
                     {
                         dto.OtomasyonSatislar.Add(new CreateOtomasyonSatisDto
                         {

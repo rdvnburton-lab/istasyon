@@ -70,23 +70,34 @@ namespace IstasyonDemo.Api.Controllers
 
         [HttpPost("upload-xml-zip")]
         [Authorize]
-        public async Task<IActionResult> UploadXmlZip(IFormFile file)
+        [DisableRequestSizeLimit] 
+        public async Task<IActionResult> UploadXmlZip()
         {
-             if (file == null || file.Length == 0)
-                return BadRequest("Dosya yüklenmedi.");
-
-            if (!Path.GetExtension(file.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
-                return BadRequest("Sadece .zip dosyaları kabul edilir.");
-
-            using var stream = file.OpenReadStream();
             try
             {
+                if (!Request.HasFormContentType)
+                {
+                    return BadRequest(new { message = "Form verisi bekleniyor (multipart/form-data)." });
+                }
+
+                var form = await Request.ReadFormAsync();
+                var file = form.Files.GetFile("file") ?? form.Files.FirstOrDefault();
+
+                if (file == null || file.Length == 0)
+                {
+                     return BadRequest(new { message = "Dosya yüklenmedi." });
+                }
+                
+                if (!Path.GetExtension(file.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                    return BadRequest(new { message = "Sadece .zip dosyaları kabul edilir." });
+
+                using var stream = file.OpenReadStream();
                 await _vardiyaService.ProcessXmlZipAsync(stream, file.FileName, CurrentUserId, CurrentUserRole, User.Identity.Name);
                 return Ok(new { message = "Dosya başarıyla işlendi ve vardiya oluşturuldu." });
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(400, new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -814,9 +825,10 @@ namespace IstasyonDemo.Api.Controllers
                     p.KrediKartiDetay,
                     DigerOdemeler = p.DigerOdemeler.Select(d => new
                     {
-                        d.TurKodu,
-                        d.TurAdi,
-                        d.Tutar
+                        turKodu = d.TurKodu,
+                        turAdi = d.TurAdi,
+                        tutar = d.Tutar,
+                        silinemez = d.Silinemez
                     }).ToList(),
                     p.Aciklama,
                     p.Toplam
@@ -936,9 +948,10 @@ namespace IstasyonDemo.Api.Controllers
                     p.KrediKartiDetay,
                     DigerOdemeler = p.DigerOdemeler.Select(d => new
                     {
-                        d.TurKodu,
-                        d.TurAdi,
-                        d.Tutar
+                        turKodu = d.TurKodu,
+                        turAdi = d.TurAdi,
+                        tutar = d.Tutar,
+                        silinemez = d.Silinemez
                     }).ToList(),
                     p.Aciklama,
                     Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar)
@@ -1054,12 +1067,12 @@ namespace IstasyonDemo.Api.Controllers
 
             var digerOdemelerOzet = pusulalar
                 .SelectMany(p => p.DigerOdemeler)
-                .GroupBy(d => new { d.TurKodu, d.TurAdi })
+                .GroupBy(d => new { d.turKodu, d.turAdi })
                 .Select(g => new
                 {
-                    TurKodu = g.Key.TurKodu,
-                    TurAdi = g.Key.TurAdi,
-                    Toplam = g.Sum(d => d.Tutar)
+                    TurKodu = g.Key.turKodu,
+                    TurAdi = g.Key.turAdi,
+                    Toplam = g.Sum(d => d.tutar)
                 })
                 .ToList();
 

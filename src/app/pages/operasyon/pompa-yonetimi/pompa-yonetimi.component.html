@@ -586,9 +586,12 @@
                                             <div *ngFor="let item of pusulaForm.digerOdemeler; let i = index"
                                                 class="flex justify-between items-center py-1.5 px-2 bg-white dark:bg-surface-900 rounded-lg group animate-fade-in">
                                                 <div class="flex items-center gap-2">
-                                                    <button pButton icon="pi pi-times"
+                                                    <button pButton icon="pi pi-times" *ngIf="!item.silinemez"
                                                         class="p-button-text p-button-danger !p-0 !w-4 !h-4 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         (click)="digerOdemeSil(i)"></button>
+                                                    <i class="pi pi-lock text-[10px] text-gray-400"
+                                                        *ngIf="item.silinemez"
+                                                        pTooltip="Otomatik Kayıt (Silinemez)"></i>
                                                     <span class="text-[11px] font-medium">{{ item.turAdi }}</span>
                                                 </div>
                                                 <span class="font-bold text-indigo-600 text-[11px]">{{ item.tutar |
@@ -925,15 +928,17 @@
                 <!-- Filo Detayları -->
                 <div class="space-y-3" *ngIf="onizlemeData.isFilo">
                     <div class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-2">
-                        Filo Satışları
+                        Filo Satışları Detayı
                     </div>
                     <div *ngFor="let detay of onizlemeData.filoDetaylari"
-                        class="flex justify-between items-center text-sm">
-                        <span class="flex items-center gap-2 text-surface-700 dark:text-surface-300">
-                            <div class="w-2 h-2 rounded-full bg-purple-500"></div> {{ detay.ad
-                            }}
+                        class="flex justify-between items-center text-sm p-2 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-lg transition-colors">
+                        <span class="flex items-center gap-2 text-surface-700 dark:text-surface-300 font-medium">
+                            <div class="w-2 h-2 rounded-full bg-purple-500"></div> {{ detay.ad }}
                         </span>
-                        <span class="font-medium">{{ detay.tutar | number:'1.2-2' }} ₺</span>
+                        <div class="text-right">
+                            <div class="font-bold">{{ detay.tutar | number:'1.2-2' }} ₺</div>
+                            <div class="text-xs text-surface-500">{{ detay.litre | number:'1.2-2' }} L</div>
+                        </div>
                     </div>
                 </div>
 

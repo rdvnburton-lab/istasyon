@@ -20,5 +20,7 @@ namespace IstasyonDemo.Api.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Tutar { get; set; }
+
+        public bool Silinemez { get; set; } = false;
     }
 }

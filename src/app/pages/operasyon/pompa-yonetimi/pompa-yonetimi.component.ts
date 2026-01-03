@@ -158,7 +158,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 this.vardiyaId = +id;
                 this.loadVardiyaData();
             } else {
-                this.router.navigate(['/vardiya']);
+                this.router.navigate(['/operasyon']);
             }
         });
 
@@ -177,15 +177,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
         // Pusula Türleri (Pusula için 'Diğer' ödeme tipleri)
         this.definitionsService.getByType(DefinitionType.PUSULA_TURU).subscribe(data => {
-            // Ödeme yöntemlerinden Paro ve Mobil'i de ekle (eğer yoksa)
-            const methods = [...data];
-            if (!methods.find(m => m.code === 'PARO_PUAN')) {
-                methods.push({ name: 'Paro Puan', code: 'PARO_PUAN' } as any);
-            }
-            if (!methods.find(m => m.code === 'MOBIL_ODEME')) {
-                methods.push({ name: 'Mobil Ödeme', code: 'MOBIL_ODEME' } as any);
-            }
-            this.pusulaTurleri = methods;
+            this.pusulaTurleri = data;
         });
 
         // Gider Türleri
@@ -260,8 +252,88 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
                 this.giderler = data.giderler || [];
 
-                this.calculateOzet();
-                this.loading = false;
+                // M-ODEM (Mobil Ödeme) Entegrasyonu
+                const mOdemList = (this.vardiya.filoDetaylari || []).filter((f: any) => f.filoKodu === 'M-ODEM');
+
+                if (mOdemList.length > 0) {
+                    // M-ODEM kayıtlarında personelId eksikse, vardiya detaylarından pompa->personel eşleşmesini al
+                    this.vardiyaApiService.getVardiyaById(this.vardiyaId!).subscribe({
+                        next: (rawVardiya) => {
+                            const pumpPersonMap = new Map<number, number>();
+                            if (rawVardiya.otomasyonSatislar) {
+                                rawVardiya.otomasyonSatislar.forEach((s: any) => pumpPersonMap.set(s.pompaNo, s.personelId));
+                            }
+
+                            mOdemList.forEach((mo: any) => {
+                                // 1. Filo Toplamından Düş
+                                this.filoToplam -= mo.tutar;
+
+                                // Filo Satışları satırını güncelle
+                                const filoP = this.personelOzetler.find(p => p.personelAdi === 'FİLO SATIŞLARI');
+                                if (filoP) {
+                                    filoP.toplamTutar -= mo.tutar;
+                                    filoP.toplamLitre -= mo.litre;
+                                }
+
+                                // 2. Personeli Bul (Veride personelId veya Map'ten pompaNo ile)
+                                const pId = mo.personelId || pumpPersonMap.get(mo.pompaNo);
+                                const personnel = this.personelOzetler.find(p => p.personelId === pId);
+
+                                if (personnel) {
+                                    // 3. Personele Satış Olarak Ekle
+                                    personnel.toplamTutar += mo.tutar;
+                                    personnel.toplamLitre += mo.litre;
+
+                                    // 4. Otomatik Tahsilat (Pusula) Oluştur/Güncelle
+                                    let pusula = this.pusulalar.find(p => p.personelId === personnel.personelId);
+
+                                    if (!pusula) {
+                                        // Pusula yoksa sanal bir pusula oluştur
+                                        pusula = {
+                                            vardiyaId: this.vardiyaId || 0,
+                                            personelAdi: personnel.personelAdi,
+                                            personelId: personnel.personelId,
+                                            nakit: 0,
+                                            krediKarti: 0,
+                                            digerOdemeler: [],
+                                            krediKartiDetay: [],
+                                            aciklama: ''
+                                        };
+                                        this.pusulalar.push(pusula);
+                                    }
+
+                                    // Diger Odemeler listesine ekle
+                                    if (!pusula.digerOdemeler) pusula.digerOdemeler = [];
+
+                                    const existingPayment = pusula.digerOdemeler.find(d => d.turKodu === 'MOBIL_ODEME');
+                                    if (existingPayment) {
+                                        existingPayment.tutar += mo.tutar;
+                                    } else {
+                                        pusula.digerOdemeler.push({
+                                            turKodu: 'MOBIL_ODEME',
+                                            turAdi: 'Mobil Ödeme',
+                                            tutar: mo.tutar
+                                        });
+                                    }
+                                }
+                            });
+
+                            // M-ODEM'leri filodan çıkar
+                            this.vardiya.filoDetaylari = this.vardiya.filoDetaylari.filter((f: any) => f.filoKodu !== 'M-ODEM');
+
+                            this.calculateOzet();
+                            this.loading = false;
+                        },
+                        error: (err) => {
+                            console.error('M-ODEM eşleştirme hatası:', err);
+                            this.calculateOzet();
+                            this.loading = false;
+                        }
+                    });
+                } else {
+                    this.calculateOzet();
+                    this.loading = false;
+                }
             },
             error: (err) => {
                 console.error('❌ Mutabakat yüklenirken hata:', err);
@@ -383,6 +455,11 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     }
 
     digerOdemeSil(index: number) {
+        const item = this.pusulaForm.digerOdemeler?.[index];
+        if (item && item.silinemez) {
+            this.messageService.add({ severity: 'warn', summary: 'İşlem Engellendi', detail: 'Bu kayıt sistem tarafından oluşturulmuştur ve silinemez.' });
+            return;
+        }
         this.pusulaForm.digerOdemeler?.splice(index, 1);
     }
 
@@ -654,24 +731,31 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
     onizle(personel: PersonelOtomasyonOzet): void {
         if (personel.personelAdi === 'FİLO SATIŞLARI') {
-            const filoSatislar = this.vardiya.filoSatislar || [];
-            const groups: { [key: string]: number } = {};
+            const filoSatislar = this.vardiya.filoDetaylari || [];
+            const groups: { [key: string]: { tutar: number, litre: number } } = {};
 
-            filoSatislar.forEach((s: any) => {
-                let groupName = s.filoKodu;
-                // Eğer filo kodu sayı içeriyorsa 'Otobilim' olarak grupla
-                if (/\d/.test(s.filoKodu)) {
-                    groupName = 'Otobilim';
-                }
+            filoSatislar
+                .filter((s: any) => s.filoKodu !== 'İSTASYON') // İSTASYON hariç tut
+                .forEach((s: any) => {
+                    let groupName = s.filoKodu;
+                    // Eğer filo kodu boşsa veya null ise 'OTOBIL' olarak grupla
+                    if (!groupName || groupName.trim() === '') {
+                        groupName = 'OTOBIL';
+                    }
 
-                if (!groups[groupName]) groups[groupName] = 0;
-                groups[groupName] += s.tutar;
-            });
+                    if (!groups[groupName]) groups[groupName] = { tutar: 0, litre: 0 };
+                    groups[groupName].tutar += s.tutar;
+                    groups[groupName].litre += s.litre;
+                });
 
             this.onizlemeData = {
                 personel: personel,
                 isFilo: true,
-                filoDetaylari: Object.keys(groups).map(k => ({ ad: k, tutar: groups[k] })),
+                filoDetaylari: Object.keys(groups).map(k => ({
+                    ad: k,
+                    tutar: groups[k].tutar,
+                    litre: groups[k].litre
+                })),
                 toplamTutar: personel.toplamTutar,
                 pusula: { // Dummy pusula objesi
                     nakit: 0,
@@ -707,7 +791,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     }
 
     geriDon(): void {
-        this.router.navigate(['/vardiya']);
+        this.router.navigate(['/operasyon']);
     }
 
     onayaGonder(): void {
@@ -725,7 +809,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     summary: 'Başarılı',
                     detail: 'Vardiya onaya gönderildi.'
                 });
-                this.router.navigate(['/vardiya']);
+                this.router.navigate(['/operasyon']);
             },
             error: (err) => {
                 console.error('Onaya gönderme hatası:', err);

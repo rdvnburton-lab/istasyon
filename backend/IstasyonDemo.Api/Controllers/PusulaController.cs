@@ -146,7 +146,8 @@ namespace IstasyonDemo.Api.Controllers
                         PusulaId = pusula.Id,
                         TurKodu = detay.TurKodu,
                         TurAdi = detay.TurAdi,
-                        Tutar = detay.Tutar
+                        Tutar = detay.Tutar,
+                        Silinemez = detay.Silinemez
                     });
                 }
                 await _context.SaveChangesAsync();
@@ -204,6 +205,18 @@ namespace IstasyonDemo.Api.Controllers
                     .Where(p => p.PusulaId == id)
                     .ToListAsync();
 
+                // Güvenlik Kontrolü: Silinemez işaretli kayıtlar listeden çıkarılmış mı?
+                var protectedItems = existingOtherPayments.Where(x => x.Silinemez).ToList();
+                var incomingTurKodlari = dto.DigerOdemeList.Select(x => x.TurKodu).ToHashSet();
+
+                foreach (var protectedItem in protectedItems)
+                {
+                    if (!incomingTurKodlari.Contains(protectedItem.TurKodu))
+                    {
+                        return BadRequest(new { message = $"Otomatik oluşturulan '{protectedItem.TurAdi}' kaydı silinemez!" });
+                    }
+                }
+
                 _context.PusulaDigerOdemeleri.RemoveRange(existingOtherPayments);
 
                 foreach (var detay in dto.DigerOdemeList)
@@ -213,7 +226,8 @@ namespace IstasyonDemo.Api.Controllers
                         PusulaId = pusula.Id,
                         TurKodu = detay.TurKodu,
                         TurAdi = detay.TurAdi,
-                        Tutar = detay.Tutar
+                        Tutar = detay.Tutar,
+                        Silinemez = detay.Silinemez
                     });
                 }
                 await _context.SaveChangesAsync();

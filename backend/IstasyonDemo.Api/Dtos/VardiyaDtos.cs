@@ -14,6 +14,19 @@ namespace IstasyonDemo.Api.Dtos
         
         public List<CreateOtomasyonSatisDto> OtomasyonSatislar { get; set; } = new();
         public List<CreateFiloSatisDto> FiloSatislar { get; set; } = new();
+    
+        // M-ODEM (Mobil Ödeme) Otomatik Takip İçin
+        public List<MobilOdemeDto> MobilOdemeler { get; set; } = new();
+    }
+
+    public class MobilOdemeDto 
+    {
+        public string PersonelIsmi { get; set; } = "";
+        public string PersonelKeyId { get; set; } = "";
+        public decimal Tutar { get; set; }
+        public string Aciklama { get; set; } = "";
+        public string TurKodu { get; set; } = "MOBIL_ODEME";
+        public bool Silinemez { get; set; } = false;
     }
 
     public class CreateOtomasyonSatisDto

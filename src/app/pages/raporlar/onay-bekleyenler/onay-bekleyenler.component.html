@@ -370,8 +370,19 @@
 </div>
 
 <!-- Detay Modalı -->
-<p-dialog [(visible)]="detayVisible" [modal]="true" [header]="'Mutabakat Özeti: ' + seciliVardiya?.dosyaAdi"
-    [style]="{ width: '90vw' }" [maximizable]="true" [draggable]="false" [resizable]="false">
+<p-dialog [(visible)]="detayVisible" [modal]="true" [style]="{ width: '90vw' }" [maximizable]="true" [draggable]="false"
+    [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="flex flex-col justify-center">
+            <span class="font-bold text-base md:text-xl text-[var(--text-color)]">
+                {{ seciliVardiya?.baslangicTarihi | date:'dd.MM.yyyy' }}
+            </span>
+            <span class="text-xs md:text-sm text-muted-color">
+                {{ seciliVardiya?.baslangicTarihi | date:'HH:mm' }} - {{ seciliVardiya?.bitisTarihi | date:'HH:mm' }}
+            </span>
+        </div>
+    </ng-template>
 
     <div *ngIf="seciliVardiya && genelOzet" class="flex flex-col gap-6">
 
@@ -464,35 +475,35 @@
                     <div class="flex items-center gap-2">
                         <i class="pi pi-credit-card"></i>
                         <span class="hidden sm:inline">Tahsilat</span>
-                        <span class="sm:hidden">💳</span>
+
                     </div>
                 </p-tab>
                 <p-tab value="1">
                     <div class="flex items-center gap-2">
                         <i class="pi pi-users"></i>
                         <span class="hidden sm:inline">Personel</span>
-                        <span class="sm:hidden">👥</span>
+
                     </div>
                 </p-tab>
                 <p-tab value="2">
                     <div class="flex items-center gap-2">
                         <i class="pi pi-shopping-cart"></i>
                         <span class="hidden sm:inline">Market</span>
-                        <span class="sm:hidden">🛒</span>
+
                     </div>
                 </p-tab>
                 <p-tab value="3">
                     <div class="flex items-center gap-2">
                         <i class="pi pi-wallet"></i>
                         <span class="hidden sm:inline">Giderler</span>
-                        <span class="sm:hidden">💰</span>
+
                     </div>
                 </p-tab>
                 <p-tab value="4">
                     <div class="flex items-center gap-2">
                         <i class="pi pi-database"></i>
                         <span class="hidden sm:inline">Tank</span>
-                        <span class="sm:hidden">⛽</span>
+
                     </div>
                 </p-tab>
             </p-tablist>
@@ -926,19 +937,24 @@
             </p-tabpanels>
         </p-tabs>
 
-        <div class="flex justify-between items-center mt-6 pt-6 border-t border-surface-200">
-            <div class="text-sm text-muted-color">
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-center md:justify-between items-center w-full" *ngIf="seciliVardiya">
+            <div class="text-sm text-muted-color text-left hidden md:block">
                 Onaya gönderen: {{ seciliVardiya.sorumluAdi || 'Sistem' }}<br>
                 Tarih: {{ seciliVardiya.guncellemeTarihi | date:'dd.MM.yyyy HH:mm' }}
             </div>
-            <div class="flex gap-3">
-                <p-button label="Reddet" icon="pi pi-times" severity="danger" [outlined]="true"
+            <div class="flex gap-4 w-full md:w-auto justify-center md:justify-end">
+                <p-button label="Reddet" icon="pi pi-times" severity="danger" [outlined]="true" styleClass="px-6"
                     (onClick)="reddetDialogAc(seciliVardiya)"></p-button>
-                <p-button label="Onayla ve Kapat" icon="pi pi-check" severity="success"
+                <p-button label="Onayla" icon="pi pi-check" severity="success" styleClass="px-6"
                     (onClick)="onayla(seciliVardiya)"></p-button>
+                <p-button label="Kapat" icon="pi pi-times" severity="secondary" styleClass="px-6"
+                    (onClick)="detayVisible = false"></p-button>
             </div>
         </div>
-    </div>
+    </ng-template>
 
 </p-dialog>
 

@@ -134,7 +134,7 @@ export interface PusulaGirisi {
     toplam: number;
     aciklama?: string;
     krediKartiDetay?: { banka: string; tutar: number }[];
-    digerOdemeler?: { turKodu: string; turAdi: string; tutar: number }[];
+    digerOdemeler?: { turKodu: string; turAdi: string; tutar: number; silinemez?: boolean }[];
     olusturmaTarihi: Date;
 }
 
@@ -149,7 +149,7 @@ export interface PersonelFarkAnalizi {
     pusulaDokum: {
         nakit: number;
         krediKarti: number;
-        digerOdemeler?: { turKodu: string; turAdi: string; tutar: number }[];
+        digerOdemeler?: { turKodu: string; turAdi: string; tutar: number; silinemez?: boolean }[];
     };
 }
 
@@ -347,7 +347,7 @@ export interface GenelOzet {
     toplamNakit: number;
     toplamKrediKarti: number;
 
-    digerOdemeler?: { turKodu: string; turAdi: string; toplam: number }[];
+    digerOdemeler?: { turKodu: string; turAdi: string; toplam: number; silinemez?: boolean }[];
     filoToplam?: number;
     toplamGider: number;
     toplamVeresiye: number;
@@ -367,7 +367,7 @@ export interface GunlukOzet {
     toplamNakit: number;
     toplamKrediKarti: number;
 
-    digerOdemeler?: { turKodu: string; turAdi: string; toplam: number }[];
+    digerOdemeler?: { turKodu: string; turAdi: string; toplam: number; silinemez?: boolean }[];
     toplamGider: number;
     kasaFarki: number;
     farkDurum: FarkDurum;

@@ -12,17 +12,20 @@
                     </p>
                 </div>
                 <div class="flex gap-2 flex-wrap">
+                    <!-- Vardiya Başlat -->
                     <p-button *ngIf="!aktifVardiya" label="Vardiya Başlat" icon="pi pi-play" severity="success"
-                        [routerLink]="['/vardiya/baslat']">
+                        [routerLink]="['/operasyon']">
                     </p-button>
+
+                    <!-- Market Mutabakatı -->
                     <p-button *ngIf="!aktifVardiya" label="Market Mutabakatı" icon="pi pi-shopping-bag" severity="help"
                         [routerLink]="['/operasyon/market']">
                     </p-button>
                     <ng-container *ngIf="aktifVardiya">
                         <p-button label="Pompa" icon="pi pi-box" severity="info" [routerLink]="['/operasyon/pompa']">
                         </p-button>
-                        <p-button label="Market" icon="pi pi-shopping-bag" severity="help"
-                            [routerLink]="['/operasyon/market']">
+                        <p-button label="Pompa Yönetimi" icon="pi pi-cog" styleClass="w-full" severity="warn"
+                            [routerLink]="['/operasyon/pompa', aktifVardiya.id]">
                         </p-button>
                         <p-button label="Onaya Gönder" icon="pi pi-send" severity="warn" (onClick)="onayaGonder()">
                         </p-button>

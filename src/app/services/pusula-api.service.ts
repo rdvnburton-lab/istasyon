@@ -12,6 +12,7 @@ export interface DigerOdeme {
     turKodu: string;
     turAdi: string;
     tutar: number;
+    silinemez?: boolean;
 }
 
 export interface Pusula {
@@ -103,7 +104,12 @@ export class PusulaApiService {
                 : (data.krediKartiDetaylari && data.krediKartiDetaylari.length > 0)
                     ? data.krediKartiDetaylari.map((d: any) => ({ banka: d.bankaAdi, tutar: d.tutar }))
                     : (data.krediKartiDetay ? JSON.parse(data.krediKartiDetay) : []),
-            digerOdemeler: data.digerOdemeler || [],
+            digerOdemeler: (data.digerOdemeler || []).map((d: any) => ({
+                turKodu: d.turKodu,
+                turAdi: d.turAdi,
+                tutar: d.tutar,
+                silinemez: d.silinemez || d.Silinemez || false
+            })),
             pusulaTuru: data.pusulaTuru || 'TAHSILAT',
             olusturmaTarihi: data.olusturmaTarihi ? new Date(data.olusturmaTarihi) : undefined,
             guncellemeTarihi: data.guncellemeTarihi ? new Date(data.guncellemeTarihi) : undefined

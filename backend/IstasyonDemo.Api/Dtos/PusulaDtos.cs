@@ -36,5 +36,6 @@ namespace IstasyonDemo.Api.Dtos
         public string TurKodu { get; set; } = string.Empty;
         public string TurAdi { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
+        public bool Silinemez { get; set; }
     }
 }

@@ -424,20 +424,40 @@ export class VardiyaListesi implements OnInit {
             return;
         }
 
-        // Manuel Yükleme
-        this.yukleniyor = true;
-        this.islemDurumu = 'ZIP Dosyası yükleniyor...';
+        const dosya = this.secilenDosya; // Referansı sakla
 
-        this.vardiyaApiService.uploadVardiyaZip(this.secilenDosya).subscribe({
+        // Manuel Yükleme - Progress Simulation Başlat
+        this.dosyaDialogKapat(); // Dialogu kapat (this.secilenDosya null olur)
+        this.showGlobalLoading = true;
+        this.yukleniyor = true;
+        this.currentStep = 0;
+        this.islemDurumu = this.processingSteps[0];
+
+        this.simulateProgress();
+
+        this.vardiyaApiService.uploadVardiyaZip(dosya).subscribe({
             next: (response) => {
-                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Dosya başarıyla yüklendi ve işlendi.' });
-                this.vardiyalariYukle();
-                this.dosyaDialogKapat();
-                this.yukleniyor = false;
+                // Progress tamamla
+                this.stopProgressSimulation();
+                this.currentStep = this.processingSteps.length - 1;
+                this.islemDurumu = this.processingSteps[this.currentStep];
+
+                setTimeout(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Dosya başarıyla yüklendi ve işlendi.' });
+                    this.vardiyalariYukle();
+
+                    this.showGlobalLoading = false;
+                    this.yukleniyor = false;
+                }, 500);
             },
             error: (err) => {
+                this.stopProgressSimulation();
                 console.error('Dosya yükleme hatası:', err);
-                this.messageService.add({ severity: 'error', summary: 'Hata', detail: err.error?.message || 'Dosya yüklenirken bir hata oluştu!' });
+
+                const errorDetail = err.error?.message || err.error || 'Dosya yüklenirken bir hata oluştu!';
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: errorDetail, life: 5000 });
+
+                this.showGlobalLoading = false;
                 this.yukleniyor = false;
             }
         });
