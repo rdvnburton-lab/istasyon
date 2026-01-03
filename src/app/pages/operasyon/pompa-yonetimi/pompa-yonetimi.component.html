@@ -1035,3 +1035,8 @@
                 <p-button label="Kaydet" icon="pi pi-check" (onClick)="saveGider()" [loading]="loading"></p-button>
             </ng-template>
         </p-dialog>
+
+        <!-- Onay Dialog -->
+        <p-confirmDialog key="pompaMutabakatConfirm" [style]="{width: '450px'}" [baseZIndex]="10000"
+            rejectButtonStyleClass="p-button-text">
+        </p-confirmDialog>

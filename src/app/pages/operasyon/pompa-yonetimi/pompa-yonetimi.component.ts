@@ -6,6 +6,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -20,7 +21,7 @@ import { BadgeModule } from 'primeng/badge';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { VardiyaApiService } from '../services/vardiya-api.service';
 import { PersonelApiService } from '../services/personel-api.service';
@@ -44,6 +45,7 @@ interface PersonelOtomasyonOzet {
         FormsModule,
         RouterModule,
         ButtonModule,
+        ConfirmDialogModule,
         CardModule,
         TableModule,
         TagModule,
@@ -147,7 +149,8 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         private router: Router,
         private route: ActivatedRoute,
         private ngZone: NgZone,
-        private definitionsService: DefinitionsService
+        private definitionsService: DefinitionsService,
+        private confirmationService: ConfirmationService
     ) { }
 
     ngOnInit(): void {
@@ -196,7 +199,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         this.loading = true;
         console.time('⚡ Mutabakat Data Load');
 
-        // OPTIMIZED: Single API call with pre-aggregated data
+        // OPTIMIZED: Single API call with pre-aggregated data (Backend handles M-ODEM reconciliation now)
         this.vardiyaApiService.getMutabakat(this.vardiyaId).subscribe({
             next: (data) => {
                 console.timeEnd('⚡ Mutabakat Data Load');
@@ -206,7 +209,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 this.vardiya = data.vardiya;
                 this.otomasyonToplam = data.vardiya.genelToplam;
 
-                // Personel özetleri zaten gruplu geliyor
+                // Personel özetleri (Backend'den M-ODEM eklenmiş olarak gelebilir)
                 this.personelOzetler = (data.personelOzetler || []).map((p: any) => ({
                     personelAdi: p.personelAdi,
                     personelId: p.personelId,
@@ -215,7 +218,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     islemSayisi: p.islemSayisi
                 }));
 
-                // Filo Satışları
+                // Filo Satışları (Backend'den M-ODEM düşülmüş olarak gelir)
                 if (data.filoOzet && data.filoOzet.toplamTutar > 0) {
                     this.filoToplam = data.filoOzet.toplamTutar;
                     this.personelOzetler.push({
@@ -235,7 +238,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                     .filter(p => p.personelAdi !== 'FİLO SATIŞLARI')
                     .reduce((sum, p) => sum + p.toplamTutar, 0);
 
-                // Pusulalar (Paro ve Mobil'i DigerOdemeler listesine konsolide et)
+                // Pusulalar (Backend'den M-ODEM "Diğer Ödeme" olarak eklenmiş gelir)
                 this.pusulalar = (data.pusulalar || []).map((p: any) => {
                     const mappedDigerOdemeler = [...(p.digerOdemeler || [])];
 
@@ -252,88 +255,34 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
                 this.giderler = data.giderler || [];
 
-                // M-ODEM (Mobil Ödeme) Kontrolü - Filo içinde M-ODEM varsa ayıkla
-                const mOdemList = (this.vardiya.filoDetaylari || []).filter((f: any) => f.filoAdi === 'M-ODEM');
+                // Server-Side Genel Özet Bağlama
+                if (data.genelOzet) {
+                    this.toplamNakit = data.genelOzet.toplamNakit;
+                    this.toplamKrediKarti = data.genelOzet.toplamKrediKarti;
+                    this.pusulaToplam = data.genelOzet.toplamPusula;
+                    this.fark = data.genelOzet.fark;
 
-                if (mOdemList.length > 0) {
-                    // M-ODEM kayıtlarında personelId eksikse, vardiya detaylarından pompa->personel eşleşmesini al
-                    this.vardiyaApiService.getVardiyaById(this.vardiyaId!).subscribe({
-                        next: (rawVardiya) => {
-                            const pumpPersonMap = new Map<number, number>();
-                            if (rawVardiya.otomasyonSatislar) {
-                                rawVardiya.otomasyonSatislar.forEach((s: any) => pumpPersonMap.set(s.pompaNo, s.personelId));
+                    // Diğer ödemeleri türe göre grupla (UI gösterimi için Frontend'de yapıyoruz)
+                    const digerOdemelerMap = new Map<string, { turAdi: string, toplam: number }>();
+                    this.pusulalar.forEach(p => {
+                        p.digerOdemeler?.forEach(d => {
+                            const existing = digerOdemelerMap.get(d.turKodu);
+                            if (existing) {
+                                existing.toplam += d.tutar;
+                            } else {
+                                digerOdemelerMap.set(d.turKodu, { turAdi: d.turAdi, toplam: d.tutar });
                             }
-
-                            mOdemList.forEach((mo: any) => {
-                                // 1. Filo Toplamından Düş
-                                this.filoToplam -= mo.tutar;
-
-                                // Filo Satışları satırını güncelle
-                                const filoP = this.personelOzetler.find(p => p.personelAdi === 'FİLO SATIŞLARI');
-                                if (filoP) {
-                                    filoP.toplamTutar -= mo.tutar;
-                                    filoP.toplamLitre -= mo.litre;
-                                }
-
-                                // 2. Personeli Bul (Veride personelId veya Map'ten pompaNo ile)
-                                const pId = mo.personelId || pumpPersonMap.get(mo.pompaNo);
-                                const personnel = this.personelOzetler.find(p => p.personelId === pId);
-
-                                if (personnel) {
-                                    // 3. Personele Satış Olarak Ekle
-                                    personnel.toplamTutar += mo.tutar;
-                                    personnel.toplamLitre += mo.litre;
-
-                                    // 4. Otomatik Tahsilat (Pusula) Oluştur/Güncelle
-                                    let pusula = this.pusulalar.find(p => p.personelId === personnel.personelId);
-
-                                    if (!pusula) {
-                                        // Pusula yoksa sanal bir pusula oluştur
-                                        pusula = {
-                                            vardiyaId: this.vardiyaId || 0,
-                                            personelAdi: personnel.personelAdi,
-                                            personelId: personnel.personelId,
-                                            nakit: 0,
-                                            krediKarti: 0,
-                                            digerOdemeler: [],
-                                            krediKartiDetay: [],
-                                            aciklama: ''
-                                        };
-                                        this.pusulalar.push(pusula);
-                                    }
-
-                                    // Diger Odemeler listesine ekle
-                                    if (!pusula.digerOdemeler) pusula.digerOdemeler = [];
-
-                                    const existingPayment = pusula.digerOdemeler.find(d => d.turKodu === 'MOBIL_ODEME');
-                                    if (existingPayment) {
-                                        existingPayment.tutar += mo.tutar;
-                                    } else {
-                                        pusula.digerOdemeler.push({
-                                            turKodu: 'MOBIL_ODEME',
-                                            turAdi: 'Mobil Ödeme',
-                                            tutar: mo.tutar
-                                        });
-                                    }
-                                }
-                            });
-
-                            // M-ODEM'leri filodan çıkar
-                            this.vardiya.filoDetaylari = this.vardiya.filoDetaylari.filter((f: any) => f.filoAdi !== 'M-ODEM');
-
-                            this.calculateOzet();
-                            this.loading = false;
-                        },
-                        error: (err) => {
-                            console.error('M-ODEM eşleştirme hatası:', err);
-                            this.calculateOzet();
-                            this.loading = false;
-                        }
+                        });
                     });
-                } else {
-                    this.calculateOzet();
-                    this.loading = false;
+
+                    this.digerOdemelerToplam = Array.from(digerOdemelerMap.entries()).map(([turKodu, data]) => ({
+                        turKodu,
+                        turAdi: data.turAdi,
+                        toplam: data.toplam
+                    }));
                 }
+
+                this.loading = false;
             },
             error: (err) => {
                 console.error('❌ Mutabakat yüklenirken hata:', err);
@@ -350,41 +299,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     // REMOVED: createPersonelOzetler - no longer needed, data comes pre-aggregated
     // REMOVED: loadPusulalar - data comes in single getMutabakat call
 
-    calculateOzet(): void {
-        this.toplamNakit = this.pusulalar.reduce((sum, p) => sum + p.nakit, 0);
-        this.toplamKrediKarti = this.pusulalar.reduce((sum, p) => sum + p.krediKarti, 0);
-
-
-        const toplamDigerOdemeler = this.pusulalar.reduce((sum, p) =>
-            sum + (p.digerOdemeler?.reduce((subSum, d) => subSum + (d.tutar || 0), 0) || 0), 0);
-
-        // Diğer ödemeleri türe göre grupla
-        const digerOdemelerMap = new Map<string, { turAdi: string, toplam: number }>();
-        this.pusulalar.forEach(p => {
-            p.digerOdemeler?.forEach(d => {
-                const existing = digerOdemelerMap.get(d.turKodu);
-                if (existing) {
-                    existing.toplam += d.tutar;
-                } else {
-                    digerOdemelerMap.set(d.turKodu, { turAdi: d.turAdi, toplam: d.tutar });
-                }
-            });
-        });
-
-        // Map'i array'e çevir
-        this.digerOdemelerToplam = Array.from(digerOdemelerMap.entries()).map(([turKodu, data]) => ({
-            turKodu,
-            turAdi: data.turAdi,
-            toplam: data.toplam
-        }));
-
-        this.pusulaToplam = this.toplamNakit + this.toplamKrediKarti + toplamDigerOdemeler;
-
-        const toplamGider = this.getToplamGider();
-
-        // Fark = (Pusula Toplamı + Filo Satışları + Giderler) - Otomasyon Toplamı
-        this.fark = (this.pusulaToplam + this.filoToplam + toplamGider) - this.otomasyonToplam;
-    }
+    // calculateOzet removed - server side handling
 
     personelSec(personel: PersonelOtomasyonOzet): void {
         this.seciliPersonel = personel;
@@ -784,28 +699,34 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     onayaGonder(): void {
         if (!this.vardiyaId) return;
 
-        if (!confirm('Mutabakatı tamamlayıp onaya göndermek istediğinize emin misiniz? Bu işlemden sonra değişiklik yapılamaz.')) {
-            return;
-        }
-
-        this.loading = true;
-        this.vardiyaApiService.vardiyaOnayaGonder(this.vardiyaId).subscribe({
-            next: () => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Başarılı',
-                    detail: 'Vardiya onaya gönderildi.'
+        this.confirmationService.confirm({
+            key: 'pompaMutabakatConfirm',
+            message: 'Mutabakatı tamamlayıp onaya göndermek istediğinize emin misiniz? Bu işlemden sonra değişiklik yapılamaz.',
+            header: 'Onay',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet, Onayla',
+            rejectLabel: 'İptal',
+            accept: () => {
+                this.loading = true;
+                this.vardiyaApiService.vardiyaOnayaGonder(this.vardiyaId!).subscribe({
+                    next: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Başarılı',
+                            detail: 'Vardiya onaya gönderildi.'
+                        });
+                        this.router.navigate(['/operasyon']);
+                    },
+                    error: (err) => {
+                        console.error('Onaya gönderme hatası:', err);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Hata',
+                            detail: err.error?.message || 'Onaya gönderilemedi.'
+                        });
+                        this.loading = false;
+                    }
                 });
-                this.router.navigate(['/operasyon']);
-            },
-            error: (err) => {
-                console.error('Onaya gönderme hatası:', err);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Hata',
-                    detail: err.error?.message || 'Onaya gönderilemedi.'
-                });
-                this.loading = false;
             }
         });
     }

@@ -9,6 +9,7 @@ namespace IstasyonDemo.Api.Services
         Task<Vardiya?> GetVardiyaByIdAsync(int id);
         Task<List<Vardiya>> GetOnayBekleyenlerAsync(int userId, string? userRole);
         Task OnayaGonderAsync(int id, int userId, string? userRole);
+        Task<MutabakatViewModel> CalculateVardiyaFinancials(int vardiyaId);
         Task SilmeTalebiOlusturAsync(int id, SilmeTalebiDto dto, int userId, string? userRole, string? userName);
         Task OnaylaAsync(int id, OnayDto dto, int userId, string? userRole);
         Task ReddetAsync(int id, RedDto dto, int userId, string? userRole);

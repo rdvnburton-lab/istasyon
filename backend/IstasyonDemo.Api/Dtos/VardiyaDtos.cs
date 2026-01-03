@@ -123,4 +123,79 @@ namespace IstasyonDemo.Api.Dtos
     {
         public string Nedeni { get; set; } = string.Empty;
     }
+
+    public class MutabakatViewModel
+    {
+        public object Vardiya { get; set; }
+        public List<PersonelMutabakatOzetDto> PersonelOzetler { get; set; } = new();
+        public FiloMutabakatOzetDto? FiloOzet { get; set; }
+        public List<FiloMutabakatDetayDto> FiloDetaylari { get; set; } = new();
+        public List<PusulaMutabakatDto> Pusulalar { get; set; } = new();
+        public List<GiderMutabakatDto> Giderler { get; set; } = new();
+        public GenelMutabakatOzetDto GenelOzet { get; set; } = new();
+        public long _performanceMs { get; set; }
+    }
+
+    public class GenelMutabakatOzetDto
+    {
+        public decimal ToplamOtomasyon { get; set; }
+        public decimal ToplamNakit { get; set; }
+        public decimal ToplamKrediKarti { get; set; }
+        public decimal ToplamGider { get; set; }
+        public decimal ToplamPusula { get; set; } // Nakit + KK + Diğer
+        public decimal Fark { get; set; } // (Pusula + Filo + Gider) - Otomasyon
+    }
+
+    public class PersonelMutabakatOzetDto
+    {
+        public string PersonelAdi { get; set; } = string.Empty;
+        public int? PersonelId { get; set; }
+        public decimal ToplamLitre { get; set; }
+        public decimal ToplamTutar { get; set; }
+        public int IslemSayisi { get; set; }
+    }
+
+    public class FiloMutabakatOzetDto
+    {
+        public decimal ToplamTutar { get; set; }
+        public decimal ToplamLitre { get; set; }
+        public int IslemSayisi { get; set; }
+    }
+
+    public class FiloMutabakatDetayDto
+    {
+        public string FiloAdi { get; set; } = string.Empty;
+        public decimal Tutar { get; set; }
+        public decimal Litre { get; set; }
+        public int IslemSayisi { get; set; }
+    }
+
+    public class PusulaMutabakatDto
+    {
+        public int Id { get; set; }
+        public string PersonelAdi { get; set; } = string.Empty;
+        public int? PersonelId { get; set; }
+        public decimal Nakit { get; set; }
+        public decimal KrediKarti { get; set; }
+        public string? KrediKartiDetay { get; set; } // JSON String
+        public List<PusulaDigerOdemelerDto> DigerOdemeler { get; set; } = new();
+        public string? Aciklama { get; set; }
+        public decimal Toplam { get; set; }
+    }
+
+    public class PusulaDigerOdemelerDto
+    {
+        public string TurKodu { get; set; } = string.Empty;
+        public string TurAdi { get; set; } = string.Empty;
+        public decimal Tutar { get; set; }
+        public bool Silinemez { get; set; }
+    }
+
+    public class GiderMutabakatDto
+    {
+        public int Id { get; set; }
+        public string GiderTuru { get; set; } = string.Empty;
+        public decimal Tutar { get; set; }
+        public string? Aciklama { get; set; }
+    }
 }
