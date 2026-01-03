@@ -103,6 +103,7 @@ export interface FiloSatis {
     tutar: number;
     pompaNo: number;
     fisNo: number;
+    filoAdi?: string;
 }
 
 export enum YakitTuru {

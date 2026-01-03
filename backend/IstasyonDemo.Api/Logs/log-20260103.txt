@@ -4125,3 +4125,418 @@
 2026-01-03 23:06:30.863 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
 2026-01-03 23:06:31.523 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
 2026-01-03 23:06:36.038 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 23:46:24.309 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 23:46:52.129 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 23:48:57.729 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 23:48:57.868 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 23:48:58.554 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 23:49:04.094 +03:00 [INF] XML Dosyası İşleniyor: 2025051601.zip, Boyut: 815894 bytes
+2026-01-03 23:49:04.096 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 23:49:04.129 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-03 23:49:04.133 +03:00 [INF] XML Parsing Debug: Toplam 1083 adet 'Txn' elementi bulundu.
+2026-01-03 23:49:04.135 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250517000116</DateTime>
+    <ReceiptNr>32899</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4686</UnitPrice>
+    <Amount>3468</Amount>
+    <Total>162510</Total>
+    <PumpNr>6</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06CLD688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46860</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 23:49:04.136 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 23:49:04.137 +03:00 [INF] İlk Txn ReceiptNr Değeri: 32899
+2026-01-03 23:49:04.140 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 1083 Satış bulundu.
+2026-01-03 23:49:04.210 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=17.05.2025 00:01:16, Bitiş=17.05.2025 23:43:17
+2026-01-03 23:49:04.226 +03:00 [INF] DTO Oluşturuldu: 997 Otomasyon, 86 Filo, 0 Tank satışı eklendi.
+2026-01-03 23:49:04.229 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 990.165,69 TL (Oto: 822.760,99 + Filo: 167.404,70)
+2026-01-03 23:49:04.309 +03:00 [WRN] Key Devri (GÜNCEL): Key 0244211A | A.VURAL -> H.CIVGIN
+2026-01-03 23:49:04.764 +03:00 [WRN] Key Devri (GÜNCEL): Key DD5EFD13 | U.ZEYLEK -> M.MERVE
+2026-01-03 23:49:04.818 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.829 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.837 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.843 +03:00 [WRN] Key Devri (GÜNCEL): Key FD1086E1 | E.AKCA -> A.ARLI
+2026-01-03 23:49:04.858 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.893 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.906 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.912 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.925 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.961 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.969 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:04.994 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.001 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.015 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.041 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.048 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.076 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.085 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.096 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.118 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.126 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.135 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.149 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.181 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.189 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.203 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.210 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.218 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.226 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.233 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.247 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.261 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.275 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.314 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.345 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.354 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.363 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.387 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.438 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.452 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.460 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.481 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.504 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.522 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.530 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.541 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.563 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.587 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.610 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.620 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.644 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.653 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.675 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.700 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.710 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.718 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.728 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.753 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.762 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.781 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.799 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.809 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.821 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.840 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.852 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.864 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.875 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.894 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.905 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.915 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.925 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.935 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.945 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:05.986 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.018 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.062 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.083 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.144 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.159 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.181 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.206 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.248 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.285 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.308 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.320 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.344 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.357 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.404 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.459 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.505 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.546 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.629 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.654 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.679 +03:00 [WRN] Personel/Key Güncelleme (GÜNCEL): F.BAYLAS Key DD1AA293 -> DD020763
+2026-01-03 23:49:06.707 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.842 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.870 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:06.992 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.031 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.046 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.114 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.156 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.170 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.251 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.355 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.375 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.416 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.479 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.635 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.664 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.696 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.830 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:07.878 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.241 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.302 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.376 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.386 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.403 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.412 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.431 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.459 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.494 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.531 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.591 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.603 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.661 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.673 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.688 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.718 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.752 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.762 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.769 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.794 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.806 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.821 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.827 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.858 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.863 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.882 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.888 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.910 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.927 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.938 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.948 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.978 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.986 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:08.991 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.005 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.019 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.025 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.042 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.048 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.084 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.095 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.118 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.135 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.155 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.191 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.199 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için U.ZEYLEK anahtarı güncellenmedi.
+2026-01-03 23:49:09.241 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.255 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.262 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.273 +03:00 [WRN] Key Devri (GÜNCEL): Key DD288D93 | A.YAG -> L.KOCAK
+2026-01-03 23:49:09.288 +03:00 [WRN] Key Devri (GÜNCEL): Key FE1FADE1 | L.GUNGOR -> Y.E.KOCA
+2026-01-03 23:49:09.298 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.329 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.340 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.347 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.364 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.387 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.394 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.416 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.438 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.460 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.477 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.494 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.527 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.549 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.590 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.621 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.661 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.681 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.693 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.734 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.741 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.763 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.779 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.791 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.816 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.832 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.840 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.858 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.876 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.896 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:09.995 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.010 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.024 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.046 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.052 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.058 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.080 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.087 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.096 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.102 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.165 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.173 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.194 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.244 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.252 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.260 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.279 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.295 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.308 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.321 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.339 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.360 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.433 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.444 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.454 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.464 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.489 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.495 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.510 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.516 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.523 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.543 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.548 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.556 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.563 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.571 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.578 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.600 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.607 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.619 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.626 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.650 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.658 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.682 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.697 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.705 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.712 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.734 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.744 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.752 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.759 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.777 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.789 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.804 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.810 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.816 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.828 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.839 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.850 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.857 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.863 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.874 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.880 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.887 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.898 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.905 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.911 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.917 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:10.928 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.037 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.044 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.051 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.059 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.066 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.078 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.086 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.098 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.117 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.124 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.131 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.139 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.234 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.240 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.246 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.265 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.279 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.287 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.301 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.316 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.336 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.343 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.349 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.357 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.364 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.371 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.384 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.404 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.483 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.492 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.513 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.527 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.541 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.549 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.558 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.566 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.574 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.583 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.591 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.600 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.608 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:11.620 +03:00 [INF] Personel/Key Güncelleme (GEÇMİŞ): Dosya eski olduğu için A.VURAL anahtarı güncellenmedi.
+2026-01-03 23:49:12.042 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=7843, Bitiş=7165, Delta=7125,5205, Sevkiyat=6447,5205, BeklenenTüketim=7125,5205, SatilanMiktar=7125,5205, FARK=0,0000
+2026-01-03 23:49:12.044 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4930, Bitiş=10799, Delta=168,0298, Sevkiyat=6037,0298, BeklenenTüketim=168,0298, SatilanMiktar=168,0298, FARK=0,0000
+2026-01-03 23:49:12.045 +03:00 [INF] Tank 3 (Motorin): Başlangıç=8666, Bitiş=5051, Delta=3615, Sevkiyat=0, BeklenenTüketim=3615, SatilanMiktar=3615, FARK=0
+2026-01-03 23:49:12.045 +03:00 [INF] Tank 4 (Motorin): Başlangıç=12278, Bitiş=12274, Delta=4, Sevkiyat=0, BeklenenTüketim=4, SatilanMiktar=4, FARK=0
+2026-01-03 23:49:12.046 +03:00 [INF] Tank 5 (Motorin): Başlangıç=12103, Bitiş=8658, Delta=3445, Sevkiyat=0, BeklenenTüketim=3445, SatilanMiktar=3445, FARK=0
+2026-01-03 23:49:12.047 +03:00 [INF] Tank 6 (Motorin): Başlangıç=14065, Bitiş=13445, Delta=620, Sevkiyat=0, BeklenenTüketim=620, SatilanMiktar=620, FARK=0
+2026-01-03 23:49:12.079 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-03 23:53:40.602 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 23:53:40.737 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 23:53:41.409 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 23:53:56.348 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-03 23:53:56.477 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-03 23:53:57.163 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-03 23:54:02.232 +03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-01-03 23:56:09.387 +03:00 [INF] XML Dosyası İşleniyor: 2025123001.zip, Boyut: 740503 bytes
+2026-01-03 23:56:09.388 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-03 23:56:09.409 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-03 23:56:09.413 +03:00 [INF] XML Parsing Debug: Toplam 981 adet 'Txn' elementi bulundu.
+2026-01-03 23:56:09.414 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>A.VURAL</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20251231000112</DateTime>
+    <ReceiptNr>255348</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2599</UnitPrice>
+    <Amount>1154</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>07HJB45</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>25990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-03 23:56:09.416 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-03 23:56:09.417 +03:00 [INF] İlk Txn ReceiptNr Değeri: 255348
+2026-01-03 23:56:09.420 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 981 Satış bulundu.
+2026-01-03 23:56:09.468 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=31.12.2025 00:01:12, Bitiş=31.12.2025 23:30:20
+2026-01-03 23:56:09.482 +03:00 [INF] DTO Oluşturuldu: 868 Otomasyon, 113 Filo, 0 Tank satışı eklendi.
+2026-01-03 23:56:09.484 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.062.583,31 TL (Oto: 835.389,15 + Filo: 227.194,16)
+2026-01-03 23:56:12.794 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=17966, Bitiş=16190, Delta=2915,2852, Sevkiyat=1139,2852, BeklenenTüketim=2915,2852, SatilanMiktar=2915,2852, FARK=0,0000
+2026-01-03 23:56:12.795 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=5085, Bitiş=18284, Delta=2495,7256, Sevkiyat=15694,7256, BeklenenTüketim=2495,7256, SatilanMiktar=2495,7256, FARK=0,0000
+2026-01-03 23:56:12.796 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=18980, Bitiş=17078, Delta=2219,9395, Sevkiyat=317,9395, BeklenenTüketim=2219,9395, SatilanMiktar=2219,9395, FARK=0,0000
+2026-01-03 23:56:12.797 +03:00 [INF] Tank 4 (Motorin): Başlangıç=13412, Bitiş=15075, Delta=3283,9941, Sevkiyat=4946,9941, BeklenenTüketim=3283,9941, SatilanMiktar=3283,9941, FARK=0,0000
+2026-01-03 23:56:12.797 +03:00 [INF] Tank 5 (Motorin): Başlangıç=8870, Bitiş=17359, Delta=3778,4814, Sevkiyat=12267,4814, BeklenenTüketim=3778,4814, SatilanMiktar=3778,4814, FARK=0,0000
+2026-01-03 23:56:12.798 +03:00 [INF] Tank 6 (Motorin): Başlangıç=18608, Bitiş=16551, Delta=2057, Sevkiyat=0, BeklenenTüketim=2057, SatilanMiktar=2057, FARK=0
+2026-01-03 23:56:12.820 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.

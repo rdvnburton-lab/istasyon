@@ -252,8 +252,8 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
                 this.giderler = data.giderler || [];
 
-                // M-ODEM (Mobil Ödeme) Entegrasyonu
-                const mOdemList = (this.vardiya.filoDetaylari || []).filter((f: any) => f.filoKodu === 'M-ODEM');
+                // M-ODEM (Mobil Ödeme) Kontrolü - Filo içinde M-ODEM varsa ayıkla
+                const mOdemList = (this.vardiya.filoDetaylari || []).filter((f: any) => f.filoAdi === 'M-ODEM');
 
                 if (mOdemList.length > 0) {
                     // M-ODEM kayıtlarında personelId eksikse, vardiya detaylarından pompa->personel eşleşmesini al
@@ -319,7 +319,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                             });
 
                             // M-ODEM'leri filodan çıkar
-                            this.vardiya.filoDetaylari = this.vardiya.filoDetaylari.filter((f: any) => f.filoKodu !== 'M-ODEM');
+                            this.vardiya.filoDetaylari = this.vardiya.filoDetaylari.filter((f: any) => f.filoAdi !== 'M-ODEM');
 
                             this.calculateOzet();
                             this.loading = false;
@@ -732,29 +732,16 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     onizle(personel: PersonelOtomasyonOzet): void {
         if (personel.personelAdi === 'FİLO SATIŞLARI') {
             const filoSatislar = this.vardiya.filoDetaylari || [];
-            const groups: { [key: string]: { tutar: number, litre: number } } = {};
 
-            filoSatislar
-                .filter((s: any) => s.filoKodu !== 'İSTASYON') // İSTASYON hariç tut
-                .forEach((s: any) => {
-                    let groupName = s.filoKodu;
-                    // Eğer filo kodu boşsa veya null ise 'OTOBIL' olarak grupla
-                    if (!groupName || groupName.trim() === '') {
-                        groupName = 'OTOBIL';
-                    }
-
-                    if (!groups[groupName]) groups[groupName] = { tutar: 0, litre: 0 };
-                    groups[groupName].tutar += s.tutar;
-                    groups[groupName].litre += s.litre;
-                });
-
+            // Backend tarafında zaten gruplanmış ve adlandırılmış geliyor.
             this.onizlemeData = {
                 personel: personel,
                 isFilo: true,
-                filoDetaylari: Object.keys(groups).map(k => ({
-                    ad: k,
-                    tutar: groups[k].tutar,
-                    litre: groups[k].litre
+                filoDetaylari: filoSatislar.map((s: any) => ({
+                    ad: s.filoAdi,
+                    tutar: s.tutar,
+                    litre: s.litre,
+                    islemSayisi: s.islemSayisi || s.IslemSayisi || 0
                 })),
                 toplamTutar: personel.toplamTutar,
                 pusula: { // Dummy pusula objesi

@@ -160,6 +160,31 @@ namespace IstasyonDemo.Api.Services
                     _context.FiloSatislar.Add(filo);
                 }
 
+                // 3.a Tank Envanterini Ekle
+                if (dto.TankEnvanterleri != null)
+                {
+                    foreach (var tankDto in dto.TankEnvanterleri)
+                    {
+                        var tank = new VardiyaTankEnvanteri
+                        {
+                            VardiyaId = vardiya.Id,
+                            TankNo = tankDto.TankNo,
+                            TankAdi = tankDto.TankAdi,
+                            YakitTipi = tankDto.YakitTipi,
+                            BaslangicStok = tankDto.BaslangicStok,
+                            BitisStok = tankDto.BitisStok,
+                            SatilanMiktar = tankDto.SatilanMiktar,
+                            SevkiyatMiktar = tankDto.SevkiyatMiktar,
+                            KayitTarihi = DateTime.UtcNow,
+                            
+                            // Hesaplanan Değerler (Basit logic)
+                            BeklenenTuketim = tankDto.BaslangicStok + tankDto.SevkiyatMiktar - tankDto.BitisStok,
+                            FarkMiktar = (tankDto.BaslangicStok + tankDto.SevkiyatMiktar - tankDto.BitisStok) - tankDto.SatilanMiktar
+                        };
+                        _context.VardiyaTankEnvanterleri.Add(tank);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
                 await _context.SaveChangesAsync();
@@ -1050,7 +1075,25 @@ namespace IstasyonDemo.Api.Services
                             PersonelKeyId = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "",
                             // Plaka Mapping Önceliği: ECRPlate > Sale.Plate >> NOT TagDetails.Plate (O Personel Ismi)
                             Plaka = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRPlate")?.Value
-                                    ?? sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value 
+                                    ?? sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value,
+                            
+                            // Yeni Alanlar
+                            FiloAdi = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetName")?.Value ?? "",
+                            TagNr = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "", // Explicit TagNr
+                            MotorSaati = int.Parse(tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "EngineHour")?.Value ?? "0"),
+                            Kilometre = int.Parse(tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Odometer")?.Value ?? "0"),
+                            SatisTuru = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "TxnType")?.Value ?? "0"),
+                            TabancaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "NozzleNr")?.Value ?? "0"),
+                            OdemeTuru = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PaymentType")?.Value ?? "0"),
+                            YazarKasaPlaka = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRPlate")?.Value ?? "",
+                            YazarKasaFisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRReceiptNr")?.Value ?? "0"),
+                            PuanKullanimi = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Redemption")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
+                            IndirimTutar = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "DiscountAmount")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
+                            KazanilanPuan = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "EarnedPoints")?.Value ?? "0"),
+                            KazanilanPara = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "EarnedMoney")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
+                            SadakatKartNo = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardNo")?.Value,
+                            SadakatKartTipi = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardType")?.Value ?? "0"),
+                            TamBirimFiyat = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FullUnitPrice")?.Value ?? "0") / 100m // Usually same format as UnitPrice
                         });
                     }
                     else
@@ -1067,12 +1110,59 @@ namespace IstasyonDemo.Api.Services
                            Litre = amountRaw / 100m,
                            Tutar = totalRaw / 100m,
                            PompaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpNr")?.Value ?? "0"),
-                           FisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value ?? "0")
+                           FisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value ?? "0"),
+
+                            // Yeni Alanlar
+                            FiloAdi = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetName")?.Value ?? "",
+                            TagNr = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "",
+                            MotorSaati = int.Parse(tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "EngineHour")?.Value ?? "0"),
+                            Kilometre = int.Parse(tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Odometer")?.Value ?? "0"),
+                            SatisTuru = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "TxnType")?.Value ?? "0"),
+                            TabancaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "NozzleNr")?.Value ?? "0"),
+                            OdemeTuru = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PaymentType")?.Value ?? "0"),
+                            YazarKasaPlaka = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRPlate")?.Value ?? "",
+                            YazarKasaFisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ECRReceiptNr")?.Value ?? "0"),
+                            PuanKullanimi = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Redemption")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
+                            IndirimTutar = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "DiscountAmount")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
+                            KazanilanPuan = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "EarnedPoints")?.Value ?? "0"),
+                            KazanilanPara = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "EarnedMoney")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
+                            SadakatKartNo = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardNo")?.Value,
+                            SadakatKartTipi = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardType")?.Value ?? "0"),
+                            TamBirimFiyat = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FullUnitPrice")?.Value ?? "0") / 100m
+                        });
+                    }
+                }
+
+                // 2.a Tank Envanteri Parsing
+                var tankInventory = xdoc.Descendants().FirstOrDefault(x => x.Name.LocalName == "TankInventory");
+                if (tankInventory != null)
+                {
+                    foreach (var tank in tankInventory.Elements()) // loop <Tank>
+                    {
+                        // Basit XML okuma, hatalarda default değer
+                        int.TryParse(tank.Elements().FirstOrDefault(x => x.Name.LocalName == "TankNr")?.Value, out int tankNo);
+                        string tankAdi = tank.Elements().FirstOrDefault(x => x.Name.LocalName == "Product")?.Value ?? "";
+                        decimal.TryParse(tank.Elements().FirstOrDefault(x => x.Name.LocalName == "Volume")?.Value?.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal volume);
+                        
+                        // Ekstra alanlar varsa (Tahmini)
+                        decimal.TryParse(tank.Elements().FirstOrDefault(x => x.Name.LocalName == "OpeningVolume")?.Value?.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal openingVol);
+                        decimal.TryParse(tank.Elements().FirstOrDefault(x => x.Name.LocalName == "DailySale")?.Value?.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal saleVol);
+                        decimal.TryParse(tank.Elements().FirstOrDefault(x => x.Name.LocalName == "Delivery")?.Value?.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal deliveryVol);
+
+                        dto.TankEnvanterleri.Add(new CreateVardiyaTankEnvanteriDto
+                        {
+                            TankNo = tankNo,
+                            TankAdi = tankAdi,
+                             YakitTipi = tankAdi, // Genelde aynıdır
+                            BitisStok = volume,
+                            BaslangicStok = openingVol, // XML'de varsa
+                            SatilanMiktar = saleVol,     // XML'de varsa
+                            SevkiyatMiktar = deliveryVol // XML'de varsa
                         });
                     }
                 }
                 
-                _logger.LogInformation($"DTO Oluşturuldu: {dto.OtomasyonSatislar.Count} Otomasyon, {dto.FiloSatislar.Count} Filo satışı eklendi.");
+                _logger.LogInformation($"DTO Oluşturuldu: {dto.OtomasyonSatislar.Count} Otomasyon, {dto.FiloSatislar.Count} Filo, {dto.TankEnvanterleri.Count} Tank satışı eklendi.");
                 
                 // Genel Toplamı Hesapla (Otomasyon + Filo)
                 dto.GenelToplam = dto.OtomasyonSatislar.Sum(s => s.ToplamTutar) + dto.FiloSatislar.Sum(f => f.Tutar);

@@ -37,6 +37,18 @@ namespace IstasyonDemo.Api.Controllers
             return vardiya.IstasyonId == CurrentIstasyonId;
         }
 
+        private async Task<bool> IsVardiyaEditable(int vardiyaId)
+        {
+            var vardiya = await _context.Vardiyalar
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Id == vardiyaId);
+
+            if (vardiya == null) return false;
+
+            // Sadece ACIK veya REDDEDILDI durumundaki vardiyalar düzenlenebilir
+            return vardiya.Durum == VardiyaDurum.ACIK || vardiya.Durum == VardiyaDurum.REDDEDILDI;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll(int vardiyaId)
         {
@@ -92,6 +104,10 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> Create(int vardiyaId, CreatePusulaDto dto)
         {
             if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+            
+            // Vardiya Kapalı Kontrolü
+            if (!await IsVardiyaEditable(vardiyaId))
+                return BadRequest(new { message = "Bu vardiya onaylandığı veya silindiği için işlem yapılamaz." });
 
             var vardiya = await _context.Vardiyalar.FindAsync(vardiyaId);
             if (vardiya == null)
@@ -160,6 +176,10 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> Update(int vardiyaId, int id, UpdatePusulaDto dto)
         {
             if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
+            // Vardiya Kapalı Kontrolü
+            if (!await IsVardiyaEditable(vardiyaId))
+                return BadRequest(new { message = "Bu vardiya onaylandığı veya silindiği için işlem yapılamaz." });
 
             var pusula = await _context.Pusulalar
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
@@ -240,6 +260,10 @@ namespace IstasyonDemo.Api.Controllers
         public async Task<IActionResult> Delete(int vardiyaId, int id)
         {
             if (!await CheckVardiyaAccess(vardiyaId)) return Forbid();
+
+            // Vardiya Kapalı Kontrolü
+            if (!await IsVardiyaEditable(vardiyaId))
+                return BadRequest(new { message = "Bu vardiya onaylandığı veya silindiği için işlem yapılamaz." });
 
             var pusula = await _context.Pusulalar
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);

@@ -17,6 +17,22 @@ namespace IstasyonDemo.Api.Dtos
     
         // M-ODEM (Mobil Ödeme) Otomatik Takip İçin
         public List<MobilOdemeDto> MobilOdemeler { get; set; } = new();
+
+        // Tank Envanteri (XML'den okunan)
+        public List<CreateVardiyaTankEnvanteriDto> TankEnvanterleri { get; set; } = new();
+    }
+
+    public class CreateVardiyaTankEnvanteriDto
+    {
+        public int TankNo { get; set; }
+        public string TankAdi { get; set; } = string.Empty;
+        public string YakitTipi { get; set; } = string.Empty;
+        public decimal BaslangicStok { get; set; }
+        public decimal BitisStok { get; set; }
+        public decimal SatilanMiktar { get; set; }
+        public decimal SevkiyatMiktar { get; set; }
+        // Hesaplanan alanlar backend'de de hesaplanabilir ama XML'den geliyorsa alalım
+        // XML yapısını bilmiyorum, ama genelde raw data gelir.
     }
 
     public class MobilOdemeDto 
@@ -41,6 +57,24 @@ namespace IstasyonDemo.Api.Dtos
         public DateTime SatisTarihi { get; set; }
         public int? FisNo { get; set; }
         public string? Plaka { get; set; }
+
+        // New Fields from XML
+        public string FiloAdi { get; set; } = string.Empty; // FleetName
+        public string TagNr { get; set; } = string.Empty; // TagNr
+        public int MotorSaati { get; set; } // EngineHour
+        public int Kilometre { get; set; } // Odometer
+        public int SatisTuru { get; set; } // TxnType
+        public int TabancaNo { get; set; } // NozzleNr
+        public int OdemeTuru { get; set; } // PaymentType
+        public string YazarKasaPlaka { get; set; } = string.Empty; // ECRPlate
+        public int YazarKasaFisNo { get; set; } // ECRReceiptNr
+        public decimal PuanKullanimi { get; set; } // Redemption
+        public decimal IndirimTutar { get; set; } // DiscountAmount
+        public int KazanilanPuan { get; set; } // EarnedPoints
+        public decimal KazanilanPara { get; set; } // EarnedMoney
+        public string? SadakatKartNo { get; set; } // LoyaltyCardNo
+        public int SadakatKartTipi { get; set; } // LoyaltyCardType
+        public decimal TamBirimFiyat { get; set; } // FullUnitPrice
     }
 
     public class CreateFiloSatisDto
@@ -53,6 +87,24 @@ namespace IstasyonDemo.Api.Dtos
         public decimal Tutar { get; set; }
         public int PompaNo { get; set; }
         public int FisNo { get; set; }
+
+        // New Fields from XML
+        public string FiloAdi { get; set; } = string.Empty; // FleetName
+        public string TagNr { get; set; } = string.Empty; // TagNr
+        public int MotorSaati { get; set; } // EngineHour
+        public int Kilometre { get; set; } // Odometer
+        public int SatisTuru { get; set; } // TxnType
+        public int TabancaNo { get; set; } // NozzleNr
+        public int OdemeTuru { get; set; } // PaymentType
+        public string YazarKasaPlaka { get; set; } = string.Empty; // ECRPlate
+        public int YazarKasaFisNo { get; set; } // ECRReceiptNr
+        public decimal PuanKullanimi { get; set; } // Redemption
+        public decimal IndirimTutar { get; set; } // DiscountAmount
+        public int KazanilanPuan { get; set; } // EarnedPoints
+        public decimal KazanilanPara { get; set; } // EarnedMoney
+        public string? SadakatKartNo { get; set; } // LoyaltyCardNo
+        public int SadakatKartTipi { get; set; } // LoyaltyCardType
+        public decimal TamBirimFiyat { get; set; } // FullUnitPrice
     }
     public class OnayDto
     {

@@ -157,7 +157,8 @@ namespace IstasyonDemo.Api.Controllers
                             f.Litre,
                             f.Tutar,
                             f.PompaNo,
-                            f.FisNo
+                            f.FisNo,
+                            f.FiloAdi
                         }).ToList(),
                     Pusulalar = _context.Pusulalar
                         .Where(p => p.VardiyaId == id)
@@ -168,10 +169,24 @@ namespace IstasyonDemo.Api.Controllers
                             p.PersonelId,
                             p.Nakit,
                             p.KrediKarti,
-                            // ParoPuan ve MobilOdeme kaldırıldı
                             p.KrediKartiDetay,
                             p.Aciklama,
                             Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar)
+                        }).ToList(),
+                    TankEnvanterleri = _context.VardiyaTankEnvanterleri
+                        .Where(t => t.VardiyaId == id)
+                        .OrderBy(t => t.TankNo)
+                        .Select(t => new
+                        {
+                            t.TankNo,
+                            t.TankAdi,
+                            t.YakitTipi,
+                            t.BaslangicStok,
+                            t.BitisStok,
+                            t.SatilanMiktar,
+                            t.SevkiyatMiktar,
+                            t.BeklenenTuketim,
+                            t.FarkMiktar
                         }).ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -796,15 +811,17 @@ namespace IstasyonDemo.Api.Controllers
             Console.WriteLine($"⏱️ Filo özeti sorgusu: {stopwatch.ElapsedMilliseconds}ms");
 
             // 4. Filo detayları (gruplu)
+            // 4. Filo detayları (gruplu)
             var filoDetaylari = await _context.FiloSatislar
                 .AsNoTracking()
-                .Where(f => f.VardiyaId == id)
-                .GroupBy(f => f.FiloKodu)
+                .Where(f => f.VardiyaId == id && f.FiloAdi != "İSTASYON") // Exclude ISTASYON
+                .GroupBy(f => f.FiloKodu == "M-ODEM" ? "M-ODEM" : ((f.FiloAdi == null || f.FiloAdi == "") ? "OTOBIL" : f.FiloAdi)) // Empty -> OTOBIL, Keep M-ODEM
                 .Select(g => new
                 {
-                    FiloKodu = g.Key,
+                    FiloAdi = g.Key,
                     Tutar = g.Sum(f => f.Tutar),
-                    Litre = g.Sum(f => f.Litre)
+                    Litre = g.Sum(f => f.Litre),
+                    IslemSayisi = g.Count()
                 })
                 .ToListAsync();
 
@@ -821,7 +838,6 @@ namespace IstasyonDemo.Api.Controllers
                     p.PersonelId,
                     p.Nakit,
                     p.KrediKarti,
-                    // ParoPuan ve MobilOdeme kaldırıldı
                     p.KrediKartiDetay,
                     DigerOdemeler = p.DigerOdemeler.Select(d => new
                     {
