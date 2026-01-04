@@ -11,14 +11,14 @@ namespace IstasyonDemo.Api.Models
 
         public int CariKartId { get; set; }
         [ForeignKey("CariKartId")]
-        public virtual CariKart CariKart { get; set; }
+        public virtual CariKart? CariKart { get; set; }
 
         public DateTime Tarih { get; set; }
 
         // SATIS, TAHSILAT, ADE, VIRMAN
         [Required]
         [MaxLength(20)]
-        public string IslemTipi { get; set; }
+        public string IslemTipi { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Tutar { get; set; }

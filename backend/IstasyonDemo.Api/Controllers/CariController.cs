@@ -247,7 +247,7 @@ namespace IstasyonDemo.Api.Controllers
     {
         public int IstasyonId { get; set; }
         [Required]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
         public string? VergiDairesi { get; set; }
         public string? TckN_VKN { get; set; }
         public string? Telefon { get; set; }
@@ -260,7 +260,7 @@ namespace IstasyonDemo.Api.Controllers
     public class UpdateCariDto
     {
         [Required]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
         public string? VergiDairesi { get; set; }
         public string? TckN_VKN { get; set; }
         public string? Telefon { get; set; }

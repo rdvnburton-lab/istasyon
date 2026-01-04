@@ -6,7 +6,7 @@ namespace IstasyonDemo.Api.Models
     {
         public int Id { get; set; }
         public int VardiyaId { get; set; }
-        public virtual Vardiya Vardiya { get; set; }
+        public virtual Vardiya? Vardiya { get; set; }
 
         // Tank Bilgileri
         public int TankNo { get; set; }

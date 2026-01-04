@@ -46,7 +46,7 @@ try
 {
     // Google Credentials dosyasının yolu veya içeriği environment variable'dan alınabilir
     string credentialPath = builder.Configuration["Firebase:CredentialPath"] ?? "firebase-adminsdk.json";
-    string credentialContent = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIAL_JSON");
+    string? credentialContent = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIAL_JSON");
     
     if (!string.IsNullOrEmpty(credentialContent))
     {
@@ -83,9 +83,9 @@ try
                     var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(sanitized);
                     if (dict != null && dict.ContainsKey("private_key"))
                     {
-                        string pk = dict["private_key"].ToString();
+                        string? pk = dict["private_key"]?.ToString();
                         // Literal " \n " stringini gerçek newline karakterine çevir
-                        if (pk.Contains("\\n"))
+                        if (pk != null && pk.Contains("\\n"))
                         {
                             pk = pk.Replace("\\n", "\n");
                             dict["private_key"] = pk;

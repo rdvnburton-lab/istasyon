@@ -175,7 +175,7 @@ public class FileTransferController : BaseController
     public async Task<IActionResult> ProcessFile(int id)
     {
         var file = await _context.OtomatikDosyalar
-            .Include(f => f.Istasyon).ThenInclude(i => i.Firma)
+            .Include(f => f.Istasyon).ThenInclude(i => i!.Firma)
             .FirstOrDefaultAsync(f => f.Id == id);
             
         if (file == null) return NotFound("Dosya bulunamadı.");
@@ -292,7 +292,7 @@ public class FileTransferController : BaseController
     public async Task<IActionResult> GetFileContent(int id)
     {
         var file = await _context.OtomatikDosyalar
-            .Include(f => f.Istasyon).ThenInclude(i => i.Firma)
+            .Include(f => f.Istasyon).ThenInclude(i => i!.Firma)
             .FirstOrDefaultAsync(f => f.Id == id);
             
         if (file == null) return NotFound();
@@ -352,7 +352,7 @@ public class FileTransferController : BaseController
     public async Task<IActionResult> MarkAsProcessed(int id)
     {
         var file = await _context.OtomatikDosyalar
-            .Include(f => f.Istasyon).ThenInclude(i => i.Firma)
+            .Include(f => f.Istasyon).ThenInclude(i => i!.Firma)
             .FirstOrDefaultAsync(f => f.Id == id);
             
         if (file == null) return NotFound();

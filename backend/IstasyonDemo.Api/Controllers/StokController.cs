@@ -394,7 +394,7 @@ namespace IstasyonDemo.Api.Controllers
                 .Include(s => s.Vardiya)
                 .Where(s => s.Vardiya != null && s.Vardiya.Durum == VardiyaDurum.ONAYLANDI)
                 .Where(s => s.Vardiya!.BaslangicTarihi >= startDate && s.Vardiya.BaslangicTarihi < endDate)
-                .Where(s => s.YakitTuru.ToUpper().Contains("LPG") || s.YakitTuru.ToUpper().Contains("OTOGAZ"))
+                .Where(s => !string.IsNullOrEmpty(s.YakitTuru) && (s.YakitTuru.ToUpper().Contains("LPG") || s.YakitTuru.ToUpper().Contains("OTOGAZ")))
                 .SumAsync(s => s.Litre);
 
             var manuelOzet = new List<object>();

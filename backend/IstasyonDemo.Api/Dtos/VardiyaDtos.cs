@@ -127,7 +127,7 @@ namespace IstasyonDemo.Api.Dtos
 
     public class MutabakatViewModel
     {
-        public object Vardiya { get; set; }
+        public object Vardiya { get; set; } = new object();
         public List<PersonelMutabakatOzetDto> PersonelOzetler { get; set; } = new();
         public FiloMutabakatOzetDto? FiloOzet { get; set; }
         public List<FiloMutabakatDetayDto> FiloDetaylari { get; set; } = new();

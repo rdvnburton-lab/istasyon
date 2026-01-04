@@ -5,12 +5,12 @@ namespace IstasyonDemo.Api.Dtos.Reports
 {
     public class MutabakatDto
     {
-        public MutabakatVardiyaDto Vardiya { get; set; }
-        public List<MutabakatPersonelOzetDto> PersonelOzetler { get; set; }
-        public MutabakatFiloOzetDto FiloOzet { get; set; }
-        public List<MutabakatFiloDetayDto> FiloDetaylari { get; set; }
-        public List<MutabakatPusulaDto> Pusulalar { get; set; }
-        public List<PompaGider> Giderler { get; set; }
+        public MutabakatVardiyaDto Vardiya { get; set; } = new();
+        public List<MutabakatPersonelOzetDto> PersonelOzetler { get; set; } = new();
+        public MutabakatFiloOzetDto? FiloOzet { get; set; }
+        public List<MutabakatFiloDetayDto> FiloDetaylari { get; set; } = new();
+        public List<MutabakatPusulaDto> Pusulalar { get; set; } = new();
+        public List<PompaGider> Giderler { get; set; } = new();
     }
 
     public class MutabakatVardiyaDto
@@ -19,7 +19,7 @@ namespace IstasyonDemo.Api.Dtos.Reports
         public int IstasyonId { get; set; }
         public DateTime BaslangicTarihi { get; set; }
         public DateTime? BitisTarihi { get; set; }
-        public string Durum { get; set; }
+        public string Durum { get; set; } = string.Empty;
         public decimal PompaToplam { get; set; }
         public decimal MarketToplam { get; set; }
         public decimal GenelToplam { get; set; }
@@ -30,7 +30,7 @@ namespace IstasyonDemo.Api.Dtos.Reports
 
     public class MutabakatPersonelOzetDto
     {
-        public string PersonelAdi { get; set; }
+        public string PersonelAdi { get; set; } = string.Empty;
         public int? PersonelId { get; set; }
         public decimal ToplamLitre { get; set; }
         public decimal ToplamTutar { get; set; }
@@ -46,7 +46,7 @@ namespace IstasyonDemo.Api.Dtos.Reports
 
     public class MutabakatFiloDetayDto
     {
-        public string FiloKodu { get; set; }
+        public string FiloKodu { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public decimal Litre { get; set; }
     }
@@ -54,7 +54,7 @@ namespace IstasyonDemo.Api.Dtos.Reports
     public class MutabakatPusulaDto
     {
         public int Id { get; set; }
-        public string PersonelAdi { get; set; }
+        public string PersonelAdi { get; set; } = string.Empty;
         public int? PersonelId { get; set; }
         public decimal Nakit { get; set; }
         public decimal KrediKarti { get; set; }

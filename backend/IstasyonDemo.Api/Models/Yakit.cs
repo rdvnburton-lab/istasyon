@@ -9,10 +9,10 @@ namespace IstasyonDemo.Api.Models
 
         [Required]
         [MaxLength(50)]
-        public string Ad { get; set; } // Örn: Motorin, Benzin
+        public string Ad { get; set; } = string.Empty; // Örn: Motorin, Benzin
 
         [MaxLength(100)]
-        public string OtomasyonUrunAdi { get; set; } // Örn: "MOTORIN", "DIZEL" (Eşleşme için)
+        public string OtomasyonUrunAdi { get; set; } = string.Empty; // Örn: "MOTORIN", "DIZEL" (Eşleşme için)
 
         [MaxLength(20)]
         public string Renk { get; set; } = "#3b82f6"; // UI rengi

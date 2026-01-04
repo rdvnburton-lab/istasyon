@@ -6,16 +6,16 @@ namespace IstasyonDemo.Api.Dtos
     {
         public Guid Id { get; set; }
         public DateTime Tarih { get; set; }
-        public string FaturaNo { get; set; }
+        public string FaturaNo { get; set; } = string.Empty;
         public int YakitId { get; set; }
-        public string YakitAd { get; set; } // Flattened from Yakit.Ad
-        public string YakitRenk { get; set; } // Flattened from Yakit.Renk
+        public string YakitAd { get; set; } = string.Empty;
+        public string YakitRenk { get; set; } = string.Empty;
         public decimal Litre { get; set; }
         public decimal BirimFiyat { get; set; }
         public decimal ToplamTutar { get; set; }
-        public string Kaydeden { get; set; }
-        public string GelisYontemi { get; set; }
-        public string Plaka { get; set; }
+        public string Kaydeden { get; set; } = string.Empty;
+        public string? GelisYontemi { get; set; }
+        public string? Plaka { get; set; }
         public DateTime? UrunGirisTarihi { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -27,7 +27,7 @@ namespace IstasyonDemo.Api.Dtos
 
         [Required]
         [MaxLength(50)]
-        public string FaturaNo { get; set; }
+        public string FaturaNo { get; set; } = string.Empty;
 
         [Required]
         public int YakitId { get; set; }
@@ -44,8 +44,8 @@ namespace IstasyonDemo.Api.Dtos
     public class TankStokOzetDto
     {
         public int YakitId { get; set; }
-        public string YakitTuru { get; set; }
-        public string Renk { get; set; }
+        public string YakitTuru { get; set; } = string.Empty;
+        public string Renk { get; set; } = string.Empty;
         public decimal GecenAyDevir { get; set; }
         public decimal BuAyGiris { get; set; }
         public decimal BuAySatis { get; set; }
@@ -73,7 +73,7 @@ namespace IstasyonDemo.Api.Dtos
 
         [Required]
         [MaxLength(50)]
-        public string FaturaNo { get; set; }
+        public string FaturaNo { get; set; } = string.Empty;
         
         public string? Kaydeden { get; set; }
         public string? GelisYontemi { get; set; }
@@ -81,19 +81,19 @@ namespace IstasyonDemo.Api.Dtos
         public DateTime? UrunGirisTarihi { get; set; }
 
         [Required]
-        public List<CreateTankGirisItemDto> Kalemler { get; set; }
+        public List<CreateTankGirisItemDto> Kalemler { get; set; } = new();
     }
 
     public class StokGirisFisDto
     {
-        public string FaturaNo { get; set; }
+        public string FaturaNo { get; set; } = string.Empty;
         public DateTime Tarih { get; set; }
         public decimal ToplamTutar { get; set; }
-        public string Kaydeden { get; set; }
-        public string GelisYontemi { get; set; }
-        public string Plaka { get; set; }
+        public string Kaydeden { get; set; } = string.Empty;
+        public string? GelisYontemi { get; set; }
+        public string? Plaka { get; set; }
         public DateTime? UrunGirisTarihi { get; set; }
         public decimal ToplamLitre { get; set; }
-        public List<TankGirisDto> Kalemler { get; set; }
+        public List<TankGirisDto> Kalemler { get; set; } = new();
     }
 }

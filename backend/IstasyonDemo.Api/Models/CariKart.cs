@@ -15,7 +15,7 @@ namespace IstasyonDemo.Api.Models
 
         [Required]
         [MaxLength(200)]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
 
         [MaxLength(50)]
         public string? VergiDairesi { get; set; }

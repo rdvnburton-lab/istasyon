@@ -13,12 +13,12 @@ namespace IstasyonDemo.Api.Models
 
         [Required]
         [MaxLength(50)]
-        public string FaturaNo { get; set; }
+        public string FaturaNo { get; set; } = string.Empty;
 
         public int YakitId { get; set; }
 
         [ForeignKey("YakitId")]
-        public Yakit Yakit { get; set; }
+        public Yakit? Yakit { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Litre { get; set; }
@@ -30,13 +30,13 @@ namespace IstasyonDemo.Api.Models
         public decimal ToplamTutar { get; set; }
 
         [MaxLength(100)]
-        public string Kaydeden { get; set; } // Username
+        public string Kaydeden { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string GelisYontemi { get; set; }
+        public string? GelisYontemi { get; set; }
 
         [MaxLength(20)]
-        public string Plaka { get; set; }
+        public string? Plaka { get; set; }
 
         public DateTime? UrunGirisTarihi { get; set; }
 

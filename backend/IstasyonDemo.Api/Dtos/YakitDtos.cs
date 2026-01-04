@@ -5,9 +5,9 @@ namespace IstasyonDemo.Api.Dtos
     public class YakitDto
     {
         public int Id { get; set; }
-        public string Ad { get; set; }
-        public string OtomasyonUrunAdi { get; set; }
-        public string Renk { get; set; }
+        public string Ad { get; set; } = string.Empty;
+        public string OtomasyonUrunAdi { get; set; } = string.Empty;
+        public string Renk { get; set; } = string.Empty;
         public int Sira { get; set; }
     }
 
@@ -15,10 +15,10 @@ namespace IstasyonDemo.Api.Dtos
     {
         [Required]
         [MaxLength(50)]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string OtomasyonUrunAdi { get; set; } // "MOTORIN,DIZEL"
+        public string OtomasyonUrunAdi { get; set; } = string.Empty;
 
         [MaxLength(20)]
         public string Renk { get; set; } = "#3b82f6";
@@ -30,13 +30,13 @@ namespace IstasyonDemo.Api.Dtos
     {
         [Required]
         [MaxLength(50)]
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string OtomasyonUrunAdi { get; set; }
+        public string OtomasyonUrunAdi { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string Renk { get; set; }
+        public string Renk { get; set; } = string.Empty;
 
         public int Sira { get; set; }
     }

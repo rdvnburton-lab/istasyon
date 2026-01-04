@@ -3,8 +3,6 @@ using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -344,7 +342,7 @@ namespace IstasyonDemo.Api.Services
                 {
                     var vardiyaSorumlulari = await _context.Users
                         .Include(u => u.Role)
-                        .Where(u => u.IstasyonId == vardiya.IstasyonId && 
+                        .Where(u => u.IstasyonId == vardiya.IstasyonId && u.Role != null &&
                                    (u.Role.Ad == "Vardiya Sorumlusu" || u.Role.Ad == "vardiya_sorumlusu"))
                         .ToListAsync();
 
@@ -404,9 +402,9 @@ namespace IstasyonDemo.Api.Services
         {
             var vardiya = await _context.Vardiyalar
                 .Include(v => v.Istasyon)
-                .ThenInclude(i => i.Firma)
+                .ThenInclude(i => i!.Firma)
                 .Include(v => v.Istasyon)
-                .ThenInclude(i => i.Firma)
+                .ThenInclude(i => i!.Firma)
                 // Removed heavy Includes (OtomasyonSatislar, FiloSatislar) for performance
                 // Optimized: Only load Pusulalar for logic, others via aggregation
                 .Include(v => v.Pusulalar)

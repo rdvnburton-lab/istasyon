@@ -21,7 +21,7 @@ namespace IstasyonDemo.Api.Filters
         {
             var user = context.HttpContext.User;
 
-            if (!user.Identity.IsAuthenticated)
+            if (user.Identity?.IsAuthenticated != true)
             {
                 context.Result = new UnauthorizedResult();
                 return;
@@ -43,7 +43,7 @@ namespace IstasyonDemo.Api.Filters
             // Rolün yetkilerini kontrol et
             // Performans için cache mekanizması eklenebilir ama şimdilik doğrudan DB sorgusu
             var hasPermission = await _context.RolePermissions
-                .AnyAsync(rp => rp.Role.Ad == roleClaim && rp.ResourceKey == _resourceKey);
+                .AnyAsync(rp => rp.Role != null && rp.Role.Ad == roleClaim && rp.ResourceKey == _resourceKey);
 
             if (!hasPermission)
             {
