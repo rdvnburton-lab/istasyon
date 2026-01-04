@@ -70,6 +70,13 @@ export class AppMenuService {
                         visible: hasAccess('VARDIYA_MARKET')
                     },
                     {
+                        label: 'Cari Yönetimi',
+                        data: { shortLabel: 'Cari' },
+                        icon: 'pi pi-fw pi-users',
+                        routerLink: ['/operasyon/cari'],
+                        visible: true // Geçici olarak herkese açık
+                    },
+                    {
                         label: 'Yakıt Stok Yönetimi',
                         data: { shortLabel: 'Stok' },
                         icon: 'pi pi-fw pi-filter-fill',

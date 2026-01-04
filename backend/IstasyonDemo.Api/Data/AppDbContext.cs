@@ -31,12 +31,15 @@ namespace IstasyonDemo.Api.Data
         public DbSet<SystemDefinition> SystemDefinitions { get; set; }
         public DbSet<PompaGider> PompaGiderler { get; set; }
         public DbSet<PusulaDigerOdeme> PusulaDigerOdemeleri { get; set; }
+        public DbSet<PusulaVeresiye> PusulaVeresiyeler { get; set; }
         public DbSet<AylikStokOzeti> AylikStokOzetleri { get; set; }
         public DbSet<FaturaStokTakip> FaturaStokTakipleri { get; set; }
         public DbSet<IstasyonAyarlari> IstasyonAyarlari { get; set; }
         public DbSet<VardiyaXmlLog> VardiyaXmlLoglari { get; set; }
         public DbSet<DosyaYuklemeAyarlari> DosyaYuklemeAyarlari { get; set; }
         public DbSet<VardiyaTankEnvanteri> VardiyaTankEnvanterleri { get; set; }
+        public DbSet<CariKart> CariKartlar { get; set; }
+        public DbSet<CariHareket> CariHareketler { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -71,6 +74,18 @@ namespace IstasyonDemo.Api.Data
                 .HasForeignKey(pk => pk.PusulaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<PusulaVeresiye>()
+                .HasOne(pv => pv.Pusula)
+                .WithMany(p => p.Veresiyeler)
+                .HasForeignKey(pv => pv.PusulaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PusulaVeresiye>()
+                .HasOne(pv => pv.CariKart)
+                .WithMany()
+                .HasForeignKey(pv => pv.CariKartId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<PompaGider>()
                 .HasOne(g => g.Vardiya)
                 .WithMany(v => v.Giderler)
@@ -81,6 +96,22 @@ namespace IstasyonDemo.Api.Data
                 .HasOne(t => t.Vardiya)
                 .WithMany()
                 .HasForeignKey(t => t.VardiyaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Cari Kart ve Hareket İlişkileri
+            modelBuilder.Entity<CariKart>()
+                .HasOne(c => c.Istasyon)
+                .WithMany()
+                .HasForeignKey(c => c.IstasyonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CariHareket>()
+                .HasOne(h => h.CariKart)
+                .WithMany() // CariKart.Hareketler koleksiyonu varsa WithMany(c => c.Hareketler) diyebiliriz ama modelde ICollection tanımladıysak otomatik görür.
+                            // CariKart modeline bakarsak: 'Relations' yorum satırı altında ICollection yoktu ama ben sonradan modele bakınca olmadığını görüyorum.
+                            // Wait, step 4175 overwrote it WITHOUT ICollection.
+                            // So WithMany() is correct (uni-directional or implicit).
+                .HasForeignKey(h => h.CariKartId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // PERFORMANCE INDEXES

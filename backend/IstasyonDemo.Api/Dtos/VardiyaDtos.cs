@@ -84,6 +84,7 @@ namespace IstasyonDemo.Api.Dtos
         public string Plaka { get; set; } = string.Empty;
         public string YakitTuru { get; set; } = string.Empty;
         public decimal Litre { get; set; }
+        public decimal BirimFiyat { get; set; }
         public decimal Tutar { get; set; }
         public int PompaNo { get; set; }
         public int FisNo { get; set; }
@@ -178,18 +179,12 @@ namespace IstasyonDemo.Api.Dtos
         public decimal Nakit { get; set; }
         public decimal KrediKarti { get; set; }
         public string? KrediKartiDetay { get; set; } // JSON String
-        public List<PusulaDigerOdemelerDto> DigerOdemeler { get; set; } = new();
+        public List<PusulaDigerOdemeDto> DigerOdemeler { get; set; } = new();
+        public List<PusulaVeresiyeDto> Veresiyeler { get; set; } = new();
         public string? Aciklama { get; set; }
         public decimal Toplam { get; set; }
     }
 
-    public class PusulaDigerOdemelerDto
-    {
-        public string TurKodu { get; set; } = string.Empty;
-        public string TurAdi { get; set; } = string.Empty;
-        public decimal Tutar { get; set; }
-        public bool Silinemez { get; set; }
-    }
 
     public class GiderMutabakatDto
     {
@@ -197,5 +192,19 @@ namespace IstasyonDemo.Api.Dtos
         public string GiderTuru { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public string? Aciklama { get; set; }
+    }
+    public class VardiyaSummaryDto
+    {
+        public int Id { get; set; }
+        public int IstasyonId { get; set; }
+        public DateTime BaslangicTarihi { get; set; }
+        public DateTime? BitisTarihi { get; set; }
+        public int Durum { get; set; }
+        public decimal PompaToplam { get; set; }
+        public decimal MarketToplam { get; set; }
+        public decimal GenelToplam { get; set; }
+        public DateTime OlusturmaTarihi { get; set; }
+        public string? DosyaAdi { get; set; }
+        public string? RedNedeni { get; set; }
     }
 }

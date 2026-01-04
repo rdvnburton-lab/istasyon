@@ -511,3 +511,36 @@ export interface VardiyaTankEnvanteri {
     kayitTarihi: Date;
 }
 
+
+// ==========================================
+// CARI YONETIMI (VERESIYE)
+// ==========================================
+
+export interface CariKart {
+    id: number;
+    istasyonId: number;
+    ad: string;
+    vergiDairesi?: string;
+    tckN_VKN?: string;
+    telefon?: string;
+    email?: string;
+    adres?: string;
+    bakiye: number;     // (+) Borçlu (Bize borcu var)
+    limit: number;      // Kredi limiti
+    aktif: boolean;
+    kod?: string;       // Muhasebe/Otomasyon kodu
+    olusturmaTarihi: Date;
+    guncellemeTarihi?: Date;
+}
+
+export interface CariHareket {
+    id: number;
+    cariKartId: number;
+    tarih: Date;
+    islemTipi: 'SATIS' | 'TAHSILAT' | 'ADE' | 'VIRMAN';
+    tutar: number;
+    aciklama?: string;
+    belgeNo?: string;
+    vardiyaId?: number;
+    olusturanId: number;
+}

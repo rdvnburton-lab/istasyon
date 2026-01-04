@@ -33,6 +33,7 @@ builder.Services.AddHttpClient<IstasyonDemo.Api.Services.GeminiService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IVardiyaService, VardiyaService>();
+builder.Services.AddScoped<IVardiyaFinancialService, VardiyaFinancialService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFcmService, FcmService>();

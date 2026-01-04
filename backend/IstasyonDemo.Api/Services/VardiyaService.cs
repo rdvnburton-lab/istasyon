@@ -20,13 +20,15 @@ namespace IstasyonDemo.Api.Services
         private readonly ILogger<VardiyaService> _logger;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
+        private readonly IVardiyaFinancialService _financialService;
 
-        public VardiyaService(AppDbContext context, ILogger<VardiyaService> logger, IMapper mapper, INotificationService notificationService)
+        public VardiyaService(AppDbContext context, ILogger<VardiyaService> logger, IMapper mapper, INotificationService notificationService, IVardiyaFinancialService financialService)
         {
             _context = context;
             _logger = logger;
             _mapper = mapper;
             _notificationService = notificationService;
+            _financialService = financialService;
         }
 
         public async Task<Vardiya> CreateVardiyaAsync(CreateVardiyaDto dto, int userId, string? userRole, string? userName)
@@ -615,6 +617,9 @@ namespace IstasyonDemo.Api.Services
             vardiya.OnaylayanAdi = dto.OnaylayanAdi;
             vardiya.OnayTarihi = DateTime.UtcNow;
             vardiya.GuncellemeTarihi = DateTime.UtcNow;
+
+            // Finansal İşlemleri Tetikle (Veresiye varsa Cari Hareket oluştur)
+            await _financialService.ProcessVardiyaApproval(vardiya.Id, dto.OnaylayanId);
 
             await _context.SaveChangesAsync();
             
@@ -1343,7 +1348,8 @@ namespace IstasyonDemo.Api.Services
             // 5. Pusulalar
             var pusulalar = await _context.Pusulalar
                 .AsNoTracking()
-                .Include(p => p.DigerOdemeler) // Explicit Include
+                .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
                 .Where(p => p.VardiyaId == vardiyaId)
                 .Select(p => new PusulaMutabakatDto
                 {
@@ -1353,17 +1359,34 @@ namespace IstasyonDemo.Api.Services
                     Nakit = p.Nakit,
                     KrediKarti = p.KrediKarti,
                     KrediKartiDetay = p.KrediKartiDetay,
-                    DigerOdemeler = p.DigerOdemeler.Select(d => new PusulaDigerOdemelerDto
+                    DigerOdemeler = p.DigerOdemeler.Select(d => new PusulaDigerOdemeDto
                     {
                         TurKodu = d.TurKodu,
                         TurAdi = d.TurAdi,
                         Tutar = d.Tutar,
                         Silinemez = d.Silinemez
                     }).ToList(),
+                    Veresiyeler = p.Veresiyeler.Select(v => new PusulaVeresiyeDto
+                    {
+                        CariKartId = v.CariKartId,
+                        CariAd = v.CariKart.Ad,
+                        Plaka = v.Plaka,
+                        Litre = v.Litre,
+                        Tutar = v.Tutar,
+                        Aciklama = v.Aciklama
+                    }).ToList(),
                     Aciklama = p.Aciklama,
-                    Toplam = p.Toplam
+                    Toplam = 0 // Will be calculated after loading
                 })
                 .ToListAsync();
+
+            // Calculate Toplam after loading to ensure accuracy with navigation properties
+            foreach (var p in pusulalar)
+            {
+                p.Toplam = p.Nakit + p.KrediKarti + 
+                           p.DigerOdemeler.Sum(d => d.Tutar) +
+                           p.Veresiyeler.Sum(v => v.Tutar);
+            }
 
             // 6. Giderler
             var giderler = await _context.PompaGiderler
@@ -1483,7 +1506,7 @@ namespace IstasyonDemo.Api.Services
                              }
                              else
                              {
-                                 pusula.DigerOdemeler.Add(new PusulaDigerOdemelerDto
+                                 pusula.DigerOdemeler.Add(new PusulaDigerOdemeDto
                                  {
                                      TurKodu = "MOBIL_ODEME",
                                      TurAdi = "Mobil Ödeme",
@@ -1526,7 +1549,7 @@ namespace IstasyonDemo.Api.Services
                     // Eğer DB'de yoksa, dinamik olarak ekle
                     if (!alreadyPersisted)
                     {
-                         pusula.DigerOdemeler.Add(new PusulaDigerOdemelerDto
+                         pusula.DigerOdemeler.Add(new PusulaDigerOdemeDto
                          {
                              TurKodu = "POMPA_PARO_PUAN",
                              TurAdi = "Pompa Paro Puan",

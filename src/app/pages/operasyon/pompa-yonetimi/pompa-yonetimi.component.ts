@@ -25,8 +25,9 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { VardiyaApiService } from '../services/vardiya-api.service';
 import { PersonelApiService } from '../services/personel-api.service';
+import { CariKart } from '../models/vardiya.model';
 
-import { PusulaApiService, Pusula, KrediKartiDetay } from '../../../services/pusula-api.service';
+import { PusulaApiService, Pusula, KrediKartiDetay, Veresiye } from '../../../services/pusula-api.service';
 import { DefinitionsService, DefinitionType } from '../../../services/definitions.service';
 
 interface PersonelOtomasyonOzet {
@@ -117,6 +118,11 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     yeniDigerOdeme: any = { tur: null, tutar: 0 };
     digerOdemeDialogVisible = false;
 
+    // Veresiye / Cari
+    cariList: CariKart[] = [];
+    selectedCari: CariKart | null = null;
+    yeniVeresiye: Veresiye = { cariKartId: 0, litre: 0, tutar: 0, aciklama: '' };
+
     // Önizleme
     onizlemeDialogVisible = false;
     onizlemeData: any = null;
@@ -189,6 +195,17 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         });
     }
 
+    loadCariler(istasyonId: number) {
+        this.vardiyaApiService.getCariKartlar(istasyonId).subscribe({
+            next: (data) => {
+                this.cariList = data;
+            },
+            error: (err) => {
+                console.error('Cari listesi yüklenemedi:', err);
+            }
+        });
+    }
+
     ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
     }
@@ -207,6 +224,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
                 // Vardiya bilgilerini al
                 this.vardiya = data.vardiya;
+                this.loadCariler(this.vardiya.istasyonId); // Carileri Yükle
                 this.otomasyonToplam = data.vardiya.genelToplam;
 
                 // Personel özetleri (Backend'den M-ODEM eklenmiş olarak gelebilir)
@@ -248,6 +266,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                         krediKarti: p.krediKarti,
                         krediKartiDetay: p.krediKartiDetay ? (typeof p.krediKartiDetay === 'string' ? JSON.parse(p.krediKartiDetay) : p.krediKartiDetay) : [],
                         digerOdemeler: mappedDigerOdemeler,
+                        veresiyeler: p.veresiyeler || [],
                         aciklama: p.aciklama,
                         toplam: p.toplam
                     };
@@ -312,6 +331,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
             this.pusulaForm = {
                 ...mevcutPusula,
                 digerOdemeler: [...(mevcutPusula.digerOdemeler || [])],
+                veresiyeler: [...(mevcutPusula.veresiyeler || [])],
                 krediKartiDetay: [...(mevcutPusula.krediKartiDetay || [])]
             };
         } else {
@@ -326,9 +346,10 @@ export class PompaYonetimi implements OnInit, OnDestroy {
     getPusulaFormToplam(): number {
         if (!this.pusulaForm) return 0;
         const digerToplam = this.pusulaForm.digerOdemeler?.reduce((sum, d) => sum + (d.tutar || 0), 0) || 0;
+        const veresiyeToplam = this.pusulaForm.veresiyeler?.reduce((sum, v) => sum + (v.tutar || 0), 0) || 0;
         return (this.pusulaForm.nakit || 0) +
             (this.pusulaForm.krediKarti || 0) +
-            digerToplam;
+            digerToplam + veresiyeToplam;
     }
 
     // Diğer Ödeme İşlemleri
@@ -380,6 +401,38 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
     getDigerOdemeToplam(): number {
         return this.pusulaForm.digerOdemeler?.reduce((sum, item) => sum + (item.tutar || 0), 0) || 0;
+    }
+
+    getVeresiyeToplam(): number {
+        return this.pusulaForm.veresiyeler?.reduce((sum, item) => sum + (item.tutar || 0), 0) || 0;
+    }
+
+    veresiyeEkle() {
+        if (!this.selectedCari || this.yeniVeresiye.litre <= 0 || this.yeniVeresiye.tutar <= 0) {
+            this.messageService.add({ severity: 'warn', summary: 'Uyarı', detail: 'Lütfen cari seçin ve geçerli değerler girin.' });
+            return;
+        }
+
+        if (!this.pusulaForm.veresiyeler) {
+            this.pusulaForm.veresiyeler = [];
+        }
+
+        this.pusulaForm.veresiyeler.push({
+            cariKartId: this.selectedCari.id!,
+            cariAd: this.selectedCari.ad,
+            plaka: this.yeniVeresiye.plaka || '',
+            litre: this.yeniVeresiye.litre,
+            tutar: this.yeniVeresiye.tutar,
+            aciklama: this.yeniVeresiye.aciklama
+        });
+
+        // Reset
+        this.yeniVeresiye = { cariKartId: 0, litre: 0, tutar: 0, aciklama: '' };
+        this.selectedCari = null;
+    }
+
+    veresiyeSil(index: number) {
+        this.pusulaForm.veresiyeler?.splice(index, 1);
     }
 
     getPusulaFormFark(): number {
@@ -612,7 +665,8 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         if (!pusula) return 0;
 
         const digerToplam = pusula.digerOdemeler?.reduce((sum, d) => sum + (d.tutar || 0), 0) || 0;
-        return (pusula.nakit || 0) + (pusula.krediKarti || 0) + digerToplam;
+        const veresiyeToplam = pusula.veresiyeler?.reduce((sum, v) => sum + (v.tutar || 0), 0) || 0;
+        return (pusula.nakit || 0) + (pusula.krediKarti || 0) + digerToplam + veresiyeToplam;
     }
 
     getPusulaFark(personelAdi: string, otomasyonTutar: number): number {
@@ -635,6 +689,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
 
             krediKartiDetay: [],
             digerOdemeler: [],
+            veresiyeler: [],
             aciklama: ''
         };
     }

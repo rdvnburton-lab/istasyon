@@ -41,10 +41,12 @@ namespace IstasyonDemo.Api.Models
         
         // Computed property
         [NotMapped]
-        public decimal Toplam => Nakit + KrediKarti + (DigerOdemeler?.Sum(x => x.Tutar) ?? 0);
+        public decimal Toplam => Nakit + KrediKarti + (DigerOdemeler?.Sum(x => x.Tutar) ?? 0) + (Veresiyeler?.Sum(x => x.Tutar) ?? 0);
 
         public ICollection<PusulaKrediKartiDetay> KrediKartiDetaylari { get; set; } = new List<PusulaKrediKartiDetay>();
         
         public ICollection<PusulaDigerOdeme> DigerOdemeler { get; set; } = new List<PusulaDigerOdeme>();
+        
+        public ICollection<PusulaVeresiye> Veresiyeler { get; set; } = new List<PusulaVeresiye>();
     }
 }

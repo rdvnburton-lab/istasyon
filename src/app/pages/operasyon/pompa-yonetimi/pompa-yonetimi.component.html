@@ -543,6 +543,48 @@
                                 </div>
                             </div>
 
+                            <!-- Veresiye / Cari Satış Ekleme -->
+                            <div
+                                class="mt-4 p-4 rounded-2xl border border-orange-100 bg-orange-50/20 dark:bg-orange-900/10">
+                                <label
+                                    class="flex items-center gap-2 text-xs font-bold mb-3 text-orange-600 uppercase tracking-wider">
+                                    <i class="pi pi-briefcase"></i> Veresiye / Cari Satış Ekle
+                                </label>
+
+                                <div class="grid grid-cols-12 gap-2">
+                                    <div class="col-span-4">
+                                        <p-select [options]="cariList" [(ngModel)]="selectedCari" optionLabel="ad"
+                                            placeholder="Cari Seçin" styleClass="w-full !rounded-xl text-xs"
+                                            appendTo="body" [filter]="true" filterBy="ad"></p-select>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <input pInputText [(ngModel)]="yeniVeresiye.plaka" placeholder="Plaka"
+                                            class="w-full !rounded-xl text-xs font-bold uppercase p-3" />
+                                    </div>
+                                    <div class="col-span-2">
+                                        <p-inputNumber [(ngModel)]="yeniVeresiye.litre" mode="decimal"
+                                            [minFractionDigits]="2" locale="tr-TR" placeholder="Litre"
+                                            styleClass="w-full !rounded-xl"
+                                            inputStyleClass="w-full !rounded-xl font-bold text-xs"></p-inputNumber>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <p-inputNumber [(ngModel)]="yeniVeresiye.tutar" mode="currency" currency="TRY"
+                                            locale="tr-TR" placeholder="Tutar" styleClass="w-full !rounded-xl"
+                                            inputStyleClass="w-full !rounded-xl font-bold text-xs"></p-inputNumber>
+                                    </div>
+                                    <div class="col-span-1">
+                                        <button pButton icon="pi pi-plus"
+                                            class="p-button-warning w-full !rounded-xl h-full shadow-md"
+                                            (click)="veresiyeEkle()"></button>
+                                    </div>
+                                    <!-- Açıklama satırı -->
+                                    <div class="col-span-12 mt-2">
+                                        <input pInputText [(ngModel)]="yeniVeresiye.aciklama"
+                                            placeholder="Açıklama (Opsiyonel)" class="w-full !rounded-xl text-xs p-2" />
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Açıklama -->
                             <div class="mt-4 p-3 rounded-xl border border-[var(--surface-border)]">
                                 <label class="flex items-center gap-2 text-xs font-bold mb-2">
@@ -597,6 +639,41 @@
                                                 <span class="font-bold text-indigo-600 text-[11px]">{{ item.tutar |
                                                     number:'1.2-2' }} ₺</span>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Veresiye Listesi Özet -->
+                                    <div class="mt-3 pt-3 border-t border-[var(--surface-border)]"
+                                        *ngIf="pusulaForm.veresiyeler?.length">
+                                        <div
+                                            class="text-[10px] font-bold text-orange-600 mb-2 uppercase tracking-tighter">
+                                            Veresiye / Cari Satış</div>
+                                        <div class="space-y-1 max-h-48 overflow-y-auto pr-1">
+                                            <div *ngFor="let item of pusulaForm.veresiyeler; let i = index"
+                                                class="flex justify-between items-center py-1.5 px-2 bg-white dark:bg-surface-900 rounded-lg group animate-fade-in">
+                                                <div class="flex flex-col gap-1 w-full relative">
+                                                    <div class="flex justify-between items-center">
+                                                        <div class="flex items-center gap-2">
+                                                            <button pButton icon="pi pi-times"
+                                                                class="p-button-text p-button-danger !p-0 !w-4 !h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                (click)="veresiyeSil(i)"></button>
+                                                            <span class="text-[11px] font-bold">{{ item.cariAd }}</span>
+                                                        </div>
+                                                        <span
+                                                            class="font-bold text-orange-600 text-[11px] min-w-[60px] text-right">{{
+                                                            item.tutar | number:'1.2-2' }} ₺</span>
+                                                    </div>
+                                                    <div class="flex justify-between items-center pl-6">
+                                                        <span class="text-[10px] text-gray-500">{{ item.plaka }} {{
+                                                            item.litre > 0 ? '(' + item.litre + ' lt)' : '' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-1 px-2">
+                                            <span class="text-[10px] text-gray-500">Toplam Veresiye</span>
+                                            <span class="font-bold text-orange-600 text-xs">{{ getVeresiyeToplam() |
+                                                number:'1.2-2' }} ₺</span>
                                         </div>
                                     </div>
 
@@ -675,6 +752,56 @@
                                                 (click)="digerOdemeSil(i)"></button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Veresiye (Mobile) -->
+                        <div class="col-span-2 p-3 mt-2 rounded-xl border border-orange-100 bg-orange-50/20">
+                            <label class="flex items-center gap-2 text-[10px] font-bold mb-2 text-orange-600 uppercase">
+                                <i class="pi pi-briefcase"></i> Veresiye Ekle
+                            </label>
+                            <div class="flex flex-col gap-2 mb-2">
+                                <p-select [options]="cariList" [(ngModel)]="selectedCari" optionLabel="ad"
+                                    placeholder="Cari Seç" styleClass="w-full !text-xs" appendTo="body" [filter]="true"
+                                    filterBy="ad"></p-select>
+
+                                <div class="flex gap-2">
+                                    <input pInputText [(ngModel)]="yeniVeresiye.plaka" placeholder="PLAKA"
+                                        class="w-20 !text-xs font-bold uppercase p-2" />
+                                    <p-inputNumber [(ngModel)]="yeniVeresiye.litre" mode="decimal"
+                                        [minFractionDigits]="2" placeholder="Lt" styleClass="w-16"
+                                        inputStyleClass="w-full !text-xs font-bold"></p-inputNumber>
+                                    <p-inputNumber [(ngModel)]="yeniVeresiye.tutar" mode="currency" currency="TRY"
+                                        locale="tr-TR" placeholder="Tutar" styleClass="flex-1"
+                                        inputStyleClass="w-full !text-xs font-bold"></p-inputNumber>
+                                    <button pButton icon="pi pi-plus" class="p-button-warning !w-10"
+                                        (click)="veresiyeEkle()"></button>
+                                </div>
+                                <input pInputText [(ngModel)]="yeniVeresiye.aciklama" placeholder="Açıklama"
+                                    class="w-full !text-xs p-2" />
+                            </div>
+
+                            <div class="space-y-1" *ngIf="pusulaForm.veresiyeler?.length">
+                                <div *ngFor="let item of pusulaForm.veresiyeler; let i = index"
+                                    class="flex justify-between items-center p-2 bg-white rounded-lg border border-orange-50">
+                                    <div class="flex flex-col">
+                                        <span class="text-[10px] font-semibold">{{item.cariAd}}</span>
+                                        <span class="text-[9px] text-gray-400">{{item.plaka}}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold text-orange-700">{{item.tutar |
+                                            number:'1.2-2'}} ₺</span>
+                                        <button pButton icon="pi pi-times"
+                                            class="p-button-text p-button-danger !p-0 !w-4 !h-4"
+                                            (click)="veresiyeSil(i)"></button>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex justify-between items-center mt-1 px-1 border-t border-dashed border-orange-200 pt-1">
+                                    <span class="text-[9px] text-gray-500">Top. Veresiye</span>
+                                    <span class="font-bold text-orange-600 text-[10px]">{{ getVeresiyeToplam() |
+                                        number:'1.2-2' }} ₺</span>
                                 </div>
                             </div>
                         </div>
@@ -913,7 +1040,7 @@
                     <!-- Diğer Ödemeler Detayı -->
                     <div *ngIf="onizlemeData.pusula.digerOdemeler?.length"
                         class="space-y-2 mt-3 pt-3 border-t border-dashed border-surface-200">
-                        <div class="text-[10px] font-bold text-indigo-600 mb-2 uppercase tracking-wider">Diğer Ödeme
+                        <div class="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Diğer Ödeme
                             Yöntemleri</div>
                         <div *ngFor="let item of onizlemeData.pusula.digerOdemeler"
                             class="flex justify-between items-center text-sm">
@@ -921,6 +1048,27 @@
                                 <div class="w-2 h-2 rounded-full bg-indigo-500"></div> {{ item.turAdi }}
                             </span>
                             <span class="font-medium">{{ item.tutar | number:'1.2-2' }} ₺</span>
+                        </div>
+                    </div>
+
+                    <!-- Veresiye Detayları -->
+                    <div *ngIf="onizlemeData.pusula.veresiyeler?.length"
+                        class="space-y-2 mt-3 pt-3 border-t border-dashed border-surface-200">
+                        <div class="text-[10px] font-bold text-orange-600 mb-1 uppercase tracking-wider">Veresiye / Cari
+                            Satış</div>
+                        <div *ngFor="let item of onizlemeData.pusula.veresiyeler"
+                            class="flex flex-col gap-1 p-2 bg-orange-50/50 dark:bg-orange-900/10 rounded-lg">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="font-bold text-orange-800 dark:text-orange-300">{{ item.cariAd }}</span>
+                                <span class="font-bold">{{ item.tutar | number:'1.2-2' }} ₺</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-gray-500">
+                                <span>{{ item.plaka }}</span>
+                                <span *ngIf="item.litre > 0">{{ item.litre | number:'1.2-3' }} L</span>
+                            </div>
+                            <div *ngIf="item.aciklama" class="text-[10px] text-gray-400 italic">
+                                {{ item.aciklama }}
+                            </div>
                         </div>
                     </div>
                 </div>

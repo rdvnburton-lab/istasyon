@@ -15,6 +15,15 @@ export interface DigerOdeme {
     silinemez?: boolean;
 }
 
+export interface Veresiye {
+    cariKartId: number;
+    cariAd?: string; // Gösterim için
+    plaka?: string;
+    litre: number;
+    tutar: number;
+    aciklama?: string;
+}
+
 export interface Pusula {
     id?: number;
     vardiyaId: number;
@@ -24,9 +33,12 @@ export interface Pusula {
     krediKarti: number;
 
     krediKartiDetay?: KrediKartiDetay[];
-    krediKartiDetayList?: KrediKartiDetay[];
+    krediKartiDetayList?: KrediKartiDetay[]; // Legacy or DTO naming
     digerOdemeler?: DigerOdeme[];
-    digerOdemeList?: DigerOdeme[];
+    digerOdemeList?: DigerOdeme[]; // DTO naming
+
+    veresiyeler?: Veresiye[];
+
     aciklama?: string;
     pusulaTuru?: string;
     olusturmaTarihi?: Date;
@@ -110,6 +122,14 @@ export class PusulaApiService {
                 tutar: d.tutar,
                 silinemez: d.silinemez || d.Silinemez || false
             })),
+            veresiyeler: (data.veresiyeler || []).map((v: any) => ({
+                cariKartId: v.cariKartId,
+                cariAd: v.cariAd || v.cariKart?.ad,
+                plaka: v.plaka,
+                litre: v.litre,
+                tutar: v.tutar,
+                aciklama: v.aciklama
+            })),
             pusulaTuru: data.pusulaTuru || 'TAHSILAT',
             olusturmaTarihi: data.olusturmaTarihi ? new Date(data.olusturmaTarihi) : undefined,
             guncellemeTarihi: data.guncellemeTarihi ? new Date(data.guncellemeTarihi) : undefined
@@ -127,6 +147,13 @@ export class PusulaApiService {
             krediKartiDetay: pusula.krediKartiDetay ? JSON.stringify(pusula.krediKartiDetay) : null,
             krediKartiDetayList: pusula.krediKartiDetay ? pusula.krediKartiDetay.map(d => ({ bankaAdi: d.banka, tutar: d.tutar })) : [],
             digerOdemeList: pusula.digerOdemeler ? pusula.digerOdemeler : [],
+            veresiyeList: pusula.veresiyeler ? pusula.veresiyeler.map(v => ({
+                cariKartId: v.cariKartId,
+                plaka: v.plaka,
+                litre: v.litre,
+                tutar: v.tutar,
+                aciklama: v.aciklama
+            })) : [],
             aciklama: pusula.aciklama,
             pusulaTuru: pusula.pusulaTuru || 'TAHSILAT'
         };

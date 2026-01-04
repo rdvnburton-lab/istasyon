@@ -28,5 +28,11 @@ export default [
         loadComponent: () => import('./yakit-stok/yakit-stok.component').then(m => m.YakitStokComponent),
         canActivate: [roleGuard],
         data: { resource: 'VARDIYA_STOK' }
+    },
+    {
+        path: 'cari',
+        loadComponent: () => import('./cari-yonetimi/cari-yonetimi.component').then(m => m.CariYonetimiComponent),
+        canActivate: [roleGuard],
+        // data: { resource: 'VARDIYA_CARI' } // Yetki kontrolü eklenene kadar açık bırakıyoruz
     }
 ] as Routes;

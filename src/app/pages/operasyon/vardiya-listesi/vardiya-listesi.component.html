@@ -671,12 +671,12 @@
         <div class="summary-scroll block md:hidden">
             <div class="summary-card blue">
                 <div class="summary-icon"><i class="pi pi-chart-line"></i></div>
-                <div class="summary-value">{{ pompaCiroGosterim | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaciSatisTutar | number:'1.0-0' }}₺</div>
                 <div class="summary-label">Pompa Cirosu</div>
             </div>
             <div class="summary-card green">
                 <div class="summary-icon"><i class="pi pi-users"></i></div>
-                <div class="summary-value">{{ pompaciSatisTutar | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaCiroGosterim | number:'1.0-0' }}₺</div>
                 <div class="summary-label">Pompacı Satış</div>
             </div>
             <div class="summary-card purple" (click)="openKrediKartiDetay()">
@@ -717,14 +717,14 @@
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
                 <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompa
                     Cirosu</span>
-                <span class="text-3xl font-bold text-primary">{{ pompaCiroGosterim |
+                <span class="text-3xl font-bold text-primary">{{ pompaciSatisTutar |
                     currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
             </div>
             <div
                 class="surface-card p-4 shadow-sm border border-surface-200 rounded-xl flex flex-col items-center justify-center text-center">
                 <span class="text-sm text-muted-color font-medium uppercase tracking-wide mb-2">Pompacı
                     Satışları</span>
-                <span class="text-3xl font-bold text-green-600">{{ pompaciSatisTutar |
+                <span class="text-3xl font-bold text-green-600">{{ pompaCiroGosterim |
                     currency:'TRY':'symbol-narrow':'1.2-2'
                     }}</span>
             </div>

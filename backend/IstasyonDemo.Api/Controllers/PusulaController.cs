@@ -59,6 +59,7 @@ namespace IstasyonDemo.Api.Controllers
                 .AsSplitQuery()
                 .Include(p => p.KrediKartiDetaylari)
                 .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
                 .Where(p => p.VardiyaId == vardiyaId)
                 .OrderBy(p => p.PersonelAdi)
                 .ToListAsync();
@@ -75,6 +76,7 @@ namespace IstasyonDemo.Api.Controllers
                 .AsSplitQuery()
                 .Include(p => p.KrediKartiDetaylari)
                 .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
                 .FirstOrDefaultAsync(p => p.Id == id && p.VardiyaId == vardiyaId);
 
             if (pusula == null)
@@ -92,6 +94,7 @@ namespace IstasyonDemo.Api.Controllers
                 .AsSplitQuery()
                 .Include(p => p.KrediKartiDetaylari)
                 .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
                 .FirstOrDefaultAsync(p => p.VardiyaId == vardiyaId && p.PersonelAdi == personelAdi);
 
             if (pusula == null)
@@ -172,7 +175,33 @@ namespace IstasyonDemo.Api.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return CreatedAtAction(nameof(GetById), new { vardiyaId, id = pusula.Id }, pusula);
+            // Veresiye Detaylarını Kaydet
+            if (dto.VeresiyeList != null && dto.VeresiyeList.Any())
+            {
+                foreach (var detay in dto.VeresiyeList)
+                {
+                    _context.PusulaVeresiyeler.Add(new PusulaVeresiye
+                    {
+                        PusulaId = pusula.Id,
+                        CariKartId = detay.CariKartId,
+                        Plaka = detay.Plaka,
+                        Litre = detay.Litre,
+                        Tutar = detay.Tutar,
+                        Aciklama = detay.Aciklama
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // Reload loaded pusula to return full object including new veresiyeler
+            var resultPusula = await _context.Pusulalar
+                .AsSplitQuery()
+                .Include(p => p.KrediKartiDetaylari)
+                .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
+                .FirstAsync(p => p.Id == pusula.Id);
+
+            return CreatedAtAction(nameof(GetById), new { vardiyaId, id = pusula.Id }, resultPusula);
         }
 
         [HttpPut("{id}")]
@@ -260,7 +289,38 @@ namespace IstasyonDemo.Api.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Ok(pusula);
+            // Veresiye Detaylarını Güncelle
+            if (dto.VeresiyeList != null)
+            {
+                var existingVeresiyeler = await _context.PusulaVeresiyeler
+                    .Where(p => p.PusulaId == id)
+                    .ToListAsync();
+
+                _context.PusulaVeresiyeler.RemoveRange(existingVeresiyeler);
+
+                foreach (var detay in dto.VeresiyeList)
+                {
+                    _context.PusulaVeresiyeler.Add(new PusulaVeresiye
+                    {
+                        PusulaId = pusula.Id,
+                        CariKartId = detay.CariKartId,
+                        Plaka = detay.Plaka,
+                        Litre = detay.Litre,
+                        Tutar = detay.Tutar,
+                        Aciklama = detay.Aciklama
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            var resultPusula = await _context.Pusulalar
+                .AsSplitQuery()
+                .Include(p => p.KrediKartiDetaylari)
+                .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
+                .FirstAsync(p => p.Id == pusula.Id);
+
+            return Ok(resultPusula);
         }
 
         [HttpDelete("{id}")]
@@ -295,6 +355,9 @@ namespace IstasyonDemo.Api.Controllers
 
             var pusulalar = await _context.Pusulalar
                 .Where(p => p.VardiyaId == vardiyaId)
+                // Veresiyeler dahil edilerek toplam hesaplanmalı mı?
+                // Şu anki mantıkta Toplam computed property'si DigerOdemeleri de içeriyor.
+                // Veresiyeler ayrıca toplanmalı çünkü Toplam formülüne heniz dahil etmedim. Orası model tarafında.
                 .ToListAsync();
 
             var ozet = new
@@ -302,7 +365,8 @@ namespace IstasyonDemo.Api.Controllers
                 toplamPusula = pusulalar.Count,
                 toplamNakit = pusulalar.Sum(p => p.Nakit),
                 toplamKrediKarti = pusulalar.Sum(p => p.KrediKarti),
-                genelToplam = pusulalar.Sum(p => p.Toplam)
+                // TODO: Veresiye toplamları buraya eklenebilir ama şu an frontend hesaplıyor
+                genelToplam = pusulalar.Sum(p => p.Toplam) 
             };
 
             return Ok(ozet);

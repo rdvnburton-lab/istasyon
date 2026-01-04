@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260104012537_CariYonetimi")]
+    partial class CariYonetimi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1144,47 +1147,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.ToTable("PusulaKrediKartiDetaylari");
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.PusulaVeresiye", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Aciklama")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<int>("CariKartId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Litre")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Plaka")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("PusulaId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Tutar")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("YakitCinsi")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CariKartId");
-
-                    b.HasIndex("PusulaId");
-
-                    b.ToTable("PusulaVeresiyeler");
-                });
-
             modelBuilder.Entity("IstasyonDemo.Api.Models.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -2010,25 +1972,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Pusula");
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.PusulaVeresiye", b =>
-                {
-                    b.HasOne("IstasyonDemo.Api.Models.CariKart", "CariKart")
-                        .WithMany()
-                        .HasForeignKey("CariKartId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("IstasyonDemo.Api.Models.Pusula", "Pusula")
-                        .WithMany("Veresiyeler")
-                        .HasForeignKey("PusulaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CariKart");
-
-                    b.Navigation("Pusula");
-                });
-
             modelBuilder.Entity("IstasyonDemo.Api.Models.RolePermission", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Role", "Role")
@@ -2160,8 +2103,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("DigerOdemeler");
 
                     b.Navigation("KrediKartiDetaylari");
-
-                    b.Navigation("Veresiyeler");
                 });
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.Role", b =>

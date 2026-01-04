@@ -12,6 +12,7 @@ namespace IstasyonDemo.Api.Dtos
         public string? Aciklama { get; set; }
         public string? PusulaTuru { get; set; }
         public List<PusulaDigerOdemeDto>? DigerOdemeList { get; set; }
+        public List<PusulaVeresiyeDto>? VeresiyeList { get; set; }
     }
 
     public class UpdatePusulaDto
@@ -23,6 +24,7 @@ namespace IstasyonDemo.Api.Dtos
         public string? Aciklama { get; set; }
         public string? PusulaTuru { get; set; }
         public List<PusulaDigerOdemeDto>? DigerOdemeList { get; set; }
+        public List<PusulaVeresiyeDto>? VeresiyeList { get; set; }
     }
 
     public class PusulaKrediKartiDetayDto
@@ -37,5 +39,15 @@ namespace IstasyonDemo.Api.Dtos
         public string TurAdi { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public bool Silinemez { get; set; }
+    }
+
+    public class PusulaVeresiyeDto
+    {
+        public int CariKartId { get; set; }
+        public string? CariAd { get; set; }
+        public string? Plaka { get; set; }
+        public decimal Litre { get; set; }
+        public decimal Tutar { get; set; }
+        public string? Aciklama { get; set; }
     }
 }

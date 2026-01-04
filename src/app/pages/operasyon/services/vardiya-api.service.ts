@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Vardiya, OtomasyonSatis, FiloSatis, YakitTuru, VardiyaTankEnvanteri } from '../models/vardiya.model';
+import { Vardiya, OtomasyonSatis, FiloSatis, YakitTuru, VardiyaTankEnvanteri, CariKart, CariHareket } from '../models/vardiya.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -68,6 +68,10 @@ export class VardiyaApiService {
      * OPTIMIZED: Returns pre-aggregated data for Pompa Mutabakatı page
      * Uses database-level GROUP BY for better performance
      */
+    /**
+     * OPTIMIZED: Returns pre-aggregated data for Pompa Mutabakatı page
+     * Uses database-level GROUP BY for better performance
+     */
     getMutabakat(id: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${id}/mutabakat`);
     }
@@ -77,7 +81,7 @@ export class VardiyaApiService {
      * All calculations done server-side for faster response
      */
     getOnayDetay(id: number): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/${id}/onay-detay`);
+        return this.http.get<any>(`${environment.apiUrl}/approvals/vardiya/${id}/onay-detay`);
     }
 
     getVardiyaRaporu(baslangic: Date, bitis: Date): Observable<any> {
@@ -85,7 +89,7 @@ export class VardiyaApiService {
             baslangic: baslangic.toISOString(),
             bitis: bitis.toISOString()
         };
-        return this.http.get<any>(`${this.apiUrl}/rapor`, { params });
+        return this.http.get<any>(`${environment.apiUrl}/reports/vardiya/genel`, { params });
     }
 
     getFarkRaporu(baslangic: Date, bitis: Date): Observable<any> {
@@ -93,7 +97,7 @@ export class VardiyaApiService {
             baslangic: baslangic.toISOString(),
             bitis: bitis.toISOString()
         };
-        return this.http.get<any>(`${this.apiUrl}/fark-raporu`, { params });
+        return this.http.get<any>(`${environment.apiUrl}/reports/vardiya/fark`, { params });
     }
 
     getPersonelKarnesi(personelId: number, baslangic: Date, bitis: Date): Observable<any> {
@@ -101,7 +105,7 @@ export class VardiyaApiService {
             baslangic: baslangic.toISOString(),
             bitis: bitis.toISOString()
         };
-        return this.http.get<any>(`${this.apiUrl}/personel-karnesi/${personelId}`, { params });
+        return this.http.get<any>(`${environment.apiUrl}/reports/vardiya/personel-karnesi/${personelId}`, { params });
     }
 
     deleteVardiya(id: number): Observable<any> {
@@ -113,7 +117,7 @@ export class VardiyaApiService {
     }
 
     getKarsilastirma(id: number): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/${id}/karsilastirma`);
+        return this.http.get<any>(`${environment.apiUrl}/reports/vardiya/karsilastirma/${id}`);
     }
 
     private mapYakitTuru(yakitTuru: string): number {
@@ -128,29 +132,29 @@ export class VardiyaApiService {
     }
 
     vardiyaOnayaGonder(id: number): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/onaya-gonder`, {}).pipe(
+        return this.http.post(`${environment.apiUrl}/approvals/vardiya/${id}/onaya-gonder`, {}).pipe(
             tap(() => this.updatePendingCount())
         );
     }
 
     getOnayBekleyenVardiyalar(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/onay-bekleyenler`);
+        return this.http.get<any[]>(`${environment.apiUrl}/approvals/vardiya/onay-bekleyenler`);
     }
 
     vardiyaOnayla(id: number, onaylayanId: number, onaylayanAdi: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/onayla`, { OnaylayanId: onaylayanId, OnaylayanAdi: onaylayanAdi }).pipe(
+        return this.http.post(`${environment.apiUrl}/approvals/vardiya/${id}/onayla`, { OnaylayanId: onaylayanId, OnaylayanAdi: onaylayanAdi }).pipe(
             tap(() => this.updatePendingCount())
         );
     }
 
     vardiyaReddet(id: number, onaylayanId: number, onaylayanAdi: string, redNedeni: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/reddet`, { OnaylayanId: onaylayanId, OnaylayanAdi: onaylayanAdi, RedNedeni: redNedeni }).pipe(
+        return this.http.post(`${environment.apiUrl}/approvals/vardiya/${id}/reddet`, { OnaylayanId: onaylayanId, OnaylayanAdi: onaylayanAdi, RedNedeni: redNedeni }).pipe(
             tap(() => this.updatePendingCount())
         );
     }
 
     vardiyaSilmeTalebi(id: number, nedeni: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${id}/silme-talebi`, { Nedeni: nedeni }).pipe(
+        return this.http.post(`${environment.apiUrl}/approvals/vardiya/${id}/silme-talebi`, { Nedeni: nedeni }).pipe(
             tap(() => this.updatePendingCount())
         );
     }
@@ -162,9 +166,44 @@ export class VardiyaApiService {
         }
         return this.http.get<any[]>(`${this.apiUrl}/loglar`, { params });
     }
-
     addPompaGider(vardiyaId: number, gider: any): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/${vardiyaId}/gider`, gider);
+    }
+
+    // ============================================================
+    // CARİ KART YÖNETİMİ
+    // ============================================================
+
+    getCariKartlar(istasyonId: number): Observable<CariKart[]> {
+        return this.http.get<CariKart[]>(`${environment.apiUrl}/cari/list/${istasyonId}`);
+    }
+
+    createCariKart(cari: CariKart): Observable<CariKart> {
+        return this.http.post<CariKart>(`${environment.apiUrl}/cari`, cari);
+    }
+
+    updateCariKart(id: number, cari: CariKart): Observable<CariKart> {
+        return this.http.put<CariKart>(`${environment.apiUrl}/cari/${id}`, cari);
+    }
+
+    deleteCariKart(id: number): Observable<any> {
+        return this.http.delete(`${environment.apiUrl}/cari/${id}`);
+    }
+
+    getCariHareketler(cariId: number): Observable<CariHareket[]> {
+        return this.http.get<CariHareket[]>(`${environment.apiUrl}/cari/${cariId}/hareketler`);
+    }
+
+    addTahsilat(cariId: number, data: { tutar: number, aciklama: string }): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/cari/${cariId}/tahsilat`, data);
+    }
+
+    updateCariHareket(id: number, data: { tutar: number, aciklama: string }): Observable<any> {
+        return this.http.put(`${environment.apiUrl}/cari/hareket/${id}`, data);
+    }
+
+    deleteCariHareket(id: number): Observable<any> {
+        return this.http.delete(`${environment.apiUrl}/cari/hareket/${id}`);
     }
 
     deletePompaGider(vardiyaId: number, giderId: number): Observable<any> {
