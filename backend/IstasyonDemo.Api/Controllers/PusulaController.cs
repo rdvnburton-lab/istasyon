@@ -160,8 +160,8 @@ namespace IstasyonDemo.Api.Controllers
             {
                 foreach (var detay in dto.DigerOdemeList)
                 {
-                    // IGNORE MOBIL_ODEM (It comes from Filo/Virtual, never persist it to DB)
-                    if (detay.TurKodu == "MOBIL_ODEME") continue;
+                    // FIXED: M-ODEM is now persisted to DB, so we allow it to be saved.
+                    // if (detay.TurKodu == "MOBIL_ODEME") continue;
 
                     _context.PusulaDigerOdemeleri.Add(new PusulaDigerOdeme
                     {
@@ -258,8 +258,8 @@ namespace IstasyonDemo.Api.Controllers
                     .ToListAsync();
 
                 // Güvenlik Kontrolü: Silinemez işaretli kayıtlar listeden çıkarılmış mı?
-                // MOBIL_ODEME zaten sanal, veritabanında saklanmaz, o yüzden kontrol edilmez.
-                var protectedItems = existingOtherPayments.Where(x => x.Silinemez && x.TurKodu != "MOBIL_ODEME").ToList();
+                // FIXED: MOBIL_ODEME is check is removed, we want to protect it too.
+                var protectedItems = existingOtherPayments.Where(x => x.Silinemez).ToList();
                 var incomingTurKodlari = dto.DigerOdemeList.Select(x => x.TurKodu).ToHashSet();
 
                 foreach (var protectedItem in protectedItems)
@@ -274,8 +274,8 @@ namespace IstasyonDemo.Api.Controllers
 
                 foreach (var detay in dto.DigerOdemeList)
                 {
-                    // IGNORE MOBIL_ODEM
-                    if (detay.TurKodu == "MOBIL_ODEME") continue;
+                    // FIXED: Allow MOBIL_ODEME to be saved/updated
+                    // if (detay.TurKodu == "MOBIL_ODEME") continue;
 
                     _context.PusulaDigerOdemeleri.Add(new PusulaDigerOdeme
                     {

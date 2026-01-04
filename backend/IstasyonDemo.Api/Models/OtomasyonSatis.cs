@@ -61,6 +61,9 @@ namespace IstasyonDemo.Api.Models
         public int YazarKasaFisNo { get; set; } // ECRReceiptNr
 
         [Column(TypeName = "decimal(18,2)")]
+        public decimal MobilOdemeTutar { get; set; } // MobilePayment Amount
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal PuanKullanimi { get; set; } // Redemption
 
         [Column(TypeName = "decimal(18,2)")]

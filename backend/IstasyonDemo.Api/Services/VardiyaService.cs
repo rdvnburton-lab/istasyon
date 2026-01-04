@@ -259,30 +259,38 @@ namespace IstasyonDemo.Api.Services
                     }
                 }
 
-                // B. M-ODEM (Filo Satışlarından - M-ODEM Koduyla)
-                // ProcessXmlZipAsync içinde M-ODEM satışlarının Plaka alanına Personel Adı yazılmıştı.
-                var mOdemSatislar = dto.FiloSatislar
-                    .Where(f => f.FiloKodu == "M-ODEM")
-                    .GroupBy(f => f.Plaka) // Plaka = PersonelAdi
-                    .Select(g => new { PersonelAdi = g.Key, ToplamTutar = g.Sum(f => f.Tutar) })
+                // B. M-ODEM (Otomasyon Satışlarından - MobilOdemeTutar Alanından)
+                // ARTIK M-ODEM Filo olarak değil, Otomasyon satışı içinde işaretli geliyor.
+                var mOdemSatislar = dto.OtomasyonSatislar
+                    .Where(s => s.MobilOdemeTutar > 0)
+                    .GroupBy(s => s.PersonelAdi)
+                    .Select(g => new { PersonelAdi = g.Key, ToplamTutar = g.Sum(s => s.MobilOdemeTutar) })
                     .ToList();
 
                 foreach (var modem in mOdemSatislar)
                 {
                     if (string.IsNullOrEmpty(modem.PersonelAdi)) continue;
 
+                    // Trimmed ve Case-Insensitive arama
                     var pusula = await _context.Pusulalar
                         .Include(p => p.DigerOdemeler)
-                        .FirstOrDefaultAsync(p => p.VardiyaId == vardiya.Id && p.PersonelAdi == modem.PersonelAdi);
+                        .Where(p => p.VardiyaId == vardiya.Id)
+                        .ToListAsync(); // Client-side evaluation for complex string comparison if needed, but simple Equals(OrdinalIgnoreCase) works in EF Core 5+ for some providers, but safe bet is usually Match via standard methods.
+                    
+                    // En güvenli yöntem: Bellekte eşleştir veya SQL'de ToUpper/ToLower kullan.
+                    // Burada performans kritik değil (az sayıda personel var), bellekten bulalım.
+                    var targetPusula = pusula.FirstOrDefault(p => 
+                        p.PersonelAdi != null && 
+                        p.PersonelAdi.Trim().Equals(modem.PersonelAdi.Trim(), StringComparison.OrdinalIgnoreCase));
 
-                    if (pusula != null)
+                    if (targetPusula != null)
                     {
                         // Aynı türden kayıt varsa ekleme (Double check)
-                        if (!pusula.DigerOdemeler.Any(d => d.TurKodu == "MOBIL_ODEME"))
+                        if (!targetPusula.DigerOdemeler.Any(d => d.TurKodu == "MOBIL_ODEME"))
                         {
-                            pusula.DigerOdemeler.Add(new PusulaDigerOdeme
+                            targetPusula.DigerOdemeler.Add(new PusulaDigerOdeme
                             {
-                                PusulaId = pusula.Id,
+                                PusulaId = targetPusula.Id,
                                 TurKodu = "MOBIL_ODEME",
                                 TurAdi = "Mobil Ödeme",
                                 Tutar = modem.ToplamTutar,
@@ -291,6 +299,7 @@ namespace IstasyonDemo.Api.Services
                         }
                     }
                 }
+
                 
                 await _context.SaveChangesAsync();
                 
@@ -1051,11 +1060,13 @@ namespace IstasyonDemo.Api.Services
                                             isParoSale; // Paro satışları da otomasyon satışı sayılmalı
 
                     // M-ODEM (Mobil Ödeme) Check -> Treat as Automation Sale + Auto Payment
-                    // CHANGED: We now want M-ODEM to go to FiloSatis so we keep "M-ODEM" fleet code.
-                    // We also STOP adding MobilOdemeDto manually to avoid double counting.
-                    if (fleetCodeCheck.Equals("M-ODEM", StringComparison.OrdinalIgnoreCase))
+                    // CHANGED: We now want M-ODEM to stay in OtomasyonSatis, but populate "MobilOdemeTutar"
+                    // CHANGED: We now want M-ODEM to stay in OtomasyonSatis, but populate "MobilOdemeTutar"
+                    bool isMOdemSale = fleetCodeCheck != null && fleetCodeCheck.Equals("M-ODEM", StringComparison.OrdinalIgnoreCase);
+                    
+                    if (isMOdemSale)
                     {
-                        isAutomationSale = false; // It should go to FiloSatis logic
+                        isAutomationSale = true; // Ensure it enters the Automation block
                     }
 
                     if (isAutomationSale)
@@ -1070,7 +1081,7 @@ namespace IstasyonDemo.Api.Services
                             SatisTarihi = satisTarihi,
                             FisNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "ReceiptNr")?.Value ?? "0"),
                             // Personel Ismi Mapping (TagDetails.Plate -> PersonelAdi)
-                            PersonelAdi = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value ?? "", 
+                            PersonelAdi = (tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "Plate")?.Value ?? "").Trim(), 
                             // Personel Key ID Mapping (TagDetails.TagNr)
                             PersonelKeyId = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "TagNr")?.Value ?? "",
                             // Plaka Mapping Önceliği: ECRPlate > Sale.Plate >> NOT TagDetails.Plate (O Personel Ismi)
@@ -1093,7 +1104,11 @@ namespace IstasyonDemo.Api.Services
                             KazanilanPara = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "EarnedMoney")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture),
                             SadakatKartNo = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardNo")?.Value,
                             SadakatKartTipi = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "LoyaltyCardType")?.Value ?? "0"),
-                            TamBirimFiyat = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FullUnitPrice")?.Value ?? "0") / 100m // Usually same format as UnitPrice
+
+                            TamBirimFiyat = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FullUnitPrice")?.Value ?? "0") / 100m, // Usually same format as UnitPrice
+                            
+                            // M-ODEM Mapping
+                            MobilOdemeTutar = isMOdemSale ? (totalRaw / 100m) : 0
                         });
                     }
                     else
@@ -1118,7 +1133,7 @@ namespace IstasyonDemo.Api.Services
                         dto.FiloSatislar.Add(new CreateFiloSatisDto
                         {
                            Tarih = satisTarihi,
-                           FiloKodu = fleetCode,
+                           FiloKodu = fleetCode ?? "",
                            Plaka = plakaVal,
                            YakitTuru = fuelType,
                            Litre = amountRaw / 100m,
@@ -1320,6 +1335,65 @@ namespace IstasyonDemo.Api.Services
                 })
                 .ToListAsync();
 
+            // FIX: Prioritize Personel.AdSoyad over Automation Name
+            _logger.LogInformation($"[VardiyaService] Personel eşleştirme başladı. {personelOzetler.Count} satır var.");
+            
+            var existingIds = personelOzetler
+                .Where(x => x.PersonelId.HasValue && x.PersonelId.Value > 0)
+                .Select(x => x.PersonelId!.Value)
+                .ToList();
+
+            var names = personelOzetler
+                .Where(x => !string.IsNullOrEmpty(x.PersonelAdi))
+                .Select(x => x.PersonelAdi.Trim())
+                .Distinct()
+                .ToList();
+
+            // Fetch candidates
+            var personels = await _context.Personeller
+                .AsNoTracking()
+                .Where(p => 
+                    existingIds.Contains(p.Id) || 
+                    names.Contains(p.OtomasyonAdi)
+                )
+                .ToListAsync();
+            
+            _logger.LogInformation($"[VardiyaService] DB Adayları bulundu: {personels.Count} adet.");
+
+            // Match and Update
+            foreach (var item in personelOzetler)
+            {
+                Personel? match = null;
+
+                // Priority 1: By ID
+                if (item.PersonelId.HasValue && item.PersonelId.Value > 0)
+                {
+                    match = personels.FirstOrDefault(p => p.Id == item.PersonelId.Value);
+                }
+
+                // Priority 2: By Name (OtomasyonAdi = PersonelAdi)
+                if (match == null && !string.IsNullOrEmpty(item.PersonelAdi))
+                {
+                    match = personels.FirstOrDefault(p => string.Equals(p.OtomasyonAdi, item.PersonelAdi.Trim(), StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (match != null && !string.IsNullOrWhiteSpace(match.AdSoyad))
+                {
+                    item.GercekPersonelAdi = match.AdSoyad;
+                    _logger.LogInformation($"[VardiyaService] Eşleşti: {item.PersonelAdi} -> {item.GercekPersonelAdi}");
+                    
+                    // Fix missing ID
+                    if (!item.PersonelId.HasValue || item.PersonelId.Value == 0)
+                    {
+                        item.PersonelId = match.Id;
+                    }
+                }
+                else
+                {
+                     _logger.LogWarning($"[VardiyaService] Eşleşemedi: {item.PersonelAdi} (ID: {item.PersonelId})");
+                }
+            }
+
             // 3. Filo detayları (gruplu) - M-ODEM dahil
             var filoDetaylari = await _context.FiloSatislar
                 .AsNoTracking()
@@ -1378,6 +1452,47 @@ namespace IstasyonDemo.Api.Services
                 })
                 .ToListAsync();
 
+            // FIX: Prioritize Personel.AdSoyad over Automation Name for Pusulas too
+            _logger.LogInformation($"[VardiyaService] Pusula eşleştirme başladı. {pusulalar.Count} pusula var.");
+
+            var pusulaPersonelIds = pusulalar.Where(x => x.PersonelId.HasValue && x.PersonelId.Value > 0).Select(x => x.PersonelId!.Value).Distinct().ToList();
+            var pusulaNames = pusulalar.Where(x => !string.IsNullOrEmpty(x.PersonelAdi)).Select(x => x.PersonelAdi.Trim()).Distinct().ToList();
+
+            var pusulaPersonels = await _context.Personeller
+                .AsNoTracking()
+                .Where(p => 
+                    pusulaPersonelIds.Contains(p.Id) || 
+                    pusulaNames.Contains(p.OtomasyonAdi)
+                )
+                .ToListAsync();
+
+            foreach (var item in pusulalar)
+            {
+                Personel? match = null;
+
+                // Priority 1: By ID
+                if (item.PersonelId.HasValue && item.PersonelId.Value > 0)
+                {
+                    match = pusulaPersonels.FirstOrDefault(p => p.Id == item.PersonelId.Value);
+                }
+
+                // Priority 2: By Name
+                if (match == null && !string.IsNullOrEmpty(item.PersonelAdi))
+                {
+                   match = pusulaPersonels.FirstOrDefault(p => string.Equals(p.OtomasyonAdi, item.PersonelAdi.Trim(), StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (match != null && !string.IsNullOrWhiteSpace(match.AdSoyad))
+                {
+                    item.GercekPersonelAdi = match.AdSoyad;
+                    // Fix missing ID
+                    if (!item.PersonelId.HasValue || item.PersonelId.Value == 0)
+                    {
+                        item.PersonelId = match.Id;
+                    }
+                }
+            }
+
             // Calculate Toplam after loading to ensure accuracy with navigation properties
             foreach (var p in pusulalar)
             {
@@ -1421,7 +1536,7 @@ namespace IstasyonDemo.Api.Services
                  mOdemList.AddRange(oldMOdemList.Select(o => new FiloSatis
                  {
                      PompaNo = o.PompaNo,
-                     Plaka = o.Plaka,
+                     Plaka = o.Plaka ?? "",
                      Tutar = o.ToplamTutar,
                      Litre = o.Litre,
                      FiloKodu = "M-ODEM"

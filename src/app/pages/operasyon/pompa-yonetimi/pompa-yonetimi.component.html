@@ -312,7 +312,12 @@
                                             class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-100 dark:bg-surface-700">
                                             <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
                                         </div>
-                                        <span class="font-medium">{{ personel.personelAdi }}</span>
+                                        <div class="flex flex-col">
+                                            <span class="font-medium">{{ personel.personelAdi }}</span>
+                                            <span class="text-xs text-[var(--text-color-secondary)]"
+                                                *ngIf="personel.gercekPersonelAdi">({{ personel.gercekPersonelAdi
+                                                }})</span>
+                                        </div>
                                         <p-button icon="pi pi-pencil" [rounded]="true" [text]="true"
                                             severity="secondary" size="small" (onClick)="personelDuzenle(personel)"
                                             *ngIf="isEditable && personel.personelAdi !== 'FİLO SATIŞLARI'"></p-button>
@@ -429,7 +434,8 @@
         </div>
 
         <!-- Pusula Girişi Dialog -->
-        <p-dialog [header]="seciliPersonel ? seciliPersonel.personelAdi + ' - Pusula Girişi' : 'Pusula Girişi'"
+        <p-dialog
+            [header]="seciliPersonel ? (seciliPersonel.personelAdi + (seciliPersonel.gercekPersonelAdi ? ' (' + seciliPersonel.gercekPersonelAdi + ')' : '')) + ' - Pusula Girişi' : 'Pusula Girişi'"
             [(visible)]="pusulaDialogVisible" [modal]="true" [style]="{width: '900px'}"
             [breakpoints]="{'960px': '95vw'}" styleClass="pusula-dialog">
 

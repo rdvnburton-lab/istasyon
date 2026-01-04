@@ -68,6 +68,7 @@ namespace IstasyonDemo.Api.Dtos
         public int OdemeTuru { get; set; } // PaymentType
         public string YazarKasaPlaka { get; set; } = string.Empty; // ECRPlate
         public int YazarKasaFisNo { get; set; } // ECRReceiptNr
+        public decimal MobilOdemeTutar { get; set; } // MobilePayment Amount
         public decimal PuanKullanimi { get; set; } // Redemption
         public decimal IndirimTutar { get; set; } // DiscountAmount
         public int KazanilanPuan { get; set; } // EarnedPoints
@@ -150,6 +151,8 @@ namespace IstasyonDemo.Api.Dtos
     public class PersonelMutabakatOzetDto
     {
         public string PersonelAdi { get; set; } = string.Empty;
+        public string? GercekPersonelAdi { get; set; } // Real Name from Personel Table
+        public string? PersonelKeyId { get; set; }
         public int? PersonelId { get; set; }
         public decimal ToplamLitre { get; set; }
         public decimal ToplamTutar { get; set; }
@@ -175,6 +178,7 @@ namespace IstasyonDemo.Api.Dtos
     {
         public int Id { get; set; }
         public string PersonelAdi { get; set; } = string.Empty;
+        public string? GercekPersonelAdi { get; set; } // Added this field
         public int? PersonelId { get; set; }
         public decimal Nakit { get; set; }
         public decimal KrediKarti { get; set; }

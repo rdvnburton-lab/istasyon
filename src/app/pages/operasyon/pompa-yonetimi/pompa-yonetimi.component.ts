@@ -32,6 +32,7 @@ import { DefinitionsService, DefinitionType } from '../../../services/definition
 
 interface PersonelOtomasyonOzet {
     personelAdi: string;
+    gercekPersonelAdi?: string;
     personelId?: number;
     toplamLitre: number;
     toplamTutar: number;
@@ -230,6 +231,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 // Personel özetleri (Backend'den M-ODEM eklenmiş olarak gelebilir)
                 this.personelOzetler = (data.personelOzetler || []).map((p: any) => ({
                     personelAdi: p.personelAdi,
+                    gercekPersonelAdi: p.gercekPersonelAdi,
                     personelId: p.personelId,
                     toplamLitre: p.toplamLitre,
                     toplamTutar: p.toplamTutar,
@@ -811,8 +813,23 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         this.personelApiService.updatePersonel(this.duzenlenecekPersonel.id, this.duzenlenecekPersonel).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Personel güncellendi' });
+
+                // Optimistic Update: Hemen listeyi güncelle
+                const updatedName = this.duzenlenecekPersonel.adSoyad;
+                const pIndex = this.personelOzetler.findIndex(p => p.personelId === this.duzenlenecekPersonel.id);
+                if (pIndex > -1) {
+                    // Otomasyon adını koruyoruz, gerçek ismi altına ekliyoruz
+                    // this.personelOzetler[pIndex].personelAdi = updatedName; // OLD
+                    this.personelOzetler[pIndex].gercekPersonelAdi = updatedName;
+
+                    // Eğer şu an bu personel seçiliyse (Pusula açıksa veya arkada kalmışsa) onun da adını güncelle
+                    if (this.seciliPersonel && this.seciliPersonel.personelId === this.duzenlenecekPersonel.id) {
+                        this.seciliPersonel.gercekPersonelAdi = updatedName;
+                    }
+                }
+
                 this.personelDuzenleDialogVisible = false;
-                this.loadVardiyaData();
+                this.loadVardiyaData(); // Arka planda yine de taze veriyi çek
             },
             error: (err) => {
                 this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Güncelleme başarısız' });

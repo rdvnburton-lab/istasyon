@@ -1,0 +1,421 @@
+2026-01-04 13:37:20.959 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 13:41:15.443 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 13:41:15.573 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 13:41:16.294 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 13:41:28.718 +03:00 [INF] XML Dosyası İşleniyor: 2025123101.zip, Boyut: 440939 bytes
+2026-01-04 13:41:28.720 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-04 13:41:28.746 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-04 13:41:28.750 +03:00 [INF] XML Parsing Debug: Toplam 581 adet 'Txn' elementi bulundu.
+2026-01-04 13:41:28.751 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>155678</FleetCode>
+    <FleetName></FleetName>
+    <TagNr>CCB15352</TagNr>
+    <Plate>06FDG767</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>3</TxnType>
+    <DateTime>20260101000209</DateTime>
+    <ReceiptNr>256329</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>5540</UnitPrice>
+    <Amount>3827</Amount>
+    <Total>212016</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>2</NozzleNr>
+    <PaymentType>2</PaymentType>
+    <ECRPlate>06FDG767</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>55400</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-04 13:41:28.753 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-04 13:41:28.753 +03:00 [INF] İlk Txn ReceiptNr Değeri: 256329
+2026-01-04 13:41:28.756 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 581 Satış bulundu.
+2026-01-04 13:41:28.809 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=1.01.2026 00:02:09, Bitiş=1.01.2026 23:53:03
+2026-01-04 13:41:28.823 +03:00 [INF] DTO Oluşturuldu: 548 Otomasyon, 33 Filo, 0 Tank satışı eklendi.
+2026-01-04 13:41:28.826 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 599.200,93 TL (Oto: 531.270,51 + Filo: 67.930,42)
+2026-01-04 13:41:31.781 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=16190, Bitiş=12525, Delta=3665, Sevkiyat=0, BeklenenTüketim=3665, SatilanMiktar=3665, FARK=0
+2026-01-04 13:41:31.783 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=18284, Bitiş=18322, Delta=-38, Sevkiyat=0, BeklenenTüketim=-38, SatilanMiktar=-38, FARK=0
+2026-01-04 13:41:31.783 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=17078, Bitiş=16081, Delta=997, Sevkiyat=0, BeklenenTüketim=997, SatilanMiktar=997, FARK=0
+2026-01-04 13:41:31.784 +03:00 [INF] Tank 4 (Motorin): Başlangıç=15075, Bitiş=12276, Delta=2799, Sevkiyat=0, BeklenenTüketim=2799, SatilanMiktar=2799, FARK=0
+2026-01-04 13:41:31.785 +03:00 [INF] Tank 5 (Motorin): Başlangıç=17359, Bitiş=17385, Delta=-26, Sevkiyat=0, BeklenenTüketim=-26, SatilanMiktar=-26, FARK=0
+2026-01-04 13:41:31.786 +03:00 [INF] Tank 6 (Motorin): Başlangıç=16551, Bitiş=15777, Delta=774, Sevkiyat=0, BeklenenTüketim=774, SatilanMiktar=774, FARK=0
+2026-01-04 13:41:31.813 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-04 13:41:34.767 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 13:44:50.830 +03:00 [INF] XML Dosyası İşleniyor: 2025123101.zip, Boyut: 440939 bytes
+2026-01-04 13:44:50.831 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-04 13:44:50.837 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-04 13:44:50.838 +03:00 [INF] XML Parsing Debug: Toplam 581 adet 'Txn' elementi bulundu.
+2026-01-04 13:44:50.839 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>155678</FleetCode>
+    <FleetName></FleetName>
+    <TagNr>CCB15352</TagNr>
+    <Plate>06FDG767</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>3</TxnType>
+    <DateTime>20260101000209</DateTime>
+    <ReceiptNr>256329</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>5540</UnitPrice>
+    <Amount>3827</Amount>
+    <Total>212016</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>2</NozzleNr>
+    <PaymentType>2</PaymentType>
+    <ECRPlate>06FDG767</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>55400</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-04 13:44:50.841 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-04 13:44:50.842 +03:00 [INF] İlk Txn ReceiptNr Değeri: 256329
+2026-01-04 13:44:50.843 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 581 Satış bulundu.
+2026-01-04 13:44:50.850 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=1.01.2026 00:02:09, Bitiş=1.01.2026 23:53:03
+2026-01-04 13:44:50.855 +03:00 [INF] DTO Oluşturuldu: 548 Otomasyon, 33 Filo, 0 Tank satışı eklendi.
+2026-01-04 13:44:50.856 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 599.200,93 TL (Oto: 531.270,51 + Filo: 67.930,42)
+2026-01-04 13:44:52.611 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=16190, Bitiş=12525, Delta=3665, Sevkiyat=0, BeklenenTüketim=3665, SatilanMiktar=3665, FARK=0
+2026-01-04 13:44:52.612 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=18284, Bitiş=18322, Delta=-38, Sevkiyat=0, BeklenenTüketim=-38, SatilanMiktar=-38, FARK=0
+2026-01-04 13:44:52.612 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=17078, Bitiş=16081, Delta=997, Sevkiyat=0, BeklenenTüketim=997, SatilanMiktar=997, FARK=0
+2026-01-04 13:44:52.613 +03:00 [INF] Tank 4 (Motorin): Başlangıç=15075, Bitiş=12276, Delta=2799, Sevkiyat=0, BeklenenTüketim=2799, SatilanMiktar=2799, FARK=0
+2026-01-04 13:44:52.614 +03:00 [INF] Tank 5 (Motorin): Başlangıç=17359, Bitiş=17385, Delta=-26, Sevkiyat=0, BeklenenTüketim=-26, SatilanMiktar=-26, FARK=0
+2026-01-04 13:44:52.615 +03:00 [INF] Tank 6 (Motorin): Başlangıç=16551, Bitiş=15777, Delta=774, Sevkiyat=0, BeklenenTüketim=774, SatilanMiktar=774, FARK=0
+2026-01-04 13:44:52.622 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-04 13:47:34.635 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 13:47:34.767 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 13:47:35.453 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 13:47:41.170 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 13:48:52.942 +03:00 [INF] XML Dosyası İşleniyor: 2025123101.zip, Boyut: 440939 bytes
+2026-01-04 13:48:52.943 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-04 13:48:52.964 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-04 13:48:52.967 +03:00 [INF] XML Parsing Debug: Toplam 581 adet 'Txn' elementi bulundu.
+2026-01-04 13:48:52.968 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>155678</FleetCode>
+    <FleetName></FleetName>
+    <TagNr>CCB15352</TagNr>
+    <Plate>06FDG767</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>3</TxnType>
+    <DateTime>20260101000209</DateTime>
+    <ReceiptNr>256329</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>5540</UnitPrice>
+    <Amount>3827</Amount>
+    <Total>212016</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>2</NozzleNr>
+    <PaymentType>2</PaymentType>
+    <ECRPlate>06FDG767</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>55400</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-04 13:48:52.970 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-04 13:48:52.971 +03:00 [INF] İlk Txn ReceiptNr Değeri: 256329
+2026-01-04 13:48:52.974 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 581 Satış bulundu.
+2026-01-04 13:48:53.021 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=1.01.2026 00:02:09, Bitiş=1.01.2026 23:53:03
+2026-01-04 13:48:53.030 +03:00 [INF] DTO Oluşturuldu: 548 Otomasyon, 33 Filo, 0 Tank satışı eklendi.
+2026-01-04 13:48:53.032 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 599.200,93 TL (Oto: 531.270,51 + Filo: 67.930,42)
+2026-01-04 13:48:55.144 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=16190, Bitiş=12525, Delta=3665, Sevkiyat=0, BeklenenTüketim=3665, SatilanMiktar=3665, FARK=0
+2026-01-04 13:48:55.145 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=18284, Bitiş=18322, Delta=-38, Sevkiyat=0, BeklenenTüketim=-38, SatilanMiktar=-38, FARK=0
+2026-01-04 13:48:55.146 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=17078, Bitiş=16081, Delta=997, Sevkiyat=0, BeklenenTüketim=997, SatilanMiktar=997, FARK=0
+2026-01-04 13:48:55.147 +03:00 [INF] Tank 4 (Motorin): Başlangıç=15075, Bitiş=12276, Delta=2799, Sevkiyat=0, BeklenenTüketim=2799, SatilanMiktar=2799, FARK=0
+2026-01-04 13:48:55.147 +03:00 [INF] Tank 5 (Motorin): Başlangıç=17359, Bitiş=17385, Delta=-26, Sevkiyat=0, BeklenenTüketim=-26, SatilanMiktar=-26, FARK=0
+2026-01-04 13:48:55.148 +03:00 [INF] Tank 6 (Motorin): Başlangıç=16551, Bitiş=15777, Delta=774, Sevkiyat=0, BeklenenTüketim=774, SatilanMiktar=774, FARK=0
+2026-01-04 13:48:55.168 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-04 14:17:18.105 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 14:17:18.239 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 14:17:18.958 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 14:17:30.154 +03:00 [INF] XML Dosyası İşleniyor: 2025123101.zip, Boyut: 440939 bytes
+2026-01-04 14:17:30.156 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-04 14:17:30.199 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-04 14:17:30.202 +03:00 [INF] XML Parsing Debug: Toplam 581 adet 'Txn' elementi bulundu.
+2026-01-04 14:17:30.203 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>155678</FleetCode>
+    <FleetName></FleetName>
+    <TagNr>CCB15352</TagNr>
+    <Plate>06FDG767</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>3</TxnType>
+    <DateTime>20260101000209</DateTime>
+    <ReceiptNr>256329</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>5540</UnitPrice>
+    <Amount>3827</Amount>
+    <Total>212016</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>2</NozzleNr>
+    <PaymentType>2</PaymentType>
+    <ECRPlate>06FDG767</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>55400</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-04 14:17:30.205 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-04 14:17:30.206 +03:00 [INF] İlk Txn ReceiptNr Değeri: 256329
+2026-01-04 14:17:30.207 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 581 Satış bulundu.
+2026-01-04 14:17:30.257 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=1.01.2026 00:02:09, Bitiş=1.01.2026 23:53:03
+2026-01-04 14:17:30.268 +03:00 [INF] DTO Oluşturuldu: 548 Otomasyon, 33 Filo, 0 Tank satışı eklendi.
+2026-01-04 14:17:30.271 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 599.200,93 TL (Oto: 531.270,51 + Filo: 67.930,42)
+2026-01-04 14:17:32.560 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=16190, Bitiş=12525, Delta=3665, Sevkiyat=0, BeklenenTüketim=3665, SatilanMiktar=3665, FARK=0
+2026-01-04 14:17:32.562 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=18284, Bitiş=18322, Delta=-38, Sevkiyat=0, BeklenenTüketim=-38, SatilanMiktar=-38, FARK=0
+2026-01-04 14:17:32.562 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=17078, Bitiş=16081, Delta=997, Sevkiyat=0, BeklenenTüketim=997, SatilanMiktar=997, FARK=0
+2026-01-04 14:17:32.563 +03:00 [INF] Tank 4 (Motorin): Başlangıç=15075, Bitiş=12276, Delta=2799, Sevkiyat=0, BeklenenTüketim=2799, SatilanMiktar=2799, FARK=0
+2026-01-04 14:17:32.564 +03:00 [INF] Tank 5 (Motorin): Başlangıç=17359, Bitiş=17385, Delta=-26, Sevkiyat=0, BeklenenTüketim=-26, SatilanMiktar=-26, FARK=0
+2026-01-04 14:17:32.565 +03:00 [INF] Tank 6 (Motorin): Başlangıç=16551, Bitiş=15777, Delta=774, Sevkiyat=0, BeklenenTüketim=774, SatilanMiktar=774, FARK=0
+2026-01-04 14:17:32.590 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-04 14:17:34.641 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:25:26.571 +03:00 [INF] XML Dosyası İşleniyor: 2025122901.zip, Boyut: 741423 bytes
+2026-01-04 15:25:26.574 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-04 15:25:26.581 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-04 15:25:26.584 +03:00 [INF] XML Parsing Debug: Toplam 982 adet 'Txn' elementi bulundu.
+2026-01-04 15:25:26.585 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>DD5EFD13</TagNr>
+    <Plate>U.ZEYLEK</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20251230000245</DateTime>
+    <ReceiptNr>254366</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2599</UnitPrice>
+    <Amount>1924</Amount>
+    <Total>50000</Total>
+    <PumpNr>13</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06CVH95</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>25990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-04 15:25:26.587 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-04 15:25:26.588 +03:00 [INF] İlk Txn ReceiptNr Değeri: 254366
+2026-01-04 15:25:26.589 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 982 Satış bulundu.
+2026-01-04 15:25:26.598 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=30.12.2025 00:02:45, Bitiş=30.12.2025 23:54:57
+2026-01-04 15:25:26.612 +03:00 [INF] DTO Oluşturuldu: 848 Otomasyon, 134 Filo, 0 Tank satışı eklendi.
+2026-01-04 15:25:26.613 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.137.622,80 TL (Oto: 858.987,11 + Filo: 278.635,69)
+2026-01-04 15:25:29.581 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=1013, Bitiş=17966, Delta=586,691299999999, Sevkiyat=17539,6913, BeklenenTüketim=586,6913, SatilanMiktar=586,691299999999, FARK=0,000000000001
+2026-01-04 15:25:29.582 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=12745, Bitiş=5085, Delta=7660, Sevkiyat=0, BeklenenTüketim=7660, SatilanMiktar=7660, FARK=0
+2026-01-04 15:25:29.583 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=980, Bitiş=18980, Delta=1,46039999999994, Sevkiyat=18001,4604, BeklenenTüketim=1,4604, SatilanMiktar=1,46039999999994, FARK=0,00000000000006
+2026-01-04 15:25:29.584 +03:00 [INF] Tank 4 (Motorin): Başlangıç=7619, Bitiş=13412, Delta=5248,4351, Sevkiyat=11041,4351, BeklenenTüketim=5248,4351, SatilanMiktar=5248,4351, FARK=0,0000
+2026-01-04 15:25:29.585 +03:00 [INF] Tank 5 (Motorin): Başlangıç=5989, Bitiş=8870, Delta=3585,0903, Sevkiyat=6466,0903, BeklenenTüketim=3585,0903, SatilanMiktar=3585,0903, FARK=0,0000
+2026-01-04 15:25:29.585 +03:00 [INF] Tank 6 (Motorin): Başlangıç=1010, Bitiş=18608, Delta=96,8757000000005, Sevkiyat=17694,8757, BeklenenTüketim=96,8757, SatilanMiktar=96,8757000000005, FARK=-0,0000000000005
+2026-01-04 15:25:29.592 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-04 15:25:49.325 +03:00 [INF] XML Dosyası İşleniyor: 2025123001.zip, Boyut: 740503 bytes
+2026-01-04 15:25:49.326 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-04 15:25:49.331 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 37, Decimals=2/2/2
+2026-01-04 15:25:49.334 +03:00 [INF] XML Parsing Debug: Toplam 981 adet 'Txn' elementi bulundu.
+2026-01-04 15:25:49.335 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>A.VURAL</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20251231000112</DateTime>
+    <ReceiptNr>255348</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2599</UnitPrice>
+    <Amount>1154</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>07HJB45</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>25990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-04 15:25:49.336 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-04 15:25:49.337 +03:00 [INF] İlk Txn ReceiptNr Değeri: 255348
+2026-01-04 15:25:49.338 +03:00 [INF] XML İstatistikleri: 6 Tank, 0 Pompa, 981 Satış bulundu.
+2026-01-04 15:25:49.345 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=31.12.2025 00:01:12, Bitiş=31.12.2025 23:30:20
+2026-01-04 15:25:49.355 +03:00 [INF] DTO Oluşturuldu: 868 Otomasyon, 113 Filo, 0 Tank satışı eklendi.
+2026-01-04 15:25:49.356 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.062.583,31 TL (Oto: 835.389,15 + Filo: 227.194,16)
+2026-01-04 15:25:52.524 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=17966, Bitiş=16190, Delta=2915,2852, Sevkiyat=1139,2852, BeklenenTüketim=2915,2852, SatilanMiktar=2915,2852, FARK=0,0000
+2026-01-04 15:25:52.524 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=5085, Bitiş=18284, Delta=2495,7256, Sevkiyat=15694,7256, BeklenenTüketim=2495,7256, SatilanMiktar=2495,7256, FARK=0,0000
+2026-01-04 15:25:52.525 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=18980, Bitiş=17078, Delta=2219,9395, Sevkiyat=317,9395, BeklenenTüketim=2219,9395, SatilanMiktar=2219,9395, FARK=0,0000
+2026-01-04 15:25:52.526 +03:00 [INF] Tank 4 (Motorin): Başlangıç=13412, Bitiş=15075, Delta=3283,9941, Sevkiyat=4946,9941, BeklenenTüketim=3283,9941, SatilanMiktar=3283,9941, FARK=0,0000
+2026-01-04 15:25:52.527 +03:00 [INF] Tank 5 (Motorin): Başlangıç=8870, Bitiş=17359, Delta=3778,4814, Sevkiyat=12267,4814, BeklenenTüketim=3778,4814, SatilanMiktar=3778,4814, FARK=0,0000
+2026-01-04 15:25:52.528 +03:00 [INF] Tank 6 (Motorin): Başlangıç=18608, Bitiş=16551, Delta=2057, Sevkiyat=0, BeklenenTüketim=2057, SatilanMiktar=2057, FARK=0
+2026-01-04 15:25:52.535 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-04 15:27:46.557 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:27:46.705 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:27:47.415 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:27:49.519 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:31:03.095 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:31:03.231 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:31:03.933 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:31:05.855 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:31:40.807 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:31:40.934 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:31:41.591 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:31:50.052 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:35:33.897 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:35:34.028 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:35:34.719 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:36:11.164 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:37:43.863 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:37:43.991 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:37:44.640 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:37:48.139 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:39:27.900 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:39:28.029 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:39:28.725 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:39:31.044 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:41:21.517 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:41:21.649 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:41:22.314 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:41:28.878 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:42:37.610 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:42:37.737 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:42:38.377 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:42:43.368 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:43:02.844 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:43:02.977 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:43:03.645 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:43:08.642 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:45:06.250 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:45:06.375 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:45:07.016 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:45:10.444 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:46:35.011 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:46:35.142 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:46:35.840 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:46:37.858 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:47:42.492 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:47:42.629 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:47:43.304 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:47:48.522 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:48:20.540 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:48:20.667 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:48:21.357 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:48:42.018 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:51:17.267 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:51:17.400 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:51:18.105 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:51:21.124 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:53:17.456 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 15:53:17.584 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 15:53:18.253 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 15:53:20.190 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:53:20.260 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:53:20.261 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:53:20.262 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:53:20.263 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:53:20.264 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:53:20.264 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:53:20.265 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:53:20.266 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> L.GUNGOR
+2026-01-04 15:53:20.293 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 15:53:20.310 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:54:02.316 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:54:02.319 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:54:02.320 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:54:02.320 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:54:02.321 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:54:02.322 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:54:02.323 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:54:02.323 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:54:02.324 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> L.GUNGOR
+2026-01-04 15:54:02.331 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:54:14.176 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:54:14.179 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:54:14.180 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:54:14.181 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:54:14.182 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:54:14.183 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:54:14.183 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:54:14.184 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:54:14.185 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> L.GUNGOR
+2026-01-04 15:54:14.190 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:54:47.053 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:54:47.054 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:54:47.055 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:54:47.056 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:54:47.057 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:54:47.057 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:54:47.058 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:54:47.059 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:54:47.059 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Lokman GÜNGÖR
+2026-01-04 15:54:47.066 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:54:50.469 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:54:50.471 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:54:50.472 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:54:50.473 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR
+2026-01-04 15:54:50.473 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:54:50.474 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:54:50.475 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:54:50.476 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:54:50.477 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Lokman GÜNGÖR
+2026-01-04 15:54:50.483 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:55:00.118 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:55:00.120 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:55:00.120 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:55:00.121 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR
+2026-01-04 15:55:00.122 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:55:00.122 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:55:00.123 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:55:00.124 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:55:00.124 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Lokman GÜNGÖR
+2026-01-04 15:55:00.128 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.

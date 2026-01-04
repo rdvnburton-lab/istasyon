@@ -50,7 +50,7 @@ namespace IstasyonDemo.Api.Services
                 .Include(m => m.Tahsilatlar).ThenInclude(t => t.Personel)
                 .Include(m => m.Giderler)
                 .Include(m => m.Gelirler)
-                .Include(m => m.Istasyon).ThenInclude(i => i.Firma)
+                .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (vardiya == null) return null;
@@ -249,11 +249,12 @@ namespace IstasyonDemo.Api.Services
         public async Task DeleteGiderAsync(int giderId, int userId, string userRole, int? istasyonId)
         {
             var gider = await _context.MarketGiderler
-                .Include(g => g.MarketVardiya).ThenInclude(m => m.Istasyon).ThenInclude(i => i.Firma)
+                .Include(g => g.MarketVardiya).ThenInclude(m => m!.Istasyon).ThenInclude(i => i!.Firma)
                 .FirstOrDefaultAsync(g => g.Id == giderId);
 
             if (gider == null) throw new KeyNotFoundException("Gider bulunamadı.");
             
+            if (gider.MarketVardiya == null) throw new InvalidOperationException("Giderin bağlı olduğu vardiya bulunamadı.");
             ValidateAccess(gider.MarketVardiya, userId, userRole, istasyonId);
 
             _context.MarketGiderler.Remove(gider);
@@ -281,11 +282,12 @@ namespace IstasyonDemo.Api.Services
         public async Task DeleteGelirAsync(int gelirId, int userId, string userRole, int? istasyonId)
         {
              var gelir = await _context.MarketGelirler
-                .Include(g => g.MarketVardiya).ThenInclude(m => m.Istasyon).ThenInclude(i => i.Firma)
+                .Include(g => g.MarketVardiya).ThenInclude(m => m!.Istasyon).ThenInclude(i => i!.Firma)
                 .FirstOrDefaultAsync(g => g.Id == gelirId);
 
             if (gelir == null) throw new KeyNotFoundException("Gelir bulunamadı.");
             
+            if (gelir.MarketVardiya == null) throw new InvalidOperationException("Gelirin bağlı olduğu vardiya bulunamadı.");
             ValidateAccess(gelir.MarketVardiya, userId, userRole, istasyonId);
 
             _context.MarketGelirler.Remove(gelir);
@@ -385,7 +387,7 @@ namespace IstasyonDemo.Api.Services
         private async Task<MarketVardiya> GetAndValidateAsync(int id, int userId, string userRole, int? istasyonId)
         {
             var vardiya = await _context.MarketVardiyalar
-                .Include(m => m.Istasyon).ThenInclude(i => i.Firma)
+                .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
                 .Include(m => m.ZRaporlari)
                 .Include(m => m.Tahsilatlar)
                 .Include(m => m.Giderler)

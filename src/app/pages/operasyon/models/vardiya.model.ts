@@ -117,6 +117,7 @@ export enum YakitTuru {
 export interface PersonelOtomasyonOzet {
     personelId: number;
     personelAdi: string;
+    gercekPersonelAdi?: string; // Real Name (Ad Soyad)
     personelKeyId: string;
     toplamLitre: number;
     toplamTutar: number;

@@ -350,7 +350,7 @@ namespace IstasyonDemo.Api.Controllers
 
                 if (IsPatron)
                 {
-                    if (v.Istasyon?.Firma?.PatronId != CurrentUserId) return Forbid();
+                    if (v.Istasyon == null || v.Istasyon.Firma == null || v.Istasyon.Firma.PatronId != CurrentUserId) return Forbid();
                 }
                 else
                 {
