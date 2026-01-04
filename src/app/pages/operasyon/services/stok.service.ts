@@ -137,4 +137,61 @@ export class StokService {
     ayKapat(yil: number, ay: number): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/ay-kapat?yil=${yil}&ay=${ay}`, {});
     }
+
+    // Karma stok özeti - XML (Motorin/Benzin) + Manuel (LPG)
+    getKarmaStokOzeti(yil: number, ay: number, istasyonId?: number): Observable<KarmaStokOzet> {
+        let url = `${this.apiUrl}/karma-ozet?yil=${yil}&ay=${ay}`;
+        if (istasyonId) {
+            url += `&istasyonId=${istasyonId}`;
+        }
+        return this.http.get<KarmaStokOzet>(url);
+    }
+}
+
+// Karma Stok Response Interfaces
+export interface XmlStokOzet {
+    yakitTipi: string;
+    toplamSevkiyat: number;
+    toplamSatis: number;
+    sonStok: number;
+    ilkStok: number;
+    toplamFark: number;
+    kayitSayisi: number;
+}
+
+export interface ManuelStokOzet {
+    yakitTipi: string;
+    toplamGiris: number;
+    toplamSatis: number;
+    kaynak: string;
+}
+
+export interface VardiyaTankHareket {
+    vardiyaId: number;
+    tarih: Date;
+    tanklar: {
+        tankNo: number;
+        tankAdi: string;
+        yakitTipi: string;
+        baslangicStok: number;
+        bitisStok: number;
+        sevkiyatMiktar: number;
+        satilanMiktar: number;
+        farkMiktar: number;
+    }[];
+}
+
+export interface KarmaStokOzet {
+    xmlKaynakli: XmlStokOzet[];
+    manuelKaynakli: ManuelStokOzet[];
+    vardiyaHareketleri: VardiyaTankHareket[];
+    donem: { yil: number; ay: number };
+    ozet: {
+        toplamMotorinStok: number;
+        toplamBenzinStok: number;
+        motorinSevkiyat: number;
+        benzinSevkiyat: number;
+        motorinSatis: number;
+        benzinSatis: number;
+    };
 }

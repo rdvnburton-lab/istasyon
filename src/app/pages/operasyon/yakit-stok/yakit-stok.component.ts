@@ -15,7 +15,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { AccordionModule } from 'primeng/accordion';
-import { StokService, TankGiris, TankStokOzet, StokGirisFis, CreateFaturaGiris } from '../services/stok.service';
+import { StokService, TankGiris, TankStokOzet, StokGirisFis, CreateFaturaGiris, KarmaStokOzet, XmlStokOzet, VardiyaTankHareket } from '../services/stok.service';
 import { YakitService, Yakit } from '../../../services/yakit.service';
 import { DefinitionsService, DefinitionType } from '../../../services/definitions.service';
 
@@ -72,6 +72,11 @@ export class YakitStokComponent implements OnInit {
     girisler: StokGirisFis[] = [];
     yakitList: Yakit[] = [];
     gelisYontemleri: { label: string; value: string }[] = [];
+
+    // Karma Stok (XML Kaynaklı - Motorin/Benzin)
+    karmaStokOzet: KarmaStokOzet | null = null;
+    xmlStokVerileri: XmlStokOzet[] = [];
+    vardiyaHareketleri: VardiyaTankHareket[] = [];
 
     // Form - Invoice Based
     yeniFatura: {
@@ -162,6 +167,16 @@ export class YakitStokComponent implements OnInit {
             this.stokService.getFaturaStokDurumu().subscribe({
                 next: (data) => { this.faturaStokDurumu = data; },
                 error: (err) => { console.error('Fatura stok durumu yüklenemedi:', err); }
+            });
+
+            // KARMA STOK ÖZETİ (XML Kaynaklı - Motorin/Benzin)
+            this.stokService.getKarmaStokOzeti(this.selectedYear.value, this.selectedMonth.value + 1).subscribe({
+                next: (data) => {
+                    this.karmaStokOzet = data;
+                    this.xmlStokVerileri = data.xmlKaynakli || [];
+                    this.vardiyaHareketleri = data.vardiyaHareketleri || [];
+                },
+                error: (err) => { console.error('Karma stok özeti yüklenemedi:', err); }
             });
         }
 

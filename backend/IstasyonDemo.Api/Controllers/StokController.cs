@@ -339,6 +339,130 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         /// <summary>
+        /// Karma stok özeti - XML (Motorin/Benzin) + Manuel (LPG)
+        /// </summary>
+        [HttpGet("karma-ozet")]
+        public async Task<IActionResult> GetKarmaOzet([FromQuery] int? istasyonId, [FromQuery] int yil, [FromQuery] int ay)
+        {
+            var startDate = DateTime.SpecifyKind(new DateTime(yil, ay, 1), DateTimeKind.Utc);
+            var endDate = startDate.AddMonths(1);
+
+            // 1. XML Kaynaklı (VardiyaTankEnvanterleri) - Motorin, Benzin
+            var xmlQuery = _context.VardiyaTankEnvanterleri
+                .Include(t => t.Vardiya)
+                .Where(t => t.KayitTarihi >= startDate && t.KayitTarihi < endDate)
+                .Where(t => t.YakitTipi != null && (t.YakitTipi.ToUpper().Contains("MOTORIN") || 
+                                                     t.YakitTipi.ToUpper().Contains("BENZIN") ||
+                                                     t.YakitTipi.ToUpper().Contains("DIESEL") ||
+                                                     t.YakitTipi.ToUpper().Contains("KURSUN")));
+
+            if (istasyonId.HasValue)
+            {
+                xmlQuery = xmlQuery.Where(t => t.Vardiya != null && t.Vardiya.IstasyonId == istasyonId.Value);
+            }
+
+            var xmlVerileri = await xmlQuery.ToListAsync();
+
+            // Yakıt tipine göre grupla ve özetle
+            var xmlOzet = xmlVerileri
+                .GroupBy(t => NormalizeYakitTipi(t.YakitTipi))
+                .Select(g => new 
+                {
+                    YakitTipi = g.Key,
+                    ToplamSevkiyat = g.Sum(t => t.SevkiyatMiktar),
+                    ToplamSatis = g.Sum(t => t.SatilanMiktar),
+                    SonStok = g.OrderByDescending(t => t.KayitTarihi).FirstOrDefault()?.BitisStok ?? 0,
+                    IlkStok = g.OrderBy(t => t.KayitTarihi).FirstOrDefault()?.BaslangicStok ?? 0,
+                    ToplamFark = g.Sum(t => t.FarkMiktar),
+                    KayitSayisi = g.Select(t => t.VardiyaId).Distinct().Count() // Benzersiz vardiya sayısı
+                })
+                .ToList();
+
+            // 2. Manuel Kaynaklı (TankGiris) - LPG
+            var lpgYakitlar = await _context.Yakitlar
+                .Where(y => y.Ad.ToUpper().Contains("LPG") || y.Ad.ToUpper().Contains("OTOGAZ"))
+                .Select(y => y.Id)
+                .ToListAsync();
+
+            var lpgGirisler = await _context.TankGirisler
+                .Where(t => t.Tarih >= startDate && t.Tarih < endDate)
+                .Where(t => lpgYakitlar.Contains(t.YakitId))
+                .SumAsync(t => t.Litre);
+
+            // LPG satışlarını OtomasyonSatislar'dan al (onaylı vardiyalar)
+            var lpgSatislar = await _context.OtomasyonSatislar
+                .Include(s => s.Vardiya)
+                .Where(s => s.Vardiya != null && s.Vardiya.Durum == VardiyaDurum.ONAYLANDI)
+                .Where(s => s.Vardiya!.BaslangicTarihi >= startDate && s.Vardiya.BaslangicTarihi < endDate)
+                .Where(s => s.YakitTuru.ToUpper().Contains("LPG") || s.YakitTuru.ToUpper().Contains("OTOGAZ"))
+                .SumAsync(s => s.Litre);
+
+            var manuelOzet = new List<object>();
+            if (lpgYakitlar.Any())
+            {
+                manuelOzet.Add(new
+                {
+                    YakitTipi = "LPG",
+                    ToplamGiris = lpgGirisler,
+                    ToplamSatis = lpgSatislar,
+                    Kaynak = "FATURA"
+                });
+            }
+
+            // 3. Vardiya listesi (hareketler için)
+            var vardiyaHareketleri = xmlVerileri
+                .GroupBy(t => t.VardiyaId)
+                .Select(g => new
+                {
+                    VardiyaId = g.Key,
+                    Tarih = g.First().Vardiya?.BaslangicTarihi,
+                    Tanklar = g.Select(t => new
+                    {
+                        t.TankNo,
+                        t.TankAdi,
+                        t.YakitTipi,
+                        t.BaslangicStok,
+                        t.BitisStok,
+                        t.SevkiyatMiktar,
+                        t.SatilanMiktar,
+                        t.FarkMiktar
+                    }).ToList()
+                })
+                .OrderByDescending(v => v.Tarih)
+                .ToList();
+
+            return Ok(new
+            {
+                XmlKaynakli = xmlOzet,
+                ManuelKaynakli = manuelOzet,
+                VardiyaHareketleri = vardiyaHareketleri,
+                Donem = new { Yil = yil, Ay = ay },
+                Ozet = new
+                {
+                    ToplamMotorinStok = xmlOzet.FirstOrDefault(x => x.YakitTipi == "MOTORIN")?.SonStok ?? 0,
+                    ToplamBenzinStok = xmlOzet.FirstOrDefault(x => x.YakitTipi == "BENZIN")?.SonStok ?? 0,
+                    MotorinSevkiyat = xmlOzet.FirstOrDefault(x => x.YakitTipi == "MOTORIN")?.ToplamSevkiyat ?? 0,
+                    BenzinSevkiyat = xmlOzet.FirstOrDefault(x => x.YakitTipi == "BENZIN")?.ToplamSevkiyat ?? 0,
+                    MotorinSatis = xmlOzet.FirstOrDefault(x => x.YakitTipi == "MOTORIN")?.ToplamSatis ?? 0,
+                    BenzinSatis = xmlOzet.FirstOrDefault(x => x.YakitTipi == "BENZIN")?.ToplamSatis ?? 0
+                }
+            });
+        }
+
+        private static string NormalizeYakitTipi(string yakitTipi)
+        {
+            if (string.IsNullOrEmpty(yakitTipi)) return "DİĞER";
+            var upper = yakitTipi.ToUpper();
+            if (upper.Contains("MOTORIN") || upper.Contains("DIESEL") || upper.Contains("DIZEL"))
+                return "MOTORIN";
+            if (upper.Contains("BENZIN") || upper.Contains("KURSUN") || upper.Contains("95") || upper.Contains("UNLEADED"))
+                return "BENZIN";
+            if (upper.Contains("LPG") || upper.Contains("OTOGAZ"))
+                return "LPG";
+            return upper;
+        }
+
+        /// <summary>
         /// Aylık stok raporu - hesaplanmış verileri döndürür
         /// </summary>
         [HttpGet("aylik-rapor")]
