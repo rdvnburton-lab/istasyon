@@ -126,7 +126,8 @@ namespace IstasyonDemo.Api.Services
                     GiderTuru = g.GiderTuru,
                     Tutar = g.Tutar,
                     Aciklama = g.Aciklama,
-                    BelgeTarihi = g.BelgeTarihi
+                    BelgeTarihi = g.BelgeTarihi,
+                    FarkiEtkilesin = g.FarkiEtkilesin
                 });
             }
 
@@ -137,7 +138,8 @@ namespace IstasyonDemo.Api.Services
                     GelirTuru = g.GelirTuru,
                     Tutar = g.Tutar,
                     Aciklama = g.Aciklama,
-                    BelgeTarihi = g.BelgeTarihi
+                    BelgeTarihi = g.BelgeTarihi,
+                    FarkiEtkilesin = g.FarkiEtkilesin
                 });
             }
 
@@ -184,8 +186,6 @@ namespace IstasyonDemo.Api.Services
             await RecalculateTotals(vardiya);
 
             return zRaporu;
-
-            return zRaporu;
         }
 
         public async Task AddTahsilatAsync(int vardiyaId, MarketTahsilatDto dto, int userId, string userRole, int? istasyonId)
@@ -200,6 +200,7 @@ namespace IstasyonDemo.Api.Services
                 mevcut.ParoPuan = dto.ParoPuan;
                 mevcut.SistemSatisTutari = dto.SistemSatisTutari;
                 mevcut.Toplam = dto.Toplam;
+                mevcut.PersonelFazlasi = dto.PersonelFazlasi;
                 mevcut.BankaId = dto.BankaId;
                 mevcut.KrediKartiDetayJson = dto.KrediKartiDetayJson;
                 mevcut.Aciklama = dto.Aciklama;
@@ -215,6 +216,7 @@ namespace IstasyonDemo.Api.Services
                     ParoPuan = dto.ParoPuan,
                     SistemSatisTutari = dto.SistemSatisTutari,
                     Toplam = dto.Toplam,
+                    PersonelFazlasi = dto.PersonelFazlasi,
                     BankaId = dto.BankaId,
                     KrediKartiDetayJson = dto.KrediKartiDetayJson,
                     Aciklama = dto.Aciklama
@@ -235,13 +237,13 @@ namespace IstasyonDemo.Api.Services
 
             if (tahsilat == null) throw new KeyNotFoundException("Tahsilat kaydı bulunamadı.");
 
-            if (tahsilat.MarketVardiya == null) throw new InvalidOperationException("Tahsilatın bağlı olduğu vardiya bulunamadı.");
-            ValidateAccess(tahsilat.MarketVardiya, userId, userRole, istasyonId);
+            var vardiya = tahsilat.MarketVardiya;
+            if (vardiya == null) throw new InvalidOperationException("Tahsilatın bağlı olduğu vardiya bulunamadı.");
+            ValidateAccess(vardiya, userId, userRole, istasyonId);
 
             _context.MarketTahsilatlar.Remove(tahsilat);
-            tahsilat.MarketVardiya.Tahsilatlar.Remove(tahsilat);
             await _context.SaveChangesAsync();
-            await RecalculateTotals(tahsilat.MarketVardiya);
+            await RecalculateTotals(vardiya);
         }
 
         public async Task<MarketGider> AddGiderAsync(int vardiyaId, MarketGiderDto dto, int userId, string userRole, int? istasyonId)
@@ -254,7 +256,8 @@ namespace IstasyonDemo.Api.Services
                 GiderTuru = dto.GiderTuru,
                 Tutar = dto.Tutar,
                 Aciklama = dto.Aciklama,
-                BelgeTarihi = dto.BelgeTarihi
+                BelgeTarihi = dto.BelgeTarihi,
+                FarkiEtkilesin = dto.FarkiEtkilesin
             };
             _context.MarketGiderler.Add(gider);
             vardiya.Giderler.Add(gider);
@@ -271,13 +274,13 @@ namespace IstasyonDemo.Api.Services
 
             if (gider == null) throw new KeyNotFoundException("Gider bulunamadı.");
             
-            if (gider.MarketVardiya == null) throw new InvalidOperationException("Giderin bağlı olduğu vardiya bulunamadı.");
-            ValidateAccess(gider.MarketVardiya, userId, userRole, istasyonId);
+            var vardiya = gider.MarketVardiya;
+            if (vardiya == null) throw new InvalidOperationException("Giderin bağlı olduğu vardiya bulunamadı.");
+            ValidateAccess(vardiya, userId, userRole, istasyonId);
 
             _context.MarketGiderler.Remove(gider);
-            gider.MarketVardiya.Giderler.Remove(gider);
             await _context.SaveChangesAsync();
-            await RecalculateTotals(gider.MarketVardiya);
+            await RecalculateTotals(vardiya);
         }
 
         public async Task<MarketGelir> AddGelirAsync(int vardiyaId, MarketGelirDto dto, int userId, string userRole, int? istasyonId)
@@ -289,7 +292,8 @@ namespace IstasyonDemo.Api.Services
                 GelirTuru = dto.GelirTuru,
                 Tutar = dto.Tutar,
                 Aciklama = dto.Aciklama,
-                BelgeTarihi = dto.BelgeTarihi
+                BelgeTarihi = dto.BelgeTarihi,
+                FarkiEtkilesin = dto.FarkiEtkilesin
             };
             _context.MarketGelirler.Add(gelir);
             vardiya.Gelirler.Add(gelir);
@@ -306,13 +310,13 @@ namespace IstasyonDemo.Api.Services
 
             if (gelir == null) throw new KeyNotFoundException("Gelir bulunamadı.");
             
-            if (gelir.MarketVardiya == null) throw new InvalidOperationException("Gelirin bağlı olduğu vardiya bulunamadı.");
-            ValidateAccess(gelir.MarketVardiya, userId, userRole, istasyonId);
+            var vardiya = gelir.MarketVardiya;
+            if (vardiya == null) throw new InvalidOperationException("Gelirin bağlı olduğu vardiya bulunamadı.");
+            ValidateAccess(vardiya, userId, userRole, istasyonId);
 
             _context.MarketGelirler.Remove(gelir);
-            gelir.MarketVardiya.Gelirler.Remove(gelir);
             await _context.SaveChangesAsync();
-            await RecalculateTotals(gelir.MarketVardiya);
+            await RecalculateTotals(vardiya);
         }
 
         public async Task OnayaGonderAsync(int id, int userId, string userRole, int? istasyonId)
@@ -438,19 +442,20 @@ namespace IstasyonDemo.Api.Services
 
         private async Task RecalculateTotals(MarketVardiya vardiya)
         {
-             // Assumes navigation properties are loaded or updated.
-             // If called after adding/removing items on the tracked entity context, usually fine.
-             // But for safety, explicit Sum from Context is synonymous if Saved.
-             // But we are using the tracked entity object in memory which has the updates.
-             
-            var tahsilat = vardiya.Tahsilatlar.Sum(t => t.Toplam);
-            var gelir = vardiya.Gelirler.Sum(g => g.Tutar);
-            var gider = vardiya.Giderler.Sum(g => g.Tutar);
-            var satis = vardiya.ZRaporlari.Sum(z => z.GenelToplam);
+            var vid = vardiya.Id;
+            var tahsilat = await _context.MarketTahsilatlar.Where(t => t.MarketVardiyaId == vid).SumAsync(t => t.Toplam);
+            var toplamGelir = await _context.MarketGelirler.Where(g => g.MarketVardiyaId == vid).SumAsync(g => g.Tutar);
+            var farkGelir = await _context.MarketGelirler.Where(g => g.MarketVardiyaId == vid && g.FarkiEtkilesin).SumAsync(g => g.Tutar);
+            var toplamGider = await _context.MarketGiderler.Where(g => g.MarketVardiyaId == vid).SumAsync(g => g.Tutar);
+            var farkGider = await _context.MarketGiderler.Where(g => g.MarketVardiyaId == vid && g.FarkiEtkilesin).SumAsync(g => g.Tutar);
+            var satis = await _context.MarketZRaporlari.Where(z => z.MarketVardiyaId == vid).SumAsync(z => z.GenelToplam);
+            var fazlalik = await _context.MarketTahsilatlar.Where(t => t.MarketVardiyaId == vid).SumAsync(t => t.PersonelFazlasi);
             
             vardiya.ToplamSatisTutari = satis;
-            vardiya.ToplamTeslimatTutari = tahsilat + gelir - gider;
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
+            vardiya.ToplamTeslimatTutari = tahsilat + toplamGelir - toplamGider;
+            
+            // Fark hesabı: (Tahsilat + Farkı etkileyen gelirler - Farkı etkileyen giderler) - (Satış + Personel Fazlası)
+            vardiya.ToplamFark = (tahsilat + farkGelir - farkGider - fazlalik) - vardiya.ToplamSatisTutari;
             
             await _context.SaveChangesAsync();
         }

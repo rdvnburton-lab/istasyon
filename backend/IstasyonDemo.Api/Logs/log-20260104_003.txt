@@ -2032,3 +2032,234 @@ System.InvalidOperationException: Z-Raporu KDV tutarsız: Oranlara göre hesapla
 2026-01-04 21:37:08.101 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
 2026-01-04 21:37:08.235 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
 2026-01-04 21:37:08.917 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 22:36:13.855 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:36:13.994 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 22:36:14.598 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:19.605 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 2)...
+2026-01-04 22:36:19.639 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:24.648 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 3)...
+2026-01-04 22:36:24.688 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:29.702 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 4)...
+2026-01-04 22:36:29.709 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:34.711 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 5)...
+2026-01-04 22:36:34.719 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:39.730 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 6)...
+2026-01-04 22:36:39.740 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:44.744 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 7)...
+2026-01-04 22:36:44.753 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 22:36:48.948 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:37:00.846 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:37:10.602 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:37:10.746 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 22:37:11.409 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 22:45:34.432 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 448
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 317
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 gelirId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method1767(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:45:37.877 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 448
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 317
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 gelirId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method1767(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:48:03.971 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:48:04.106 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 22:48:04.760 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 22:51:18.698 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:51:18.837 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 22:51:19.554 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 22:53:11.399 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 446
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 315
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method270(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:53:22.153 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 446
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 315
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method270(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:54:31.453 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 446
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGiderAsync(Int32 giderId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 280
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGider(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 101
+   at lambda_method1832(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:57:41.821 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 446
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 315
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method270(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:59:33.231 +03:00 [ERR] Something went wrong: Object reference not set to an instance of an object.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 446
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 315
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method270(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 22:59:42.504 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 22:59:42.643 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 22:59:43.345 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 23:00:08.629 +03:00 [ERR] Something went wrong: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+ ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at System.Linq.Expressions.Interpreter.Instruction.NullCheck(Object o)
+   at System.Linq.Expressions.Interpreter.FuncCallInstruction`2.Run(InterpretedFrame frame)
+   at System.Linq.Expressions.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at System.Linq.Expressions.Interpreter.LightLambda.Run(Object[] arguments)
+   at System.Dynamic.Utils.DelegateHelpers.FuncThunk[TReturn](Func`2 handler)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|70_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.<Evaluate>g__EvaluateCore|70_0(Expression expression, String& parameterName, Boolean& isContextAccessor)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Evaluate(Expression expression, String& parameterName, Boolean& isContextAccessor)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ProcessEvaluatableRoot(Expression evaluatableRoot, State& state, Boolean forceEvaluation)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitBinary(BinaryExpression binary)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitLambda[T](Expression`1 lambda)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitUnary(UnaryExpression unary)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit[T](ReadOnlyCollection`1 expressions, Func`2 elementVisitor, StateType& aggregateStateType, State[]& expressionStates, Boolean poolExpressionStates)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.VisitMethodCall(MethodCallExpression methodCall)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.Visit(Expression expression, State& state)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues, Boolean precompiledQuery, IReadOnlySet`1& nonNullableReferenceTypeParameters)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ExpressionTreeFuncletizer.ExtractParameters(Expression expression, IParameterValues parameterValues, Boolean parameterize, Boolean clearParameterizedValues)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExtractParameters(Expression query, IParameterValues parameterValues, IDiagnosticsLogger`1 logger, Boolean compiledQuery, Boolean generateContextAccessors)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteCore[TResult](Expression query, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.SumAsync[TSource](IQueryable`1 source, Expression`1 selector, CancellationToken cancellationToken)
+   at IstasyonDemo.Api.Services.MarketVardiyaService.RecalculateTotals(MarketVardiya vardiya) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 441
+   at IstasyonDemo.Api.Services.MarketVardiyaService.DeleteGelirAsync(Int32 gelirId, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 315
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.DeleteGelir(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 121
+   at lambda_method2472(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 23:01:12.863 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 23:01:12.999 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 23:01:13.709 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 23:01:25.032 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 23:01:25.181 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 23:01:25.891 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.

@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260104193649_AddPersonelFazlasi")]
+    partial class AddPersonelFazlasi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -504,9 +507,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Property<DateTime?>("BelgeTarihi")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("FarkiEtkilesin")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("GelirTuru")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -543,9 +543,6 @@ namespace IstasyonDemo.Api.Migrations
 
                     b.Property<DateTime?>("BelgeTarihi")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("FarkiEtkilesin")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("GiderTuru")
                         .IsRequired()

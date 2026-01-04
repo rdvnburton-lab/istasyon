@@ -54,6 +54,7 @@ namespace IstasyonDemo.Api.Dtos
         public decimal ParoPuan { get; set; }
         public decimal SistemSatisTutari { get; set; }
         public decimal Toplam { get; set; }
+        public decimal PersonelFazlasi { get; set; }
         public int? BankaId { get; set; }
         public string? KrediKartiDetayJson { get; set; }
         public string? Aciklama { get; set; }
@@ -65,13 +66,16 @@ namespace IstasyonDemo.Api.Dtos
         public decimal Tutar { get; set; }
         public string Aciklama { get; set; } = string.Empty;
         public DateTime? BelgeTarihi { get; set; }
+        public bool FarkiEtkilesin { get; set; }
     }
 
     public class MarketGelirDto
     {
+        public int Id { get; set; }
         public string GelirTuru { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public string Aciklama { get; set; } = string.Empty;
         public DateTime? BelgeTarihi { get; set; }
+        public bool FarkiEtkilesin { get; set; }
     }
 }

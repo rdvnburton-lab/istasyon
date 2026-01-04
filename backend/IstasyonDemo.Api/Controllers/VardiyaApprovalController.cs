@@ -23,7 +23,7 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpGet("onay-bekleyenler")]
-        [Authorize(Roles = "admin,patron,vardiya sorumlusu,istasyon sorumlusu")]
+        [Authorize(Roles = "admin,patron,vardiya sorumlusu,istasyon sorumlusu,market sorumlusu")]
         public async Task<IActionResult> GetOnayBekleyenler()
         {
             IQueryable<Vardiya> query = _context.Vardiyalar

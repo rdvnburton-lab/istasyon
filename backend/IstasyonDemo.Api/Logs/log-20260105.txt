@@ -1,0 +1,12 @@
+2026-01-05 00:32:02.284 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:32:02.418 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-05 00:34:38.074 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:34:49.954 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:34:58.215 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:34:58.349 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-05 00:34:59.028 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-05 00:45:10.252 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:45:21.566 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:45:43.159 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-05 00:45:43.287 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-05 00:45:43.941 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.

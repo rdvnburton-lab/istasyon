@@ -74,11 +74,11 @@ namespace IstasyonDemo.Api.Controllers
               catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
-        [HttpDelete("tahsilat/{tahsilatId}")]
-        public async Task<ActionResult> DeleteTahsilat(int tahsilatId)
+        [HttpDelete("tahsilat/{id}")]
+        public async Task<ActionResult> DeleteTahsilat(int id)
         {
              try {
-                await _service.DeleteTahsilatAsync(tahsilatId, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                await _service.DeleteTahsilatAsync(id, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
                 return Ok();
             } catch (KeyNotFoundException) { return NotFound(); }
               catch (UnauthorizedAccessException) { return Forbid(); }
@@ -94,11 +94,11 @@ namespace IstasyonDemo.Api.Controllers
               catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
-        [HttpDelete("gider/{giderId}")]
-        public async Task<ActionResult> DeleteGider(int giderId)
+        [HttpDelete("gider/{id}")]
+        public async Task<ActionResult> DeleteGider(int id)
         {
              try {
-                await _service.DeleteGiderAsync(giderId, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                await _service.DeleteGiderAsync(id, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
                 return Ok();
             } catch (KeyNotFoundException) { return NotFound(); }
               catch (UnauthorizedAccessException) { return Forbid(); }
@@ -114,11 +114,11 @@ namespace IstasyonDemo.Api.Controllers
               catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
-        [HttpDelete("gelir/{gelirId}")]
-        public async Task<ActionResult> DeleteGelir(int gelirId)
+        [HttpDelete("gelir/{id}")]
+        public async Task<ActionResult> DeleteGelir(int id)
         {
              try {
-                await _service.DeleteGelirAsync(gelirId, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                await _service.DeleteGelirAsync(id, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
                 return Ok();
             } catch (KeyNotFoundException) { return NotFound(); }
               catch (UnauthorizedAccessException) { return Forbid(); }

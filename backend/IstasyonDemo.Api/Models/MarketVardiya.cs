@@ -106,6 +106,9 @@ namespace IstasyonDemo.Api.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Toplam { get; set; }
         
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PersonelFazlasi { get; set; }
+        
         [MaxLength(255)]
         public string? Aciklama { get; set; }
         
@@ -130,6 +133,7 @@ namespace IstasyonDemo.Api.Models
         public string Aciklama { get; set; } = string.Empty;
         
         public DateTime? BelgeTarihi { get; set; }
+        public bool FarkiEtkilesin { get; set; } = true;
         public DateTime OlusturmaTarihi { get; set; } = DateTime.UtcNow;
     }
 
@@ -149,6 +153,7 @@ namespace IstasyonDemo.Api.Models
         public string Aciklama { get; set; } = string.Empty;
         
         public DateTime? BelgeTarihi { get; set; }
+        public bool FarkiEtkilesin { get; set; } = true;
         public DateTime OlusturmaTarihi { get; set; } = DateTime.UtcNow;
     }
 }

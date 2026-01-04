@@ -301,7 +301,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
-            else if (CurrentUserRole == "market_sorumlusu")
+            else if (CurrentUserRole == "market sorumlusu")
             {
                 // Market sorumlusu should not see pump shifts
                 return Ok(new { Items = new List<object>(), Summary = new { ToplamCiro = 0, ToplamIslem = 0, BenzersizPersonelSayisi = 0 } });
