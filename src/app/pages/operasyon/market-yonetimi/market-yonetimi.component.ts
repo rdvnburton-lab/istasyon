@@ -19,6 +19,8 @@ import { MessageModule } from 'primeng/message';
 import { PanelModule } from 'primeng/panel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { MessageService, ConfirmationService } from 'primeng/api';
 
@@ -57,7 +59,10 @@ import { forkJoin } from 'rxjs';
         TagModule,
         DividerModule,
         InputNumberModule,
+        InputNumberModule,
         TextareaModule,
+        ToggleSwitchModule,
+        CheckboxModule,
         DialogModule,
         ConfirmDialogModule,
         ToastModule,
@@ -102,6 +107,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
         nakit: 0,
         krediKarti: 0,
         paroPuan: 0,
+        personelFazlasi: 0,
         bankaId: null as number | null,
         krediKartiDetay: [] as { bankaId: number, bankaAdi: string, tutar: number }[]
     };
@@ -172,7 +178,8 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             krediKarti: 0,
             paroPuan: 0,
             teslimat: 0,
-            fark: 0
+            fark: 0,
+            personelFazlasi: 0
         };
 
         this.yonetilenPersoneller.forEach(p => {
@@ -181,6 +188,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             ozet.krediKarti += p.krediKarti || 0;
             ozet.paroPuan += p.paroPuan || 0;
             ozet.teslimat += p.toplamTeslimat || 0;
+            ozet.personelFazlasi += p.personelFazlasi || 0;
             ozet.fark += p.fark || 0;
         });
 
@@ -191,20 +199,36 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
         if (!this.seciliMarketVardiya) return null;
 
         const pOzet = this.personelListesiOzet;
-        const giderTop = this.giderler.reduce((sum, g) => sum + (g.tutar || 0), 0);
-        const gelirTop = this.gelirler.reduce((sum, g) => sum + (g.tutar || 0), 0);
-        const satisTop = this.seciliMarketVardiya.toplamSatisTutari || 0;
+        const giderTop = this.giderler.reduce((sum, l) => sum + (l.tutar || 0), 0);
+        const gelirTop = this.gelirler.reduce((sum, l) => sum + (l.tutar || 0), 0);
 
-        const netKasa = pOzet.teslimat + gelirTop - giderTop;
-        const fark = netKasa - satisTop;
+        // Farkı etkileyen gelirlerin toplamı
+        const gelirFarkTop = this.gelirler
+            .filter(g => g.farkiEtkilesin !== false)
+            .reduce((sum, l) => sum + (l.tutar || 0), 0);
+
+        // Farkı etkileyen giderlerin toplamı
+        const giderFarkTop = this.giderler
+            .filter(g => g.farkiEtkilesin !== false)
+            .reduce((sum, l) => sum + (l.tutar || 0), 0);
+
+        // Z-Raporu ve Personel reaktifliği için computed değerler
+        const satisTop = this.zRaporu?.genelToplam ?? this.seciliMarketVardiya.toplamSatisTutari ?? 0;
+        const computedNetKasa = pOzet.teslimat + gelirTop - giderTop;
+
+        // Fark = (Tahsilat + FarkEtkileyenGelir - FarkEtkileyenGider - Fazlalık) - Satış
+        const computedFark = (pOzet.teslimat + gelirFarkTop - giderFarkTop - pOzet.personelFazlasi) - satisTop;
 
         return {
             sistemSatis: satisTop,
             teslimatPersonel: pOzet.teslimat,
+            teslimatNakit: pOzet.nakit,
+            teslimatKrediKarti: pOzet.krediKarti,
             giderler: giderTop,
             gelirler: gelirTop,
-            netKasa: netKasa,
-            fark: fark
+            netKasa: computedNetKasa,
+            fark: computedFark,
+            personelFazlasi: pOzet.personelFazlasi
         };
     }
 
@@ -215,6 +239,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             nakit: 0,
             krediKarti: 0,
             paroPuan: 0,
+            personelFazlasi: 0,
             bankaId: null,
             krediKartiDetay: []
         };
@@ -309,6 +334,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             nakit: 0,
             krediKarti: 0,
             paroPuan: 0,
+            personelFazlasi: 0,
             bankaId: null,
             krediKartiDetay: []
         };
@@ -362,8 +388,9 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
                 nakit: t.nakit,
                 krediKarti: t.krediKarti,
                 paroPuan: t.paroPuan || 0,
+                personelFazlasi: t.personelFazlasi || 0,
                 toplamTeslimat: t.toplam,
-                fark: t.toplam - (t.sistemSatisTutari || 0),
+                fark: (t.toplam - (t.personelFazlasi || 0)) - (t.sistemSatisTutari || 0),
                 olusturmaTarihi: t.olusturmaTarihi,
                 krediKartiDetayJson: t.krediKartiDetayJson
             }));
@@ -567,6 +594,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             nakit: this.personelIslemForm.nakit,
             krediKarti: this.personelIslemForm.krediKarti,
             paroPuan: this.personelIslemForm.paroPuan,
+            personelFazlasi: this.personelIslemForm.personelFazlasi,
             toplam: this.personelIslemForm.nakit + this.personelIslemForm.krediKarti + this.personelIslemForm.paroPuan,
             krediKartiDetayJson: JSON.stringify(this.personelIslemForm.krediKartiDetay),
             bankaId: null,
@@ -593,6 +621,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             nakit: 0,
             krediKarti: 0,
             paroPuan: 0,
+            personelFazlasi: 0,
             bankaId: null,
             krediKartiDetay: []
         };
@@ -629,6 +658,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
             nakit: kayit.nakit || 0,
             krediKarti: kayit.krediKarti || 0,
             paroPuan: kayit.paroPuan || 0,
+            personelFazlasi: kayit.personelFazlasi || 0,
             bankaId: null,
             krediKartiDetay: kayit.krediKartiDetayJson ? JSON.parse(kayit.krediKartiDetayJson) : []
         };
@@ -641,12 +671,30 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
     }
 
     getPersonelFark(): number {
-        return this.getPersonelIslemToplam() - (this.personelIslemForm.sistemSatisTutari || 0);
+        const teslimat = this.getPersonelIslemToplam();
+        const satis = this.personelIslemForm.sistemSatisTutari || 0;
+        const fazlalik = this.personelIslemForm.personelFazlasi || 0;
+        return (teslimat - fazlalik) - satis;
+    }
+
+    personelFazlasiniKasayaAktar(): void {
+        const teslimat = this.getPersonelIslemToplam();
+        const satis = this.personelIslemForm.sistemSatisTutari || 0;
+        const fark = teslimat - satis;
+
+        if (fark > 0) {
+            this.personelIslemForm.personelFazlasi = fark;
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Başarılı',
+                detail: `${fark.toFixed(2)} ₺ tutarındaki fazlalık kasaya aktarıldı. Personel hesabı sıfırlandı.`
+            });
+        }
     }
 
     // Gider işlemleri
     giderDialogAc(): void {
-        this.giderForm = { giderTuru: null, tutar: 0, aciklama: '' };
+        this.giderForm = { giderTuru: null, tutar: 0, aciklama: '', farkiEtkilesin: true };
         this.giderDialogVisible = true;
     }
 
@@ -656,7 +704,8 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
         this.marketApiService.addGider(this.seciliMarketVardiya.id, {
             giderTuru: this.giderForm.giderTuru,
             tutar: this.giderForm.tutar,
-            aciklama: this.giderForm.aciklama || this.getGiderTuruLabel(this.giderForm.giderTuru)
+            aciklama: this.giderForm.aciklama || this.getGiderTuruLabel(this.giderForm.giderTuru),
+            farkiEtkilesin: this.giderForm.farkiEtkilesin
         }).subscribe(() => {
             this.giderDialogVisible = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider eklendi' });
@@ -665,9 +714,18 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
     }
 
     giderSil(giderId: number): void {
-        this.marketApiService.deleteGider(giderId).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider silindi' });
-            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+        this.confirmationService.confirm({
+            message: 'Bu gider kaydını silmek istediğinize emin misiniz?',
+            header: 'Gider Sil',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet, Sil',
+            rejectLabel: 'Vazgeç',
+            accept: () => {
+                this.marketApiService.deleteGider(giderId).subscribe(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider silindi' });
+                    this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+                });
+            }
         });
     }
 
@@ -678,7 +736,7 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
 
     // Gelir İşlemleri
     gelirDialogAc(): void {
-        this.gelirForm = { gelirTuru: null, tutar: 0, aciklama: '' };
+        this.gelirForm = { gelirTuru: null, tutar: 0, aciklama: '', farkiEtkilesin: true };
         this.gelirDialogVisible = true;
     }
 
@@ -688,7 +746,8 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
         this.marketApiService.addGelir(this.seciliMarketVardiya.id, {
             gelirTuru: this.gelirForm.gelirTuru,
             tutar: this.gelirForm.tutar,
-            aciklama: this.gelirForm.aciklama || this.getGelirTuruLabel(this.gelirForm.gelirTuru)
+            aciklama: this.gelirForm.aciklama || this.getGelirTuruLabel(this.gelirForm.gelirTuru),
+            farkiEtkilesin: this.gelirForm.farkiEtkilesin
         }).subscribe(() => {
             this.gelirDialogVisible = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir eklendi' });
@@ -697,9 +756,18 @@ export class MarketYonetimiComponent implements OnInit, OnDestroy {
     }
 
     gelirSil(gelirId: number): void {
-        this.marketApiService.deleteGelir(gelirId).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir silindi' });
-            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+        this.confirmationService.confirm({
+            message: 'Bu gelir kaydını silmek istediğinize emin misiniz?',
+            header: 'Gelir Sil',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet, Sil',
+            rejectLabel: 'Vazgeç',
+            accept: () => {
+                this.marketApiService.deleteGelir(gelirId).subscribe(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gelir silindi' });
+                    this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+                });
+            }
         });
     }
 

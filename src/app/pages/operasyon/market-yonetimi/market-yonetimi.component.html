@@ -145,30 +145,37 @@
             <div class="summary-scroll">
                 <div class="summary-card blue">
                     <div class="summary-icon"><i class="pi pi-shopping-cart"></i></div>
-                    <div class="summary-value">{{ seciliMarketVardiya.toplamSatisTutari | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ marketHesapOzet?.sistemSatis | currency:'TRY':'':'1.2-2':'tr' }}</div>
                     <div class="summary-label">Sistem Satış</div>
                 </div>
                 <div class="summary-card green">
                     <div class="summary-icon"><i class="pi pi-wallet"></i></div>
-                    <div class="summary-value">{{ seciliMarketVardiya.toplamTeslimatTutari | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ marketHesapOzet?.teslimatPersonel | currency:'TRY':'':'1.2-2':'tr' }}
+                    </div>
                     <div class="summary-label">Teslimat</div>
                 </div>
-                <div class="summary-card orange" *ngIf="getGiderToplam() > 0">
+                <div class="summary-card yellow" *ngIf="(marketHesapOzet?.personelFazlasi || 0) > 0">
+                    <div class="summary-icon"><i class="pi pi-plus-circle"></i></div>
+                    <div class="summary-value">{{ marketHesapOzet?.personelFazlasi | currency:'TRY':'':'1.2-2':'tr' }}
+                    </div>
+                    <div class="summary-label">Kasa Fazla</div>
+                </div>
+                <div class="summary-card orange" *ngIf="(marketHesapOzet?.giderler || 0) > 0">
                     <div class="summary-icon"><i class="pi pi-minus-circle"></i></div>
-                    <div class="summary-value">{{ getGiderToplam() | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ marketHesapOzet?.giderler | currency:'TRY':'':'1.2-2':'tr' }}</div>
                     <div class="summary-label">Gider</div>
                 </div>
-                <div class="summary-card purple" *ngIf="getGelirToplam() > 0">
+                <div class="summary-card purple" *ngIf="(marketHesapOzet?.gelirler || 0) > 0">
                     <div class="summary-icon"><i class="pi pi-plus-circle"></i></div>
-                    <div class="summary-value">{{ getGelirToplam() | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ marketHesapOzet?.gelirler | currency:'TRY':'':'1.2-2':'tr' }}</div>
                     <div class="summary-label">Gelir</div>
                 </div>
                 <div class="summary-card" [ngClass]="{
-                'success': (seciliMarketVardiya.toplamFark || 0) >= 0,
-                'red': (seciliMarketVardiya.toplamFark || 0) < 0
+                'success': (marketHesapOzet?.fark || 0) >= 0,
+                'red': (marketHesapOzet?.fark || 0) < 0
             }">
                     <div class="summary-icon"><i class="pi pi-chart-line"></i></div>
-                    <div class="summary-value">{{ seciliMarketVardiya.toplamFark | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ marketHesapOzet?.fark | currency:'TRY':'':'1.2-2':'tr' }}</div>
                     <div class="summary-label">Fark</div>
                 </div>
             </div>
@@ -203,29 +210,38 @@
                         <div class="personel-body">
                             <div class="stat-box">
                                 <div class="stat-label">Sistem Satış</div>
-                                <div class="stat-value">{{ personel.sistemSatisTutari | number:'1.0-0' }} ₺</div>
+                                <div class="stat-value">{{ personel.sistemSatisTutari | currency:'TRY':'':'1.2-2':'tr'
+                                    }}</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-label">Nakit</div>
-                                <div class="stat-value text-green-600">{{ personel.nakit | number:'1.0-0' }} ₺</div>
+                                <div class="stat-value text-green-600">{{ personel.nakit |
+                                    currency:'TRY':'':'1.2-2':'tr' }}</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-label">K. Kartı</div>
-                                <div class="stat-value text-blue-600">{{ personel.krediKarti | number:'1.0-0' }} ₺</div>
+                                <div class="stat-value text-blue-600">{{ personel.krediKarti |
+                                    currency:'TRY':'':'1.2-2':'tr' }}</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-label">M. Puan</div>
-                                <div class="stat-value text-purple-600">{{ personel.paroPuan | number:'1.0-0' }} ₺</div>
+                                <div class="stat-value text-purple-600">{{ personel.paroPuan |
+                                    currency:'TRY':'':'1.2-2':'tr' }}</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-label">Teslimat</div>
-                                <div class="stat-value font-bold">{{ personel.toplamTeslimat | number:'1.0-0' }} ₺</div>
+                                <div class="stat-value font-bold">{{ personel.toplamTeslimat |
+                                    currency:'TRY':'':'1.2-2':'tr' }}</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-label">Fark</div>
                                 <div class="stat-value" [class.negative]="personel.fark < 0"
                                     [class.positive]="personel.fark >= 0">
-                                    {{ personel.fark | number:'1.0-0' }} ₺
+                                    {{ personel.fark | currency:'TRY':'':'1.2-2':'tr' }}
+                                </div>
+                                <div *ngIf="personel.personelFazlasi > 0"
+                                    class="text-[9px] text-green-600 font-bold mt-1">
+                                    +{{ personel.personelFazlasi | currency:'TRY':'':'1.2-2':'tr' }} Kasaya
                                 </div>
                             </div>
                         </div>
@@ -610,7 +626,7 @@
 
         <!-- Özet Kartları (Desktop) -->
         <div class="col-span-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 <!-- Sistem Satış -->
                 <div class="card mb-0 h-full border-t-4 border-t-blue-500 p-4">
                     <div class="flex justify-between items-start mb-2">
@@ -627,20 +643,48 @@
                     <div class="text-xs text-[var(--text-color-secondary)] mt-2">Z Raporlarındaki toplam tutar</div>
                 </div>
 
-                <!-- Tahsilat/Teslimat -->
+                <!-- Personel Teslimat -->
                 <div class="card mb-0 h-full border-t-4 border-t-green-500 p-4">
                     <div class="flex justify-between items-start mb-2">
                         <span
-                            class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Teslimat</span>
+                            class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Personel
+                            Teslimat</span>
                         <div
                             class="w-10 h-10 rounded-xl flex items-center justify-center bg-green-500/10 text-green-600 dark:text-green-400">
-                            <i class="pi pi-check-circle text-lg"></i>
+                            <i class="pi pi-users text-lg"></i>
                         </div>
                     </div>
                     <div class="text-3xl font-bold text-[var(--text-color)]">{{ marketHesapOzet?.teslimatPersonel
                         |
                         currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
-                    <div class="text-xs text-[var(--text-color-secondary)] mt-2">Personellerce teslim edilen toplam
+                    <div class="flex gap-3 mt-2">
+                        <div
+                            class="flex items-center gap-1 text-[10px] text-green-600 font-bold bg-green-500/10 px-2 py-0.5 rounded-full">
+                            <i class="pi pi-money-bill text-[8px]"></i>
+                            <span>{{ marketHesapOzet?.teslimatNakit | currency:'TRY':'':'1.2-2':'tr' }} Nakit</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-1 text-[10px] text-blue-600 font-bold bg-blue-500/10 px-2 py-0.5 rounded-full">
+                            <i class="pi pi-credit-card text-[8px]"></i>
+                            <span>{{ marketHesapOzet?.teslimatKrediKarti | currency:'TRY':'':'1.2-2':'tr' }} Kart</span>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-[var(--text-color-secondary)] mt-2">Personel nakit/pos teslimatı</div>
+                </div>
+
+                <!-- Gelirler -->
+                <div class="card mb-0 h-full border-t-4 border-t-cyan-500 p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span
+                            class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Gelirler</span>
+                        <div
+                            class="w-10 h-10 rounded-xl flex items-center justify-center bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                            <i class="pi pi-plus text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-[var(--text-color)]">{{ (marketHesapOzet?.gelirler || 0) |
+                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
+                    <div class="text-xs text-[var(--text-color-secondary)] mt-2">{{ gelirler.length }} kalem diğer gelir
                     </div>
                 </div>
 
@@ -657,6 +701,24 @@
                     <div class="text-3xl font-bold text-[var(--text-color)]">{{ (marketHesapOzet?.giderler || 0) |
                         currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
                     <div class="text-xs text-[var(--text-color-secondary)] mt-2">{{ giderler.length }} kalem harcama
+                    </div>
+                </div>
+
+                <!-- Kasa Fazlası -->
+                <div class="card mb-0 h-full border-t-4 border-t-yellow-500 p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span
+                            class="text-sm font-semibold text-[var(--text-color-secondary)] uppercase tracking-wider">Kasa
+                            Fazlası</span>
+                        <div
+                            class="w-10 h-10 rounded-xl flex items-center justify-center bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">
+                            <i class="pi pi-plus-circle text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-[var(--text-color)]">{{ (marketHesapOzet?.personelFazlasi || 0)
+                        |
+                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
+                    <div class="text-xs text-[var(--text-color-secondary)] mt-2">Kasaya aktarılan personel fazlaları
                     </div>
                 </div>
 
@@ -686,6 +748,7 @@
                         {{ (marketHesapOzet?.fark || 0) >= 0 ? 'Mutabık / Fazla' : 'Eksik Var' }}
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -754,8 +817,15 @@
                                         [severity]="personel.fark === 0 ? 'success' : (personel.fark < 0 ? 'danger' : 'warn')">
                                     </p-tag>
                                     <div class="font-bold mt-1"
-                                        [ngClass]="{'text-red-500': personel.fark < 0, 'text-blue-500': personel.fark > 0, 'text-green-500': personel.fark === 0}">
+                                        [ngClass]="{'text-red-500': personel.fark < 0, 'text-green-600': personel.fark >= 0}">
                                         {{ personel.fark | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                                    </div>
+                                    <!-- Fazlalık Gösterimi -->
+                                    <div *ngIf="personel.personelFazlasi > 0"
+                                        class="text-[10px] text-green-600 mt-1 font-semibold flex items-center justify-end gap-1">
+                                        <i class="pi pi-arrow-up text-[8px]"></i>
+                                        <span>Fazla: {{ personel.personelFazlasi |
+                                            currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
@@ -786,13 +856,15 @@
                             <tr class="font-bold bg-surface-50 dark:bg-surface-800/50">
                                 <td>TOPLAM</td>
                                 <td class="text-right text-surface-600">
-                                    {{ personelListesiOzet.sistemSatis | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                                    {{ personelListesiOzet.sistemSatis | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                                    }}
                                 </td>
                                 <td class="text-right text-green-600">
                                     {{ personelListesiOzet.nakit | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
                                 </td>
                                 <td class="text-right text-blue-600">
-                                    {{ personelListesiOzet.krediKarti | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                                    {{ personelListesiOzet.krediKarti | currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                                    }}
                                 </td>
                                 <td class="text-right text-purple-600">
                                     {{ personelListesiOzet.paroPuan | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
@@ -801,8 +873,13 @@
                                     {{ personelListesiOzet.teslimat | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
                                 </td>
                                 <td class="text-right"
-                                    [ngClass]="{'text-red-500': personelListesiOzet.fark < 0, 'text-blue-500': personelListesiOzet.fark > 0, 'text-green-500': personelListesiOzet.fark === 0}">
+                                    [ngClass]="{'text-red-500': personelListesiOzet.fark < 0, 'text-green-600': personelListesiOzet.fark >= 0}">
                                     {{ personelListesiOzet.fark | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                                    <div *ngIf="personelListesiOzet.personelFazlasi > 0"
+                                        class="text-[10px] text-green-600 font-semibold">
+                                        (Fazla: {{ personelListesiOzet.personelFazlasi |
+                                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }})
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
@@ -1090,7 +1167,7 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="giderDialogVisible" [modal]="true" [style]="{width: '450px'}" header="Gider Ekle"
+<p-dialog [(visible)]="giderDialogVisible" [modal]="true" [style]="{width: '500px'}" header="Gider Ekle"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
         <div class="flex flex-col gap-4 pt-4">
@@ -1108,7 +1185,17 @@
             </div>
             <div class="flex flex-col gap-2">
                 <label class="font-semibold">Açıklama</label>
-                <input pInputText [(ngModel)]="giderForm.aciklama" class="w-full" />
+                <textarea pTextarea [(ngModel)]="giderForm.aciklama" rows="3" class="w-full"
+                    placeholder="İsteğe bağlı açıklama..."></textarea>
+            </div>
+            <div
+                class="flex items-center gap-3 mt-2 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700">
+                <p-checkbox [(ngModel)]="giderForm.farkiEtkilesin" [binary]="true"
+                    inputId="giderFarkEtkilesin"></p-checkbox>
+                <label for="giderFarkEtkilesin" class="font-bold text-sm cursor-pointer select-none">Günlük Farkı
+                    Etkilesin</label>
+                <i class="pi pi-info-circle text-orange-500 ml-auto"
+                    pTooltip="İşaretlenirse, bu gider tutarı Günlük Fark hesabına (Açık/Fazla) dahil edilir."></i>
             </div>
         </div>
     </ng-template>
@@ -1118,7 +1205,8 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="gelirDialogVisible" [modal]="true" [style]="{width: '450px'}" header="Gelir Ekle"
+<!-- Gelir Ekleme Dialog -->
+<p-dialog [(visible)]="gelirDialogVisible" header="Gelir Girişi" [modal]="true" [style]="{width: '500px'}"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
         <div class="flex flex-col gap-4 pt-4">
@@ -1136,7 +1224,16 @@
             </div>
             <div class="flex flex-col gap-2">
                 <label class="font-semibold">Açıklama</label>
-                <input pInputText [(ngModel)]="gelirForm.aciklama" class="w-full" />
+                <textarea pTextarea [(ngModel)]="gelirForm.aciklama" rows="3" class="w-full"
+                    placeholder="İsteğe bağlı açıklama..."></textarea>
+            </div>
+            <div
+                class="flex items-center gap-3 mt-2 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700">
+                <p-checkbox [(ngModel)]="gelirForm.farkiEtkilesin" [binary]="true" inputId="farkEtkilesin"></p-checkbox>
+                <label for="farkEtkilesin" class="font-bold text-sm cursor-pointer select-none">Günlük Farkı
+                    Etkilesin</label>
+                <i class="pi pi-info-circle text-orange-500 ml-auto"
+                    pTooltip="İşaretlenirse, bu gelir tutarı Günlük Fark hesabına (Açık/Fazla) dahil edilir."></i>
             </div>
         </div>
     </ng-template>
@@ -1263,18 +1360,33 @@
         </div>
 
         <!-- Anlık Özeti -->
-        <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
             <div class="p-2 rounded bg-surface-100 text-center">
                 <div class="text-xs text-[var(--text-color-secondary)]">Toplam Teslimat</div>
                 <div class="font-bold text-green-600">{{ getPersonelIslemToplam() |
                     currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
             </div>
-            <div class="p-2 rounded bg-surface-100 text-center"
-                [ngClass]="{'bg-red-50': getPersonelFark() < 0, 'bg-blue-50': getPersonelFark() > 0}">
+            <div class="p-2 rounded bg-surface-100 text-center relative"
+                [ngClass]="{'bg-red-50': getPersonelFark() < 0, 'bg-green-50': getPersonelFark() === 0 && personelIslemForm.personelFazlasi > 0}">
                 <div class="text-xs text-[var(--text-color-secondary)]">Fark</div>
                 <div class="font-bold"
-                    [ngClass]="{'text-red-500': getPersonelFark() < 0, 'text-blue-500': getPersonelFark() > 0}">
+                    [ngClass]="{'text-red-500': getPersonelFark() < 0, 'text-green-600': getPersonelFark() >= 0}">
                     {{ getPersonelFark() | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                </div>
+
+                <!-- Kasaya Aktar Butonu -->
+                <div *ngIf="getPersonelIslemToplam() > (personelIslemForm.sistemSatisTutari || 0) && personelIslemForm.personelFazlasi === 0"
+                    class="mt-2 text-center">
+                    <p-button label="Kasaya Aktar (Fazla)" icon="pi pi-arrow-up"
+                        styleClass="p-button-success p-button-sm w-full p-0"
+                        (onClick)="personelFazlasiniKasayaAktar()"></p-button>
+                </div>
+
+                <!-- Fazlalık Bilgisi -->
+                <div *ngIf="personelIslemForm.personelFazlasi > 0"
+                    class="mt-1 text-[10px] text-green-600 font-semibold">
+                    {{ personelIslemForm.personelFazlasi | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }} Kasaya
+                    Aktarıldı
                 </div>
             </div>
         </div>

@@ -258,6 +258,7 @@ export interface MarketGider {
     tutar: number;
     aciklama: string;
     belgeTarihi?: Date;
+    farkiEtkilesin: boolean;
     olusturmaTarihi: Date;
 }
 
@@ -278,6 +279,7 @@ export interface MarketGelir {
     tutar: number;
     aciklama: string;
     belgeTarihi?: Date;
+    farkiEtkilesin: boolean;
     olusturmaTarihi: Date;
 }
 
