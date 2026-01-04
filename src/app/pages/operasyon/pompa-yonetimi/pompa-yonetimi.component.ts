@@ -201,7 +201,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
             next: (data) => {
                 this.cariList = data;
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Cari listesi yüklenemedi:', err);
             }
         });
@@ -864,6 +864,58 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         });
     }
 
+    pusulaSil(pusula: Pusula) {
+        this.confirmationService.confirm({
+            message: 'Bu pusulayı silmek istediğinize emin misiniz?',
+            header: 'Silme Onayı',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet',
+            rejectLabel: 'Hayır',
+            accept: () => {
+                this.pusulaApiService.delete(this.vardiyaId!, pusula.id!).subscribe({
+                    next: () => {
+                        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Pusula silindi' });
+                        this.loadVardiyaData(); // Verileri yenile
+                    },
+                    error: (err: any) => {
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Pusula silinemedi' });
+                    }
+                });
+            }
+        });
+    }
+
+    downloadReport(type: 'excel' | 'pdf') {
+        if (!this.vardiyaId) return;
+
+        this.loading = true;
+
+        const request = type === 'excel'
+            ? this.vardiyaApiService.exportExcel(this.vardiyaId)
+            : this.vardiyaApiService.exportPdf(this.vardiyaId);
+
+        request.subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Vardiya_${this.vardiyaId}_Mutabakat.${type === 'excel' ? 'xlsx' : 'pdf'}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                this.loading = false;
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Rapor indirildi.' });
+            },
+            error: (err: any) => {
+                console.error('Download error:', err);
+                this.loading = false;
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Rapor indirilemedi.' });
+            }
+        });
+    }
+
+
     deleteGider(id: number): void {
         if (!confirm('Bu gideri silmek istediğinize emin misiniz?')) return;
 
@@ -872,7 +924,7 @@ export class PompaYonetimi implements OnInit, OnDestroy {
                 this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Gider silindi' });
                 this.loadVardiyaData();
             },
-            error: (err) => {
+            error: (err: any) => {
                 this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Gider silinemedi' });
             }
         });
@@ -887,3 +939,4 @@ export class PompaYonetimi implements OnInit, OnDestroy {
         return this.giderler.reduce((sum, item) => sum + item.tutar, 0);
     }
 }
+

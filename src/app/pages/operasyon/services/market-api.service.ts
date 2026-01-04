@@ -31,6 +31,10 @@ export class MarketApiService {
         return this.http.post<any>(`${this.apiUrl}/${id}/tahsilat`, data);
     }
 
+    deleteTahsilat(tahsilatId: number): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/tahsilat/${tahsilatId}`);
+    }
+
     addGider(id: number, data: any): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/${id}/gider`, data);
     }

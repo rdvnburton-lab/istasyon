@@ -40,6 +40,9 @@ import {
 import { PersonelApiService, Personel } from '../../../services/personel-api.service';
 import { AuthService, User } from '../../../services/auth.service';
 import { DefinitionsService, DefinitionType } from '../../../services/definitions.service';
+import { forkJoin } from 'rxjs';
+
+// ... (in class methods)
 
 @Component({
     selector: 'app-market-yonetimi',
@@ -68,30 +71,75 @@ import { DefinitionsService, DefinitionType } from '../../../services/definition
     templateUrl: './market-yonetimi.component.html',
     styleUrls: ['./market-yonetimi.component.scss']
 })
-export class MarketYonetimi implements OnInit, OnDestroy {
-    aktifVardiya: Vardiya | null = null;
+export class MarketYonetimiComponent implements OnInit, OnDestroy {
+    seciliMarketVardiya: MarketVardiya | null = null;
+    marketOzet: MarketOzet | null = null;
     zRaporu: MarketZRaporu | null = null;
-    tahsilat: MarketTahsilat | null = null;
+    tahsilatlar: MarketTahsilat[] = [];
     giderler: MarketGider[] = [];
     gelirler: MarketGelir[] = [];
-    marketOzet: MarketOzet | null = null;
-    secilenTarih: Date = new Date(); // Varsayılan olarak bugün
-    mutabakatBaslatildi: boolean = false; // Mutabakat başlatıldı mı?
-    marketVardiyalar: MarketVardiya[] = [] as MarketVardiya[];
-    seciliMarketVardiya: MarketVardiya | null = null;
-    yonetilenPersoneller: MarketVardiyaPersonel[] = [];
 
-    // Yeni Vardiya Formu
-    yeniVardiyaForm = {
-        tarih: new Date()
+    // Lists
+    marketVardiyalar: MarketVardiya[] = [];
+    marketPersonelleri: { label: string; value: number }[] = [];
+    gelirTurleri: { label: string; value: any }[] = [];
+    giderTurleri: { label: string; value: any }[] = [];
+    bankalar: { label: string; value: any }[] = []; // Banka listesi
+
+    // Dialogs
+    zRaporuDialogVisible: boolean = false;
+    pusulaDialogVisible: boolean = false;
+    giderDialogVisible: boolean = false;
+    gelirDialogVisible: boolean = false;
+    redDialogVisible: boolean = false;
+    onaylaDialogVisible: boolean = false;
+
+    // Forms
+    zRaporuForm: any = { genelToplam: 0, kdv0: 0, kdv1: 0, kdv10: 0, kdv20: 0 };
+    personelIslemForm = {
+        personelId: null as number | null,
+        sistemSatisTutari: 0,
+        nakit: 0,
+        krediKarti: 0,
+        paroPuan: 0,
+        bankaId: null as number | null,
+        krediKartiDetay: [] as { bankaId: number, bankaAdi: string, tutar: number }[]
     };
 
-    marketPersonelleri: { label: string; value: number }[] = [];
+    // Helper for adding bank
+    yeniBankaIslem = {
+        bankaId: null as number | null,
+        tutar: 0
+    };
+    giderForm: any = { giderTuru: null, tutar: 0, aciklama: '' };
+    gelirForm: any = { gelirTuru: null, tutar: 0, aciklama: '' };
 
+    // Diğer
     currentUser: User | null = null;
-    redDialogVisible: boolean = false;
     redNedeni: string = '';
     reddedilecekVardiyaId: number | null = null;
+
+    // Yeni Vardiya Formu
+    yeniVardiyaForm = { tarih: new Date() };
+    secilenTarih: Date = new Date();
+    mutabakatBaslatildi: boolean = false;
+
+    // Helpers
+    kdvKontrolSonuc = { gecerli: false, mesaj: 'Z Raporu bilgilerini girin', sinif: 'bg-surface-100 dark:bg-surface-800', icon: 'pi-info-circle' };
+    private subscriptions = new Subscription();
+    yonetilenPersoneller: any[] = []; // ViewModel for List
+
+    constructor(
+        private vardiyaService: VardiyaService,
+        private marketApiService: MarketApiService,
+        private personelApiService: PersonelApiService,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService,
+        private router: Router,
+        private authService: AuthService,
+        private definitionsService: DefinitionsService
+    ) { }
+
 
     get personelListesi() {
         return this.marketPersonelleri;
@@ -117,13 +165,58 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         return ozet;
     }
 
+    get personelListesiOzet() {
+        const ozet = {
+            sistemSatis: 0,
+            nakit: 0,
+            krediKarti: 0,
+            paroPuan: 0,
+            teslimat: 0,
+            fark: 0
+        };
+
+        this.yonetilenPersoneller.forEach(p => {
+            ozet.sistemSatis += p.sistemSatisTutari || 0;
+            ozet.nakit += p.nakit || 0;
+            ozet.krediKarti += p.krediKarti || 0;
+            ozet.paroPuan += p.paroPuan || 0;
+            ozet.teslimat += p.toplamTeslimat || 0;
+            ozet.fark += p.fark || 0;
+        });
+
+        return ozet;
+    }
+
+    get marketHesapOzet() {
+        if (!this.seciliMarketVardiya) return null;
+
+        const pOzet = this.personelListesiOzet;
+        const giderTop = this.giderler.reduce((sum, g) => sum + (g.tutar || 0), 0);
+        const gelirTop = this.gelirler.reduce((sum, g) => sum + (g.tutar || 0), 0);
+        const satisTop = this.seciliMarketVardiya.toplamSatisTutari || 0;
+
+        const netKasa = pOzet.teslimat + gelirTop - giderTop;
+        const fark = netKasa - satisTop;
+
+        return {
+            sistemSatis: satisTop,
+            teslimatPersonel: pOzet.teslimat,
+            giderler: giderTop,
+            gelirler: gelirTop,
+            netKasa: netKasa,
+            fark: fark
+        };
+    }
+
     formSifirla(): void {
         this.personelIslemForm = {
             personelId: null,
             sistemSatisTutari: 0,
             nakit: 0,
             krediKarti: 0,
-            gider: 0
+            paroPuan: 0,
+            bankaId: null,
+            krediKartiDetay: []
         };
     }
 
@@ -165,38 +258,6 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         });
     }
 
-    zRaporuForm = { genelToplam: 0, kdv0: 0, kdv1: 0, kdv10: 0, kdv20: 0 };
-    personelIslemForm = {
-        personelId: null as number | null,
-        sistemSatisTutari: 0,
-        nakit: 0,
-        krediKarti: 0,
-        gider: 0
-    };
-    kdvKontrolSonuc = { gecerli: false, mesaj: 'Z Raporu bilgilerini girin', sinif: 'bg-surface-100 dark:bg-surface-800', icon: 'pi-info-circle' };
-
-    giderDialogVisible = false;
-    giderTurleri: { label: string; value: any }[] = [];
-    giderForm = { giderTuru: null as any, tutar: 0, aciklama: '' };
-
-    gelirDialogVisible = false;
-    pusulaDialogVisible = false;
-    gelirTurleri: { label: string; value: any }[] = [];
-    gelirForm = { gelirTuru: null as any, tutar: 0, aciklama: '' };
-
-    private subscriptions = new Subscription();
-
-    constructor(
-        private vardiyaService: VardiyaService,
-        private marketApiService: MarketApiService,
-        private personelApiService: PersonelApiService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService,
-        private router: Router,
-        private authService: AuthService,
-        private definitionsService: DefinitionsService
-    ) { }
-
     ngOnInit(): void {
         this.loadDefinitions();
 
@@ -218,11 +279,15 @@ export class MarketYonetimi implements OnInit, OnDestroy {
     }
 
     loadDefinitions(): void {
-        this.definitionsService.getDropdownList(DefinitionType.GIDER).subscribe(list => {
+        this.definitionsService.getDropdownList(DefinitionType.GIDER).subscribe((list: any[]) => {
             this.giderTurleri = list;
         });
-        this.definitionsService.getDropdownList(DefinitionType.GELIR).subscribe(list => {
+        this.definitionsService.getDropdownList(DefinitionType.GELIR).subscribe((list: any[]) => {
             this.gelirTurleri = list;
+        });
+        // Use getByType to ensure we get the ID (number) instead of Code (string)
+        this.definitionsService.getByType(DefinitionType.BANKA).subscribe((list: any[]) => {
+            this.bankalar = list.map(item => ({ label: item.name, value: item.id! }));
         });
     }
 
@@ -231,21 +296,25 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             this.marketVardiyalar = list;
         });
     }
-
     listeyeDon(): void {
         this.seciliMarketVardiya = null;
         this.yonetilenPersoneller = [];
         this.zRaporu = null;
         this.giderler = [];
         this.gelirler = [];
+        this.pusulaDialogVisible = false;
         this.personelIslemForm = {
             personelId: null,
             sistemSatisTutari: 0,
             nakit: 0,
             krediKarti: 0,
-            gider: 0
+            paroPuan: 0,
+            bankaId: null,
+            krediKartiDetay: []
         };
     }
+
+
 
     yeniVardiyaEkle(): void {
         if (!this.yeniVardiyaForm.tarih) {
@@ -292,21 +361,44 @@ export class MarketYonetimi implements OnInit, OnDestroy {
                 sistemSatisTutari: t.sistemSatisTutari || 0,
                 nakit: t.nakit,
                 krediKarti: t.krediKarti,
-                gider: 0,
+                paroPuan: t.paroPuan || 0,
                 toplamTeslimat: t.toplam,
-                fark: (t.sistemSatisTutari || 0) - t.toplam,
-                olusturmaTarihi: t.olusturmaTarihi
+                fark: t.toplam - (t.sistemSatisTutari || 0),
+                olusturmaTarihi: t.olusturmaTarihi,
+                krediKartiDetayJson: t.krediKartiDetayJson
             }));
 
             if (data.zRaporlari && data.zRaporlari.length > 0) {
                 const z = data.zRaporlari[0];
                 this.zRaporu = z;
+
+                // Base -> Gross dönüşümünde oluşan kuruş farklarını (ör: 10.550 -> 10.549,99)
+                // Genel Toplam'a bakarak düzeltiyoruz.
+
+                let g1 = Math.round(z.kdv1 * 1.01 * 100) / 100;
+                let g10 = Math.round(z.kdv10 * 1.10 * 100) / 100;
+                let g20 = Math.round(z.kdv20 * 1.20 * 100) / 100;
+
+                // Ham toplam
+                const currentSum = z.kdv0 + g1 + g10 + g20;
+                const diff = Math.round((z.genelToplam - currentSum) * 100) / 100;
+
+                // Farkı dağıt (En büyük tutara ekle veya sırayla)
+                // Genelde %10 veya %20'de kayıp olur.
+                if (diff !== 0) {
+                    // Basitçe en büyük 'Base'e sahip olana ekleyelim, fark genelde 0.01 veya 0.02'dir.
+                    // Veya direk g10'a ekleyelim eğer g10 varsa. 
+                    if (z.kdv20 > 0) g20 += diff;
+                    else if (z.kdv10 > 0) g10 += diff;
+                    else if (z.kdv1 > 0) g1 += diff;
+                }
+
                 this.zRaporuForm = {
                     genelToplam: z.genelToplam,
                     kdv0: z.kdv0,
-                    kdv1: z.kdv1,
-                    kdv10: z.kdv10,
-                    kdv20: z.kdv20
+                    kdv1: Number(g1.toFixed(2)),
+                    kdv10: Number(g10.toFixed(2)),
+                    kdv20: Number(g20.toFixed(2))
                 };
             } else {
                 this.zRaporu = null;
@@ -367,27 +459,28 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         const kdv10 = this.zRaporuForm.kdv10 || 0;
         const kdv20 = this.zRaporuForm.kdv20 || 0;
 
-        const tax1 = kdv1 * 0.01;
-        const tax10 = kdv10 * 0.10;
-        const tax20 = kdv20 * 0.20;
-
-        const totalTax = tax1 + tax10 + tax20;
-        const totalBase = kdv0 + kdv1 + kdv10 + kdv20;
-
-        this.zRaporuForm.genelToplam = totalBase + totalTax;
-
-        // UI feedback handled by binding
+        // Yuvarlama hatasını önlemek için
+        const total = kdv0 + kdv1 + kdv10 + kdv20;
+        this.zRaporuForm.genelToplam = Math.round(total * 100) / 100;
     }
 
     getKdvToplam(): number {
         const kdv1 = this.zRaporuForm.kdv1 || 0;
         const kdv10 = this.zRaporuForm.kdv10 || 0;
         const kdv20 = this.zRaporuForm.kdv20 || 0;
-        return (kdv1 * 0.01) + (kdv10 * 0.10) + (kdv20 * 0.20);
+
+        // Her kalemin vergisini ayrı ayrı hesaplayıp YUVARLIYORUZ (2 hane)
+        // Tax = Gross - (Gross / (1+Rate))
+
+        const tax1 = Math.round((kdv1 - (kdv1 / 1.01)) * 100) / 100;
+        const tax10 = Math.round((kdv10 - (kdv10 / 1.10)) * 100) / 100;
+        const tax20 = Math.round((kdv20 - (kdv20 / 1.20)) * 100) / 100;
+
+        return Math.round((tax1 + tax10 + tax20) * 100) / 100;
     }
 
     getKdvHaric(): number {
-        return (this.zRaporuForm.kdv0 || 0) + (this.zRaporuForm.kdv1 || 0) + (this.zRaporuForm.kdv10 || 0) + (this.zRaporuForm.kdv20 || 0);
+        return (this.zRaporuForm.genelToplam || 0) - this.getKdvToplam();
     }
 
     getTahsilatToplam(): number {
@@ -398,8 +491,36 @@ export class MarketYonetimi implements OnInit, OnDestroy {
         return this.giderler.reduce((sum, g) => sum + g.tutar, 0);
     }
 
+    // Banka İşlemleri
+    bankaIslemEkle(): void {
+        if (!this.yeniBankaIslem.bankaId || this.yeniBankaIslem.tutar <= 0) {
+            return;
+        }
+
+        const banka = this.bankalar.find(b => b.value === this.yeniBankaIslem.bankaId);
+        if (banka) {
+            this.personelIslemForm.krediKartiDetay.push({
+                bankaId: this.yeniBankaIslem.bankaId!,
+                bankaAdi: banka.label,
+                tutar: this.yeniBankaIslem.tutar
+            });
+
+            this.updateKrediKartiToplam();
+            this.yeniBankaIslem = { bankaId: null, tutar: 0 };
+        }
+    }
+
+    bankaIslemSil(index: number): void {
+        this.personelIslemForm.krediKartiDetay.splice(index, 1);
+        this.updateKrediKartiToplam();
+    }
+
+    updateKrediKartiToplam(): void {
+        this.personelIslemForm.krediKarti = this.personelIslemForm.krediKartiDetay.reduce((sum, item) => sum + item.tutar, 0);
+    }
+
     // Kayıt işlemleri
-    zRaporuDialogVisible = false;
+
 
     zRaporuDialogAc(vardiya?: MarketVardiya): void {
         if (vardiya) {
@@ -421,7 +542,8 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             kdv10: this.zRaporuForm.kdv10 || 0,
             kdv20: this.zRaporuForm.kdv20 || 0,
             kdvToplam: this.getKdvToplam(),
-            kdvHaricToplam: this.getKdvHaric()
+            kdvHaricToplam: this.getKdvHaric(),
+            isKdvDahil: true
         };
 
         this.marketApiService.saveZRaporu(this.seciliMarketVardiya.id, data).subscribe(z => {
@@ -444,22 +566,23 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             sistemSatisTutari: this.personelIslemForm.sistemSatisTutari,
             nakit: this.personelIslemForm.nakit,
             krediKarti: this.personelIslemForm.krediKarti,
-            paroPuan: 0, // Şimdilik 0
-            toplam: this.getPersonelIslemToplam(),
-            aciklama: ''
+            paroPuan: this.personelIslemForm.paroPuan,
+            toplam: this.personelIslemForm.nakit + this.personelIslemForm.krediKarti + this.personelIslemForm.paroPuan,
+            krediKartiDetayJson: JSON.stringify(this.personelIslemForm.krediKartiDetay),
+            bankaId: null,
+            aciklama: this.personelIslemForm.krediKartiDetay.map(x => x.bankaAdi).join(', ')
         };
 
-        this.marketApiService.saveTahsilat(this.seciliMarketVardiya.id, data).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Personel verisi kaydedildi' });
-            this.personelIslemForm = {
-                personelId: null,
-                sistemSatisTutari: 0,
-                nakit: 0,
-                krediKarti: 0,
-                gider: 0
-            };
-            this.pusulaDialogVisible = false;
-            this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+        this.marketApiService.saveTahsilat(this.seciliMarketVardiya.id, data).subscribe({
+            next: () => {
+                this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'İşlem kaydedildi' });
+                this.formSifirla();
+                this.pusulaDialogVisible = false;
+                this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+            },
+            error: (err: any) => {
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kaydetme sırasında bir hata oluştu' });
+            }
         });
     }
 
@@ -469,25 +592,52 @@ export class MarketYonetimi implements OnInit, OnDestroy {
             sistemSatisTutari: 0,
             nakit: 0,
             krediKarti: 0,
-            gider: 0
+            paroPuan: 0,
+            bankaId: null,
+            krediKartiDetay: []
         };
+        this.yeniBankaIslem = { bankaId: null, tutar: 0 };
         this.pusulaDialogVisible = true;
     }
 
+    personelSil(kayit: any): void {
+        this.confirmationService.confirm({
+            message: `${kayit.personelAdi} personeline ait bu tahsilat kaydını silmek istediğinize emin misiniz?`,
+            header: 'Kayıt Sil',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet, Sil',
+            rejectLabel: 'Vazgeç',
+            accept: () => {
+                this.marketApiService.deleteTahsilat(kayit.id).subscribe({
+                    next: () => {
+                        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Kayıt silindi' });
+                        this.vardiyaSec(this.seciliMarketVardiya!); // Refresh
+                    },
+                    error: (err) => {
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kayıt silinirken bir hata oluştu' });
+                    }
+                });
+            }
+        });
+    }
+
     // Düzenlemek için personel seç
-    personelDuzenle(kayit: MarketVardiyaPersonel): void {
+    personelDuzenle(kayit: any): void { // Changed type to any to avoid strict check on dynamic prop
         this.personelIslemForm = {
             personelId: kayit.personelId,
             sistemSatisTutari: kayit.sistemSatisTutari,
-            nakit: kayit.nakit,
-            krediKarti: kayit.krediKarti,
-            gider: kayit.gider || 0
+            nakit: kayit.nakit || 0,
+            krediKarti: kayit.krediKarti || 0,
+            paroPuan: kayit.paroPuan || 0,
+            bankaId: null,
+            krediKartiDetay: kayit.krediKartiDetayJson ? JSON.parse(kayit.krediKartiDetayJson) : []
         };
+        this.yeniBankaIslem = { bankaId: null, tutar: 0 };
         this.pusulaDialogVisible = true;
     }
 
     getPersonelIslemToplam(): number {
-        return (this.personelIslemForm.nakit || 0) + (this.personelIslemForm.krediKarti || 0) + (this.personelIslemForm.gider || 0);
+        return (this.personelIslemForm.nakit || 0) + (this.personelIslemForm.krediKarti || 0) + (this.personelIslemForm.paroPuan || 0);
     }
 
     getPersonelFark(): number {

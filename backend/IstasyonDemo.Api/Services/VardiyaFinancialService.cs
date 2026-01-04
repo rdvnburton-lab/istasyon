@@ -29,6 +29,7 @@ namespace IstasyonDemo.Api.Services
                 {
                     Id = v.Id,
                     IstasyonId = v.IstasyonId,
+                    IstasyonAdi = v.Istasyon!.Ad,
                     BaslangicTarihi = v.BaslangicTarihi,
                     BitisTarihi = v.BitisTarihi,
                     Durum = (int)v.Durum,
@@ -150,6 +151,7 @@ namespace IstasyonDemo.Api.Services
                 .AsNoTracking()
                 .Include(p => p.DigerOdemeler)
                 .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
+                .Include(p => p.KrediKartiDetaylari)
                 .Where(p => p.VardiyaId == vardiyaId)
                 .Select(p => new PusulaMutabakatDto
                 {
@@ -159,6 +161,11 @@ namespace IstasyonDemo.Api.Services
                     Nakit = p.Nakit,
                     KrediKarti = p.KrediKarti,
                     KrediKartiDetay = p.KrediKartiDetay,
+                    KrediKartiDetayList = p.KrediKartiDetaylari.Select(k => new PusulaKrediKartiDetayDto 
+                    {
+                        BankaAdi = k.BankaAdi,
+                        Tutar = k.Tutar
+                    }).ToList(),
                     DigerOdemeler = p.DigerOdemeler.Select(d => new PusulaDigerOdemeDto
                     {
                         TurKodu = d.TurKodu,
@@ -334,6 +341,7 @@ namespace IstasyonDemo.Api.Services
             {
                 ToplamOtomasyon = vardiya.GenelToplam,
                 ToplamGider = giderler.Sum(g => g.Tutar),
+                MarketToplam = vardiya.MarketToplam,
                 ToplamNakit = pusulalar.Sum(p => p.Nakit),
                 ToplamKrediKarti = pusulalar.Sum(p => p.KrediKarti),
                 ToplamPusula = pusulalar.Sum(p => p.Toplam)

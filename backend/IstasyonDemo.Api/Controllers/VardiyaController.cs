@@ -230,13 +230,60 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("{id}/dosya")]
         public async Task<IActionResult> DownloadDosya(int id)
         {
+            Console.WriteLine($"[DownloadDosya] Request for ID: {id}");
             var vardiya = await _context.Vardiyalar.FindAsync(id);
-            if (vardiya == null || vardiya.DosyaIcerik == null)
+            if (vardiya == null)
             {
-                return NotFound("Dosya bulunamadı.");
+                Console.WriteLine($"[DownloadDosya] Vardiya not found for ID: {id}");
+                return NotFound("Vardiya bulunamadı.");
             }
 
-            return File(vardiya.DosyaIcerik, "text/plain", vardiya.DosyaAdi ?? "vardiya.txt");
+            byte[]? dosyaIcerik = vardiya.DosyaIcerik;
+            string dosyaAdi = vardiya.DosyaAdi ?? "vardiya.txt";
+            Console.WriteLine($"[DownloadDosya] Initial check - Name: {dosyaAdi}, ContentLength: {dosyaIcerik?.Length ?? 0}");
+
+            // If DosyaIcerik is empty, try to fetch from VardiyaXmlLog
+            if (dosyaIcerik == null || dosyaIcerik.Length == 0)
+            {
+                Console.WriteLine($"[DownloadDosya] Content empty, checking XmlLog for VardiyaId: {id}");
+                var xmlLog = await _context.VardiyaXmlLoglari.FirstOrDefaultAsync(x => x.VardiyaId == id);
+                if (xmlLog != null)
+                {
+                    Console.WriteLine($"[DownloadDosya] XmlLog found. ZipLength: {xmlLog.ZipDosyasi?.Length ?? 0}");
+                    if (xmlLog.ZipDosyasi != null && xmlLog.ZipDosyasi.Length > 0)
+                    {
+                        dosyaIcerik = xmlLog.ZipDosyasi;
+                        if (!string.IsNullOrEmpty(xmlLog.DosyaAdi))
+                        {
+                            dosyaAdi = xmlLog.DosyaAdi;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[DownloadDosya] XmlLog NOT found for VardiyaId: {id}");
+                }
+            }
+
+            if (dosyaIcerik == null || dosyaIcerik.Length == 0)
+            {
+                Console.WriteLine($"[DownloadDosya] Final content is empty. Returning NotFound.");
+                return NotFound("Dosya içeriği bulunamadı.");
+            }
+
+            string contentType = "text/plain";
+
+            if (dosyaAdi.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+            {
+                contentType = "application/zip";
+            }
+            else if (dosyaAdi.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+            {
+                contentType = "text/xml";
+            }
+
+            Console.WriteLine($"[DownloadDosya] Returning File. Length: {dosyaIcerik.Length}, Type: {contentType}, Name: {dosyaAdi}");
+            return File(dosyaIcerik, contentType, dosyaAdi);
         }
 
 
@@ -345,7 +392,7 @@ namespace IstasyonDemo.Api.Controllers
             if (!IsAdmin)
             {
                  // Fetch minimal info to check ownership (optimize this later)
-                 var v = await _context.Vardiyalar.Include(x => x.Istasyon).ThenInclude(x => x.Firma).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                 var v = await _context.Vardiyalar.Include(x => x.Istasyon).ThenInclude(x => x!.Firma).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
                  if (v == null) return NotFound();
 
                 if (IsPatron)

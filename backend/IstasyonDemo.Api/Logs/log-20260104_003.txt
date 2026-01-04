@@ -419,3 +419,1616 @@
 2026-01-04 15:55:00.124 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
 2026-01-04 15:55:00.124 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Lokman GÜNGÖR
 2026-01-04 15:55:00.128 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:58:41.099 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:58:41.104 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:58:41.104 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:58:41.105 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:58:41.106 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:58:41.106 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:58:41.107 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:58:41.108 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:58:41.108 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Lokman GÜNGÖR
+2026-01-04 15:58:41.116 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:58:48.393 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:58:48.395 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:58:48.396 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:58:48.397 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:58:48.397 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:58:48.398 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:58:48.399 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:58:48.399 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:58:48.400 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 15:58:48.407 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 15:58:56.938 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 15:58:56.940 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 15:58:56.940 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 15:58:56.941 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 15:58:56.942 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 15:58:56.942 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 15:58:56.943 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 15:58:56.943 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 15:58:56.944 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 15:58:56.948 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:14:58.640 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:14:58.776 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:14:59.550 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:15:06.304 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:15:06.353 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:15:06.354 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:15:06.355 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:15:06.356 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:15:06.356 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:15:06.357 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:15:06.358 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:15:06.358 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:15:06.385 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:15:06.398 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:15:10.215 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:15:10.217 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:15:10.218 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:15:10.219 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:15:10.220 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:15:10.220 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:15:10.221 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:15:10.222 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:15:10.222 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:15:10.230 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:15:32.897 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:15:32.901 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:15:32.902 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:15:32.902 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR
+2026-01-04 16:15:32.903 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:15:32.904 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:15:32.904 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:15:32.905 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:15:32.906 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:15:32.911 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:15:35.048 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:15:35.050 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:15:35.051 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:15:35.051 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR
+2026-01-04 16:15:35.052 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:15:35.053 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:15:35.053 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:15:35.054 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:15:35.055 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:15:35.059 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:17:41.258 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:17:41.260 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:17:41.261 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:17:41.262 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:17:41.262 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:17:41.263 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:17:41.264 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:17:41.265 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:17:41.265 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:17:41.271 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:17:43.495 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:17:43.496 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:17:43.497 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:17:43.498 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:17:43.498 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:17:43.499 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:17:43.500 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:17:43.501 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:17:43.501 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:17:43.507 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:22:01.906 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:22:02.037 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:22:02.760 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:22:04.844 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:22:04.891 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:22:04.892 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:22:04.893 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:22:04.894 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:22:04.894 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:22:04.895 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:22:04.896 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:22:04.896 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:22:04.930 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:22:04.945 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:22:49.943 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:22:49.949 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:22:49.950 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:22:49.951 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:22:49.952 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:22:49.952 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:22:49.953 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:22:49.954 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:22:49.955 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:22:49.968 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:22:57.529 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:22:57.533 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:22:57.534 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:22:57.535 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:22:57.535 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:22:57.536 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:22:57.537 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:22:57.538 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:22:57.538 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:22:57.543 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:23:39.797 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:23:39.799 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:23:39.799 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:23:39.800 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:23:39.801 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:23:39.802 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:23:39.802 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:23:39.803 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:23:39.804 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:23:39.808 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:27:31.854 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:27:31.990 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:27:32.697 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:27:35.766 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:27:35.818 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:27:35.819 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:27:35.819 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:27:35.820 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:27:35.821 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:27:35.821 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:27:35.822 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:27:35.823 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:27:35.848 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:27:35.864 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:27:37.132 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:27:37.134 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:27:37.135 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:27:37.135 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:27:37.136 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:27:37.137 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:27:37.137 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:27:37.138 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:27:37.139 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:27:37.147 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:29:13.101 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:29:13.235 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:29:13.909 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:29:18.458 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:29:18.510 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:29:18.511 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:29:18.512 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:29:18.512 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:29:18.513 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:29:18.514 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:29:18.515 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:29:18.516 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:29:18.544 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:29:18.566 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:29:19.738 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:29:19.740 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:29:19.740 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:29:19.741 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:29:19.742 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:29:19.743 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:29:19.743 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:29:19.744 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:29:19.745 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:29:19.758 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:30:27.713 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:30:27.716 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:30:27.717 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:30:27.718 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:30:27.719 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:30:27.719 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:30:27.720 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:30:27.721 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:30:27.721 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:30:27.730 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:33:32.086 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:33:32.090 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:33:32.091 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:33:32.092 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:33:32.092 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:33:32.093 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:33:32.094 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:33:32.095 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:33:32.095 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:33:32.101 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:33:57.366 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:33:57.368 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:33:57.369 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:33:57.369 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:33:57.370 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:33:57.371 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:33:57.372 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:33:57.372 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:33:57.373 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:33:57.381 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:34:03.494 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:34:03.496 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:34:03.497 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:34:03.497 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:34:03.498 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:34:03.499 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:34:03.500 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:34:03.500 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:34:03.501 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:34:03.509 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:34:06.232 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:34:06.233 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:34:06.234 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:34:06.235 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:34:06.236 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:34:06.236 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:34:06.237 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:34:06.238 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:34:06.238 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:34:06.245 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:34:09.224 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:34:09.226 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:34:09.227 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:34:09.227 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:34:09.228 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:34:09.228 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:34:09.229 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:34:09.229 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:34:09.230 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:34:09.236 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:36:41.198 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:36:41.336 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:36:42.040 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:36:44.851 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:36:44.898 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:36:44.899 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:36:44.900 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:36:44.901 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:36:44.901 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:36:44.902 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:36:44.903 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:36:44.904 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:36:44.935 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:36:44.956 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:36:46.460 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:36:46.462 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:36:46.463 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:36:46.464 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:36:46.465 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:36:46.465 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:36:46.466 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:36:46.467 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:36:46.467 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:36:46.478 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:38:42.679 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:38:42.680 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:38:42.681 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:38:42.682 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:38:42.683 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:38:42.683 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:38:42.684 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:38:42.685 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:38:42.686 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:38:42.691 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:49:36.012 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:49:36.167 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:49:36.890 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:49:46.416 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:49:46.542 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:49:47.192 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:49:57.434 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:49:57.482 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:49:57.483 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:49:57.484 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:49:57.485 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:49:57.485 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:49:57.486 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:49:57.487 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:49:57.487 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:49:57.535 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:49:57.554 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:49:59.055 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:49:59.057 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:49:59.058 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:49:59.059 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:49:59.060 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:49:59.060 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:49:59.061 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:49:59.062 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:49:59.063 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:49:59.068 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:54:54.887 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:54:55.025 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:54:55.732 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:54:57.600 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:54:57.648 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:54:57.649 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:54:57.650 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:54:57.650 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:54:57.651 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:54:57.652 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:54:57.652 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:54:57.653 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:54:57.681 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:54:57.702 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:54:58.934 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:54:58.936 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:54:58.937 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:54:58.938 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:54:58.939 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:54:58.939 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:54:58.940 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:54:58.941 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:54:58.942 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:54:58.953 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:56:38.724 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:56:38.727 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:56:38.728 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:56:38.729 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:56:38.730 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:56:38.730 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:56:38.731 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:56:38.732 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:56:38.732 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:56:38.740 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:57:08.332 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:57:08.334 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:57:08.334 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:57:08.335 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:57:08.336 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:57:08.337 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:57:08.337 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:57:08.338 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:57:08.338 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:57:08.344 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:57:09.560 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:57:09.561 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:57:09.562 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:57:09.563 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:57:09.564 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:57:09.564 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:57:09.565 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:57:09.566 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:57:09.567 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:57:09.574 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:57:20.675 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 16:57:20.835 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 16:57:21.600 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 16:57:26.867 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:57:26.920 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:57:26.921 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:57:26.922 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:57:26.922 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:57:26.923 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:57:26.924 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:57:26.925 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:57:26.926 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:57:26.956 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 16:57:26.976 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 16:57:28.345 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 16:57:28.348 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 16:57:28.348 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 16:57:28.349 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 16:57:28.350 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 16:57:28.350 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 16:57:28.351 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 16:57:28.352 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 16:57:28.353 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 16:57:28.364 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:00:14.590 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:00:14.720 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:00:15.399 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:00:19.663 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:00:19.713 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:00:19.714 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:00:19.714 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:00:19.715 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:00:19.716 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:00:19.717 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:00:19.717 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:00:19.718 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:00:19.748 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:00:19.769 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:00:20.465 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:00:20.467 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:00:20.468 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:00:20.469 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:00:20.470 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:00:20.470 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:00:20.471 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:00:20.472 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:00:20.472 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:00:20.484 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:02:07.082 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:02:07.211 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:02:07.898 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:02:09.805 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:02:09.853 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:02:09.854 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:02:09.855 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:02:09.855 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:02:09.856 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:02:09.857 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:02:09.857 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:02:09.858 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:02:09.884 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:02:09.903 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:02:10.637 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:02:10.639 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:02:10.640 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:02:10.641 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:02:10.641 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:02:10.642 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:02:10.643 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:02:10.643 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:02:10.644 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:02:10.655 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:03:31.379 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:03:31.510 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:03:32.179 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:03:37.565 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:03:37.616 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:03:37.617 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:03:37.618 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:03:37.618 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:03:37.619 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:03:37.620 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:03:37.620 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:03:37.621 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:03:37.651 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:03:37.670 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:03:38.227 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:03:38.229 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:03:38.229 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:03:38.230 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:03:38.231 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:03:38.232 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:03:38.232 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:03:38.233 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:03:38.234 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:03:38.243 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:06:46.544 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:06:46.673 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:06:47.331 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:06:50.792 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:06:50.841 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:06:50.842 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:06:50.843 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:06:50.844 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:06:50.845 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:06:50.845 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:06:50.846 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:06:50.847 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:06:50.874 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:06:50.893 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:06:51.675 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:06:51.677 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:06:51.678 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:06:51.679 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:06:51.679 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:06:51.680 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:06:51.681 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:06:51.681 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:06:51.682 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:06:51.693 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:07:58.569 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:07:58.573 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:07:58.573 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:07:58.574 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:07:58.575 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:07:58.575 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:07:58.576 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:07:58.577 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:07:58.578 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:07:58.587 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:08:04.424 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:08:04.426 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:08:04.427 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:08:04.428 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:08:04.429 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:08:04.429 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:08:04.430 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:08:04.431 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:08:04.432 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:08:04.437 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:08:09.701 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:08:09.838 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:08:10.500 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:08:11.971 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:08:12.017 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:08:12.018 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:08:12.019 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:08:12.020 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:08:12.020 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:08:12.021 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:08:12.022 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:08:12.022 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:08:12.058 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:08:12.076 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:24:59.862 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:24:59.866 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:24:59.867 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:24:59.868 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:24:59.869 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:24:59.869 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:24:59.870 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:24:59.871 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:24:59.872 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:24:59.883 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:27:49.612 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:27:49.742 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:27:50.414 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:27:53.096 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:27:53.147 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:27:53.148 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:27:53.149 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:27:53.150 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:27:53.151 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:27:53.151 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:27:53.152 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:27:53.153 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:27:53.181 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:27:53.201 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:27:54.211 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:27:54.214 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:27:54.214 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:27:54.215 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:27:54.216 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:27:54.216 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:27:54.217 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:27:54.218 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:27:54.218 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:27:54.231 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:29:16.070 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:29:16.197 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:29:16.850 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:29:22.196 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:29:22.247 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:29:22.248 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:29:22.249 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:29:22.250 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:29:22.251 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:29:22.251 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:29:22.252 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:29:22.253 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:29:22.292 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:29:22.312 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:29:31.234 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:29:31.240 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:29:31.241 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:29:31.242 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:29:31.243 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:29:31.244 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:29:31.245 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:29:31.245 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:29:31.246 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:29:31.259 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:29:32.344 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:29:32.347 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:29:32.348 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:29:32.348 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:29:32.349 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:29:32.350 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:29:32.350 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:29:32.351 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:29:32.352 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:29:32.361 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:30:43.282 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:30:43.418 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:30:44.117 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:30:46.560 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:30:46.609 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:30:46.610 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:30:46.611 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:30:46.612 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:30:46.612 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:30:46.613 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:30:46.614 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:30:46.615 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:30:46.652 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:30:46.669 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:33:16.985 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:33:17.122 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:33:17.817 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:33:21.344 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:33:21.392 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:33:21.393 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:33:21.393 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:33:21.394 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:33:21.395 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:33:21.396 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:33:21.396 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:33:21.397 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:33:21.433 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:33:21.451 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:34:52.293 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:35:15.213 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:35:38.514 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:35:38.516 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:35:38.517 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:35:38.517 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:35:38.518 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:35:38.519 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:35:38.519 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:35:38.520 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:35:38.521 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:35:38.531 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:35:39.624 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:35:39.626 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:35:39.627 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:35:39.628 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:35:39.628 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:35:39.629 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:35:39.630 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:35:39.630 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:35:39.631 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:35:39.636 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:35:49.683 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:35:49.819 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:35:50.483 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:35:57.175 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:35:57.228 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:35:57.229 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:35:57.230 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:35:57.231 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:35:57.231 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:35:57.232 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:35:57.233 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:35:57.234 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:35:57.263 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:35:57.282 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:35:58.119 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:35:58.121 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:35:58.122 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:35:58.122 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:35:58.123 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:35:58.124 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:35:58.125 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:35:58.125 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:35:58.126 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:35:58.137 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:39:50.812 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:39:50.943 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:39:51.646 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:39:56.184 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:39:56.236 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:39:56.237 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:39:56.238 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:39:56.238 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:39:56.239 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:39:56.240 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:39:56.241 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:39:56.241 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:39:56.273 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:39:56.291 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:39:56.968 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:39:56.971 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:39:56.972 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:39:56.973 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:39:56.974 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:39:56.974 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:39:56.975 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:39:56.976 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:39:56.976 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:39:56.986 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:43:15.639 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:43:15.769 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:43:16.461 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:43:19.942 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:43:19.989 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:43:19.990 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:43:19.991 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:43:19.992 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:43:19.993 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:43:19.993 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:43:19.994 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:43:19.994 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:43:20.022 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:43:20.041 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:43:20.729 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:43:20.732 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:43:20.732 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:43:20.733 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:43:20.734 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:43:20.734 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:43:20.735 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:43:20.736 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:43:20.736 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:43:20.746 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:46:15.104 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:46:15.237 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:46:15.913 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:46:21.000 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:46:21.049 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:46:21.050 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:46:21.051 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:46:21.051 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:46:21.052 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:46:21.053 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:46:21.054 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:46:21.054 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:46:21.086 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:46:21.127 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:46:22.027 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:46:22.030 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:46:22.031 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:46:22.032 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:46:22.032 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:46:22.033 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:46:22.034 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:46:22.035 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:46:22.035 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:46:22.045 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:47:11.844 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:47:11.846 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:47:11.847 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:47:11.848 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:47:11.848 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:47:11.849 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:47:11.850 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:47:11.851 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:47:11.851 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:47:11.860 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:49:45.072 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:49:45.207 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:49:45.911 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:49:51.317 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:49:51.366 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:49:51.367 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:49:51.368 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:49:51.369 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:49:51.370 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:49:51.370 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:49:51.371 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:49:51.372 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:49:51.404 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:49:51.423 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:49:52.213 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:49:52.216 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:49:52.216 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:49:52.217 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:49:52.218 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:49:52.218 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:49:52.219 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:49:52.220 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:49:52.220 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:49:52.232 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:50:45.959 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:50:46.085 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:50:46.744 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:50:48.718 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:50:48.765 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:50:48.766 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:50:48.767 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:50:48.767 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:50:48.768 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:50:48.769 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:50:48.769 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:50:48.770 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:50:48.800 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:50:48.819 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:50:53.298 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:50:53.302 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:50:53.303 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:50:53.303 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:50:53.304 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:50:53.305 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:50:53.306 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:50:53.306 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:50:53.307 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:50:53.317 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:51:51.292 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:51:51.421 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:51:52.086 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:51:55.356 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:51:55.408 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:51:55.409 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:51:55.410 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:51:55.410 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:51:55.411 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:51:55.412 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:51:55.412 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:51:55.413 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:51:55.443 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:51:55.465 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:51:57.273 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:51:57.278 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:51:57.279 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:51:57.280 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:51:57.280 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:51:57.281 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:51:57.282 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:51:57.283 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:51:57.283 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:51:57.295 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:53:11.413 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:53:11.417 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:53:11.418 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:53:11.418 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:53:11.419 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:53:11.420 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:53:11.420 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:53:11.421 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:53:11.422 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:53:11.429 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:56:37.116 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 17:56:37.247 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 17:56:37.918 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 17:56:42.612 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:56:42.664 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:56:42.665 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:56:42.666 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:56:42.667 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:56:42.667 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:56:42.668 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:56:42.669 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:56:42.670 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:56:42.708 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 17:56:42.727 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 17:56:43.608 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 17:56:43.612 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 17:56:43.612 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 17:56:43.613 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 17:56:43.613 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 17:56:43.614 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 17:56:43.615 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 17:56:43.616 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 17:56:43.617 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 17:56:43.628 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:00:24.482 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:00:24.485 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:00:24.486 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:00:24.487 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:00:24.488 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:00:24.489 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:00:24.489 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:00:24.490 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:00:24.490 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:00:24.501 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:00:58.484 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:00:58.614 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:00:59.271 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:01:01.700 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:01:01.750 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:01:01.751 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:01:01.752 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:01:01.752 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:01:01.753 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:01:01.754 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:01:01.754 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:01:01.755 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:01:01.791 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:01:01.808 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:01:12.589 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:01:12.594 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:01:12.615 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:01:12.616 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:01:12.617 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:01:12.618 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:01:12.619 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:01:12.619 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:01:12.620 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:01:12.632 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:01:13.460 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:01:13.463 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:01:13.463 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:01:13.464 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:01:13.465 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:01:13.465 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:01:13.466 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:01:13.467 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:01:13.467 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:01:13.474 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:01:27.689 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:01:27.815 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:01:28.470 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:01:31.124 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:01:31.172 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:01:31.173 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:01:31.173 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:01:31.174 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:01:31.175 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:01:31.175 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:01:31.176 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:01:31.177 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:01:31.204 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:01:31.223 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:01:33.219 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:01:33.222 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:01:33.223 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:01:33.224 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:01:33.225 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:01:33.225 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:01:33.226 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:01:33.227 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:01:33.228 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:01:33.238 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:02:44.528 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:02:44.663 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:02:45.368 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:02:46.648 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:02:46.694 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:02:46.695 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:02:46.696 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:02:46.697 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:02:46.697 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:02:46.698 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:02:46.699 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:02:46.700 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:02:46.727 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:02:46.746 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:02:47.576 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:02:47.581 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:02:47.582 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:02:47.583 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:02:47.584 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:02:47.585 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:02:47.585 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:02:47.586 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:02:47.587 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:02:47.597 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:04:40.060 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:04:40.198 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:04:40.892 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:04:42.088 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:04:42.133 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:04:42.134 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:04:42.134 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:04:42.135 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:04:42.135 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:04:42.136 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:04:42.137 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:04:42.138 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:04:42.165 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:04:42.183 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:04:43.676 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:04:43.680 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:04:43.681 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL
+2026-01-04 18:04:43.682 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ
+2026-01-04 18:04:43.682 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS
+2026-01-04 18:04:43.683 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG
+2026-01-04 18:04:43.684 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA
+2026-01-04 18:04:43.685 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL
+2026-01-04 18:04:43.685 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR
+2026-01-04 18:04:43.695 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:05:51.752 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:05:51.887 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:05:52.569 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:05:53.417 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:05:53.460 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:05:53.461 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:05:53.462 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:05:53.462 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:05:53.463 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:05:53.464 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:05:53.464 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:05:53.465 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:05:53.490 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:05:53.507 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:05:55.503 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:05:55.507 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:05:55.508 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:05:55.509 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:05:55.510 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:05:55.510 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:05:55.511 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:05:55.512 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:05:55.513 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:05:55.522 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:14:55.669 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:14:55.803 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:14:56.515 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:14:58.412 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:14:58.463 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:14:58.464 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:14:58.465 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:14:58.465 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:14:58.466 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:14:58.467 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:14:58.468 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:14:58.468 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:14:58.499 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:14:58.521 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:14:59.464 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:14:59.469 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:14:59.469 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:14:59.470 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:14:59.471 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:14:59.472 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:14:59.473 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:14:59.474 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:14:59.475 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:14:59.488 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:15:22.373 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:15:22.504 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:15:23.194 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:15:24.986 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:15:25.032 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:15:25.033 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:15:25.034 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:15:25.034 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:15:25.035 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:15:25.035 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:15:25.036 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:15:25.037 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:15:25.072 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:15:25.091 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:16:01.699 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:16:01.701 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:16:01.702 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:16:01.702 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:16:01.703 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:16:01.704 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:16:01.704 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:16:01.705 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:16:01.706 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:16:01.711 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:16:31.417 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:16:31.559 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:16:32.221 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:16:36.339 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:16:36.387 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:16:36.388 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:16:36.389 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:16:36.390 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:16:36.390 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:16:36.391 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:16:36.392 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:16:36.393 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:16:36.431 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:16:36.450 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:16:37.524 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:16:37.527 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:16:37.528 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:16:37.528 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:16:37.529 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:16:37.530 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:16:37.530 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:16:37.531 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:16:37.532 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:16:37.542 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:18:51.106 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:18:51.108 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:18:51.108 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:18:51.109 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:18:51.110 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:18:51.111 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:18:51.111 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:18:51.112 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:18:51.113 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:18:51.121 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:19:05.042 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:19:05.044 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:19:05.044 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:19:05.045 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:19:05.046 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:19:05.046 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:19:05.047 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:19:05.048 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:19:05.049 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:19:05.057 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:20:45.734 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:20:45.868 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:20:46.572 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:20:48.981 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:20:49.031 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:20:49.032 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:20:49.032 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:20:49.033 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:20:49.034 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:20:49.034 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:20:49.035 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:20:49.036 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:20:49.071 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:20:49.090 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:20:49.874 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:20:49.876 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:20:49.876 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:20:49.877 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:20:49.878 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:20:49.878 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:20:49.879 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:20:49.880 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:20:49.880 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:20:49.886 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:25:36.743 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:25:36.880 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:25:37.598 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:25:39.244 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:25:39.288 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:25:39.289 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:25:39.290 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:25:39.291 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:25:39.291 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:25:39.292 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:25:39.293 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:25:39.293 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:25:39.322 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:25:39.344 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:25:40.473 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:25:40.476 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:25:40.477 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:25:40.477 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:25:40.478 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:25:40.479 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:25:40.480 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:25:40.480 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:25:40.481 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:25:40.490 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:29:59.664 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:29:59.799 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:30:00.505 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:30:02.181 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:30:02.227 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:30:02.228 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:30:02.229 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:30:02.230 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:30:02.230 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:30:02.231 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:30:02.232 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:30:02.232 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:30:02.258 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:30:02.277 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:30:03.275 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:30:03.279 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:30:03.280 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:30:03.280 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:30:03.281 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:30:03.281 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:30:03.282 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:30:03.283 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:30:03.283 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:30:03.292 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:31:18.315 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:31:18.450 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:31:19.161 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:31:20.415 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:31:20.461 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:31:20.462 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:31:20.462 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:31:20.463 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:31:20.464 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:31:20.465 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:31:20.465 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:31:20.466 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:31:20.494 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:31:20.513 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:31:21.220 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:31:21.225 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:31:21.226 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:31:21.227 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:31:21.227 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:31:21.228 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:31:21.229 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:31:21.230 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:31:21.231 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:31:21.244 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:31:39.592 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:31:39.596 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:31:39.596 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:31:39.597 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:31:39.598 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:31:39.599 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:31:39.599 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:31:39.600 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:31:39.601 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:31:39.610 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:38:58.016 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:38:58.160 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:38:58.852 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:39:00.879 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:39:00.926 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:39:00.928 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:39:00.929 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:39:00.929 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:39:00.930 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:39:00.931 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:39:00.932 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:39:00.932 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:39:00.960 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:39:00.979 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:39:02.015 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:39:02.020 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:39:02.021 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:39:02.022 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:39:02.022 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:39:02.023 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:39:02.024 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:39:02.025 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:39:02.025 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:39:02.035 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:43:35.261 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:43:35.395 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:43:36.094 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:43:48.482 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:43:48.613 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:43:49.274 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:44:08.455 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:44:08.585 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:44:09.259 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:44:18.744 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:44:18.797 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:44:18.798 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:44:18.799 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:44:18.800 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:44:18.800 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:44:18.801 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:44:18.802 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:44:18.802 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:44:18.851 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:44:18.870 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:44:19.750 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:44:19.753 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:44:19.753 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:44:19.754 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:44:19.754 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:44:19.755 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:44:19.756 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:44:19.757 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:44:19.758 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:44:19.767 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:45:13.409 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:45:13.535 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:45:14.195 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:45:16.419 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:45:16.468 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:45:16.469 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:45:16.470 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:45:16.470 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:45:16.471 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:45:16.472 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:45:16.472 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:45:16.473 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:45:16.502 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:45:16.541 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:45:18.138 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:45:18.142 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:45:18.142 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:45:18.143 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:45:18.144 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:45:18.144 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:45:18.145 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:45:18.146 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:45:18.147 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:45:18.156 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:47:37.193 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:47:37.320 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:47:37.975 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:47:42.076 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:47:42.123 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:47:42.124 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:47:42.125 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:47:42.126 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:47:42.126 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:47:42.127 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:47:42.128 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:47:42.128 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:47:42.159 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:47:42.177 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:47:43.187 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:47:43.190 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:47:43.191 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:47:43.192 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:47:43.192 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:47:43.193 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:47:43.194 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:47:43.195 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:47:43.195 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:47:43.205 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:48:06.330 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:48:06.462 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:48:07.135 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 18:48:10.003 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:48:10.052 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:48:10.053 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:48:10.053 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:48:10.054 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:48:10.055 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:48:10.056 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:48:10.056 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:48:10.057 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:48:10.085 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:48:10.104 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:48:11.090 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:48:11.094 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:48:11.095 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:48:11.096 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:48:11.096 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:48:11.097 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:48:11.098 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:48:11.098 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:48:11.099 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:48:11.108 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:49:30.967 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:49:30.970 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:49:30.970 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:49:30.971 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:49:30.972 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:49:30.973 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:49:30.973 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:49:30.974 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:49:30.975 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:49:30.982 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:49:32.232 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 18:49:32.234 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 18:49:32.235 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:49:32.236 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:49:32.236 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:49:32.237 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:49:32.238 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:49:32.238 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:49:32.239 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:49:32.246 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 18:50:08.939 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:08.941 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:08.942 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:08.942 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:08.943 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:08.944 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:08.944 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:08.945 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:08.946 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:08.946 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:08.947 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:08.952 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:14.850 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:14.854 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:14.855 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:14.856 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:14.857 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:14.857 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:14.858 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:14.859 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:14.859 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:14.860 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:14.861 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:14.865 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:16.036 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:16.038 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:16.039 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:16.040 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:16.040 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:16.041 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:16.042 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:16.042 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:16.043 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:16.043 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:16.044 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:16.049 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:37.137 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:37.139 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:37.140 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:37.141 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:37.141 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:37.142 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:37.142 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:37.143 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:37.144 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:37.145 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:37.145 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:37.150 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:51.041 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:51.043 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:51.044 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:51.045 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:51.045 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:51.046 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:51.047 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:51.047 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:51.048 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:51.049 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:51.049 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:51.056 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:52.969 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 18:50:53.007 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:53.009 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:53.010 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:53.010 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:53.011 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:53.012 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:53.012 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:53.013 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:53.014 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:53.014 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:53.015 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:53.019 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:55.607 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:55.608 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:55.609 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:55.610 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:55.610 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:55.611 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:55.612 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:55.612 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:55.613 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:55.614 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:55.614 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:55.618 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:50:58.018 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 18:50:58.020 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 18:50:58.021 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 18:50:58.022 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 18:50:58.022 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 18:50:58.023 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 18:50:58.024 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 18:50:58.024 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 18:50:58.025 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 18:50:58.026 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 18:50:58.026 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 18:50:58.030 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 18:52:16.391 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 18:52:16.607 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 18:52:17.309 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 19:00:31.462 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 19:00:31.607 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 19:00:32.305 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 19:10:44.360 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 19:11:30.309 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-04 19:11:30.320 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-04 19:11:30.321 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 19:11:30.322 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 19:11:30.323 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 19:11:30.324 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 19:11:30.324 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 19:11:30.325 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 19:11:30.326 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 19:11:30.338 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 19:11:30.353 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-04 19:20:34.648 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 19:20:34.651 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 19:20:34.652 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 19:20:34.653 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 19:20:34.653 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 19:20:34.654 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 19:20:34.655 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 19:20:34.656 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 19:20:34.656 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 19:20:34.657 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 19:20:34.658 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 19:20:34.665 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 19:20:55.304 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-04 19:20:55.309 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-04 19:20:55.310 +03:00 [INF] [VardiyaService] Eşleşti: N.GENCER -> N.GENCER (FD8C1691)
+2026-01-04 19:20:55.311 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> Ümit Zeylek GÜZEL (DD5EFD13)
+2026-01-04 19:20:55.311 +03:00 [INF] [VardiyaService] Eşleşti: H.KANTAR -> H.KANTAR (FE083131)
+2026-01-04 19:20:55.312 +03:00 [INF] [VardiyaService] Eşleşti: M.DUMDUZ -> Mert DÜMDÜZ (FDD70801)
+2026-01-04 19:20:55.313 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD1AA293)
+2026-01-04 19:20:55.314 +03:00 [INF] [VardiyaService] Eşleşti: A.YAG -> A.YAG (DD288D93)
+2026-01-04 19:20:55.314 +03:00 [INF] [VardiyaService] Eşleşti: E.AKCA -> E.AKCA (FD1086E1)
+2026-01-04 19:20:55.315 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (0244211A)
+2026-01-04 19:20:55.316 +03:00 [INF] [VardiyaService] Eşleşti: L.GUNGOR -> Latif GÜNGÖR (FE1FADE1)
+2026-01-04 19:20:55.320 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-04 19:22:22.230 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 19:33:18.576 +03:00 [ERR] Something went wrong: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+System.InvalidOperationException: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.ValidateZRaporu(MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 450
+   at IstasyonDemo.Api.Services.MarketVardiyaService.AddZRaporuAsync(Int32 vardiyaId, MarketZRaporuDto dto, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 158
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.SaveZRaporu(Int32 id, MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 61
+   at lambda_method2709(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 19:33:22.403 +03:00 [ERR] Something went wrong: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+System.InvalidOperationException: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.ValidateZRaporu(MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 450
+   at IstasyonDemo.Api.Services.MarketVardiyaService.AddZRaporuAsync(Int32 vardiyaId, MarketZRaporuDto dto, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 158
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.SaveZRaporu(Int32 id, MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 61
+   at lambda_method2709(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 19:35:06.883 +03:00 [ERR] Something went wrong: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+System.InvalidOperationException: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.ValidateZRaporu(MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 450
+   at IstasyonDemo.Api.Services.MarketVardiyaService.AddZRaporuAsync(Int32 vardiyaId, MarketZRaporuDto dto, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 158
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.SaveZRaporu(Int32 id, MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 61
+   at lambda_method2709(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 19:35:26.029 +03:00 [ERR] Something went wrong: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+System.InvalidOperationException: Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV 5.736,10 TL olmalı, ancak 4.888,74 TL girildi.
+   at IstasyonDemo.Api.Services.MarketVardiyaService.ValidateZRaporu(MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 450
+   at IstasyonDemo.Api.Services.MarketVardiyaService.AddZRaporuAsync(Int32 vardiyaId, MarketZRaporuDto dto, Int32 userId, String userRole, Nullable`1 istasyonId) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\MarketVardiyaService.cs:line 158
+   at IstasyonDemo.Api.Controllers.MarketVardiyaController.SaveZRaporu(Int32 id, MarketZRaporuDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\MarketVardiyaController.cs:line 61
+   at lambda_method2709(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-04 19:35:38.190 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 19:35:38.325 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 19:35:39.020 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 19:35:41.459 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 19:35:41.677 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-04 20:05:51.856 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:05:51.999 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 20:05:52.692 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 20:12:52.003 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:12:52.147 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 20:12:52.977 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 20:30:34.761 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:30:34.887 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 20:30:35.517 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 20:30:40.524 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 2)...
+2026-01-04 20:30:40.556 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 20:30:45.563 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 3)...
+2026-01-04 20:30:45.602 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 20:30:50.615 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 4)...
+2026-01-04 20:30:50.622 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 20:30:58.706 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:31:11.209 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:31:15.487 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:31:15.622 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 20:31:16.271 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 20:31:47.291 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:31:47.422 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 20:31:48.067 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 20:43:50.409 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 20:43:50.536 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 20:43:51.185 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 21:12:30.746 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:12:30.879 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 21:12:31.580 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 21:33:19.047 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:33:19.181 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 21:33:19.755 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 21:33:24.769 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 2)...
+2026-01-04 21:33:24.801 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 21:33:29.814 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 3)...
+2026-01-04 21:33:29.853 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 21:33:34.866 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 4)...
+2026-01-04 21:33:34.874 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 21:33:44.300 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:33:44.437 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 21:33:45.032 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'AppDbContext' has pending changes. Add a new migration before updating the database. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.. 5 saniye sonra tekrar denenecek...
+2026-01-04 21:33:51.717 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:34:05.826 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:34:51.067 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:34:51.199 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 21:34:51.930 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-04 21:36:50.869 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:37:03.170 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:37:08.101 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-04 21:37:08.235 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-04 21:37:08.917 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.

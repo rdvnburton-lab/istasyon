@@ -40,6 +40,9 @@ namespace IstasyonDemo.Api.Dtos
         public decimal Kdv20 { get; set; }
         public decimal KdvToplam { get; set; }
         public decimal KdvHaricToplam { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("isKdvDahil")]
+        public bool IsKdvDahil { get; set; } // Kullanıcı "KDV Dahil" girerse true, backend hesaplar.
     }
 
     public class MarketTahsilatDto
@@ -51,6 +54,8 @@ namespace IstasyonDemo.Api.Dtos
         public decimal ParoPuan { get; set; }
         public decimal SistemSatisTutari { get; set; }
         public decimal Toplam { get; set; }
+        public int? BankaId { get; set; }
+        public string? KrediKartiDetayJson { get; set; }
         public string? Aciklama { get; set; }
     }
 

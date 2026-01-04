@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { VardiyaListesi } from './vardiya-listesi/vardiya-listesi.component';
 import { PompaYonetimi } from './pompa-yonetimi/pompa-yonetimi.component';
-import { MarketYonetimi } from './market-yonetimi/market-yonetimi.component';
+import { MarketYonetimiComponent } from './market-yonetimi/market-yonetimi.component';
 import { roleGuard } from '../../services/role.guard';
 
 export default [
@@ -19,7 +19,7 @@ export default [
     },
     {
         path: 'market',
-        component: MarketYonetimi,
+        component: MarketYonetimiComponent,
         canActivate: [roleGuard],
         data: { resource: 'VARDIYA_MARKET' }
     },

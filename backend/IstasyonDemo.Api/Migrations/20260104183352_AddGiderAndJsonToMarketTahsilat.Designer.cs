@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260104183352_AddGiderAndJsonToMarketTahsilat")]
+    partial class AddGiderAndJsonToMarketTahsilat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -576,6 +579,9 @@ namespace IstasyonDemo.Api.Migrations
 
                     b.Property<int?>("BankaId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("Gider")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("KrediKarti")
                         .HasColumnType("decimal(18,2)");

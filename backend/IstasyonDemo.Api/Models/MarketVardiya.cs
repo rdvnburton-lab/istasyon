@@ -97,6 +97,9 @@ namespace IstasyonDemo.Api.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal ParoPuan { get; set; }
         
+        public int? BankaId { get; set; }
+        public SystemDefinition? Banka { get; set; }
+        
         [Column(TypeName = "decimal(18,2)")]
         public decimal SistemSatisTutari { get; set; }
         
@@ -105,6 +108,8 @@ namespace IstasyonDemo.Api.Models
         
         [MaxLength(255)]
         public string? Aciklama { get; set; }
+        
+        public string? KrediKartiDetayJson { get; set; }
         
         public DateTime OlusturmaTarihi { get; set; } = DateTime.UtcNow;
     }

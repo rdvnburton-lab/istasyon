@@ -164,6 +164,15 @@
                                 pusula girişleri
                             </p>
                         </div>
+
+                        <!-- Rapor Butonları -->
+                        <div class="flex gap-2 ml-4">
+                            <p-button label="Excel" icon="pi pi-file-excel" severity="success" size="small"
+                                [outlined]="true" (onClick)="downloadReport('excel')"
+                                pTooltip="Excel Raporu İndir"></p-button>
+                            <p-button label="PDF" icon="pi pi-file-pdf" severity="danger" size="small" [outlined]="true"
+                                (onClick)="downloadReport('pdf')" pTooltip="PDF Raporu İndir"></p-button>
+                        </div>
                     </div>
 
                     <div class="flex items-center gap-4" *ngIf="vardiya">

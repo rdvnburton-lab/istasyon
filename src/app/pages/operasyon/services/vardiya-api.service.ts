@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Vardiya, OtomasyonSatis, FiloSatis, YakitTuru, VardiyaTankEnvanteri, CariKart, CariHareket } from '../models/vardiya.model';
 import { environment } from '../../../../environments/environment';
@@ -114,6 +114,13 @@ export class VardiyaApiService {
 
     downloadDosya(id: number): void {
         window.open(`${this.apiUrl}/${id}/dosya`, '_blank');
+    }
+
+    downloadDosyaBlob(id: number): Observable<HttpResponse<Blob>> {
+        return this.http.get(`${this.apiUrl}/${id}/dosya?t=${new Date().getTime()}`, {
+            responseType: 'blob',
+            observe: 'response'
+        });
     }
 
     getKarsilastirma(id: number): Observable<any> {
@@ -236,7 +243,15 @@ export class VardiyaApiService {
             next: (data) => {
                 this.pendingCountSubject.next(data.length);
             },
-            error: (err) => console.error('Error fetching pending count:', err)
+            error: (err: any) => console.error('Error fetching pending count:', err)
         });
+    }
+
+    exportExcel(id: number): Observable<Blob> {
+        return this.http.get(`${environment.apiUrl}/reports/vardiya/${id}/excel`, { responseType: 'blob' });
+    }
+
+    exportPdf(id: number): Observable<Blob> {
+        return this.http.get(`${environment.apiUrl}/reports/vardiya/${id}/pdf`, { responseType: 'blob' });
     }
 }

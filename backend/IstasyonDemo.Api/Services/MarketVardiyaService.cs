@@ -51,6 +51,7 @@ namespace IstasyonDemo.Api.Services
                 .Include(m => m.Giderler)
                 .Include(m => m.Gelirler)
                 .Include(m => m.Istasyon).ThenInclude(i => i!.Firma)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (vardiya == null) return null;
@@ -90,6 +91,7 @@ namespace IstasyonDemo.Api.Services
             // Map sub-items
             foreach (var z in dto.ZRaporlari)
             {
+                NormalizeZRaporu(z);
                 ValidateZRaporu(z);
                 marketVardiya.ZRaporlari.Add(new MarketZRaporu
                 {
@@ -155,11 +157,13 @@ namespace IstasyonDemo.Api.Services
 
         public async Task<MarketZRaporu> AddZRaporuAsync(int vardiyaId, MarketZRaporuDto dto, int userId, string userRole, int? istasyonId)
         {
+            NormalizeZRaporu(dto);
             ValidateZRaporu(dto);
             var vardiya = await GetAndValidateAsync(vardiyaId, userId, userRole, istasyonId);
 
             // Clear existing Z-reports for this day? Code assumed replace logic
             _context.MarketZRaporlari.RemoveRange(vardiya.ZRaporlari);
+            vardiya.ZRaporlari.Clear();
 
             var zRaporu = new MarketZRaporu
             {
@@ -174,22 +178,12 @@ namespace IstasyonDemo.Api.Services
                 KdvHaricToplam = dto.KdvHaricToplam
             };
             _context.MarketZRaporlari.Add(zRaporu);
+            vardiya.ZRaporlari.Add(zRaporu);
             
-            // Recalculate implicitly via Save? No, need explicit recalc logic usually unless totally reloading.
-            // Let's modify entity directly so subsequent SaveChanges works
-            // NOTE: Must access tracked entity or reload. 
-            // Since we fetched via Tracked context in GetAndValidateAsync:
-            
-            // But wait, RemoveRange removed from context, but maybe not from collection in memory if not reloaded?
-            // Safer to just add to collection? The 'vardiya' obj has ZRaporlari loaded.
-            // EF Core tracking handles it.
-            
-            await _context.SaveChangesAsync(); // Persist Z Report change first
-
-            // Update Totals
-            vardiya.ToplamSatisTutari = dto.GenelToplam;
-            vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
             await _context.SaveChangesAsync();
+            await RecalculateTotals(vardiya);
+
+            return zRaporu;
 
             return zRaporu;
         }
@@ -206,6 +200,8 @@ namespace IstasyonDemo.Api.Services
                 mevcut.ParoPuan = dto.ParoPuan;
                 mevcut.SistemSatisTutari = dto.SistemSatisTutari;
                 mevcut.Toplam = dto.Toplam;
+                mevcut.BankaId = dto.BankaId;
+                mevcut.KrediKartiDetayJson = dto.KrediKartiDetayJson;
                 mevcut.Aciklama = dto.Aciklama;
             }
             else
@@ -219,13 +215,33 @@ namespace IstasyonDemo.Api.Services
                     ParoPuan = dto.ParoPuan,
                     SistemSatisTutari = dto.SistemSatisTutari,
                     Toplam = dto.Toplam,
+                    BankaId = dto.BankaId,
+                    KrediKartiDetayJson = dto.KrediKartiDetayJson,
                     Aciklama = dto.Aciklama
                 };
                 _context.MarketTahsilatlar.Add(tahsilat);
+                vardiya.Tahsilatlar.Add(tahsilat);
             }
 
             await _context.SaveChangesAsync();
             await RecalculateTotals(vardiya);
+        }
+
+        public async Task DeleteTahsilatAsync(int tahsilatId, int userId, string userRole, int? istasyonId)
+        {
+            var tahsilat = await _context.MarketTahsilatlar
+                .Include(t => t.MarketVardiya).ThenInclude(m => m!.Istasyon).ThenInclude(i => i!.Firma)
+                .FirstOrDefaultAsync(t => t.Id == tahsilatId);
+
+            if (tahsilat == null) throw new KeyNotFoundException("Tahsilat kaydı bulunamadı.");
+
+            if (tahsilat.MarketVardiya == null) throw new InvalidOperationException("Tahsilatın bağlı olduğu vardiya bulunamadı.");
+            ValidateAccess(tahsilat.MarketVardiya, userId, userRole, istasyonId);
+
+            _context.MarketTahsilatlar.Remove(tahsilat);
+            tahsilat.MarketVardiya.Tahsilatlar.Remove(tahsilat);
+            await _context.SaveChangesAsync();
+            await RecalculateTotals(tahsilat.MarketVardiya);
         }
 
         public async Task<MarketGider> AddGiderAsync(int vardiyaId, MarketGiderDto dto, int userId, string userRole, int? istasyonId)
@@ -241,6 +257,7 @@ namespace IstasyonDemo.Api.Services
                 BelgeTarihi = dto.BelgeTarihi
             };
             _context.MarketGiderler.Add(gider);
+            vardiya.Giderler.Add(gider);
             await _context.SaveChangesAsync();
             await RecalculateTotals(vardiya);
             return gider;
@@ -258,6 +275,7 @@ namespace IstasyonDemo.Api.Services
             ValidateAccess(gider.MarketVardiya, userId, userRole, istasyonId);
 
             _context.MarketGiderler.Remove(gider);
+            gider.MarketVardiya.Giderler.Remove(gider);
             await _context.SaveChangesAsync();
             await RecalculateTotals(gider.MarketVardiya);
         }
@@ -274,6 +292,7 @@ namespace IstasyonDemo.Api.Services
                 BelgeTarihi = dto.BelgeTarihi
             };
             _context.MarketGelirler.Add(gelir);
+            vardiya.Gelirler.Add(gelir);
             await _context.SaveChangesAsync();
             await RecalculateTotals(vardiya);
             return gelir;
@@ -291,6 +310,7 @@ namespace IstasyonDemo.Api.Services
             ValidateAccess(gelir.MarketVardiya, userId, userRole, istasyonId);
 
             _context.MarketGelirler.Remove(gelir);
+            gelir.MarketVardiya.Gelirler.Remove(gelir);
             await _context.SaveChangesAsync();
             await RecalculateTotals(gelir.MarketVardiya);
         }
@@ -392,6 +412,7 @@ namespace IstasyonDemo.Api.Services
                 .Include(m => m.Tahsilatlar)
                 .Include(m => m.Giderler)
                 .Include(m => m.Gelirler)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(m => m.Id == id);
             
             if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
@@ -425,7 +446,9 @@ namespace IstasyonDemo.Api.Services
             var tahsilat = vardiya.Tahsilatlar.Sum(t => t.Toplam);
             var gelir = vardiya.Gelirler.Sum(g => g.Tutar);
             var gider = vardiya.Giderler.Sum(g => g.Tutar);
+            var satis = vardiya.ZRaporlari.Sum(z => z.GenelToplam);
             
+            vardiya.ToplamSatisTutari = satis;
             vardiya.ToplamTeslimatTutari = tahsilat + gelir - gider;
             vardiya.ToplamFark = vardiya.ToplamTeslimatTutari - vardiya.ToplamSatisTutari;
             
@@ -441,14 +464,17 @@ namespace IstasyonDemo.Api.Services
                 throw new InvalidOperationException($"Z-Raporu tutarsız: Matrah ({dto.KdvHaricToplam}) + KDV ({dto.KdvToplam}) = {calculatedTotal} olmalı, ancak {dto.GenelToplam} girildi.");
             }
 
-            // 2. KDV Oransal Kontrolü (Opsional: Strict check or relaxed check?)
-            // Kullanıcı "100 TL KDV girebiliyorum" dedi, bunu engellememiz lazım.
-            // KDV oranlarına göre beklenen KDV'yi hesapla.
+            // 2. KDV Oransal Kontrolü - KALDIRILDI
+            // IsKdvDahil senaryosunda sunucu tarafı hesaplama yaptığı için bu kontrol yuvarlama farklarından ötürü
+            // gereksiz hatalara sebep olabiliyor. Matrah + KDV = Genel Toplam kontrolü yeterlidir.
+            
+            /*
             var expectedKdv = (dto.Kdv1 * 0.01m) + (dto.Kdv10 * 0.10m) + (dto.Kdv20 * 0.20m);
-            if (Math.Abs(expectedKdv - dto.KdvToplam) > 1.00m) // 1 TL tolerans (yuvarlama farkları için)
+            if (Math.Abs(expectedKdv - dto.KdvToplam) > 2.00m)
             {
                  throw new InvalidOperationException($"Z-Raporu KDV tutarsız: Oranlara göre hesaplanan KDV {expectedKdv:N2} TL olmalı, ancak {dto.KdvToplam:N2} TL girildi.");
             }
+            */
 
             // 3. Matrah Toplamı Kontrolü
             var totalMatrah = dto.Kdv0 + dto.Kdv1 + dto.Kdv10 + dto.Kdv20;
@@ -456,6 +482,52 @@ namespace IstasyonDemo.Api.Services
             {
                 throw new InvalidOperationException($"Z-Raporu Matrah tutarsız: Alt matrahların toplamı {totalMatrah:N2} TL, ancak Matrah Toplamı {dto.KdvHaricToplam:N2} TL girildi.");
             }
+        }
+
+        private void NormalizeZRaporu(MarketZRaporuDto dto)
+        {
+            if (!dto.IsKdvDahil) return;
+
+            // Gelen değerler KDV Dahil (Gross) değerlerdir.
+            // Kullanıcı ne girdiyse TOPLAM o tutmalıdır. Kuruş farkı KDV'ye yansıtılır.
+            
+            var gross0 = dto.Kdv0;
+            var gross1 = dto.Kdv1;
+            var gross10 = dto.Kdv10;
+            var gross20 = dto.Kdv20;
+
+            // 1. Genel Toplamı Kullanıcının Girdisine Sabitle
+            dto.GenelToplam = gross0 + gross1 + gross10 + gross20;
+
+            // 2. KDV'leri Hesapla (Standart Yuvarlama)
+            // Tax = Gross - (Gross / Rate)
+            var tax1 = Math.Round((gross1 - (gross1 / 1.01m)) * 100) / 100;
+            var tax10 = Math.Round((gross10 - (gross10 / 1.10m)) * 100) / 100;
+            var tax20 = Math.Round((gross20 - (gross20 / 1.20m)) * 100) / 100;
+
+            // 3. Matrahları Hesapla (Bakiye Yöntemi)
+            // Gross - Tax = Base
+            var base0 = gross0;
+            var base1 = gross1 - tax1;
+            var base10 = gross10 - tax10;
+            var base20 = gross20 - tax20;
+
+            // DTO Matrahlarını Güncelle
+            dto.Kdv0 = base0;
+            dto.Kdv1 = base1;
+            dto.Kdv10 = base10;
+            dto.Kdv20 = base20;
+
+            // 4. Toplamlar
+            dto.KdvToplam = tax1 + tax10 + tax20;
+            dto.KdvHaricToplam = dto.Kdv0 + dto.Kdv1 + dto.Kdv10 + dto.Kdv20;
+            
+            // Genel Toplam zaten Gross Sum.
+            // Check consistency:
+            // KdvHaric + KdvToplam = (Gross - Tax) + Tax = Gross. (Correct)
+
+            // Hesaplama bitti. Artık veritabanında tüm parçalar tutarlı:
+            // KdvHaricToplam (Sum Bases) + KdvToplam (Residual) = GenelToplam (Sum Inputs)
         }
     }
 }

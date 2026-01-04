@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
@@ -509,7 +510,68 @@ export class VardiyaListesi implements OnInit {
     }
 
     dosyaIndir(vardiya: YuklenenVardiya): void {
-        this.vardiyaApiService.downloadDosya(vardiya.id);
+        this.messageService.add({ severity: 'info', summary: 'İndiriliyor', detail: 'Dosya indiriliyor...', life: 2000 });
+        this.vardiyaApiService.downloadDosyaBlob(vardiya.id).subscribe({
+            next: (response: HttpResponse<Blob>) => {
+                const blob = response.body;
+                if (!blob) return;
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+
+                let filename = vardiya.dosyaAdi;
+                if (!filename) filename = 'vardiya_dosyasi.zip';
+
+                if (blob.type === 'application/zip' && !filename.toLowerCase().endsWith('.zip')) {
+                    filename += '.zip';
+                }
+
+                link.download = filename;
+                link.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err: any) => {
+                console.error('Dosya indirme hatası:', err);
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Dosya indirilemedi.' });
+            }
+        });
+    }
+
+    excelIndir(vardiya: YuklenenVardiya): void {
+        this.messageService.add({ severity: 'info', summary: 'İndiriliyor', detail: 'Excel raporu hazırlanıyor...', life: 2000 });
+        this.vardiyaApiService.exportExcel(vardiya.id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Vardiya_Raporu_${vardiya.dosyaAdi}.xlsx`;
+                link.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err) => {
+                console.error('Excel indirme hatası:', err);
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Excel raporu indirilemedi.' });
+            }
+        });
+    }
+
+    pdfIndir(vardiya: YuklenenVardiya): void {
+        this.messageService.add({ severity: 'info', summary: 'İndiriliyor', detail: 'PDF raporu hazırlanıyor...', life: 2000 });
+        this.vardiyaApiService.exportPdf(vardiya.id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Vardiya_Raporu_${vardiya.dosyaAdi}.pdf`;
+                link.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err) => {
+                console.error('PDF indirme hatası:', err);
+                this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'PDF raporu indirilemedi.' });
+            }
+        });
     }
 
     mutabakatYap(vardiya: YuklenenVardiya): void {

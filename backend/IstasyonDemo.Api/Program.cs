@@ -40,6 +40,7 @@ builder.Services.AddScoped<IFcmService, FcmService>();
 builder.Services.AddScoped<IMarketVardiyaService, MarketVardiyaService>();
 builder.Services.AddScoped<IDefinitionsService, DefinitionsService>();
 builder.Services.AddScoped<StokHesaplamaService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 // Firebase Admin SDK Başlatma
 try

@@ -11,6 +11,7 @@ namespace IstasyonDemo.Api.Services
         
         Task<MarketZRaporu> AddZRaporuAsync(int vardiyaId, MarketZRaporuDto dto, int userId, string userRole, int? istasyonId);
         Task AddTahsilatAsync(int vardiyaId, MarketTahsilatDto dto, int userId, string userRole, int? istasyonId);
+        Task DeleteTahsilatAsync(int tahsilatId, int userId, string userRole, int? istasyonId);
         Task<MarketGider> AddGiderAsync(int vardiyaId, MarketGiderDto dto, int userId, string userRole, int? istasyonId);
         Task DeleteGiderAsync(int giderId, int userId, string userRole, int? istasyonId);
         Task<MarketGelir> AddGelirAsync(int vardiyaId, MarketGelirDto dto, int userId, string userRole, int? istasyonId);

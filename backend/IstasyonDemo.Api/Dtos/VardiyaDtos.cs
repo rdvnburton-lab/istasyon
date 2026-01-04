@@ -128,7 +128,7 @@ namespace IstasyonDemo.Api.Dtos
 
     public class MutabakatViewModel
     {
-        public object Vardiya { get; set; } = new object();
+        public VardiyaSummaryDto Vardiya { get; set; } = new();
         public List<PersonelMutabakatOzetDto> PersonelOzetler { get; set; } = new();
         public FiloMutabakatOzetDto? FiloOzet { get; set; }
         public List<FiloMutabakatDetayDto> FiloDetaylari { get; set; } = new();
@@ -144,6 +144,7 @@ namespace IstasyonDemo.Api.Dtos
         public decimal ToplamNakit { get; set; }
         public decimal ToplamKrediKarti { get; set; }
         public decimal ToplamGider { get; set; }
+        public decimal MarketToplam { get; set; }
         public decimal ToplamPusula { get; set; } // Nakit + KK + Diğer
         public decimal Fark { get; set; } // (Pusula + Filo + Gider) - Otomasyon
     }
@@ -182,13 +183,13 @@ namespace IstasyonDemo.Api.Dtos
         public int? PersonelId { get; set; }
         public decimal Nakit { get; set; }
         public decimal KrediKarti { get; set; }
-        public string? KrediKartiDetay { get; set; } // JSON String
+        public string? KrediKartiDetay { get; set; } // JSON String (Legacy)
+        public List<PusulaKrediKartiDetayDto> KrediKartiDetayList { get; set; } = new(); // Relational Data
         public List<PusulaDigerOdemeDto> DigerOdemeler { get; set; } = new();
         public List<PusulaVeresiyeDto> Veresiyeler { get; set; } = new();
         public string? Aciklama { get; set; }
         public decimal Toplam { get; set; }
     }
-
 
     public class GiderMutabakatDto
     {
@@ -201,6 +202,7 @@ namespace IstasyonDemo.Api.Dtos
     {
         public int Id { get; set; }
         public int IstasyonId { get; set; }
+        public string IstasyonAdi { get; set; } = string.Empty;
         public DateTime BaslangicTarihi { get; set; }
         public DateTime? BitisTarihi { get; set; }
         public int Durum { get; set; }
@@ -210,5 +212,6 @@ namespace IstasyonDemo.Api.Dtos
         public DateTime OlusturmaTarihi { get; set; }
         public string? DosyaAdi { get; set; }
         public string? RedNedeni { get; set; }
+        public string? OlusturanKullaniciAdi { get; set; }
     }
 }

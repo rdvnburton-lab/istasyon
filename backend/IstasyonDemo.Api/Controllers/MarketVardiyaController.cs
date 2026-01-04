@@ -74,6 +74,16 @@ namespace IstasyonDemo.Api.Controllers
               catch (UnauthorizedAccessException) { return Forbid(); }
         }
 
+        [HttpDelete("tahsilat/{tahsilatId}")]
+        public async Task<ActionResult> DeleteTahsilat(int tahsilatId)
+        {
+             try {
+                await _service.DeleteTahsilatAsync(tahsilatId, CurrentUserId, CurrentUserRole, CurrentIstasyonId);
+                return Ok();
+            } catch (KeyNotFoundException) { return NotFound(); }
+              catch (UnauthorizedAccessException) { return Forbid(); }
+        }
+
         [HttpPost("{id}/gider")]
         public async Task<ActionResult> AddGider(int id, MarketGiderDto dto)
         {

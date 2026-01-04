@@ -1299,25 +1299,42 @@ namespace IstasyonDemo.Api.Services
             var vardiya = await _context.Vardiyalar
                 .AsNoTracking()
                 .Where(v => v.Id == vardiyaId)
-                .Select(v => new
+                .Select(v => new VardiyaSummaryDto
                 {
-                    v.Id,
-                    v.IstasyonId,
-                    v.BaslangicTarihi,
-                    v.BitisTarihi,
-                    v.Durum,
-                    v.PompaToplam,
-                    v.MarketToplam,
-                    v.GenelToplam,
-                    v.OlusturmaTarihi,
-                    v.DosyaAdi,
-                    v.RedNedeni
+                    Id = v.Id,
+                    IstasyonId = v.IstasyonId,
+                    IstasyonAdi = v.Istasyon!.Ad,
+                    BaslangicTarihi = v.BaslangicTarihi,
+                    BitisTarihi = v.BitisTarihi,
+                    Durum = (int)v.Durum,
+                    PompaToplam = v.PompaToplam,
+                    MarketToplam = v.MarketToplam, // Will be overridden if Market Shift found
+                    GenelToplam = v.GenelToplam,
+                    OlusturmaTarihi = v.OlusturmaTarihi,
+                    DosyaAdi = v.DosyaAdi,
+                    RedNedeni = v.RedNedeni,
+                    OlusturanKullaniciAdi = _context.VardiyaLoglari
+                        .Where(l => l.VardiyaId == v.Id && l.Islem == "OLUSTURULDU")
+                        .OrderByDescending(l => l.IslemTarihi)
+                        .Join(_context.Users, l => l.KullaniciId, u => u.Id, (l, u) => u.AdSoyad)
+                        .FirstOrDefault()
                 })
                 .FirstOrDefaultAsync();
 
             if (vardiya == null)
             {
                 throw new KeyNotFoundException("Vardiya bulunamadı.");
+            }
+
+            // [NEW] Inject Market Data
+            var marketShift = await _context.MarketVardiyalar
+                .AsNoTracking()
+                .Where(m => m.IstasyonId == vardiya.IstasyonId && m.Tarih.Date == vardiya.BaslangicTarihi.Date)
+                .FirstOrDefaultAsync();
+            
+            if (marketShift != null)
+            {
+                vardiya.MarketToplam = marketShift.ToplamSatisTutari;
             }
 
             // 2. Personel bazında GRUPLANMIŞ otomasyon satışları
@@ -1380,7 +1397,8 @@ namespace IstasyonDemo.Api.Services
                 if (match != null && !string.IsNullOrWhiteSpace(match.AdSoyad))
                 {
                     item.GercekPersonelAdi = match.AdSoyad;
-                    _logger.LogInformation($"[VardiyaService] Eşleşti: {item.PersonelAdi} -> {item.GercekPersonelAdi}");
+                    item.PersonelKeyId = match.KeyId; // Corrected from match.Referans
+                    _logger.LogInformation($"[VardiyaService] Eşleşti: {item.PersonelAdi} -> {item.GercekPersonelAdi} ({item.PersonelKeyId})");
                     
                     // Fix missing ID
                     if (!item.PersonelId.HasValue || item.PersonelId.Value == 0)
@@ -1422,6 +1440,7 @@ namespace IstasyonDemo.Api.Services
                 .AsNoTracking()
                 .Include(p => p.DigerOdemeler)
                 .Include(p => p.Veresiyeler).ThenInclude(v => v.CariKart)
+                .Include(p => p.KrediKartiDetaylari)
                 .Where(p => p.VardiyaId == vardiyaId)
                 .Select(p => new PusulaMutabakatDto
                 {
@@ -1431,6 +1450,11 @@ namespace IstasyonDemo.Api.Services
                     Nakit = p.Nakit,
                     KrediKarti = p.KrediKarti,
                     KrediKartiDetay = p.KrediKartiDetay,
+                    KrediKartiDetayList = p.KrediKartiDetaylari.Select(k => new PusulaKrediKartiDetayDto 
+                    {
+                        BankaAdi = k.BankaAdi,
+                        Tutar = k.Tutar
+                    }).ToList(),
                     DigerOdemeler = p.DigerOdemeler.Select(d => new PusulaDigerOdemeDto
                     {
                         TurKodu = d.TurKodu,
@@ -1679,13 +1703,15 @@ namespace IstasyonDemo.Api.Services
             {
                 ToplamOtomasyon = vardiya.GenelToplam,
                 ToplamGider = giderler.Sum(g => g.Tutar),
+                MarketToplam = vardiya.MarketToplam, // [NEW] Included Market Sales
                 ToplamNakit = pusulalar.Sum(p => p.Nakit),
                 ToplamKrediKarti = pusulalar.Sum(p => p.KrediKarti),
                 ToplamPusula = pusulalar.Sum(p => p.Toplam)
             };
 
             var toplamTahsilat = genelOzet.ToplamPusula + filoOzet.ToplamTutar + genelOzet.ToplamGider;
-            genelOzet.Fark = toplamTahsilat - genelOzet.ToplamOtomasyon;
+            // Target = Fuel Sales + Market Sales
+            genelOzet.Fark = toplamTahsilat - (genelOzet.ToplamOtomasyon + genelOzet.MarketToplam);
 
             stopwatch.Stop();
 

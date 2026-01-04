@@ -499,6 +499,18 @@
                                     (click)="mutabakatYap(vardiya)"
                                     [pTooltip]="vardiya.durum === 'REDDEDILDI' ? 'Mutabakatı Düzenle' : 'Mutabakat Başlat'"
                                     tooltipPosition="top"></button>
+
+                                <!-- Rapor Butonları (Onaya Gönderildi veya Onaylandı) -->
+                                <button *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI'"
+                                    pButton pRipple icon="pi pi-file-excel"
+                                    class="p-button-rounded p-button-success p-button-text"
+                                    (click)="excelIndir(vardiya)" pTooltip="Excel Raporu"
+                                    tooltipPosition="top"></button>
+                                <button *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI'"
+                                    pButton pRipple icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-danger p-button-text mr-2"
+                                    (click)="pdfIndir(vardiya)" pTooltip="PDF Raporu" tooltipPosition="top"></button>
+
                                 <button pButton pRipple icon="pi pi-download"
                                     class="p-button-rounded p-button-info p-button-text mr-2"
                                     (click)="dosyaIndir(vardiya)" pTooltip="Dosyayı İndir"
