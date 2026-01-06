@@ -83,23 +83,34 @@ namespace IstasyonDemo.Api.Controllers
         /// Sadece admin kullanabilir.
         /// </summary>
         [HttpPost("{id}/onay-kaldir")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,patron")]
         public async Task<IActionResult> OnayKaldir(int id)
         {
             try
             {
                 var result = await _arsivService.OnayiKaldirVeGeriYukle(id, CurrentUserId, User.Identity?.Name ?? "Admin");
                 
-                if (!result)
+                if (result)
                 {
-                    return BadRequest(new { message = "Onay kaldırılamadı. Vardiya bulunamadı veya zaten onaylı değil." });
+                    // True döndüyse: Durum 'Onay Bekliyor' oldu, verileri geri yüklemeye çalış
+                    await _vardiyaService.RestoreVardiyaDataAsync(id, CurrentUserId, CurrentUserRole);
+                    return Ok(new { message = "Vardiya onayı kaldırıldı. Vardiya tekrar onay bekliyor durumuna alındı ve veriler geri yüklendi." });
                 }
-
-                return Ok(new { message = "Vardiya onayı kaldırıldı. Vardiya tekrar onay bekliyor durumuna alındı." });
+                else
+                {
+                    // False döndüyse: XML yok/Veri yok hatası ALINMADI, ama durum değişmedi.
+                    // Demek ki "In-Place Fix" (Yerinde Düzeltme) yapıldı.
+                    return Ok(new { message = "Yedek veri bulunamadığı için onay kaldırılamadı, ANCAK rapor toplamlarındaki hesaplama hatası arşiv üzerinde düzeltildi." });
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                 // Catch known business logic errors
+                 return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Onay kaldırılırken hata oluştu.", error = ex.Message });
+                return StatusCode(500, new { message = "Onay kaldırılırken beklenmeyen bir hata oluştu.", error = ex.Message });
             }
         }
 

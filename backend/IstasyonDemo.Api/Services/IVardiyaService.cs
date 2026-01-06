@@ -14,5 +14,6 @@ namespace IstasyonDemo.Api.Services
         Task OnaylaAsync(int id, OnayDto dto, int userId, string? userRole);
         Task ReddetAsync(int id, RedDto dto, int userId, string? userRole);
         Task ProcessXmlZipAsync(Stream zipStream, string fileName, int userId, string? userRole, string? userName);
+        Task RestoreVardiyaDataAsync(int vardiyaId, int userId, string? userRole);
     }
 }

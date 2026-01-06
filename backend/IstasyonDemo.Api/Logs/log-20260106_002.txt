@@ -2086,3 +2086,1257 @@ System.InvalidOperationException: Bu dosya daha önce yüklenmiş! (Hash: f8cc93
 2026-01-06 17:02:10.028 +03:00 [INF] Vardiya 18 başarıyla arşivlendi.
 2026-01-06 17:02:10.049 +03:00 [INF] Vardiya 18 için ham veriler temizlendi.
 2026-01-06 17:02:34.129 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:35:48.241 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 20:35:48.382 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 20:35:50.860 +03:00 [ERR] An error occurred using the connection to database 'istasyon' on server 'tcp://127.0.0.1:5432'.
+2026-01-06 20:35:50.862 +03:00 [WRN] Veritabanı henüz hazır değil veya migration hatası: Failed to connect to 127.0.0.1:5432. 5 saniye sonra tekrar denenecek...
+2026-01-06 20:36:13.756 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 20:36:41.939 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 20:37:57.490 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 20:37:57.623 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 20:37:58.637 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 20:37:58.857 +03:00 [INF] Mevcut yakıt tanımları Turpak kodları ile güncellendi.
+2026-01-06 20:39:26.389 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 20:40:09.407 +03:00 [INF] XML Dosyası İşleniyor: 2025052401.zip, Boyut: 726187 bytes
+2026-01-06 20:40:09.407 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 20:40:09.428 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 20:40:09.429 +03:00 [INF] XML Parsing Debug: Toplam 963 adet 'Txn' elementi bulundu.
+2026-01-06 20:40:09.429 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250525000111</DateTime>
+    <ReceiptNr>40799</ReceiptNr>
+    <FuelType>4</FuelType>
+    <UnitPrice>4751</UnitPrice>
+    <Amount>1052</Amount>
+    <Total>50000</Total>
+    <PumpNr>5</PumpNr>
+    <NozzleNr>4</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06DT7389</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>47510</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 20:40:09.429 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 20:40:09.429 +03:00 [INF] İlk Txn ReceiptNr Değeri: 40799
+2026-01-06 20:40:09.449 +03:00 [INF] XML İstatistikleri: 963 Satış bulundu.
+2026-01-06 20:40:09.501 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=25.05.2025 00:01:11, Bitiş=25.05.2025 23:48:48
+2026-01-06 20:40:09.524 +03:00 [INF] DTO Oluşturuldu: 920 Otomasyon, 43 Filo, 0 Tank satışı eklendi.
+2026-01-06 20:40:09.528 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 796.064,10 TL (Oto: 717.268,28 + Filo: 78.795,82)
+2026-01-06 20:40:13.299 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=11057, Bitiş=5256, Delta=5801, Sevkiyat=0, BeklenenTüketim=5801, SatilanMiktar=5801, FARK=0
+2026-01-06 20:40:13.300 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:40:13.304 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4451, Bitiş=4448, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 20:40:13.304 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4362, Bitiş=4361, Delta=1, Sevkiyat=0, BeklenenTüketim=1, SatilanMiktar=1, FARK=0
+2026-01-06 20:40:13.304 +03:00 [INF] Tank 4 (Motorin): Başlangıç=14445, Bitiş=10009, Delta=4436, Sevkiyat=0, BeklenenTüketim=4436, SatilanMiktar=4436, FARK=0
+2026-01-06 20:40:13.305 +03:00 [INF] Tank 5 (Motorin): Başlangıç=10643, Bitiş=10655, Delta=-12, Sevkiyat=0, BeklenenTüketim=-12, SatilanMiktar=-12, FARK=0
+2026-01-06 20:40:13.305 +03:00 [INF] Tank 6 (Motorin): Başlangıç=3289, Bitiş=2308, Delta=981, Sevkiyat=0, BeklenenTüketim=981, SatilanMiktar=981, FARK=0
+2026-01-06 20:40:13.335 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 20:40:17.258 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:40:17.309 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:40:17.330 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 20:40:17.345 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:40:26.998 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:40:27.000 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:40:27.005 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:40:33.539 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:40:33.540 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:40:33.544 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:40:39.942 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:40:39.943 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:40:39.947 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:40:48.291 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:40:48.293 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:40:48.296 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:40:55.131 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:40:55.132 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:40:55.135 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:41:01.305 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:41:01.306 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:41:01.309 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:41:07.921 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:41:07.922 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:41:07.926 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:42:26.383 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 20:42:56.562 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:42:56.563 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:42:56.566 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:43:01.015 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 20:43:01.045 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:43:01.047 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:43:01.053 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:43:14.054 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 7 satır var.
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 7 adet.
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:43:14.057 +03:00 [INF] [VardiyaService] Eşleşti: D.DUMAN -> D.DUMAN (DD1400D3)
+2026-01-06 20:43:14.061 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:43:50.127 +03:00 [INF] Vardiya 110 başarıyla arşivlendi. Arşiv ID: 1
+2026-01-06 20:43:50.127 +03:00 [INF] Vardiya 110 başarıyla arşivlendi.
+2026-01-06 20:43:50.155 +03:00 [INF] Vardiya 110 için ham veriler temizlendi.
+2026-01-06 20:44:09.159 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 20:44:09.160 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 20:44:09.163 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:44:09.183 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:45:26.375 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 20:47:45.763 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 20:47:45.766 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 20:47:45.770 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:47:47.579 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 20:47:47.581 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 20:47:47.587 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 7 pusula var.
+2026-01-06 20:47:47.595 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:48:26.374 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 20:50:33.359 +03:00 [INF] XML Dosyası İşleniyor: 2025052501.zip, Boyut: 733525 bytes
+2026-01-06 20:50:33.359 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 20:50:33.365 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 20:50:33.365 +03:00 [INF] XML Parsing Debug: Toplam 973 adet 'Txn' elementi bulundu.
+2026-01-06 20:50:33.366 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250526000203</DateTime>
+    <ReceiptNr>41762</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>870</Amount>
+    <Total>20000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06KA3188</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 20:50:33.366 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 20:50:33.366 +03:00 [INF] İlk Txn ReceiptNr Değeri: 41762
+2026-01-06 20:50:33.366 +03:00 [INF] XML İstatistikleri: 973 Satış bulundu.
+2026-01-06 20:50:33.374 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=26.05.2025 00:02:03, Bitiş=26.05.2025 23:49:28
+2026-01-06 20:50:33.383 +03:00 [INF] DTO Oluşturuldu: 850 Otomasyon, 123 Filo, 0 Tank satışı eklendi.
+2026-01-06 20:50:33.384 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 915.432,36 TL (Oto: 662.756,16 + Filo: 252.676,20)
+2026-01-06 20:50:36.461 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=5256, Bitiş=1945, Delta=3311, Sevkiyat=0, BeklenenTüketim=3311, SatilanMiktar=3311, FARK=0
+2026-01-06 20:50:36.461 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:50:36.462 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4448, Bitiş=1212, Delta=3236, Sevkiyat=0, BeklenenTüketim=3236, SatilanMiktar=3236, FARK=0
+2026-01-06 20:50:36.462 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4361, Bitiş=4358, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 20:50:36.462 +03:00 [INF] Tank 4 (Motorin): Başlangıç=10009, Bitiş=2920, Delta=7089, Sevkiyat=0, BeklenenTüketim=7089, SatilanMiktar=7089, FARK=0
+2026-01-06 20:50:36.462 +03:00 [INF] Tank 5 (Motorin): Başlangıç=10655, Bitiş=10658, Delta=-3, Sevkiyat=0, BeklenenTüketim=-3, SatilanMiktar=-3, FARK=0
+2026-01-06 20:50:36.462 +03:00 [INF] Tank 6 (Motorin): Başlangıç=2308, Bitiş=1703, Delta=605, Sevkiyat=0, BeklenenTüketim=605, SatilanMiktar=605, FARK=0
+2026-01-06 20:50:36.469 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 20:50:38.768 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:50:38.770 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:50:38.773 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:50:40.403 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:50:40.407 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:50:40.413 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:50:44.127 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:50:44.130 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:50:44.137 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:50:44.172 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:51:26.373 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 20:52:28.822 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:52:28.823 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:52:28.827 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:52:31.339 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:52:31.340 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:52:31.344 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:52:31.370 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:53:20.003 +03:00 [INF] XML Dosyası İşleniyor: 2025052501.zip, Boyut: 733525 bytes
+2026-01-06 20:53:20.004 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 20:53:20.009 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 20:53:20.010 +03:00 [INF] XML Parsing Debug: Toplam 973 adet 'Txn' elementi bulundu.
+2026-01-06 20:53:20.010 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250526000203</DateTime>
+    <ReceiptNr>41762</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>870</Amount>
+    <Total>20000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06KA3188</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 20:53:20.010 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 20:53:20.010 +03:00 [INF] İlk Txn ReceiptNr Değeri: 41762
+2026-01-06 20:53:20.011 +03:00 [INF] XML İstatistikleri: 973 Satış bulundu.
+2026-01-06 20:53:20.018 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=26.05.2025 00:02:03, Bitiş=26.05.2025 23:49:28
+2026-01-06 20:53:20.033 +03:00 [INF] DTO Oluşturuldu: 850 Otomasyon, 123 Filo, 0 Tank satışı eklendi.
+2026-01-06 20:53:20.035 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 915.432,36 TL (Oto: 662.756,16 + Filo: 252.676,20)
+2026-01-06 20:53:23.171 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=5256, Bitiş=1945, Delta=3311, Sevkiyat=0, BeklenenTüketim=3311, SatilanMiktar=3311, FARK=0
+2026-01-06 20:53:23.171 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:53:23.174 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4448, Bitiş=1212, Delta=3236, Sevkiyat=0, BeklenenTüketim=3236, SatilanMiktar=3236, FARK=0
+2026-01-06 20:53:23.174 +03:00 [INF] Tank 3 (Kurşunsuz): Başlangıç=4361, Bitiş=4358, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 20:53:23.174 +03:00 [INF] Tank 4 (Motorin): Başlangıç=10009, Bitiş=2920, Delta=7089, Sevkiyat=0, BeklenenTüketim=7089, SatilanMiktar=7089, FARK=0
+2026-01-06 20:53:23.174 +03:00 [INF] Tank 5 (Motorin): Başlangıç=10655, Bitiş=10658, Delta=-3, Sevkiyat=0, BeklenenTüketim=-3, SatilanMiktar=-3, FARK=0
+2026-01-06 20:53:23.174 +03:00 [INF] Tank 6 (Motorin): Başlangıç=2308, Bitiş=1703, Delta=605, Sevkiyat=0, BeklenenTüketim=605, SatilanMiktar=605, FARK=0
+2026-01-06 20:53:23.184 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 20:53:25.318 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:53:25.322 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:53:25.322 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:53:25.322 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:53:25.322 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:53:25.323 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:53:25.323 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:53:25.323 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:53:25.323 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:53:25.323 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:53:25.323 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:53:25.326 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:53:27.162 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 20:53:27.163 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 20:53:27.163 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 20:53:27.163 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 20:53:27.163 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 20:53:27.163 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 20:53:27.163 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 20:53:27.164 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 20:53:27.164 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 20:53:27.164 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 20:53:27.164 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 20:53:27.168 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 20:53:27.195 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 20:54:26.371 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 20:57:26.379 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 21:00:26.373 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 21:03:26.382 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 21:03:40.451 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:03:40.592 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:03:41.301 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:04:29.026 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:04:29.162 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:04:29.879 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:04:37.808 +03:00 [ERR] Vardiya 110 için XML kaydı bulunamadı.
+2026-01-06 21:05:25.395 +03:00 [ERR] Vardiya 110 için XML kaydı bulunamadı.
+2026-01-06 21:05:41.758 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:05:41.898 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:05:42.610 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:06:00.585 +03:00 [ERR] Vardiya 110 için XML kaydı bulunamadı.
+2026-01-06 21:06:00.587 +03:00 [ERR] Vardiya 110 onayı kaldırılırken hata oluştu.
+System.InvalidOperationException: Bu vardiya için yedeklenmiş XML verisi bulunamadı, geri alma işlemi yapılamaz.
+   at IstasyonDemo.Api.Services.VardiyaArsivService.OnayiKaldirVeGeriYukle(Int32 vardiyaId, Int32 userId, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaArsivService.cs:line 383
+2026-01-06 21:06:26.407 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-06 21:08:37.631 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:08:37.778 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:08:38.543 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:08:45.312 +03:00 [INF] Vardiya 110 için veri bulunamadı ancak arşiv FARK değeri düzeltildi.
+2026-01-06 21:11:02.126 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-06 21:11:02.127 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 21:11:02.149 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 21:11:02.151 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:11:02.152 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 21:11:02.154 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 21:11:02.155 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-06 21:11:02.157 +03:00 [INF] XML İstatistikleri: 1056 Satış bulundu.
+2026-01-06 21:11:02.195 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-06 21:11:02.214 +03:00 [INF] DTO Oluşturuldu: 932 Otomasyon, 124 Filo, 0 Tank satışı eklendi.
+2026-01-06 21:11:02.218 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 762.779,74 + Filo: 259.427,02)
+2026-01-06 21:11:06.074 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=14035, Bitiş=7843, Delta=6192, Sevkiyat=0, BeklenenTüketim=6192, SatilanMiktar=6192, FARK=0
+2026-01-06 21:11:06.076 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:11:06.082 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4933, Bitiş=4930, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 21:11:06.083 +03:00 [INF] Tank 3 (Motorin): Başlangıç=12559, Bitiş=8666, Delta=3893, Sevkiyat=0, BeklenenTüketim=3893, SatilanMiktar=3893, FARK=0
+2026-01-06 21:11:06.084 +03:00 [INF] Tank 4 (Motorin): Başlangıç=12283, Bitiş=12278, Delta=5, Sevkiyat=0, BeklenenTüketim=5, SatilanMiktar=5, FARK=0
+2026-01-06 21:11:06.085 +03:00 [INF] Tank 5 (Motorin): Başlangıç=16828, Bitiş=12103, Delta=4725, Sevkiyat=0, BeklenenTüketim=4725, SatilanMiktar=4725, FARK=0
+2026-01-06 21:11:06.085 +03:00 [INF] Tank 6 (Motorin): Başlangıç=15485, Bitiş=14065, Delta=1420, Sevkiyat=0, BeklenenTüketim=1420, SatilanMiktar=1420, FARK=0
+2026-01-06 21:11:06.113 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 21:11:10.581 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:11:10.627 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:11:10.628 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:11:10.629 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:11:10.629 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:11:10.630 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:11:10.631 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:11:10.631 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:11:10.632 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:11:10.633 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:11:10.634 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:11:10.650 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:11:10.664 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:11:13.163 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:11:13.189 +03:00 [ERR] Something went wrong: Bu işlem için yetkiniz yok.
+System.UnauthorizedAccessException: Bu işlem için yetkiniz yok.
+   at IstasyonDemo.Api.Services.VardiyaService.OnayaGonderAsync(Int32 id, Int32 userId, String userRole) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 465
+   at IstasyonDemo.Api.Controllers.VardiyaApprovalController.OnayaGonder(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\VardiyaApprovalController.cs:line 54
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-06 21:11:25.194 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:11:25.196 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:11:25.197 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:11:25.197 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:11:25.198 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:11:25.199 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:11:25.199 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:11:25.200 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:11:25.201 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:11:25.202 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:11:25.202 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:11:25.210 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:11:27.422 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:11:27.424 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:11:27.424 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:11:27.425 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:11:27.426 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:11:27.426 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:11:27.427 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:11:27.428 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:11:27.428 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:11:27.429 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:11:27.430 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:11:27.435 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:11:37.949 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:11:37.951 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:11:37.952 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:11:37.953 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:11:37.954 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:11:37.954 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:11:37.955 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:11:37.956 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:11:37.956 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:11:37.957 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:11:37.958 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:11:37.964 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:11:41.141 +03:00 [INF] Vardiya 113 başarıyla arşivlendi. Arşiv ID: 2
+2026-01-06 21:11:41.142 +03:00 [INF] Vardiya 113 başarıyla arşivlendi.
+2026-01-06 21:11:41.175 +03:00 [INF] Vardiya 113 için ham veriler temizlendi.
+2026-01-06 21:11:53.788 +03:00 [INF] Vardiya 113 için veri bulunamadı ancak arşiv FARK değeri düzeltildi.
+2026-01-06 21:12:15.433 +03:00 [ERR] Vardiya 113 için ne XML ne de ham veri bulundu. Arşiv de güncel.
+2026-01-06 21:12:15.434 +03:00 [ERR] Vardiya 113 onayı kaldırılırken hata oluştu.
+System.InvalidOperationException: Bu vardiya için yedek veri bulunamadı ve rapor zaten güncel. Geri alma işlemi yapılamaz.
+   at IstasyonDemo.Api.Services.VardiyaArsivService.OnayiKaldirVeGeriYukle(Int32 vardiyaId, Int32 userId, String userName) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaArsivService.cs:line 415
+2026-01-06 21:17:47.981 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:17:48.111 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:17:48.806 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:18:00.525 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 21:18:00.572 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 21:18:00.598 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:18:00.616 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:18:03.019 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:18:03.107 +03:00 [ERR] Failed executing DbCommand (6ms) [Parameters=[@p0='?' (DbType = Int32), @p4='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p5='?', @p6='?' (DbType = Int32), @p7='?' (DbType = Int32), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Binary)], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "VardiyaXmlLoglari"
+WHERE "Id" = @p0;
+UPDATE "Vardiyalar" SET "Durum" = @p1, "GuncellemeTarihi" = @p2, "OnayTarihi" = @p3
+WHERE "Id" = @p4;
+INSERT INTO "VardiyaXmlLoglari" ("DosyaAdi", "IstasyonId", "VardiyaId", "XmlIcerik", "YuklemeTarihi", "ZipDosyasi")
+VALUES (@p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2026-01-06 21:18:03.124 +03:00 [ERR] An exception occurred in the database while saving changes for context type 'IstasyonDemo.Api.Data.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+
+DETAIL: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23503
+    MessageText: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+    Detail: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+    SchemaName: public
+    TableName: VardiyaXmlLoglari
+    ConstraintName: FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId
+    File: ri_triggers.c
+    Line: 2596
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+
+DETAIL: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23503
+    MessageText: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+    Detail: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+    SchemaName: public
+    TableName: VardiyaXmlLoglari
+    ConstraintName: FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId
+    File: ri_triggers.c
+    Line: 2596
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-01-06 21:18:03.137 +03:00 [ERR] Vardiya 113 arşivlenirken hata oluştu.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+
+DETAIL: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23503
+    MessageText: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+    Detail: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+    SchemaName: public
+    TableName: VardiyaXmlLoglari
+    ConstraintName: FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId
+    File: ri_triggers.c
+    Line: 2596
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at IstasyonDemo.Api.Services.VardiyaArsivService.ArsivleVardiya(Int32 vardiyaId, Int32 onaylayanId, String onaylayanAdi) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaArsivService.cs:line 68
+2026-01-06 21:18:03.152 +03:00 [ERR] Vardiya 113 onaylanırken hata oluştu, işlem geri alındı.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+
+DETAIL: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23503
+    MessageText: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+    Detail: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+    SchemaName: public
+    TableName: VardiyaXmlLoglari
+    ConstraintName: FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId
+    File: ri_triggers.c
+    Line: 2596
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at IstasyonDemo.Api.Services.VardiyaArsivService.ArsivleVardiya(Int32 vardiyaId, Int32 onaylayanId, String onaylayanAdi) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaArsivService.cs:line 68
+   at IstasyonDemo.Api.Services.VardiyaService.OnaylaAsync(Int32 id, OnayDto dto, Int32 userId, String userRole) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 675
+2026-01-06 21:18:03.164 +03:00 [ERR] Something went wrong: Vardiya onaylama işlemi başarısız: An error occurred while saving the entity changes. See the inner exception for details.
+System.InvalidOperationException: Vardiya onaylama işlemi başarısız: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+
+DETAIL: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: ERROR
+    SqlState: 23503
+    MessageText: insert or update on table "VardiyaXmlLoglari" violates foreign key constraint "FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId"
+    Detail: Key (IstasyonId)=(0) is not present in table "Istasyonlar".
+    SchemaName: public
+    TableName: VardiyaXmlLoglari
+    ConstraintName: FK_VardiyaXmlLoglari_Istasyonlar_IstasyonId
+    File: ri_triggers.c
+    Line: 2596
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at IstasyonDemo.Api.Services.VardiyaArsivService.ArsivleVardiya(Int32 vardiyaId, Int32 onaylayanId, String onaylayanAdi) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaArsivService.cs:line 68
+   at IstasyonDemo.Api.Services.VardiyaService.OnaylaAsync(Int32 id, OnayDto dto, Int32 userId, String userRole) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 675
+   --- End of inner exception stack trace ---
+   at IstasyonDemo.Api.Services.VardiyaService.OnaylaAsync(Int32 id, OnayDto dto, Int32 userId, String userRole) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 688
+   at IstasyonDemo.Api.Controllers.VardiyaApprovalController.Onayla(Int32 id, OnayDto dto) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\VardiyaApprovalController.cs:line 69
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-06 21:36:37.015 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:36:37.156 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:36:37.865 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:37:32.475 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-06 21:37:32.477 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 21:37:32.498 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 21:37:32.500 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:37:32.501 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 21:37:32.503 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 21:37:32.504 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-06 21:37:32.506 +03:00 [INF] XML İstatistikleri: 1056 Satış bulundu.
+2026-01-06 21:37:32.549 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-06 21:37:32.567 +03:00 [INF] DTO Oluşturuldu: 932 Otomasyon, 124 Filo, 0 Tank satışı eklendi.
+2026-01-06 21:37:32.573 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 762.779,74 + Filo: 259.427,02)
+2026-01-06 21:37:36.842 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=14035, Bitiş=7843, Delta=6192, Sevkiyat=0, BeklenenTüketim=6192, SatilanMiktar=6192, FARK=0
+2026-01-06 21:37:36.844 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:37:36.849 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4933, Bitiş=4930, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 21:37:36.850 +03:00 [INF] Tank 3 (Motorin): Başlangıç=12559, Bitiş=8666, Delta=3893, Sevkiyat=0, BeklenenTüketim=3893, SatilanMiktar=3893, FARK=0
+2026-01-06 21:37:36.851 +03:00 [INF] Tank 4 (Motorin): Başlangıç=12283, Bitiş=12278, Delta=5, Sevkiyat=0, BeklenenTüketim=5, SatilanMiktar=5, FARK=0
+2026-01-06 21:37:36.852 +03:00 [INF] Tank 5 (Motorin): Başlangıç=16828, Bitiş=12103, Delta=4725, Sevkiyat=0, BeklenenTüketim=4725, SatilanMiktar=4725, FARK=0
+2026-01-06 21:37:36.852 +03:00 [INF] Tank 6 (Motorin): Başlangıç=15485, Bitiş=14065, Delta=1420, Sevkiyat=0, BeklenenTüketim=1420, SatilanMiktar=1420, FARK=0
+2026-01-06 21:37:36.884 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 21:37:46.609 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:37:46.657 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:37:46.658 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:37:46.659 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:37:46.659 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:37:46.660 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:37:46.661 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:37:46.661 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:37:46.662 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:37:46.663 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:37:46.663 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:37:46.685 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:37:46.700 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:37:52.165 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:37:52.191 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:37:52.193 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:37:52.194 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:37:52.195 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:37:52.195 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:37:52.196 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:37:52.197 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:37:52.197 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:37:52.198 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:37:52.199 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:37:52.200 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:37:52.206 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:38:04.009 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:38:04.011 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:38:04.011 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:38:04.012 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:38:04.013 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:38:04.013 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:38:04.014 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:38:04.015 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:38:04.016 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:38:04.016 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:38:04.017 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:38:04.022 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:38:06.625 +03:00 [INF] Vardiya 114 başarıyla arşivlendi. Arşiv ID: 3
+2026-01-06 21:38:06.626 +03:00 [INF] Vardiya 114 başarıyla arşivlendi.
+2026-01-06 21:38:06.661 +03:00 [INF] Vardiya 114 için ham veriler temizlendi.
+2026-01-06 21:38:29.153 +03:00 [INF] Vardiya 114 için veri bulunamadı ancak arşiv FARK değeri düzeltildi.
+2026-01-06 21:41:36.003 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:41:36.137 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:41:36.831 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:41:48.420 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-06 21:41:48.421 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 21:41:48.446 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 21:41:48.448 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:41:48.449 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 21:41:48.451 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 21:41:48.452 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-06 21:41:48.455 +03:00 [INF] XML İstatistikleri: 1056 Satış bulundu.
+2026-01-06 21:41:48.499 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-06 21:41:48.525 +03:00 [INF] DTO Oluşturuldu: 932 Otomasyon, 124 Filo, 0 Tank satışı eklendi.
+2026-01-06 21:41:48.530 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 762.779,74 + Filo: 259.427,02)
+2026-01-06 21:41:52.966 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=14035, Bitiş=7843, Delta=6192, Sevkiyat=0, BeklenenTüketim=6192, SatilanMiktar=6192, FARK=0
+2026-01-06 21:41:52.968 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:41:52.973 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4933, Bitiş=4930, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 21:41:52.974 +03:00 [INF] Tank 3 (Motorin): Başlangıç=12559, Bitiş=8666, Delta=3893, Sevkiyat=0, BeklenenTüketim=3893, SatilanMiktar=3893, FARK=0
+2026-01-06 21:41:52.975 +03:00 [INF] Tank 4 (Motorin): Başlangıç=12283, Bitiş=12278, Delta=5, Sevkiyat=0, BeklenenTüketim=5, SatilanMiktar=5, FARK=0
+2026-01-06 21:41:52.976 +03:00 [INF] Tank 5 (Motorin): Başlangıç=16828, Bitiş=12103, Delta=4725, Sevkiyat=0, BeklenenTüketim=4725, SatilanMiktar=4725, FARK=0
+2026-01-06 21:41:52.977 +03:00 [INF] Tank 6 (Motorin): Başlangıç=15485, Bitiş=14065, Delta=1420, Sevkiyat=0, BeklenenTüketim=1420, SatilanMiktar=1420, FARK=0
+2026-01-06 21:41:53.006 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 21:42:06.651 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:42:06.700 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:42:06.701 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:42:06.702 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:42:06.703 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:42:06.703 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:42:06.704 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:42:06.705 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:42:06.705 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:42:06.706 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:42:06.707 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:42:06.723 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:42:06.736 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:42:08.980 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:42:09.005 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:42:09.007 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:42:09.008 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:42:09.008 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:42:09.009 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:42:09.010 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:42:09.011 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:42:09.011 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:42:09.012 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:42:09.013 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:42:09.013 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:42:09.020 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:42:19.387 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:42:19.390 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:42:19.391 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:42:19.392 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:42:19.392 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:42:19.393 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:42:19.394 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:42:19.394 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:42:19.395 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:42:19.396 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:42:19.397 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:42:19.402 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:42:25.406 +03:00 [INF] Vardiya 115 başarıyla arşivlendi. Arşiv ID: 4
+2026-01-06 21:42:25.407 +03:00 [INF] Vardiya 115 başarıyla arşivlendi.
+2026-01-06 21:42:25.442 +03:00 [INF] Vardiya 115 için ham veriler temizlendi.
+2026-01-06 21:42:37.153 +03:00 [INF] Vardiya 115 onayı kaldırıldı. İşlemi yapan: serkan (2)
+2026-01-06 21:42:37.160 +03:00 [INF] Vardiya 115 için veri geri yükleme işlemi başlatıldı. Dosya: 2025051501.zip
+2026-01-06 21:42:37.191 +03:00 [INF] XML Parsing: 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:42:37.193 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:42:37.207 +03:00 [INF] Vardiya Import: 927 Otomasyon, 129 Filo satışı ayrıştırıldı.
+2026-01-06 21:42:38.150 +03:00 [INF] Vardiya 115 verileri başarıyla geri yüklendi.
+2026-01-06 21:42:45.744 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:42:45.745 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:42:45.746 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:42:45.747 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:42:45.748 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:42:45.749 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:42:45.749 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:42:45.750 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:42:45.751 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:42:45.751 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:42:45.752 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:42:45.757 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:42:53.708 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:42:53.710 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:42:53.711 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:42:53.712 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:42:53.712 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:42:53.713 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:42:53.714 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:42:53.714 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:42:53.715 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:42:53.716 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:42:53.717 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:42:53.721 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:42:53.744 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:46:33.264 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:46:33.392 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:46:34.070 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:49:00.492 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:49:00.623 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:49:01.307 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:49:04.390 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:49:04.439 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:49:04.440 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:49:04.441 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:49:04.442 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:49:04.442 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:49:04.443 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:49:04.444 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:49:04.445 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:49:04.446 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:49:04.446 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:49:04.480 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:49:04.498 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:49:04.643 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:49:25.012 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:49:25.145 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:49:25.892 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:50:10.800 +03:00 [INF] XML Dosyası İşleniyor: 2025051501.zip, Boyut: 795702 bytes
+2026-01-06 21:50:10.801 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 21:50:10.824 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 21:50:10.826 +03:00 [INF] XML Parsing Debug: Toplam 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:50:10.827 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250516000224</DateTime>
+    <ReceiptNr>31837</ReceiptNr>
+    <FuelType>5</FuelType>
+    <UnitPrice>2299</UnitPrice>
+    <Amount>1305</Amount>
+    <Total>30000</Total>
+    <PumpNr>14</PumpNr>
+    <NozzleNr>1</NozzleNr>
+    <PaymentType>1</PaymentType>
+    <ECRPlate>06ASZ27</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>22990</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 21:50:10.829 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 21:50:10.830 +03:00 [INF] İlk Txn ReceiptNr Değeri: 31837
+2026-01-06 21:50:10.833 +03:00 [INF] XML İstatistikleri: 1056 Satış bulundu.
+2026-01-06 21:50:10.879 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=16.05.2025 00:02:24, Bitiş=16.05.2025 23:42:08
+2026-01-06 21:50:10.897 +03:00 [INF] DTO Oluşturuldu: 932 Otomasyon, 124 Filo, 0 Tank satışı eklendi.
+2026-01-06 21:50:10.902 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 1.022.206,76 TL (Oto: 762.779,74 + Filo: 259.427,02)
+2026-01-06 21:50:15.053 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=14035, Bitiş=7843, Delta=6192, Sevkiyat=0, BeklenenTüketim=6192, SatilanMiktar=6192, FARK=0
+2026-01-06 21:50:15.055 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:50:15.060 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4933, Bitiş=4930, Delta=3, Sevkiyat=0, BeklenenTüketim=3, SatilanMiktar=3, FARK=0
+2026-01-06 21:50:15.060 +03:00 [INF] Tank 3 (Motorin): Başlangıç=12559, Bitiş=8666, Delta=3893, Sevkiyat=0, BeklenenTüketim=3893, SatilanMiktar=3893, FARK=0
+2026-01-06 21:50:15.061 +03:00 [INF] Tank 4 (Motorin): Başlangıç=12283, Bitiş=12278, Delta=5, Sevkiyat=0, BeklenenTüketim=5, SatilanMiktar=5, FARK=0
+2026-01-06 21:50:15.062 +03:00 [INF] Tank 5 (Motorin): Başlangıç=16828, Bitiş=12103, Delta=4725, Sevkiyat=0, BeklenenTüketim=4725, SatilanMiktar=4725, FARK=0
+2026-01-06 21:50:15.063 +03:00 [INF] Tank 6 (Motorin): Başlangıç=15485, Bitiş=14065, Delta=1420, Sevkiyat=0, BeklenenTüketim=1420, SatilanMiktar=1420, FARK=0
+2026-01-06 21:50:15.094 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 21:50:18.214 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:50:18.264 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:50:18.266 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:50:18.266 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:50:18.267 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:50:18.267 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:50:18.268 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:50:18.269 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:50:18.269 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:50:18.270 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:50:18.271 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:50:18.292 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:50:18.307 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:50:20.704 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:50:20.738 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:50:20.740 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:50:20.741 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:50:20.742 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:50:20.743 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:50:20.743 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:50:20.745 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:50:20.746 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:50:20.746 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:50:20.747 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:50:20.748 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:50:20.754 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:50:35.634 +03:00 [INF] XML Dosyası İşleniyor: 2025051601.zip, Boyut: 815894 bytes
+2026-01-06 21:50:35.635 +03:00 [INF] İstasyon Bulundu: Özyön Opet Y.Mahalle (010934)
+2026-01-06 21:50:35.640 +03:00 [INF] İstasyon Ayarları Güncellendi: Ver=TURPAK Pumpomat V9.2.0  Build: 31, Decimals=2/2/2
+2026-01-06 21:50:35.641 +03:00 [INF] XML Parsing Debug: Toplam 1083 adet 'Txn' elementi bulundu.
+2026-01-06 21:50:35.642 +03:00 [INF] İlk Txn Debug: <Txn xmlns="http://tempuri.org/Sale.xsd">
+  <TagDetails>
+    <FleetCode>C0000</FleetCode>
+    <FleetName>İSTASYON</FleetName>
+    <TagNr>0244211A</TagNr>
+    <Plate>H.CIVGIN</Plate>
+    <EngineHour>0</EngineHour>
+    <Odometer>0</Odometer>
+  </TagDetails>
+  <SaleDetails>
+    <TxnType>1</TxnType>
+    <DateTime>20250517000116</DateTime>
+    <ReceiptNr>32899</ReceiptNr>
+    <FuelType>6</FuelType>
+    <UnitPrice>4686</UnitPrice>
+    <Amount>3468</Amount>
+    <Total>162510</Total>
+    <PumpNr>6</PumpNr>
+    <NozzleNr>3</NozzleNr>
+    <PaymentType>3</PaymentType>
+    <ECRPlate>06CLD688</ECRPlate>
+    <ECRReceiptNr>1</ECRReceiptNr>
+    <Redemption>0,00</Redemption>
+    <DiscountAmount>0,00</DiscountAmount>
+    <EarnedPoints>0</EarnedPoints>
+    <EarnedMoney>0,00</EarnedMoney>
+    <LoyaltyCardNo></LoyaltyCardNo>
+    <LoyaltyCardType>0</LoyaltyCardType>
+    <FullUnitPrice>46860</FullUnitPrice>
+  </SaleDetails>
+</Txn>
+2026-01-06 21:50:35.644 +03:00 [INF] İlk Txn SaleDetails bulundu mu?: True
+2026-01-06 21:50:35.645 +03:00 [INF] İlk Txn ReceiptNr Değeri: 32899
+2026-01-06 21:50:35.647 +03:00 [INF] XML İstatistikleri: 1083 Satış bulundu.
+2026-01-06 21:50:35.655 +03:00 [INF] Tarihler Satışlardan Türetildi: Başlangıç=17.05.2025 00:01:16, Bitiş=17.05.2025 23:43:17
+2026-01-06 21:50:35.670 +03:00 [INF] DTO Oluşturuldu: 997 Otomasyon, 86 Filo, 0 Tank satışı eklendi.
+2026-01-06 21:50:35.672 +03:00 [INF] Vardiya Genel Toplam Hesaplandı: 990.165,69 TL (Oto: 822.760,99 + Filo: 167.404,70)
+2026-01-06 21:50:39.522 +03:00 [INF] Tank 1 (Kurşunsuz): Başlangıç=7843, Bitiş=7165, Delta=7125,5205, Sevkiyat=6447,5205, BeklenenTüketim=7125,5205, SatilanMiktar=7125,5205, FARK=0,0000
+2026-01-06 21:50:39.523 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:50:39.526 +03:00 [INF] Tank 2 (Kurşunsuz): Başlangıç=4930, Bitiş=10799, Delta=168,0298, Sevkiyat=6037,0298, BeklenenTüketim=168,0298, SatilanMiktar=168,0298, FARK=0,0000
+2026-01-06 21:50:39.526 +03:00 [INF] Tank 3 (Motorin): Başlangıç=8666, Bitiş=5051, Delta=3615, Sevkiyat=0, BeklenenTüketim=3615, SatilanMiktar=3615, FARK=0
+2026-01-06 21:50:39.527 +03:00 [INF] Tank 4 (Motorin): Başlangıç=12278, Bitiş=12274, Delta=4, Sevkiyat=0, BeklenenTüketim=4, SatilanMiktar=4, FARK=0
+2026-01-06 21:50:39.528 +03:00 [INF] Tank 5 (Motorin): Başlangıç=12103, Bitiş=8658, Delta=3445, Sevkiyat=0, BeklenenTüketim=3445, SatilanMiktar=3445, FARK=0
+2026-01-06 21:50:39.529 +03:00 [INF] Tank 6 (Motorin): Başlangıç=14065, Bitiş=13445, Delta=620, Sevkiyat=0, BeklenenTüketim=620, SatilanMiktar=620, FARK=0
+2026-01-06 21:50:39.539 +03:00 [INF] Tank Envanteri Kaydedildi: 6 tank kaydı oluşturuldu.
+2026-01-06 21:50:51.599 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:50:51.601 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:50:51.601 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:50:51.602 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:50:51.603 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:50:51.603 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:50:51.604 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:50:51.605 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:50:51.606 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:50:51.606 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:50:51.607 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:50:51.615 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:50:54.220 +03:00 [INF] Vardiya 116 başarıyla arşivlendi. Arşiv ID: 5
+2026-01-06 21:50:54.222 +03:00 [INF] Vardiya 116 başarıyla arşivlendi.
+2026-01-06 21:50:54.247 +03:00 [INF] Vardiya 116 için ham veriler temizlendi.
+2026-01-06 21:51:05.547 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 21:51:05.549 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 21:51:05.554 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:51:20.204 +03:00 [INF] Vardiya 116 onayı kaldırıldı. İşlemi yapan: serkan (2)
+2026-01-06 21:51:20.211 +03:00 [INF] Vardiya 116 için veri geri yükleme işlemi başlatıldı. Dosya: 2025051501.zip
+2026-01-06 21:51:20.236 +03:00 [INF] XML Parsing: 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:51:20.237 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:51:20.258 +03:00 [INF] Vardiya Import: 927 Otomasyon, 129 Filo satışı ayrıştırıldı.
+2026-01-06 21:51:21.094 +03:00 [INF] Vardiya 116 verileri başarıyla geri yüklendi.
+2026-01-06 21:51:27.422 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:51:27.424 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:51:27.424 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:51:27.425 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:51:27.426 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:51:27.426 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:51:27.427 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:51:27.428 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:51:27.429 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:51:27.429 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:51:27.430 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:51:27.435 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:51:27.464 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:52:40.056 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:52:40.057 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:52:40.058 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:52:40.059 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:52:40.059 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:52:40.060 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:52:40.061 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:52:40.062 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:52:40.062 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:52:40.063 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:52:40.064 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:52:40.069 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:55:33.109 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:55:33.112 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:55:33.113 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:55:33.113 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:55:33.114 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:55:33.115 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:55:33.116 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:55:33.116 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:55:33.117 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:55:33.118 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:55:33.118 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:55:33.126 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:55:35.349 +03:00 [INF] Vardiya 116 başarıyla arşivlendi. Arşiv ID: 6
+2026-01-06 21:55:35.350 +03:00 [INF] Vardiya 116 başarıyla arşivlendi.
+2026-01-06 21:55:35.363 +03:00 [INF] Vardiya 116 için ham veriler temizlendi.
+2026-01-06 21:55:43.391 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 21:55:43.393 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 21:55:43.398 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:55:43.418 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:56:27.692 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:56:27.832 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:56:28.522 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:58:13.380 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 21:58:13.508 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 21:58:14.174 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 21:58:18.536 +03:00 [INF] Vardiya 116 onayı kaldırıldı. İşlemi yapan: serkan (2)
+2026-01-06 21:58:18.546 +03:00 [INF] Vardiya 116 için veri geri yükleme işlemi başlatıldı. Dosya: 2025051501.zip
+2026-01-06 21:58:18.596 +03:00 [INF] XML Parsing: 1056 adet 'Txn' elementi bulundu.
+2026-01-06 21:58:18.600 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 21:58:18.619 +03:00 [INF] Vardiya Import: 927 Otomasyon, 129 Filo satışı ayrıştırıldı.
+2026-01-06 21:58:19.898 +03:00 [INF] Vardiya 116 verileri başarıyla geri yüklendi.
+2026-01-06 21:58:25.235 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 21:58:25.288 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 21:58:25.289 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 21:58:25.290 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 21:58:25.291 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 21:58:25.292 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 21:58:25.292 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 21:58:25.293 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 21:58:25.294 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 21:58:25.295 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 21:58:25.296 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 21:58:25.321 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 21:58:25.337 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:58:28.657 +03:00 [INF] Vardiya 116 başarıyla arşivlendi. Arşiv ID: 7
+2026-01-06 21:58:28.658 +03:00 [INF] Vardiya 116 başarıyla arşivlendi.
+2026-01-06 21:58:28.676 +03:00 [INF] Vardiya 116 için ham veriler temizlendi.
+2026-01-06 21:58:36.076 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 21:58:36.078 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 21:58:36.082 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 21:58:36.107 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 22:04:34.513 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-06 22:04:34.648 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-06 22:04:35.348 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-06 22:04:40.058 +03:00 [INF] Vardiya 116 onayı kaldırıldı. İşlemi yapan: serkan (2)
+2026-01-06 22:04:40.068 +03:00 [INF] Vardiya 116 için veri geri yükleme işlemi başlatıldı. Dosya: 2025051501.zip
+2026-01-06 22:04:40.120 +03:00 [INF] XML Parsing: 1056 adet 'Txn' elementi bulundu.
+2026-01-06 22:04:40.123 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 22:04:40.141 +03:00 [INF] Vardiya Import: 927 Otomasyon, 129 Filo satışı ayrıştırıldı.
+2026-01-06 22:04:41.489 +03:00 [INF] Vardiya 116 verileri başarıyla geri yüklendi.
+2026-01-06 22:04:45.656 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 22:04:45.704 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 22:04:45.705 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 22:04:45.706 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 22:04:45.706 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 22:04:45.707 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 22:04:45.708 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 22:04:45.709 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 22:04:45.709 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 22:04:45.710 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 22:04:45.711 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 22:04:45.740 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 22:04:45.755 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 22:04:45.823 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-06 22:04:53.565 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 9 satır var.
+2026-01-06 22:04:53.566 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 9 adet.
+2026-01-06 22:04:53.567 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-06 22:04:53.568 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-06 22:04:53.569 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-06 22:04:53.569 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-06 22:04:53.570 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-06 22:04:53.571 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-06 22:04:53.571 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-06 22:04:53.572 +03:00 [INF] [VardiyaService] Eşleşti: Y.CINAR -> Y.CINAR (DD1AA293)
+2026-01-06 22:04:53.573 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-06 22:04:53.578 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 22:04:56.122 +03:00 [INF] Vardiya 116 başarıyla arşivlendi. Arşiv ID: 8
+2026-01-06 22:04:56.123 +03:00 [INF] Vardiya 116 başarıyla arşivlendi.
+2026-01-06 22:04:56.146 +03:00 [INF] Vardiya 116 için ham veriler temizlendi.
+2026-01-06 22:05:05.235 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 0 satır var.
+2026-01-06 22:05:05.237 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 0 adet.
+2026-01-06 22:05:05.242 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 9 pusula var.
+2026-01-06 22:05:05.270 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...

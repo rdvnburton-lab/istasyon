@@ -166,6 +166,10 @@ export class VardiyaApiService {
         );
     }
 
+    onayKaldir(id: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/approvals/vardiya/${id}/onay-kaldir`, {});
+    }
+
     getVardiyaLoglari(vardiyaId?: number, limit: number = 100): Observable<any[]> {
         let params = new HttpParams().set('limit', limit.toString());
         if (vardiyaId) {

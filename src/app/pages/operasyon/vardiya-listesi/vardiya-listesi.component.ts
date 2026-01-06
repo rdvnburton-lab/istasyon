@@ -98,6 +98,9 @@ export class VardiyaListesi implements OnInit {
     bulunanKayit = 0;
     gecenSure = 0;
 
+
+    loading = false;
+
     // Progress Tracking
     showGlobalLoading = false;
     processingSteps = [
@@ -125,6 +128,33 @@ export class VardiyaListesi implements OnInit {
 
     // Detay Modalı İçin
     detayVisible = false;
+    onayKaldir(vardiya: any, event: Event) {
+        event.stopPropagation();
+
+        this.confirmationService.confirm({
+            message: 'Bu vardiyanın onayı kaldırılacak ve düzenlenebilir duruma dönecek. Devam etmek istiyor musunuz?',
+            header: 'Onay Kaldırma',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Evet',
+            rejectLabel: 'Hayır',
+            accept: () => {
+                this.loading = true;
+                this.vardiyaService.vardiyaOnayKaldir(vardiya.id).subscribe({
+                    next: () => {
+                        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Vardiya onayı kaldırıldı.' });
+                        this.vardiyalariYukle(); // Listeyi yenile
+                        this.loading = false;
+                    },
+                    error: (err) => {
+                        console.error('Onay kaldırma hatası:', err);
+                        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'İşlem sırasında bir hata oluştu.' });
+                        this.loading = false;
+                    }
+                });
+            }
+        });
+    }
+
     seciliVardiyaDetay: any = null;
     genelOzet: GenelOzet | null = null;
     farkAnalizi: PersonelFarkAnalizi[] = [];

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, delay, map } from 'rxjs';
+import { BehaviorSubject, Observable, of, delay, map, tap } from 'rxjs';
 import {
     Vardiya,
     VardiyaDurum,
@@ -264,6 +264,26 @@ export class VardiyaService {
                     return reddedilmis;
                 }
                 return { id: vardiyaId, durum: VardiyaDurum.REDDEDILDI } as Vardiya;
+            })
+        );
+    }
+
+    vardiyaOnayKaldir(vardiyaId: number): Observable<any> {
+        return this.vardiyaApiService.onayKaldir(vardiyaId).pipe(
+            tap(() => {
+                // Aktif vardiya ise güncelle
+                const vardiya = this.aktifVardiya.value;
+                if (vardiya && vardiya.id === vardiyaId) {
+                    const guncel: Vardiya = {
+                        ...vardiya,
+                        durum: VardiyaDurum.ONAY_BEKLIYOR,
+                        kilitli: true, // Onay bekliyor durumuna döndü
+                        onaylayanId: undefined,
+                        onaylayanAdi: undefined,
+                        onayTarihi: undefined
+                    };
+                    this.aktifVardiya.next(guncel);
+                }
             })
         );
     }

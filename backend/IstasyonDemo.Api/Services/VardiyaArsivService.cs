@@ -47,6 +47,9 @@ namespace IstasyonDemo.Api.Services
                     return null;
                 }
 
+
+
+
                 // Hesaplamaları yap
                 var hesaplamalar = HesaplaRaporVerileri(vardiya);
 
@@ -126,6 +129,8 @@ namespace IstasyonDemo.Api.Services
                 throw;
             }
         }
+
+
 
         /// <summary>
         /// Arşivlenen vardiyaya ait ham verileri siler - veritabanı optimizasyonu için.
@@ -364,24 +369,58 @@ namespace IstasyonDemo.Api.Services
                 if (vardiya == null)
                 {
                     _logger.LogError("Vardiya {VardiyaId} bulunamadı.", vardiyaId);
-                    return false;
+                    throw new InvalidOperationException("Vardiya bulunamadı.");
                 }
 
                 if (vardiya.Durum != VardiyaDurum.ONAYLANDI)
                 {
                     _logger.LogWarning("Vardiya {VardiyaId} onaylı değil, onay kaldırılamaz.", vardiyaId);
-                    return false;
+                    throw new InvalidOperationException("Vardiya onaylı değil, işlem yapılamaz.");
                 }
 
-                // VardiyaXmlLog'dan XML'i al
+                // 1. XML YEDEĞİ KONTROLÜ
                 var xmlLog = await _context.VardiyaXmlLoglari
                     .FirstOrDefaultAsync(x => x.VardiyaId == vardiyaId);
 
-                if (xmlLog == null || string.IsNullOrEmpty(xmlLog.XmlIcerik))
+                bool xmlVar = xmlLog != null && (!string.IsNullOrEmpty(xmlLog.XmlIcerik) || (xmlLog.ZipDosyasi != null && xmlLog.ZipDosyasi.Length > 0));
+                
+                // 2. HAM VERİ KONTROLÜ (XML yoksa belki veriler silinmemiştir)
+                bool veriVar = await _context.OtomasyonSatislar.AnyAsync(x => x.VardiyaId == vardiyaId);
+
+                if (!xmlVar && !veriVar)
                 {
-                    _logger.LogError("Vardiya {VardiyaId} için XML kaydı bulunamadı.", vardiyaId);
-                    return false;
+                    // KRİTİK DURUM: Hem XML yok hem veriler silinmiş.
+                    // Bu durumda 'Onay Bekliyor'a çekemeyiz çünkü hesaplama yapacak veri yok.
+                    // ANCAK: Kullanıcının amacı genelde raporu düzeltmek.
+                    // Mevcut Arşiv kaydındaki verilerle FARK'ı yeniden hesaplayıp düzeltiyoruz (In-Place Fix).
+                    
+                    var mevcutArsiv = await _context.VardiyaRaporArsivleri.FirstOrDefaultAsync(a => a.VardiyaId == vardiyaId);
+                    if (mevcutArsiv != null)
+                    {
+                        // FIX: Giderleri de hesaba kat
+                        var yeniFark = mevcutArsiv.TahsilatToplam + mevcutArsiv.FiloToplam + mevcutArsiv.GiderToplam - mevcutArsiv.SistemToplam;
+                        
+                        // Sadece fark değiştiyse güncelle
+                        if (mevcutArsiv.Fark != yeniFark)
+                        {
+                            mevcutArsiv.Fark = yeniFark;
+                            mevcutArsiv.FarkYuzde = mevcutArsiv.SistemToplam > 0 ? (yeniFark / mevcutArsiv.SistemToplam) * 100 : 0;
+                            mevcutArsiv.GuncellemeTarihi = DateTime.UtcNow;
+                            
+                            // Vardiya tablosunu da güncelle
+                            vardiya.Fark = yeniFark;
+                            
+                            await _context.SaveChangesAsync();
+                             _logger.LogInformation("Vardiya {VardiyaId} için veri bulunamadı ancak arşiv FARK değeri düzeltildi.", vardiyaId);
+                             return false; // False dönerek controller'a "Restore olmadı ama işlem bitti" mesajı vereceğiz (veya exception fırlatıp handle edeceğiz)
+                        }
+                    }
+
+                    _logger.LogError("Vardiya {VardiyaId} için ne XML ne de ham veri bulundu. Arşiv de güncel.", vardiyaId);
+                    throw new InvalidOperationException("Bu vardiya için yedek veri bulunamadı ve rapor zaten güncel. Geri alma işlemi yapılamaz.");
                 }
+
+                // ... Buraya geldiysek ya XML var ya da Veri var. İşleme devam ...
 
                 // Arşivi bul (varsa silinecek)
                 var arsiv = await _context.VardiyaRaporArsivleri
@@ -405,11 +444,8 @@ namespace IstasyonDemo.Api.Services
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation(
-                    "Vardiya {VardiyaId} onayı kaldırıldı. Veriler zaten mevcut (silinmedi). İşlemi yapan: {UserName} ({UserId})",
+                    "Vardiya {VardiyaId} onayı kaldırıldı. İşlemi yapan: {UserName} ({UserId})",
                     vardiyaId, userName, userId);
-
-                // NOT: Veriler zaten tablolarda duruyor çünkü onay sonrası silme işlemi
-                // sonraki tickette uygulanacak. Şu an için sadece durum değişir.
 
                 return true;
             }
@@ -457,7 +493,7 @@ namespace IstasyonDemo.Api.Services
             var giderToplam = vardiya.Giderler.Sum(g => g.Tutar);
             
             // Fark hesaplama
-            var fark = tahsilatToplam + filoToplam - sistemToplam;
+            var fark = tahsilatToplam + filoToplam + giderToplam - sistemToplam;
             var farkYuzde = sistemToplam > 0 ? (fark / sistemToplam) * 100 : 0;
             
             // Durum belirleme
@@ -578,12 +614,12 @@ namespace IstasyonDemo.Api.Services
                         }).ToList()
                 }).ToList();
 
-            // 🆕 Filo Satış Detayları (Stok takibi için)
+            // 🆕 Filo Satış Detayları (Stok takibi için) - FIX: Group by Fleet Name, not Fuel Type
             var filoSatisDetay = vardiya.FiloSatislar
-                .GroupBy(f => f.YakitTuru)
+                .GroupBy(f => f.FiloKodu == "M-ODEM" ? "M-ODEM" : ((f.FiloAdi == null || f.FiloAdi == "") ? "OTOBIL" : f.FiloAdi))
                 .Select(g => new FiloSatisDetayDto
                 {
-                    YakitTuru = g.Key,
+                    YakitTuru = g.Key, // Mapping Fleet Name to 'YakitTuru' property for report compatibility
                     Litre = g.Sum(f => f.Litre),
                     Tutar = g.Sum(f => f.Tutar)
                 }).ToList();

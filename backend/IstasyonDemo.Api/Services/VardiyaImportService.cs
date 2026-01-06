@@ -148,7 +148,7 @@ namespace IstasyonDemo.Api.Services
                             PompaNo = pumpNr,
                             TabancaNo = nozzleNr,
                             YakitTuru = (await _yakitService.IdentifyYakitAsync(saleDetails.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? ""))?.Ad ?? "DIGER",
-                            Litre = amount, 
+                            Litre = amount / 100, 
                             BirimFiyat = unitPrice / 100, // XML values are usually scaled (e.g. 4748 -> 47.48)
                             ToplamTutar = total / 100,
                             SatisTarihi = satisTarihi,
@@ -169,7 +169,7 @@ namespace IstasyonDemo.Api.Services
                             FiloAdi = tagDetails?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetName")?.Value ?? "",
                             Plaka = !string.IsNullOrEmpty(plate) ? plate : ecrPlate,
                             Tutar = total / 100,
-                            Litre = amount,
+                            Litre = amount / 100,
                             BirimFiyat = unitPrice / 100,
                             Tarih = satisTarihi,
                             PompaNo = pumpNr,
@@ -301,7 +301,10 @@ namespace IstasyonDemo.Api.Services
                         TankNo = tankNo,
                         TankAdi = tankAdi,
                         YakitTipi = (await _yakitService.IdentifyYakitAsync(tankAdi))?.Ad ?? "DIGER",
-                        BitisStok = currentVol
+                        BaslangicStok = previousVol,
+                        BitisStok = currentVol,
+                        SatilanMiktar = delta,
+                        SevkiyatMiktar = delivery
                     });
                 }
 

@@ -24,6 +24,7 @@ namespace IstasyonDemo.Api.Services
         private readonly IYakitService _yakitService;
         private readonly VardiyaArsivService _arsivService;
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IVardiyaImportService _importService;
 
         public VardiyaService(
             AppDbContext context, 
@@ -33,7 +34,8 @@ namespace IstasyonDemo.Api.Services
             IVardiyaFinancialService financialService, 
             IYakitService yakitService,
             VardiyaArsivService arsivService,
-            IServiceScopeFactory scopeFactory)
+            IServiceScopeFactory scopeFactory,
+            IVardiyaImportService importService)
         {
             _context = context;
             _logger = logger;
@@ -43,6 +45,7 @@ namespace IstasyonDemo.Api.Services
             _yakitService = yakitService;
             _arsivService = arsivService;
             _scopeFactory = scopeFactory;
+            _importService = importService;
         }
 
         public async Task<Vardiya> CreateVardiyaAsync(CreateVardiyaDto dto, int userId, string? userRole, string? userName)
@@ -1891,6 +1894,126 @@ namespace IstasyonDemo.Api.Services
                 GenelOzet = genelOzet,
                 _performanceMs = stopwatch.ElapsedMilliseconds
             };
+        }
+
+        public async Task RestoreVardiyaDataAsync(int vardiyaId, int userId, string? userRole)
+        {
+            var vardiya = await _context.Vardiyalar.FindAsync(vardiyaId);
+            if (vardiya == null) throw new KeyNotFoundException("Vardiya bulunamadı.");
+
+            // Find the original XML/ZIP log
+            var xmlLog = await _context.VardiyaXmlLoglari
+                .OrderByDescending(x => x.YuklemeTarihi) // Get latest if multiple
+                .FirstOrDefaultAsync(x => x.VardiyaId == vardiyaId);
+
+            if (xmlLog == null || xmlLog.ZipDosyasi == null || xmlLog.ZipDosyasi.Length == 0)
+            {
+                throw new InvalidOperationException("Geri yüklenecek orijinal veri dosyası (ZIP) bulunamadı.");
+            }
+
+            try
+            {
+                _logger.LogInformation($"Vardiya {vardiyaId} için veri geri yükleme işlemi başlatıldı. Dosya: {xmlLog.DosyaAdi}");
+
+                using var memoryStream = new MemoryStream(xmlLog.ZipDosyasi);
+                var importResult = await _importService.ParseXmlZipAsync(memoryStream, xmlLog.DosyaAdi, userId);
+                var dto = importResult.CreateDto;
+
+                // 2024-01-07 Fix: Delete existing data first to prevent duplication
+                await _context.OtomasyonSatislar.Where(x => x.VardiyaId == vardiyaId).ExecuteDeleteAsync();
+                await _context.FiloSatislar.Where(x => x.VardiyaId == vardiyaId).ExecuteDeleteAsync();
+                await _context.VardiyaPompaEndeksleri.Where(x => x.VardiyaId == vardiyaId).ExecuteDeleteAsync();
+                await _context.VardiyaTankEnvanterleri.Where(x => x.VardiyaId == vardiyaId).ExecuteDeleteAsync();
+
+                // RE-INSERT DATA linked to EXISTING VardiyaId
+
+                // 1. Automation Sales
+                if (dto.OtomasyonSatislar != null)
+                {
+                    foreach (var sDto in dto.OtomasyonSatislar)
+                    {
+                        // Logic similar to CreateVardiyaAsync but without duplicating Personel creation logic if possible, 
+                        // OR reuse logic. For safety and simplicity in restoration, we assume Personels verify logic is same.
+                        // Ideally we should refactor "AddOtomasyonSatis" logic, but for now we follow the same pattern 
+                        // to ensure consistency.
+
+                        // Since we just want to restore DATA, we can try to link to existing Personels first.
+                        var personel = await _context.Personeller
+                            .FirstOrDefaultAsync(p => p.IstasyonId == vardiya.IstasyonId && (p.KeyId == sDto.PersonelKeyId || p.OtomasyonAdi == sDto.PersonelAdi));
+
+                        var satis = _mapper.Map<OtomasyonSatis>(sDto);
+                        satis.VardiyaId = vardiyaId;
+                        satis.PersonelId = personel?.Id;
+                        
+                        _context.OtomasyonSatislar.Add(satis);
+                    }
+                }
+
+                // 2. Fleet Sales
+                if (dto.FiloSatislar != null)
+                {
+                    foreach (var fDto in dto.FiloSatislar)
+                    {
+                        var filo = _mapper.Map<FiloSatis>(fDto);
+                        filo.VardiyaId = vardiyaId;
+                        _context.FiloSatislar.Add(filo);
+                    }
+                }
+                
+                // 3. Pump Indexes
+                if (dto.PompaEndeksleri != null)
+                {
+                    foreach (var pDto in dto.PompaEndeksleri)
+                    {
+                        var endeks = new VardiyaPompaEndeks
+                        {
+                            VardiyaId = vardiyaId,
+                            PompaNo = pDto.PompaNo,
+                            TabancaNo = pDto.TabancaNo,
+                            YakitTuru = pDto.YakitTuru,
+                            BaslangicEndeks = pDto.BaslangicEndeks,
+                            BitisEndeks = pDto.BitisEndeks
+                        };
+                        _context.VardiyaPompaEndeksleri.Add(endeks);
+                    }
+                }
+
+                // 4. Tank Inventory
+                 if (dto.TankEnvanterleri != null)
+                {
+                    // Reuse logic from Create for calculating diffs
+                    foreach (var tDto in dto.TankEnvanterleri)
+                    {
+                         var tank = new VardiyaTankEnvanteri
+                        {
+                            VardiyaId = vardiyaId,
+                            TankNo = tDto.TankNo,
+                            TankAdi = tDto.TankAdi,
+                            YakitTipi = tDto.YakitTipi,
+                            BaslangicStok = tDto.BaslangicStok,
+                            BitisStok = tDto.BitisStok,
+                            SatilanMiktar = tDto.SatilanMiktar,
+                            SevkiyatMiktar = tDto.SevkiyatMiktar,
+                            KayitTarihi = DateTime.UtcNow,
+                            
+                            // Re-calculate derived fields
+                            BeklenenTuketim = tDto.BaslangicStok + tDto.SevkiyatMiktar - tDto.BitisStok,
+                            // FarkMiktar logic from Create: (Opening + Delivery - Closing) - Sales
+                            FarkMiktar = (tDto.BaslangicStok + tDto.SevkiyatMiktar - tDto.BitisStok) - tDto.SatilanMiktar
+                        };
+                        _context.VardiyaTankEnvanterleri.Add(tank);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Vardiya {vardiyaId} verileri başarıyla geri yüklendi.");
+            }
+            catch (Exception ex)
+            {
+                 _logger.LogError(ex, "Vardiya geri yükleme sırasında hata oluştu.");
+                 throw;
+            }
         }
     }
 }
