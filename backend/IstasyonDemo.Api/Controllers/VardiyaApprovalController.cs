@@ -15,11 +15,16 @@ namespace IstasyonDemo.Api.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IVardiyaService _vardiyaService;
+        private readonly VardiyaArsivService _arsivService;
 
-        public VardiyaApprovalController(AppDbContext context, IVardiyaService vardiyaService)
+        public VardiyaApprovalController(
+            AppDbContext context, 
+            IVardiyaService vardiyaService,
+            VardiyaArsivService arsivService)
         {
             _context = context;
             _vardiyaService = vardiyaService;
+            _arsivService = arsivService;
         }
 
         [HttpGet("onay-bekleyenler")]
@@ -71,6 +76,31 @@ namespace IstasyonDemo.Api.Controllers
         {
             await _vardiyaService.ReddetAsync(id, dto, CurrentUserId, CurrentUserRole);
             return Ok(new { message = "Vardiya işlemi reddedildi." });
+        }
+
+        /// <summary>
+        /// Onaylanmış bir vardiyayı geri alır. Veriler silinmediği için XML'den geri yüklenir.
+        /// Sadece admin kullanabilir.
+        /// </summary>
+        [HttpPost("{id}/onay-kaldir")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> OnayKaldir(int id)
+        {
+            try
+            {
+                var result = await _arsivService.OnayiKaldirVeGeriYukle(id, CurrentUserId, User.Identity?.Name ?? "Admin");
+                
+                if (!result)
+                {
+                    return BadRequest(new { message = "Onay kaldırılamadı. Vardiya bulunamadı veya zaten onaylı değil." });
+                }
+
+                return Ok(new { message = "Vardiya onayı kaldırıldı. Vardiya tekrar onay bekliyor durumuna alındı." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Onay kaldırılırken hata oluştu.", error = ex.Message });
+            }
         }
 
         [HttpGet("{id}/onay-detay")]

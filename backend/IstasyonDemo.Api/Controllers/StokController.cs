@@ -217,7 +217,6 @@ namespace IstasyonDemo.Api.Controllers
             var yakitlar = await _context.Yakitlar.OrderBy(y => y.Sira).ToListAsync();
             
             // 2. Aggregate Inputs (TankGiris) by YakitId
-            // Using separate queries to ensure cleaner Translation to SQL for different date ranges
             var inputsBefore = await _context.TankGirisler
                 .Where(t => t.Tarih < startDate)
                 .GroupBy(t => t.YakitId)
@@ -230,21 +229,79 @@ namespace IstasyonDemo.Api.Controllers
                 .Select(g => new { YakitId = g.Key, Total = g.Sum(t => t.Litre) })
                 .ToListAsync();
 
-            // 3. Aggregate Sales (OtomasyonSatis) by YakitTuru
-            // OtomasyonSatis relates to Vardiya for Date info
-            var salesBefore = await _context.OtomasyonSatislar
-                // Sadece ONAYLANAN vardiyaların satışlarını stoktan düş
-                .Where(s => s.Vardiya != null && s.Vardiya.Durum == VardiyaDurum.ONAYLANDI && s.Vardiya.BaslangicTarihi < startDate)
-                .GroupBy(s => s.YakitTuru)
-                .Select(g => new { YakitTuru = g.Key, Total = g.Sum(s => s.Litre) })
+            // 3. Aggregate Sales from Archive (JSON)
+            // Sadece ONAYLI vardiyaların arşivlerini çek
+            var arsivlerBefore = await _context.VardiyaRaporArsivleri
+                .Where(a => a.Tarih < startDate)
+                .Select(a => new { a.PersonelSatisDetayJson, a.FiloSatisDetayJson })
                 .ToListAsync();
 
-            var salesThisMonth = await _context.OtomasyonSatislar
-                // Sadece ONAYLANAN vardiyaların satışlarını stoktan düş
-                .Where(s => s.Vardiya != null && s.Vardiya.Durum == VardiyaDurum.ONAYLANDI && s.Vardiya.BaslangicTarihi >= startDate && s.Vardiya.BaslangicTarihi < nextMonth)
-                .GroupBy(s => s.YakitTuru)
-                .Select(g => new { YakitTuru = g.Key, Total = g.Sum(s => s.Litre) })
+            var arsivlerThisMonth = await _context.VardiyaRaporArsivleri
+                .Where(a => a.Tarih >= startDate && a.Tarih < nextMonth)
+                .Select(a => new { a.PersonelSatisDetayJson, a.FiloSatisDetayJson })
                 .ToListAsync();
+
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            // Helper to aggregate sales from JSON list
+            List<(string YakitTuru, decimal Litre)> AggregateSales(IEnumerable<dynamic> arsivler)
+            {
+                var result = new List<(string YakitTuru, decimal Litre)>();
+                
+                foreach (var arsiv in arsivler)
+                {
+                    // Personel Satışları
+                    if (!string.IsNullOrEmpty(arsiv.PersonelSatisDetayJson))
+                    {
+                        try
+                        {
+                            var personelDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.PersonelSatisDetayDto>>(arsiv.PersonelSatisDetayJson, jsonOptions);
+                            if (personelDetay != null)
+                            {
+                                foreach (var p in personelDetay)
+                                {
+                                    foreach (var s in p.Satislar)
+                                    {
+                                        result.Add((s.YakitTuru, s.Litre));
+                                    }
+                                }
+                            }
+                        }
+                        catch { /* Ignore parse errors */ }
+                    }
+
+                    // Filo Satışları
+                    if (!string.IsNullOrEmpty(arsiv.FiloSatisDetayJson))
+                    {
+                        try
+                        {
+                            var filoDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.FiloSatisDetayDto>>(arsiv.FiloSatisDetayJson, jsonOptions);
+                            if (filoDetay != null)
+                            {
+                                foreach (var f in filoDetay)
+                                {
+                                    result.Add((f.YakitTuru, f.Litre));
+                                }
+                            }
+                        }
+                        catch { /* Ignore parse errors */ }
+                    }
+                }
+                return result;
+            }
+
+            var allSalesBefore = AggregateSales(arsivlerBefore);
+            var allSalesThisMonth = AggregateSales(arsivlerThisMonth);
+
+            var salesBeforeGrouped = allSalesBefore
+                .GroupBy(x => x.YakitTuru)
+                .Select(g => new { YakitTuru = g.Key, Total = g.Sum(x => x.Litre) })
+                .ToList();
+
+            var salesThisMonthGrouped = allSalesThisMonth
+                .GroupBy(x => x.YakitTuru)
+                .Select(g => new { YakitTuru = g.Key, Total = g.Sum(x => x.Litre) })
+                .ToList();
 
             var ozetList = new List<IstasyonDemo.Api.Dtos.TankStokOzetDto>();
 
@@ -255,17 +312,14 @@ namespace IstasyonDemo.Api.Controllers
                 var inMonth = inputsThisMonth.FirstOrDefault(x => x.YakitId == yakit.Id)?.Total ?? 0;
 
                 // Match Sales
-                // Parse keywords from Yakit definition (e.g. "MOTORIN,DIZEL")
                 var keywords = (yakit.OtomasyonUrunAdi ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .Select(k => k.Trim().ToUpper())
                     .ToList();
 
-                // Helper to check if an aggregated sale group belongs to this fuel type
                 bool Matches(string saleYakitTuruStr) 
                 {
                     if (string.IsNullOrEmpty(saleYakitTuruStr)) return false;
                     
-                    // Convert numeric values to enum names for matching
                     string normalizedValue = saleYakitTuruStr;
                     if (int.TryParse(saleYakitTuruStr, out var intValue) && Enum.IsDefined(typeof(YakitTuru), intValue))
                     {
@@ -276,12 +330,12 @@ namespace IstasyonDemo.Api.Controllers
                     return keywords.Any(k => u.Contains(k));
                 }
 
-                var outBefore = salesBefore
-                    .Where(x => Matches(x.YakitTuru.ToString()))
+                var outBefore = salesBeforeGrouped
+                    .Where(x => Matches(x.YakitTuru))
                     .Sum(x => x.Total);
                 
-                var outMonth = salesThisMonth
-                    .Where(x => Matches(x.YakitTuru.ToString()))
+                var outMonth = salesThisMonthGrouped
+                    .Where(x => Matches(x.YakitTuru))
                     .Sum(x => x.Total);
 
                 var devir = inBefore - outBefore;
@@ -299,43 +353,10 @@ namespace IstasyonDemo.Api.Controllers
                 });
             }
 
-            // Helper function to convert YakitTuru value to readable Turkish name from Yakitlar table
-            string GetYakitTuruAdi(string yakitTuruValue)
-            {
-                if (string.IsNullOrEmpty(yakitTuruValue)) return yakitTuruValue;
-                
-                // First convert numeric to enum name if needed
-                string normalizedValue = yakitTuruValue;
-                if (int.TryParse(yakitTuruValue, out var intValue) && Enum.IsDefined(typeof(YakitTuru), intValue))
-                {
-                    normalizedValue = ((YakitTuru)intValue).ToString();
-                }
-                
-                // Now find matching Yakit from the database using keyword matching
-                var upperValue = normalizedValue.ToUpper();
-                foreach (var yakit in yakitlar)
-                {
-                    var keywords = (yakit.OtomasyonUrunAdi ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(k => k.Trim().ToUpper());
-                    if (keywords.Any(k => upperValue.Contains(k)))
-                    {
-                        return yakit.Ad; // Return Turkish name from database
-                    }
-                }
-                
-                // Return normalized value if no match found
-                return normalizedValue;
-            }
-
-            // Debug: Include raw data for troubleshooting (Turkish labels)
             return Ok(new {
                 Ozet = ozetList,
                 Debug = new {
-                    BuAyOnaylananSatislar = salesThisMonth.Select(s => new { YakitTuru = GetYakitTuruAdi(s.YakitTuru), ToplamLitre = s.Total }),
-                    GecmisOnaylananSatislar = salesBefore.Select(s => new { YakitTuru = GetYakitTuruAdi(s.YakitTuru), ToplamLitre = s.Total }),
-                    YakitEslestirmeAnahtarlari = yakitlar.Select(y => new { YakitAdi = y.Ad, OtomasyonAnahtarlari = y.OtomasyonUrunAdi }),
-                    OnaylananVardiyaSayisi = _context.Vardiyalar.Count(v => v.Durum == VardiyaDurum.ONAYLANDI),
-                    Aciklama = "Bu ay satış verisi yoksa, seçilen dönemde onaylanmış vardiya bulunmuyor olabilir. OtomasyonAnahtarlari değerleri, vardiya dosyasındaki YakitTuru değerleri ile eşleşmelidir."
+                    Aciklama = "Veriler artık VardiyaRaporArsivleri tablosundan (JSON) okunmaktadır."
                 }
             });
         }
@@ -349,27 +370,103 @@ namespace IstasyonDemo.Api.Controllers
             var startDate = DateTime.SpecifyKind(new DateTime(yil, ay, 1), DateTimeKind.Utc);
             var endDate = startDate.AddMonths(1);
 
-            // 1. XML Kaynaklı (VardiyaTankEnvanterleri) - Motorin, Benzin
-            // Tüm yakıtları çekip hangilerinin XML kaynaklı olduğunu (TurpakUrunKodu olanlar) bulalım
-            var tumYakitlar = await _yakitService.GetAllYakitlarAsync();
-            var xmlYakitAdlari = tumYakitlar
-                .Where(y => !string.IsNullOrEmpty(y.TurpakUrunKodu) && (y.Ad.ToUpper().Contains("MOTORIN") || y.Ad.ToUpper().Contains("BENZIN")))
-                .Select(y => y.Ad)
-                .ToList();
+            // 1. Arşivleri Çek (JSON)
+            var query = _context.VardiyaRaporArsivleri
+                .Where(a => a.Tarih >= startDate && a.Tarih < endDate);
 
-            var xmlQuery = _context.VardiyaTankEnvanterleri
-                .Include(t => t.Vardiya)
-                .Where(t => t.KayitTarihi >= startDate && t.KayitTarihi < endDate);
-
+            // İstasyon filtresi için Vardiya tablosuna join atmamız gerekebilir ama VardiyaRaporArsiv'de IstasyonId yok.
+            // VardiyaId üzerinden Vardiya tablosuna join atalım.
             if (istasyonId.HasValue)
             {
-                xmlQuery = xmlQuery.Where(t => t.Vardiya != null && t.Vardiya.IstasyonId == istasyonId.Value);
+                // Bu join performansı biraz etkileyebilir ama gerekli.
+                // Alternatif: VardiyaRaporArsiv tablosuna IstasyonId eklemek.
+                // Şimdilik Vardiya üzerinden gidelim.
+                var vardiyaIds = await _context.Vardiyalar
+                    .Where(v => v.IstasyonId == istasyonId.Value)
+                    .Select(v => v.Id)
+                    .ToListAsync();
+                
+                query = query.Where(a => vardiyaIds.Contains(a.VardiyaId));
             }
 
-            var xmlVerileri = await xmlQuery.ToListAsync();
+            var arsivler = await query
+                .Select(a => new { 
+                    a.VardiyaId, 
+                    a.Tarih, 
+                    a.TankEnvanterJson, 
+                    a.PersonelSatisDetayJson, 
+                    a.FiloSatisDetayJson 
+                })
+                .ToListAsync();
 
-            // Yakıt tipine göre grupla ve özetle
-            var xmlOzetRaw = xmlVerileri
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            // 2. Verileri Parse Et
+            var tankEnvanterleri = new List<VardiyaTankEnvanteri>();
+            var tumSatislar = new List<(int VardiyaId, string YakitTuru, decimal Litre)>();
+
+            foreach (var arsiv in arsivler)
+            {
+                // Tank Envanteri
+                if (!string.IsNullOrEmpty(arsiv.TankEnvanterJson))
+                {
+                    try
+                    {
+                        var tanklar = System.Text.Json.JsonSerializer.Deserialize<List<VardiyaTankEnvanteri>>(arsiv.TankEnvanterJson, jsonOptions);
+                        if (tanklar != null)
+                        {
+                            foreach (var t in tanklar)
+                            {
+                                t.VardiyaId = arsiv.VardiyaId; // İlişkiyi kur
+                                // Tarih bilgisi tank nesnesinde olmayabilir, arşivden alalım
+                                t.KayitTarihi = arsiv.Tarih;
+                                tankEnvanterleri.Add(t);
+                            }
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+
+                // Personel Satışları
+                if (!string.IsNullOrEmpty(arsiv.PersonelSatisDetayJson))
+                {
+                    try
+                    {
+                        var personelDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.PersonelSatisDetayDto>>(arsiv.PersonelSatisDetayJson, jsonOptions);
+                        if (personelDetay != null)
+                        {
+                            foreach (var p in personelDetay)
+                            {
+                                foreach (var s in p.Satislar)
+                                {
+                                    tumSatislar.Add((arsiv.VardiyaId, s.YakitTuru, s.Litre));
+                                }
+                            }
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+
+                // Filo Satışları
+                if (!string.IsNullOrEmpty(arsiv.FiloSatisDetayJson))
+                {
+                    try
+                    {
+                        var filoDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.FiloSatisDetayDto>>(arsiv.FiloSatisDetayJson, jsonOptions);
+                        if (filoDetay != null)
+                        {
+                            foreach (var f in filoDetay)
+                            {
+                                tumSatislar.Add((arsiv.VardiyaId, f.YakitTuru, f.Litre));
+                            }
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+            }
+
+            // 3. XML Kaynaklı (Tank Envanteri) Özetle
+            var xmlOzetRaw = tankEnvanterleri
                 .GroupBy(t => t.YakitTipi)
                 .ToList();
 
@@ -379,7 +476,6 @@ namespace IstasyonDemo.Api.Controllers
                 var yakit = await _yakitService.IdentifyYakitAsync(g.Key);
                 var yakitAdi = yakit?.Ad ?? g.Key ?? "Bilinmeyen";
 
-                // Her tankın bu dönemdeki İLK ve SON kaydını bulalım
                 var tankBazliGruplar = g.GroupBy(t => t.TankNo).ToList();
                 
                 decimal toplamIlkStok = 0;
@@ -393,15 +489,11 @@ namespace IstasyonDemo.Api.Controllers
                     toplamSevkiyat += tankGrubu.Sum(t => t.SevkiyatMiktar);
                 }
 
-                // Bu yakıt tipi için gerçek satışları (Otomasyon + Filo) bulalım
-                // Not: tumSatislar henüz bu noktada tanımlı değil, aşağıdan yukarı taşıyacağız veya burada hesaplayacağız.
-                // En iyisi tumSatislar'ı en başa çekmek.
-                
                 xmlOzet.Add(new
                 {
                     YakitTipi = yakitAdi,
                     YakitId = yakit?.Id,
-                    Tanimli = yakit != null, // Flag to indicate if it's in the database
+                    Tanimli = yakit != null,
                     Renk = yakit?.Renk ?? "#666",
                     ToplamSevkiyat = toplamSevkiyat,
                     SonStok = toplamSonStok,
@@ -410,23 +502,7 @@ namespace IstasyonDemo.Api.Controllers
                 });
             }
 
-            // 2. Satışlar (Otomasyon + Filo) - Tüm vardiyalar için
-            var allVardiyaIds = xmlVerileri.Select(v => v.VardiyaId).Distinct().ToList();
-            
-            var otomasyonSatislar = await _context.OtomasyonSatislar
-                .Where(s => allVardiyaIds.Contains(s.VardiyaId))
-                .ToListAsync();
-            
-            var filoSatislar = await _context.FiloSatislar
-                .Where(s => allVardiyaIds.Contains(s.VardiyaId))
-                .ToListAsync();
-
-            // Tüm satışları birleştirelim (yakıt tanıma için)
-            var tumSatislar = otomasyonSatislar.Select(s => new { s.VardiyaId, s.YakitTuru, s.Litre })
-                .Concat(filoSatislar.Select(s => new { s.VardiyaId, s.YakitTuru, s.Litre }))
-                .ToList();
-
-            // 3. XML Kaynaklı Özetini Tamamla (Satış ve Fark Hesapla)
+            // 4. XML Kaynaklı Özetini Tamamla (Satış ve Fark Hesapla)
             var xmlOzetFinal = new List<object>();
             foreach (var item in xmlOzet)
             {
@@ -440,7 +516,6 @@ namespace IstasyonDemo.Api.Controllers
                     }
                 }
 
-                // Fark = (İlk Stok + Sevkiyat - Son Stok) - Satışlar
                 decimal beklenenSatis = item.IlkStok + item.ToplamSevkiyat - item.SonStok;
                 decimal fark = beklenenSatis - toplamSatis;
 
@@ -458,7 +533,8 @@ namespace IstasyonDemo.Api.Controllers
                 });
             }
 
-            // 4. Manuel Kaynaklı (TankGiris) - LPG
+            // 5. Manuel Kaynaklı (TankGiris) - LPG
+            var tumYakitlar = await _yakitService.GetAllYakitlarAsync();
             var lpgYakitlar = await _context.Yakitlar
                 .Where(y => y.Ad.ToUpper().Contains("LPG") || y.Ad.ToUpper().Contains("OTOGAZ"))
                 .Select(y => y.Id)
@@ -471,10 +547,9 @@ namespace IstasyonDemo.Api.Controllers
 
             var lpgYakitEntity = tumYakitlar.FirstOrDefault(y => y.Ad.ToUpper().Contains("LPG") || y.Ad.ToUpper().Contains("OTOGAZ"));
             
-            var lpgSalesPerVardiya = new List<dynamic>();
+            var lpgSatisGruplari = new Dictionary<int, decimal>();
             if (lpgYakitEntity != null)
             {
-                var lpgSatisGruplari = new Dictionary<int, decimal>();
                 foreach (var s in tumSatislar)
                 {
                     var identified = await _yakitService.IdentifyYakitAsync(s.YakitTuru);
@@ -484,10 +559,8 @@ namespace IstasyonDemo.Api.Controllers
                         lpgSatisGruplari[s.VardiyaId] += s.Litre;
                     }
                 }
-                lpgSalesPerVardiya = lpgSatisGruplari.Select(x => new { VardiyaId = x.Key, Litre = x.Value }).Cast<dynamic>().ToList();
             }
-
-            var lpgSatislar = lpgSalesPerVardiya.Sum(x => (decimal)x.Litre);
+            var lpgSatislar = lpgSatisGruplari.Values.Sum();
 
             var manuelOzet = new List<object>();
             if (lpgYakitlar.Any() || lpgSatislar > 0)
@@ -502,9 +575,10 @@ namespace IstasyonDemo.Api.Controllers
                 });
             }
 
-            var vardiyaHareketleriRaw = xmlVerileri
+            // 6. Vardiya Hareketleri
+            var vardiyaHareketleriRaw = tankEnvanterleri
                 .GroupBy(t => t.VardiyaId)
-                .OrderByDescending(g => g.First().Vardiya?.BaslangicTarihi)
+                .OrderByDescending(g => g.First().KayitTarihi)
                 .ToList();
 
             var vardiyaHareketleri = new List<dynamic>();
@@ -513,7 +587,6 @@ namespace IstasyonDemo.Api.Controllers
                 var vardiyaId = g.Key;
                 var tanklar = new List<dynamic>();
 
-                // Bu vardiyadaki tüm satışları (Otomasyon + Filo) önceden gruplayalım
                 var vardiyaSatislari = tumSatislar.Where(s => s.VardiyaId == vardiyaId).ToList();
                 var yakitBazliSatislar = new Dictionary<int, decimal>();
                 
@@ -531,12 +604,6 @@ namespace IstasyonDemo.Api.Controllers
                 {
                     var yakit = await _yakitService.IdentifyYakitAsync(t.YakitTipi);
                     
-                    // Eğer bu yakıt tipinde birden fazla tank varsa, satışları tanklara nasıl böleceğiz?
-                    // Şimdilik basitleştirmek için: Eğer yakıt tipi için toplam satış varsa ve bu tank o yakıt tipindeyse,
-                    // fiziksel delta (t.SatilanMiktar) yerine sistem satışını göstermek kafa karıştırabilir.
-                    // En iyisi: SatılanMiktar olarak sistem satışını (Otomasyon+Filo) gösterelim.
-                    // Eğer birden fazla tank varsa, sistem satışını tankların fiziksel deltalarına göre oranlayalım.
-                    
                     decimal sistemSatisi = 0;
                     if (yakit != null && yakitBazliSatislar.ContainsKey(yakit.Id))
                     {
@@ -547,13 +614,11 @@ namespace IstasyonDemo.Api.Controllers
                         }
                         else
                         {
-                            // Fiziksel delta yoksa ama satış varsa (garip durum), ilk tanka yazalım
                             if (t == g.First(x => x.YakitTipi == t.YakitTipi))
                                 sistemSatisi = yakitBazliSatislar[yakit.Id];
                         }
                     }
 
-                    // Fark = (Başlangıç + Sevkiyat - Bitiş) - Sistem Satışı
                     decimal fizikselEksilme = t.BaslangicStok + t.SevkiyatMiktar - t.BitisStok;
                     decimal fark = fizikselEksilme - sistemSatisi;
 
@@ -571,21 +636,19 @@ namespace IstasyonDemo.Api.Controllers
                     });
                 }
 
-                // LPG Ekle (Eğer bu vardiyada LPG satışı varsa ve tanklarda yoksa)
-                var lpgSatis = lpgSalesPerVardiya.FirstOrDefault(x => x.VardiyaId == vardiyaId);
-                if (lpgSatis != null && !tanklar.Any(x => ((string)x.YakitTipi).ToUpper().Contains("LPG")))
+                // LPG Ekle
+                if (lpgSatisGruplari.ContainsKey(vardiyaId) && !tanklar.Any(x => ((string)x.YakitTipi).ToUpper().Contains("LPG")))
                 {
-                    var lpgYakit = tumYakitlar.FirstOrDefault(y => y.Ad.ToUpper().Contains("LPG") || y.Ad.ToUpper().Contains("OTOGAZ"));
                     tanklar.Add(new
                     {
-                        TankNo = 99, // Sanal tank no
+                        TankNo = 99,
                         TankAdi = "LPG Tank",
                         YakitTipi = "LPG",
-                        Renk = lpgYakit?.Renk ?? "#3b82f6",
-                        BaslangicStok = 0, // Manuel takip edildiği için 0
+                        Renk = lpgYakitEntity?.Renk ?? "#3b82f6",
+                        BaslangicStok = 0,
                         BitisStok = 0,
                         SevkiyatMiktar = 0,
-                        SatilanMiktar = lpgSatis.Litre,
+                        SatilanMiktar = lpgSatisGruplari[vardiyaId],
                         FarkMiktar = 0
                     });
                 }
@@ -593,7 +656,7 @@ namespace IstasyonDemo.Api.Controllers
                 vardiyaHareketleri.Add(new
                 {
                     VardiyaId = vardiyaId,
-                    Tarih = g.First().Vardiya?.BaslangicTarihi,
+                    Tarih = g.First().KayitTarihi,
                     Tanklar = tanklar
                 });
             }

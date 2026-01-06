@@ -96,7 +96,7 @@ namespace IstasyonDemo.Api.Data
 
             modelBuilder.Entity<VardiyaTankEnvanteri>()
                 .HasOne(t => t.Vardiya)
-                .WithMany()
+                .WithMany(v => v.VardiyaTankEnvanteri)
                 .HasForeignKey(t => t.VardiyaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -350,6 +350,41 @@ namespace IstasyonDemo.Api.Data
                 .WithMany()
                 .HasForeignKey(t => t.YakitId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // ═══════════════════════════════════════════════════════════════
+            // VARDİYA RAPOR ARŞİV İLİŞKİLERİ VE INDEX'LERİ
+            // ═══════════════════════════════════════════════════════════════
+            
+            // Vardiya - RaporArsiv ilişkisi (1:1)
+            modelBuilder.Entity<Vardiya>()
+                .HasOne(v => v.RaporArsiv)
+                .WithOne(a => a.Vardiya)
+                .HasForeignKey<Vardiya>(v => v.RaporArsivId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // RaporArsiv - Istasyon ilişkisi
+            modelBuilder.Entity<VardiyaRaporArsiv>()
+                .HasOne(a => a.Istasyon)
+                .WithMany()
+                .HasForeignKey(a => a.IstasyonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Unique constraint: Her vardiya için tek arşiv
+            modelBuilder.Entity<VardiyaRaporArsiv>()
+                .HasIndex(a => a.VardiyaId)
+                .IsUnique()
+                .HasDatabaseName("IX_VardiyaRaporArsiv_VardiyaId_Unique");
+
+            // Tarih index'i - Hızlı sorgu için
+            modelBuilder.Entity<VardiyaRaporArsiv>()
+                .HasIndex(a => a.Tarih)
+                .HasDatabaseName("IX_VardiyaRaporArsiv_Tarih")
+                .IsDescending();
+
+            // İstasyon + Tarih composite index
+            modelBuilder.Entity<VardiyaRaporArsiv>()
+                .HasIndex(a => new { a.IstasyonId, a.Tarih })
+                .HasDatabaseName("IX_VardiyaRaporArsiv_IstasyonTarih");
 
 
             // Seed Yakitlar

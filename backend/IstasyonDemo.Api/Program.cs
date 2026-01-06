@@ -42,6 +42,7 @@ builder.Services.AddScoped<IDefinitionsService, DefinitionsService>();
 builder.Services.AddScoped<StokHesaplamaService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IYakitService, YakitService>();
+builder.Services.AddScoped<VardiyaArsivService>();
 
 // Firebase Admin SDK Başlatma
 try

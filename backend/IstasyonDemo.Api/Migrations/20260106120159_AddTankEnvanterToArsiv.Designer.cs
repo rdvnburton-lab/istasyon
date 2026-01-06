@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260106120159_AddTankEnvanterToArsiv")]
+    partial class AddTankEnvanterToArsiv
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1674,9 +1677,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Property<decimal>("FarkYuzde")
                         .HasColumnType("decimal(5,2)");
 
-                    b.Property<string>("FiloSatisDetayJson")
-                        .HasColumnType("jsonb");
-
                     b.Property<decimal>("FiloToplam")
                         .HasColumnType("decimal(18,2)");
 
@@ -1710,9 +1710,6 @@ namespace IstasyonDemo.Api.Migrations
 
                     b.Property<int?>("OnaylayanId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("PersonelSatisDetayJson")
-                        .HasColumnType("jsonb");
 
                     b.Property<string>("PompaSatisRaporuJson")
                         .HasColumnType("jsonb");
@@ -2343,7 +2340,7 @@ namespace IstasyonDemo.Api.Migrations
             modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaTankEnvanteri", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Vardiya", "Vardiya")
-                        .WithMany("VardiyaTankEnvanteri")
+                        .WithMany()
                         .HasForeignKey("VardiyaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2418,8 +2415,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("PompaEndeksleri");
 
                     b.Navigation("Pusulalar");
-
-                    b.Navigation("VardiyaTankEnvanteri");
                 });
 
             modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaRaporArsiv", b =>

@@ -10,6 +10,8 @@ using System.Xml.Linq;
 using System.Globalization;
 using System.Text.Json;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace IstasyonDemo.Api.Services
 {
     public class VardiyaService : IVardiyaService
@@ -20,8 +22,18 @@ namespace IstasyonDemo.Api.Services
         private readonly INotificationService _notificationService;
         private readonly IVardiyaFinancialService _financialService;
         private readonly IYakitService _yakitService;
+        private readonly VardiyaArsivService _arsivService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public VardiyaService(AppDbContext context, ILogger<VardiyaService> logger, IMapper mapper, INotificationService notificationService, IVardiyaFinancialService financialService, IYakitService yakitService)
+        public VardiyaService(
+            AppDbContext context, 
+            ILogger<VardiyaService> logger, 
+            IMapper mapper, 
+            INotificationService notificationService, 
+            IVardiyaFinancialService financialService, 
+            IYakitService yakitService,
+            VardiyaArsivService arsivService,
+            IServiceScopeFactory scopeFactory)
         {
             _context = context;
             _logger = logger;
@@ -29,6 +41,8 @@ namespace IstasyonDemo.Api.Services
             _notificationService = notificationService;
             _financialService = financialService;
             _yakitService = yakitService;
+            _arsivService = arsivService;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task<Vardiya> CreateVardiyaAsync(CreateVardiyaDto dto, int userId, string? userRole, string? userName)
@@ -347,7 +361,7 @@ namespace IstasyonDemo.Api.Services
                         IstasyonId = vardiya.IstasyonId,
                         VardiyaId = vardiya.Id,
                         DosyaAdi = dto.DosyaAdi ?? "Manual_Upload.xml",
-                        XmlIcerik = dto.DosyaIcerik, // Text olarak sakla
+                        XmlIcerik = null, // dto.DosyaIcerik yerine null atandı (Kullanıcı isteği)
                         YuklemeTarihi = DateTime.UtcNow
                         // Parse edip Tank/Pump detaylarını doldurabiliriz ama şu anlık raw content yeterli
                     };
@@ -639,44 +653,92 @@ namespace IstasyonDemo.Api.Services
                 throw new InvalidOperationException("Sadece ONAY BEKLEYEN veya SILINME ONAYI BEKLEYEN vardiyalar onaylanabilir.");
             }
 
-            vardiya.Durum = VardiyaDurum.ONAYLANDI;
-            vardiya.OnaylayanId = dto.OnaylayanId;
-            vardiya.OnaylayanAdi = dto.OnaylayanAdi;
-            vardiya.OnayTarihi = DateTime.UtcNow;
-            vardiya.GuncellemeTarihi = DateTime.UtcNow;
-
-            // Finansal İşlemleri Tetikle (Veresiye varsa Cari Hareket oluştur)
-            await _financialService.ProcessVardiyaApproval(vardiya.Id, dto.OnaylayanId);
-
-            await _context.SaveChangesAsync();
-            
-            await LogVardiyaIslem(
-                vardiya.Id,
-                "ONAYLANDI",
-                $"Vardiya onaylandı. Onaylayan: {dto.OnaylayanAdi}",
-                userId,
-                dto.OnaylayanAdi,
-                userRole,
-                VardiyaDurum.ONAY_BEKLIYOR.ToString(),
-                VardiyaDurum.ONAYLANDI.ToString()
-            );
-
-            // Vardiyayı oluşturan kişiye bildirim gönder
-            var olusturanLog = await _context.VardiyaLoglari
-                .Where(l => l.VardiyaId == vardiya.Id && l.Islem == "OLUSTURULDU")
-                .OrderByDescending(l => l.IslemTarihi)
-                .FirstOrDefaultAsync();
-
-            if (olusturanLog != null && olusturanLog.KullaniciId.HasValue)
+            // 🔒 ATOMIK İŞLEM: Tüm onay işlemleri tek transaction içinde
+            // Finansal + Arşivleme birlikte başarılı veya birlikte geri alınır
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                await _notificationService.NotifyUserAsync(
-                    olusturanLog.KullaniciId.Value,
-                    "Vardiya Onaylandı",
-                    $"{vardiya.DosyaAdi} onaylandı.",
-                    "VARDIYA_ONAYLANDI",
-                    "success",
-                    relatedVardiyaId: vardiya.Id
+                vardiya.Durum = VardiyaDurum.ONAYLANDI;
+                vardiya.OnaylayanId = dto.OnaylayanId;
+                vardiya.OnaylayanAdi = dto.OnaylayanAdi;
+                vardiya.OnayTarihi = DateTime.UtcNow;
+                vardiya.GuncellemeTarihi = DateTime.UtcNow;
+
+                // 1. Finansal İşlemleri Tetikle (Veresiye varsa Cari Hareket oluştur)
+                await _financialService.ProcessVardiyaApproval(vardiya.Id, dto.OnaylayanId);
+
+                // 2. ARŞİVLEME: Onaylanan vardiyayı arşivle
+                // Tüm rapor verileri hesaplanıp JSON olarak saklanacak
+                await _arsivService.ArsivleVardiya(vardiya.Id, dto.OnaylayanId, dto.OnaylayanAdi ?? "");
+                _logger.LogInformation("Vardiya {VardiyaId} başarıyla arşivlendi.", vardiya.Id);
+
+                await _context.SaveChangesAsync();
+                
+                // Tüm işlemler başarılı, commit et
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                // Herhangi bir hata olursa tüm işlemi geri al
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Vardiya {VardiyaId} onaylanırken hata oluştu, işlem geri alındı.", vardiya.Id);
+                throw new InvalidOperationException($"Vardiya onaylama işlemi başarısız: {ex.Message}", ex);
+            }
+
+            // 🗑️ Ham verileri temizle (Transaction dışında - ayrı işlem)
+            // Bu işlem başarısız olsa bile onay geçerli kalır
+            // Fire-and-forget: Kullanıcıyı bekletmemek ve bağlantı kopsa bile işlemin devam etmesi için arka planda çalıştır
+            _ = Task.Run(async () => 
+            {
+                try
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var scopedArsivService = scope.ServiceProvider.GetRequiredService<VardiyaArsivService>();
+                    await scopedArsivService.TemizleHamVeriler(vardiya.Id);
+                }
+                catch (Exception cleanupEx)
+                {
+                    _logger.LogWarning(cleanupEx, "Vardiya {VardiyaId} ham verileri temizlenirken hata oluştu (Arka Plan).", vardiya.Id);
+                }
+            });
+            
+            // Transaction dışındaki işlemler (loglama ve bildirimler)
+            // Bunlar kritik değil, hata olsa bile onay geçerli kalır
+            try
+            {
+                await LogVardiyaIslem(
+                    vardiya.Id,
+                    "ONAYLANDI",
+                    $"Vardiya onaylandı. Onaylayan: {dto.OnaylayanAdi}",
+                    userId,
+                    dto.OnaylayanAdi,
+                    userRole,
+                    VardiyaDurum.ONAY_BEKLIYOR.ToString(),
+                    VardiyaDurum.ONAYLANDI.ToString()
                 );
+
+                // Vardiyayı oluşturan kişiye bildirim gönder
+                var olusturanLog = await _context.VardiyaLoglari
+                    .Where(l => l.VardiyaId == vardiya.Id && l.Islem == "OLUSTURULDU")
+                    .OrderByDescending(l => l.IslemTarihi)
+                    .FirstOrDefaultAsync();
+
+                if (olusturanLog != null && olusturanLog.KullaniciId.HasValue)
+                {
+                    await _notificationService.NotifyUserAsync(
+                        olusturanLog.KullaniciId.Value,
+                        "Vardiya Onaylandı",
+                        $"{vardiya.DosyaAdi} onaylandı.",
+                        "VARDIYA_ONAYLANDI",
+                        "success",
+                        relatedVardiyaId: vardiya.Id
+                    );
+                }
+            }
+            catch (Exception logEx)
+            {
+                // Loglama/bildirim hatası kritik değil, sadece logla
+                _logger.LogWarning(logEx, "Vardiya {VardiyaId} onay sonrası loglama/bildirim hatası.", vardiya.Id);
             }
         }
 
@@ -967,7 +1029,7 @@ namespace IstasyonDemo.Api.Services
                     IstasyonId = station.Id,
                     DosyaAdi = fileName,
                     ZipDosyasi = zipBytes,
-                    XmlIcerik = xmlContent,
+                    XmlIcerik = null, // xmlContent yerine null atandı (Kullanıcı isteği)
                     YuklemeTarihi = DateTime.UtcNow
                 };
 

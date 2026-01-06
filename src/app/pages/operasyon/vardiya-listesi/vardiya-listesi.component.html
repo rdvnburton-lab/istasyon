@@ -400,151 +400,273 @@
                 </p-button>
             </div>
 
-            <p-table [value]="vardiyalar" [paginator]="vardiyalar.length > rowsPerPage" [rows]="rowsPerPage" #dt
-                [globalFilterFields]="['dosyaAdi']">
-                styleClass="p-datatable-striped">
+            <p-tabView>
+                <p-tabPanel header="İşlem Bekleyenler">
+                    <p-table [value]="bekleyenVardiyalar" [paginator]="bekleyenVardiyalar.length > rowsPerPage"
+                        [rows]="rowsPerPage" #dtBekleyen [globalFilterFields]="['dosyaAdi']">
+                        styleClass="p-datatable-striped">
 
-                <ng-template pTemplate="caption">
-                    <div class="flex justify-end">
-                        <p-iconfield>
-                            <p-inputicon class="pi pi-search" />
-                            <input pInputText type="text" placeholder="Dosya adı ara..."
-                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
-                        </p-iconfield>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="header">
-                    <tr class="text-sm">
-                        <th class="font-bold">Dosya Bilgisi</th>
-                        <th class="font-bold">Vardiya Saati</th>
-                        <th class="font-bold text-center">Personel</th>
-                        <th class="font-bold text-center">İşlem</th>
-                        <th class="font-bold text-right">Toplam Tutar</th>
-                        <th class="font-bold text-center">Durum</th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="body" let-vardiya>
-                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                        <td>
-                            <div class="flex flex-col">
-                                <span class="font-bold text-lg text-gray-800 dark:text-gray-200">
-                                    {{ vardiya.yuklemeTarihi | date:'dd.MM.yyyy HH:mm' }}
-                                </span>
-                                <span class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-                                    <i class="pi pi-file text-xs"></i>
-                                    {{ vardiya.dosyaAdi }}
-                                </span>
+                        <ng-template pTemplate="caption">
+                            <div class="flex justify-end">
+                                <p-iconfield>
+                                    <p-inputicon class="pi pi-search" />
+                                    <input pInputText type="text" placeholder="Dosya adı ara..."
+                                        (input)="dtBekleyen.filterGlobal($any($event.target).value, 'contains')" />
+                                </p-iconfield>
                             </div>
-                        </td>
+                        </ng-template>
 
-                        <td>
-                            <div *ngIf="vardiya.baslangicTarih" class="flex flex-col">
-                                <span class="font-bold text-[var(--text-color)] dark:text-surface-100">{{
-                                    vardiya.baslangicTarih
-                                    | date:'dd MMMM yyyy':'':'tr' }}</span>
-                                <span class="text-sm flex items-center gap-1" style="color: #6366f1;">
-                                    <i class="pi pi-clock text-xs"></i>
-                                    {{ vardiya.baslangicTarih | date:'HH:mm' }} - {{
-                                    vardiya.bitisTarih | date:'HH:mm'
-                                    }}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg"
-                                style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
-                                <i class="pi pi-users" style="color: #22c55e;"></i>
-                                <span class="font-bold" style="color: #16a34a;">{{
-                                    vardiya.personelSayisi }}</span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg"
-                                style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
-                                <i class="pi pi-receipt" style="color: #f59e0b;"></i>
-                                <span class="font-bold" style="color: #d97706;">{{
-                                    vardiya.islemSayisi }}</span>
-                            </div>
-                        </td>
-                        <td class="text-right">
-                            <div class="inline-block px-4 py-2 rounded-xl"
-                                style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
-                                <span class="font-bold text-lg text-white">{{
-                                    vardiya.toplamTutar |
-                                    currency:'TRY':'symbol-narrow':'1.2-2':'tr'
-                                    }}</span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <p-tag [value]="getDurumLabel(vardiya.durum)" [severity]="getDurumSeverity(vardiya.durum)"
-                                styleClass="text-sm px-3 py-1 cursor-pointer"
-                                [pTooltip]="vardiya.durum === 'REDDEDILDI' ? vardiya.redNedeni : undefined"
-                                tooltipPosition="bottom">
-                            </p-tag>
-                        </td>
-                        <td>
-                            <div class="flex gap-2 justify-end">
-                                <!-- İncele Butonu - Tüm Vardiyalar İçin -->
-                                <button pButton pRipple icon="pi pi-eye"
-                                    class="p-button-rounded p-button-info p-button-text" (click)="incele(vardiya)"
-                                    pTooltip="Vardiya Detaylarını Görüntüle" tooltipPosition="bottom"></button>
+                        <ng-template pTemplate="header">
+                            <tr class="text-sm">
+                                <th class="font-bold">Dosya Bilgisi</th>
+                                <th class="font-bold">Vardiya Saati</th>
+                                <th class="font-bold text-center">Personel</th>
+                                <th class="font-bold text-center">İşlem</th>
+                                <th class="font-bold text-right">Toplam Tutar</th>
+                                <th class="font-bold text-center">Durum</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
 
-                                <!-- Mutabakat Başlat - Sadece Açık/Reddedilmiş Vardiyalar -->
-                                <button *ngIf="vardiya.durum === 'ACIK' || vardiya.durum === 'REDDEDILDI'" pButton
-                                    pRipple icon="pi pi-calculator"
-                                    class="p-button-rounded p-button-success p-button-text mr-2"
-                                    (click)="mutabakatYap(vardiya)"
-                                    [pTooltip]="vardiya.durum === 'REDDEDILDI' ? 'Mutabakatı Düzenle' : 'Mutabakat Başlat'"
-                                    tooltipPosition="top"></button>
+                        <ng-template pTemplate="body" let-vardiya>
+                            <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                                <td>
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-lg text-gray-800 dark:text-gray-200">
+                                            {{ vardiya.yuklemeTarihi | date:'dd.MM.yyyy HH:mm' }}
+                                        </span>
+                                        <span class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+                                            <i class="pi pi-file text-xs"></i>
+                                            {{ vardiya.dosyaAdi }}
+                                        </span>
+                                    </div>
+                                </td>
 
-                                <!-- Rapor Butonları (Onaya Gönderildi veya Onaylandı) -->
-                                <button *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI'"
-                                    pButton pRipple icon="pi pi-file-excel"
-                                    class="p-button-rounded p-button-success p-button-text"
-                                    (click)="excelIndir(vardiya)" pTooltip="Excel Raporu"
-                                    tooltipPosition="top"></button>
-                                <button *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI'"
-                                    pButton pRipple icon="pi pi-file-pdf"
-                                    class="p-button-rounded p-button-danger p-button-text mr-2"
-                                    (click)="pdfIndir(vardiya)" pTooltip="PDF Raporu" tooltipPosition="top"></button>
+                                <td>
+                                    <div *ngIf="vardiya.baslangicTarih" class="flex flex-col">
+                                        <span class="font-bold text-[var(--text-color)] dark:text-surface-100">{{
+                                            vardiya.baslangicTarih
+                                            | date:'dd MMMM yyyy':'':'tr' }}</span>
+                                        <span class="text-sm flex items-center gap-1" style="color: #6366f1;">
+                                            <i class="pi pi-clock text-xs"></i>
+                                            {{ vardiya.baslangicTarih | date:'HH:mm' }} - {{
+                                            vardiya.bitisTarih | date:'HH:mm'
+                                            }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg"
+                                        style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+                                        <i class="pi pi-users" style="color: #22c55e;"></i>
+                                        <span class="font-bold" style="color: #16a34a;">{{
+                                            vardiya.personelSayisi }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg"
+                                        style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+                                        <i class="pi pi-receipt" style="color: #f59e0b;"></i>
+                                        <span class="font-bold" style="color: #d97706;">{{
+                                            vardiya.islemSayisi }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div class="inline-block px-4 py-2 rounded-xl"
+                                        style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+                                        <span class="font-bold text-lg text-white">{{
+                                            vardiya.toplamTutar |
+                                            currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                                            }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <p-tag [value]="getDurumLabel(vardiya.durum)"
+                                        [severity]="getDurumSeverity(vardiya.durum)"
+                                        styleClass="text-sm px-3 py-1 cursor-pointer"
+                                        [pTooltip]="vardiya.durum === 'REDDEDILDI' ? vardiya.redNedeni : undefined"
+                                        tooltipPosition="bottom">
+                                    </p-tag>
+                                </td>
+                                <td>
+                                    <div class="flex gap-2 justify-end">
+                                        <!-- İncele Butonu - Tüm Vardiyalar İçin -->
+                                        <button pButton pRipple icon="pi pi-eye"
+                                            class="p-button-rounded p-button-info p-button-text"
+                                            (click)="incele(vardiya)" pTooltip="Vardiya Detaylarını Görüntüle"
+                                            tooltipPosition="bottom"></button>
 
-                                <button pButton pRipple icon="pi pi-download"
-                                    class="p-button-rounded p-button-info p-button-text mr-2"
-                                    (click)="dosyaIndir(vardiya)" pTooltip="Dosyayı İndir"
-                                    tooltipPosition="top"></button>
-                                <button pButton pRipple icon="pi pi-trash"
-                                    class="p-button-rounded p-button-danger p-button-text" (click)="vardiyaSil(vardiya)"
-                                    pTooltip="Sil" tooltipPosition="top"
-                                    *ngIf="vardiya.durum !== 'ONAY_BEKLIYOR' && vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"></button>
+                                        <!-- Mutabakat Başlat - Sadece Açık/Reddedilmiş Vardiyalar -->
+                                        <button *ngIf="vardiya.durum === 'ACIK' || vardiya.durum === 'REDDEDILDI'"
+                                            pButton pRipple icon="pi pi-calculator"
+                                            class="p-button-rounded p-button-success p-button-text mr-2"
+                                            (click)="mutabakatYap(vardiya)"
+                                            [pTooltip]="vardiya.durum === 'REDDEDILDI' ? 'Mutabakatı Düzenle' : 'Mutabakat Başlat'"
+                                            tooltipPosition="top"></button>
+
+                                        <!-- Rapor Butonları (Onaya Gönderildi veya Onaylandı) -->
+                                        <button
+                                            *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI'"
+                                            pButton pRipple icon="pi pi-file-excel"
+                                            class="p-button-rounded p-button-success p-button-text"
+                                            (click)="excelIndir(vardiya)" pTooltip="Excel Raporu"
+                                            tooltipPosition="top"></button>
+                                        <button
+                                            *ngIf="vardiya.durum === 'ONAY_BEKLIYOR' || vardiya.durum === 'ONAYLANDI'"
+                                            pButton pRipple icon="pi pi-file-pdf"
+                                            class="p-button-rounded p-button-danger p-button-text mr-2"
+                                            (click)="pdfIndir(vardiya)" pTooltip="PDF Raporu"
+                                            tooltipPosition="top"></button>
+
+                                        <button pButton pRipple icon="pi pi-download"
+                                            class="p-button-rounded p-button-info p-button-text mr-2"
+                                            (click)="dosyaIndir(vardiya)" pTooltip="Dosyayı İndir"
+                                            tooltipPosition="top"></button>
+                                        <button pButton pRipple icon="pi pi-trash"
+                                            class="p-button-rounded p-button-danger p-button-text"
+                                            (click)="vardiyaSil(vardiya)" pTooltip="Sil" tooltipPosition="top"
+                                            *ngIf="vardiya.durum !== 'ONAY_BEKLIYOR' && vardiya.durum !== 'SILINME_ONAYI_BEKLIYOR' && vardiya.durum !== 'SILINDI' && !(userRole !== 'admin' && userRole !== 'patron' && vardiya.durum === 'ONAYLANDI')"></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="7" class="text-center py-12">
+                                    <div class="flex flex-col items-center">
+                                        <div
+                                            class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
+                                            <i class="pi pi-upload text-4xl text-surface-400"></i>
+                                        </div>
+                                        <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz
+                                            vardiya verisi yok</h4>
+                                        <p class="text-surface-400 text-sm m-0 mt-2">
+                                            Otomasyon TXT dosyasını yükleyerek başlayın
+                                        </p>
+                                        <p-button label="Dosya Yükle" icon="pi pi-upload" severity="success"
+                                            styleClass="mt-4" (onClick)="dosyaDialogAc()">
+                                        </p-button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
+
+                <p-tabPanel header="Onaylı Vardiyalar">
+                    <p-table [value]="onayliVardiyalar" [paginator]="onayliVardiyalar.length > rowsPerPage"
+                        [rows]="rowsPerPage" #dtOnayli [globalFilterFields]="['dosyaAdi']"
+                        styleClass="p-datatable-striped">
+
+                        <ng-template pTemplate="caption">
+                            <div class="flex justify-end">
+                                <p-iconfield>
+                                    <p-inputicon class="pi pi-search" />
+                                    <input pInputText type="text" placeholder="Dosya adı ara..."
+                                        (input)="dtOnayli.filterGlobal($any($event.target).value, 'contains')" />
+                                </p-iconfield>
                             </div>
-                        </td>
-                    </tr>
-                </ng-template>
+                        </ng-template>
 
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="7" class="text-center py-12">
-                            <div class="flex flex-col items-center">
-                                <div
-                                    class="w-24 h-24 bg-surface-100 dark:bg-surface-800 rounded-full flex items-center justify-center mb-4">
-                                    <i class="pi pi-upload text-4xl text-surface-400"></i>
-                                </div>
-                                <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz
-                                    vardiya verisi yok</h4>
-                                <p class="text-surface-400 text-sm m-0 mt-2">
-                                    Otomasyon TXT dosyasını yükleyerek başlayın
-                                </p>
-                                <p-button label="Dosya Yükle" icon="pi pi-upload" severity="success" styleClass="mt-4"
-                                    (onClick)="dosyaDialogAc()">
-                                </p-button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+                        <ng-template pTemplate="header">
+                            <tr class="text-sm">
+                                <th class="font-bold">Dosya Bilgisi</th>
+                                <th class="font-bold">Vardiya Saati</th>
+                                <th class="font-bold text-right">Toplam Satış</th>
+                                <th class="font-bold text-right">Toplam Tahsilat</th>
+                                <th class="font-bold text-right">Fark</th>
+                                <th class="font-bold text-center">Durum</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-vardiya>
+                            <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                                <td>
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-lg text-gray-800 dark:text-gray-200">
+                                            {{ vardiya.yuklemeTarihi | date:'dd.MM.yyyy HH:mm' }}
+                                        </span>
+                                        <span class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+                                            <i class="pi pi-file text-xs"></i>
+                                            {{ vardiya.dosyaAdi }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div *ngIf="vardiya.baslangicTarih" class="flex flex-col">
+                                        <span class="font-bold text-[var(--text-color)] dark:text-surface-100">{{
+                                            vardiya.baslangicTarih
+                                            | date:'dd MMMM yyyy':'':'tr' }}</span>
+                                        <span class="text-sm flex items-center gap-1" style="color: #6366f1;">
+                                            <i class="pi pi-clock text-xs"></i>
+                                            {{ vardiya.baslangicTarih | date:'HH:mm' }} - {{
+                                            vardiya.bitisTarih | date:'HH:mm'
+                                            }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div class="inline-block px-4 py-2 rounded-xl"
+                                        style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+                                        <span class="font-bold text-lg text-white">{{
+                                            vardiya.toplamTutar |
+                                            currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                                            }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div class="inline-block px-4 py-2 rounded-xl"
+                                        style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">
+                                        <span class="font-bold text-lg text-white">{{
+                                            vardiya.toplamTahsilat |
+                                            currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                                            }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div class="inline-block px-4 py-2 rounded-xl"
+                                        [ngStyle]="{'background': (vardiya.fark || 0) >= 0 ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 'box-shadow': '0 4px 15px rgba(0,0,0, 0.1)'}">
+                                        <span class="font-bold text-lg text-white">{{
+                                            (vardiya.fark || 0) |
+                                            currency:'TRY':'symbol-narrow':'1.2-2':'tr'
+                                            }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <p-tag value="ONAYLI" severity="success" styleClass="text-sm px-3 py-1"></p-tag>
+                                </td>
+                                <td>
+                                    <div class="flex gap-2 justify-end">
+                                        <button pButton pRipple icon="pi pi-eye"
+                                            class="p-button-rounded p-button-info p-button-text"
+                                            (click)="incele(vardiya)" pTooltip="Vardiya Detaylarını Görüntüle"
+                                            tooltipPosition="bottom"></button>
+
+                                        <button pButton pRipple icon="pi pi-file-excel"
+                                            class="p-button-rounded p-button-success p-button-text"
+                                            (click)="excelIndir(vardiya)" pTooltip="Excel Raporu"
+                                            tooltipPosition="top"></button>
+                                        <button pButton pRipple icon="pi pi-file-pdf"
+                                            class="p-button-rounded p-button-danger p-button-text mr-2"
+                                            (click)="pdfIndir(vardiya)" pTooltip="PDF Raporu"
+                                            tooltipPosition="top"></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6" class="text-center py-12">
+                                    <h4 class="text-surface-600 dark:text-surface-300 m-0">Henüz onaylanmış vardiya yok
+                                    </h4>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
+            </p-tabView>
         </div>
     </div>
 </div>

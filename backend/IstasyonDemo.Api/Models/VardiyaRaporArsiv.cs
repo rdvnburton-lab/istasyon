@@ -105,6 +105,15 @@ namespace IstasyonDemo.Api.Models
         /// </summary>
         [Column(TypeName = "jsonb")]
         public string? GiderRaporuJson { get; set; }
+
+        [Column(TypeName = "jsonb")]
+        public string? TankEnvanterJson { get; set; } // 🆕 Tank verileri için
+
+        [Column(TypeName = "jsonb")]
+        public string? PersonelSatisDetayJson { get; set; } // 🆕 Personel karnesi için detaylı satış verisi
+
+        [Column(TypeName = "jsonb")]
+        public string? FiloSatisDetayJson { get; set; } // 🆕 Stok takibi için detaylı filo satış verisi
         
         // ═══════════════════════════════════════════════════════════════
         // PDF RAPORLAR (Binary olarak saklanır)

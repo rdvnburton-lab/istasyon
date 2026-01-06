@@ -15,6 +15,9 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
 import { VardiyaService } from '../../operasyon/services/vardiya.service';
 import { VardiyaApiService } from '../../operasyon/services/vardiya-api.service';
 import { MarketApiService } from '../../operasyon/services/market-api.service';
@@ -39,7 +42,9 @@ import { Vardiya, VardiyaOzet, PersonelFarkAnalizi, MarketOzet, GenelOzet, Marke
         ToastModule,
         IconFieldModule,
         InputIconModule,
-        InputTextModule
+        InputTextModule,
+        ProgressBarModule,
+        ProgressSpinnerModule
     ],
     templateUrl: './onay-bekleyenler.component.html',
     styleUrls: ['./onay-bekleyenler.component.scss'],
@@ -78,6 +83,22 @@ export class OnayBekleyenlerComponent implements OnInit {
     marketRedDialogVisible: boolean = false;
     marketRedNedeni: string = '';
 
+    // Progress Tracking
+    showGlobalLoading = false;
+    islemDurumu = '';
+    islemYuzdesi = 0;
+    currentStep = 0;
+    progressInterval: any;
+
+    processingSteps = [
+        'Finansal kayıtlar oluşturuluyor...',
+        'Cari hareketler işleniyor...',
+        'Rapor verileri hesaplanıyor...',
+        'Arşiv kaydı oluşturuluyor...',
+        'Ham veriler temizleniyor...',
+        'İşlem tamamlanıyor...'
+    ];
+
     constructor(
         private vardiyaService: VardiyaService,
         private vardiyaApiService: VardiyaApiService,
@@ -91,6 +112,23 @@ export class OnayBekleyenlerComponent implements OnInit {
         this.yukle();
     }
 
+    simulateProgress(): void {
+        const stepDuration = 800; // Her adım 0.8 saniye
+        this.progressInterval = setInterval(() => {
+            if (this.currentStep < this.processingSteps.length - 2) {
+                this.currentStep++;
+                this.islemDurumu = this.processingSteps[this.currentStep];
+                this.islemYuzdesi = Math.round((this.currentStep / this.processingSteps.length) * 100);
+            }
+        }, stepDuration);
+    }
+
+    stopProgressSimulation(): void {
+        if (this.progressInterval) {
+            clearInterval(this.progressInterval);
+            this.progressInterval = null;
+        }
+    }
 
     yukle() {
         this.vardiyaApiService.getOnayBekleyenVardiyalar().subscribe((data: any[]) => {
@@ -231,7 +269,6 @@ export class OnayBekleyenlerComponent implements OnInit {
                     }));
 
                 // toplamKrediKarti'yi genelOzet'ten al (daha güvenilir)
-                // toplamKrediKarti'yi genelOzet'ten al (daha güvenilir)
                 this.toplamKrediKarti = data.genelOzet.toplamKrediKarti;
                 this.digerOdemelerToplamTutar = (data.genelOzet.digerOdemeler || []).reduce((acc: number, item: any) => acc + item.toplam, 0);
 
@@ -258,8 +295,6 @@ export class OnayBekleyenlerComponent implements OnInit {
         });
     }
 
-    // hesaplaKrediKartiDetaylari removed as it is handled backend side or redundant
-
     onayla(vardiya: Vardiya) {
         const isDeletion = vardiya.durum === 'SILINME_ONAYI_BEKLIYOR';
         const message = isDeletion
@@ -278,17 +313,35 @@ export class OnayBekleyenlerComponent implements OnInit {
             rejectLabel: 'Vazgeç',
             acceptButtonStyleClass: acceptButtonStyleClass,
             accept: () => {
+                // Progress Başlat
+                this.showGlobalLoading = true;
+                this.currentStep = 0;
+                this.islemDurumu = this.processingSteps[0];
+                this.islemYuzdesi = 0;
+                this.simulateProgress();
+
                 const currentUser = this.authService.getCurrentUser();
                 const onaylayanId = currentUser?.id || 1; // Token'dan ID alınıyor
                 const onaylayanAdi = currentUser ? currentUser.username : 'Sistem';
 
                 this.vardiyaApiService.vardiyaOnayla(vardiya.id, onaylayanId, onaylayanAdi).subscribe({
                     next: () => {
-                        this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Vardiya başarıyla onaylandı.' });
-                        this.detayVisible = false;
-                        this.yukle();
+                        // Progress Tamamla
+                        this.stopProgressSimulation();
+                        this.currentStep = this.processingSteps.length - 1;
+                        this.islemDurumu = this.processingSteps[this.currentStep];
+                        this.islemYuzdesi = 100;
+
+                        setTimeout(() => {
+                            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Vardiya başarıyla onaylandı.' });
+                            this.detayVisible = false;
+                            this.showGlobalLoading = false;
+                            this.yukle();
+                        }, 1000);
                     },
                     error: (err) => {
+                        this.stopProgressSimulation();
+                        this.showGlobalLoading = false;
                         this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Onay işlemi sırasında bir hata oluştu.' });
                     }
                 });

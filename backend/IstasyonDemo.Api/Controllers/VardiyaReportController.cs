@@ -1,6 +1,7 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Dtos;
 using IstasyonDemo.Api.Models;
+using IstasyonDemo.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace IstasyonDemo.Api.Controllers
     public class VardiyaReportController : BaseController
     {
         private readonly AppDbContext _context;
+        private readonly VardiyaArsivService _arsivService;
 
-        public VardiyaReportController(AppDbContext context)
+        public VardiyaReportController(AppDbContext context, VardiyaArsivService arsivService)
         {
             _context = context;
+            _arsivService = arsivService;
         }
 
         [HttpGet("genel")]
@@ -47,24 +50,68 @@ namespace IstasyonDemo.Api.Controllers
 
             query = query.Where(v => v.BaslangicTarihi >= start && v.BaslangicTarihi <= end && v.Durum != VardiyaDurum.SILINDI);
 
-            var vardiyalar = await query
+            // Verileri ve arşivdeki JSON'ları çek
+            var vardiyaVerileri = await query
                 .OrderByDescending(v => v.BaslangicTarihi)
-                .Select(v => new VardiyaRaporItemDto
+                .Select(v => new
                 {
-                    Id = v.Id,
-                    Tarih = v.BaslangicTarihi,
-                    DosyaAdi = v.DosyaAdi ?? "",
-                    Tutar = v.GenelToplam,
-                    Durum = v.Durum.ToString()
+                    v.Id,
+                    v.BaslangicTarihi,
+                    v.DosyaAdi,
+                    v.GenelToplam,
+                    v.Durum,
+                    PersonelSatisJson = v.RaporArsiv != null ? v.RaporArsiv.PersonelSatisDetayJson : null,
+                    FiloSatisJson = v.RaporArsiv != null ? v.RaporArsiv.FiloSatisDetayJson : null
                 })
                 .ToListAsync();
+
+            var vardiyalar = vardiyaVerileri.Select(v => new VardiyaRaporItemDto
+            {
+                Id = v.Id,
+                Tarih = v.BaslangicTarihi,
+                DosyaAdi = v.DosyaAdi ?? "",
+                Tutar = v.GenelToplam,
+                Durum = v.Durum.ToString()
+            }).ToList();
+
+            // Toplam Litreyi JSON'dan hesapla
+            decimal toplamLitre = 0;
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            foreach (var v in vardiyaVerileri)
+            {
+                if (!string.IsNullOrEmpty(v.PersonelSatisJson))
+                {
+                    try
+                    {
+                        var personelDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.PersonelSatisDetayDto>>(v.PersonelSatisJson, jsonOptions);
+                        if (personelDetay != null)
+                        {
+                            toplamLitre += personelDetay.Sum(p => p.Satislar.Sum(s => s.Litre));
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+
+                if (!string.IsNullOrEmpty(v.FiloSatisJson))
+                {
+                    try
+                    {
+                        var filoDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.FiloSatisDetayDto>>(v.FiloSatisJson, jsonOptions);
+                        if (filoDetay != null)
+                        {
+                            toplamLitre += filoDetay.Sum(f => f.Litre);
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+            }
 
             var ozet = new VardiyaRaporOzetDto
             {
                 ToplamVardiya = vardiyalar.Count,
                 ToplamTutar = vardiyalar.Sum(v => v.Tutar),
-                ToplamLitre = await query.SelectMany(v => v.OtomasyonSatislar).SumAsync(s => s.Litre) +
-                              await query.SelectMany(v => v.FiloSatislar).SumAsync(s => s.Litre),
+                ToplamLitre = toplamLitre,
                 ToplamIade = 0,
                 ToplamGider = 0
             };
@@ -102,84 +149,146 @@ namespace IstasyonDemo.Api.Controllers
                 else return Unauthorized();
             }
 
-            var vardiyaOzetleri = await query
+            // Personel eşleşmesi için tüm personelleri çek
+            var personeller = await _context.Personeller.Select(p => new { p.Id, p.KeyId, p.AdSoyad }).ToListAsync();
+
+            var arsivler = await query
                 .Where(v => v.BaslangicTarihi >= start && v.BaslangicTarihi <= end && v.Durum != VardiyaDurum.SILINDI)
+                .OrderByDescending(v => v.BaslangicTarihi)
                 .Select(v => new {
                     v.Id,
                     v.BaslangicTarihi,
                     v.DosyaAdi,
-                    v.PompaToplam,
                     v.Durum,
-                    OtomasyonPersonelOzet = v.OtomasyonSatislar
-                        .GroupBy(s => new { s.PersonelKeyId, s.PersonelAdi })
-                        .Select(g => new { g.Key.PersonelKeyId, g.Key.PersonelAdi, Toplam = g.Sum(s => s.ToplamTutar) })
-                        .ToList(),
-                    PusulaOzet = v.Pusulalar
-                        .Select(p => new { p.PersonelAdi, p.PersonelId, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) })
-                        .ToList(),
-                    FiloToplam = v.FiloSatislar.Sum(f => f.Tutar)
+                    PersonelSatisJson = v.RaporArsiv != null ? v.RaporArsiv.PersonelSatisDetayJson : null,
+                    FiloSatisJson = v.RaporArsiv != null ? v.RaporArsiv.FiloSatisDetayJson : null,
+                    Pusulalar = v.Pusulalar.Select(p => new { p.PersonelId, p.PersonelAdi, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) }).ToList()
                 })
-                .OrderByDescending(v => v.BaslangicTarihi)
                 .ToListAsync();
 
             var raporItems = new List<FarkRaporItemDto>();
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            foreach (var v in vardiyaOzetleri)
+            foreach (var v in arsivler)
             {
+                decimal otomasyonToplam = 0;
+                decimal filoToplam = 0;
+                var personelFarklari = new List<PersonelFarkDto>();
+
+                // 1. Otomasyon Satışları (Personel Bazlı)
+                if (!string.IsNullOrEmpty(v.PersonelSatisJson))
+                {
+                    try
+                    {
+                        var personelDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.PersonelSatisDetayDto>>(v.PersonelSatisJson, jsonOptions);
+                        if (personelDetay != null)
+                        {
+                            foreach (var p in personelDetay)
+                            {
+                                var pToplam = p.Satislar.Sum(s => s.Tutar);
+                                otomasyonToplam += pToplam;
+
+                                // Personel ID bul
+                                var personel = personeller.FirstOrDefault(x => x.KeyId == p.PersonelKeyId);
+                                var personelId = personel?.Id ?? 0;
+                                var personelAdi = personel?.AdSoyad ?? p.PersonelAdi;
+
+                                // Tahsilat bul
+                                var pusula = v.Pusulalar.FirstOrDefault(x => x.PersonelId == personelId);
+                                var tahsilat = pusula?.Toplam ?? 0;
+
+                                personelFarklari.Add(new PersonelFarkDto
+                                {
+                                    PersonelKeyId = p.PersonelKeyId,
+                                    PersonelAdi = personelAdi,
+                                    Otomasyon = pToplam,
+                                    Tahsilat = tahsilat,
+                                    Fark = tahsilat - pToplam
+                                });
+                            }
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+
+                // 2. Filo Satışları
+                if (!string.IsNullOrEmpty(v.FiloSatisJson))
+                {
+                    try
+                    {
+                        var filoDetay = System.Text.Json.JsonSerializer.Deserialize<List<IstasyonDemo.Api.Services.FiloSatisDetayDto>>(v.FiloSatisJson, jsonOptions);
+                        if (filoDetay != null)
+                        {
+                            filoToplam = filoDetay.Sum(f => f.Tutar);
+                        }
+                    }
+                    catch { /* Ignore */ }
+                }
+
+                // Pusulası olup satışı olmayan personelleri de ekle
+                foreach (var pusula in v.Pusulalar)
+                {
+                    // Personel ID üzerinden kontrol
+                    var pKeyId = personeller.FirstOrDefault(x => x.Id == pusula.PersonelId)?.KeyId;
+                    
+                    // Eğer listede yoksa ekle
+                    bool exists = false;
+                    if (pKeyId != null) exists = personelFarklari.Any(p => p.PersonelKeyId == pKeyId);
+                    else exists = personelFarklari.Any(p => p.PersonelAdi == pusula.PersonelAdi); // Fallback
+
+                    if (!exists)
+                    {
+                        personelFarklari.Add(new PersonelFarkDto
+                        {
+                            PersonelKeyId = pKeyId ?? "",
+                            PersonelAdi = pusula.PersonelAdi ?? "",
+                            Otomasyon = 0,
+                            Tahsilat = pusula.Toplam,
+                            Fark = pusula.Toplam
+                        });
+                    }
+                }
+
+                // Filo Satışlarını Listeye Ekle
+                if (filoToplam > 0)
+                {
+                    personelFarklari.Add(new PersonelFarkDto
+                    {
+                        PersonelAdi = "FİLO SATIŞLARI",
+                        PersonelKeyId = "FILO",
+                        Otomasyon = filoToplam,
+                        Tahsilat = filoToplam, // Filo satışı sanal tahsilat sayılır, fark oluşturmaz
+                        Fark = 0
+                    });
+                }
+
+                // Genel Toplamlar
+                // OtomasyonToplam = Personel Satışları + Filo Satışları
+                // TahsilatToplam = Pusulalar + Filo Satışları
+                
                 var item = new FarkRaporItemDto
                 {
                     VardiyaId = v.Id,
                     Tarih = v.BaslangicTarihi,
                     DosyaAdi = v.DosyaAdi ?? "",
-                    OtomasyonToplam = v.PompaToplam,
-                    TahsilatToplam = v.PusulaOzet.Sum(p => p.Toplam) + v.FiloToplam,
-                    Durum = v.Durum.ToString()
+                    OtomasyonToplam = otomasyonToplam + filoToplam,
+                    TahsilatToplam = v.Pusulalar.Sum(p => p.Toplam) + filoToplam,
+                    Durum = v.Durum.ToString(),
+                    PersonelFarklari = personelFarklari
                 };
                 item.Fark = item.TahsilatToplam - item.OtomasyonToplam;
-
-                // Personel bazlı farklar
-                var personeller = v.OtomasyonPersonelOzet
-                    .Select(g => new PersonelFarkDto
-                    {
-                        PersonelKeyId = g.PersonelKeyId,
-                        PersonelAdi = g.PersonelAdi,
-                        Otomasyon = g.Toplam
-                    }).ToList();
-
-                foreach (var p in personeller)
-                {
-                    var pusula = v.PusulaOzet.FirstOrDefault(ps => ps.PersonelAdi == p.PersonelAdi);
-                    if (pusula != null)
-                    {
-                        p.Tahsilat = pusula.Toplam;
-                    }
-                    p.Fark = p.Tahsilat - p.Otomasyon;
-                }
                 
-                if (v.FiloToplam > 0)
-                {
-                    personeller.Add(new PersonelFarkDto
-                    {
-                        PersonelAdi = "FİLO SATIŞLARI",
-                        PersonelKeyId = "FILO",
-                        Otomasyon = v.FiloToplam,
-                        Tahsilat = v.FiloToplam,
-                        Fark = 0
-                    });
-                }
-
-                item.PersonelFarklari = personeller;
                 raporItems.Add(item);
             }
 
             var ozet = new FarkRaporOzetDto
             {
+                ToplamFark = raporItems.Sum(r => r.Fark),
+                ToplamAcik = raporItems.Where(r => r.Fark < 0).Sum(r => r.Fark),
+                ToplamFazla = raporItems.Where(r => r.Fark > 0).Sum(r => r.Fark),
                 VardiyaSayisi = raporItems.Count,
-                ToplamFark = raporItems.Sum(i => i.Fark),
-                ToplamAcik = raporItems.Where(i => i.Fark < 0).Sum(i => Math.Abs(i.Fark)),
-                ToplamFazla = raporItems.Where(i => i.Fark > 0).Sum(i => i.Fark),
-                AcikVardiyaSayisi = raporItems.Count(i => i.Fark < -0.01m),
-                FazlaVardiyaSayisi = raporItems.Count(i => i.Fark > 0.01m)
+                AcikVardiyaSayisi = raporItems.Count(r => r.Fark < -1), // -1 tolerans
+                FazlaVardiyaSayisi = raporItems.Count(r => r.Fark > 1)
             };
 
             return Ok(new FarkRaporuDto
@@ -190,6 +299,7 @@ namespace IstasyonDemo.Api.Controllers
         }
 
         [HttpGet("personel-karnesi/{personelId}")]
+
         public async Task<IActionResult> GetPersonelKarnesi(int personelId, [FromQuery] DateTimeOffset baslangic, [FromQuery] DateTimeOffset bitis)
         {
             var start = baslangic.UtcDateTime;
@@ -198,37 +308,90 @@ namespace IstasyonDemo.Api.Controllers
             var personel = await _context.Personeller.FindAsync(personelId);
             if (personel == null) return NotFound();
 
-            var satislar = await _context.OtomasyonSatislar
-                .Where(s => s.PersonelId == personelId && s.Vardiya!.BaslangicTarihi >= start && s.Vardiya!.BaslangicTarihi <= end && s.Vardiya!.Durum != VardiyaDurum.SILINDI)
-                .Select(s => new { s.VardiyaId, s.Vardiya!.BaslangicTarihi, s.ToplamTutar, s.Litre, YakitTuru = s.Yakit != null ? s.Yakit.Ad : s.YakitTuru })
+            // 1. Onaylı vardiyaların arşivlerini çek (JSON)
+            var arsivler = await _context.VardiyaRaporArsivleri
+                .Where(a => a.Tarih >= start && a.Tarih <= end)
+                .Select(a => new { 
+                    a.VardiyaId, 
+                    a.Tarih, 
+                    a.PersonelSatisDetayJson 
+                })
                 .ToListAsync();
 
+            // 2. Pusulaları çek (Manuel tahsilat - Silinmeyen tablo)
             var pusulalar = await _context.Pusulalar
-                .Where(p => p.PersonelId == personelId && p.Vardiya!.BaslangicTarihi >= start && p.Vardiya!.BaslangicTarihi <= end && p.Vardiya!.Durum != VardiyaDurum.SILINDI)
+                .Where(p => p.PersonelId == personelId && p.Vardiya!.BaslangicTarihi >= start && p.Vardiya!.BaslangicTarihi <= end && p.Vardiya!.Durum == VardiyaDurum.ONAYLANDI)
                 .Select(p => new { p.VardiyaId, p.Nakit, p.KrediKarti, p.Aciklama, p.Vardiya!.BaslangicTarihi })
                 .ToListAsync();
 
-            var hareketler = satislar.GroupBy(s => new { s.VardiyaId, s.BaslangicTarihi })
-                .Select(g => {
-                    var pPusula = pusulalar.FirstOrDefault(p => p.VardiyaId == g.Key.VardiyaId);
-                    var otomasyonSatis = g.Sum(s => s.ToplamTutar);
-                    var manuelTahsilat = pPusula != null ? (pPusula.Nakit + pPusula.KrediKarti) : 0;
-                    
-                    return new PersonelHareketDto
+            var hareketler = new List<PersonelHareketDto>();
+            var yakitMap = new List<YakitDagilimiDto>();
+
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            foreach (var arsiv in arsivler)
+            {
+                if (string.IsNullOrEmpty(arsiv.PersonelSatisDetayJson)) continue;
+
+                try
+                {
+                    var detaylar = System.Text.Json.JsonSerializer.Deserialize<List<PersonelSatisDetayDto>>(arsiv.PersonelSatisDetayJson, jsonOptions);
+                    var personelDetay = detaylar?.FirstOrDefault(d => d.PersonelKeyId == personel.KeyId);
+
+                    decimal otomasyonSatis = 0;
+                    decimal litre = 0;
+                    int aracSayisi = 0; // JSON'da araç sayısı yok, şimdilik 0 veya tahmini
+
+                    if (personelDetay != null)
                     {
-                        Tarih = g.Key.BaslangicTarihi,
-                        VardiyaId = g.Key.VardiyaId,
+                        otomasyonSatis = personelDetay.Satislar.Sum(s => s.Tutar);
+                        litre = personelDetay.Satislar.Sum(s => s.Litre);
+                        
+                        // Yakıt dağılımını topla
+                        foreach (var satis in personelDetay.Satislar)
+                        {
+                            var existing = yakitMap.FirstOrDefault(y => y.Yakit == satis.YakitTuru);
+                            if (existing != null)
+                            {
+                                existing.Litre += satis.Litre;
+                                existing.Tutar += satis.Tutar;
+                            }
+                            else
+                            {
+                                yakitMap.Add(new YakitDagilimiDto { Yakit = satis.YakitTuru, Litre = satis.Litre, Tutar = satis.Tutar });
+                            }
+                        }
+                    }
+
+                    var pPusula = pusulalar.FirstOrDefault(p => p.VardiyaId == arsiv.VardiyaId);
+                    var manuelTahsilat = pPusula != null ? (pPusula.Nakit + pPusula.KrediKarti) : 0;
+
+                    // Eğer hem satış hem tahsilat yoksa listeye ekleme
+                    if (otomasyonSatis == 0 && manuelTahsilat == 0) continue;
+
+                    hareketler.Add(new PersonelHareketDto
+                    {
+                        Tarih = arsiv.Tarih,
+                        VardiyaId = arsiv.VardiyaId,
                         OtomasyonSatis = otomasyonSatis,
                         ManuelTahsilat = manuelTahsilat,
                         Fark = manuelTahsilat - otomasyonSatis,
-                        AracSayisi = g.Count(),
-                        Litre = g.Sum(s => s.Litre),
+                        AracSayisi = 0, // JSON'da yoktu, eklenebilir
+                        Litre = litre,
                         Aciklama = pPusula?.Aciklama
-                    };
-                }).ToList();
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // JSON parse hatası
+                    Console.WriteLine($"JSON Parse Error Vardiya {arsiv.VardiyaId}: {ex.Message}");
+                }
+            }
 
-            var satisVardiyaIds = satislar.Select(s => s.VardiyaId).ToHashSet();
-            foreach (var p in pusulalar.Where(p => !satisVardiyaIds.Contains(p.VardiyaId)))
+            // Sadece pusulası olup satışı olmayanlar (zaten yukarıda kapsandı ama kontrol edelim)
+            // Arşivde kaydı olmayan ama pusulası olan durumlar (eski veriler) için:
+            var arsivVardiyaIds = arsivler.Select(a => a.VardiyaId).ToHashSet();
+            foreach (var p in pusulalar.Where(p => !arsivVardiyaIds.Contains(p.VardiyaId)))
             {
                 var manuelTahsilat = p.Nakit + p.KrediKarti;
                 hareketler.Add(new PersonelHareketDto
@@ -245,14 +408,6 @@ namespace IstasyonDemo.Api.Controllers
             }
 
             hareketler = hareketler.OrderByDescending(h => h.Tarih).ToList();
-
-            var yakitMap = satislar.GroupBy(s => s.YakitTuru)
-                .Select(g => new YakitDagilimiDto
-                {
-                    Yakit = g.Key.ToString(),
-                    Litre = g.Sum(s => s.Litre),
-                    Tutar = g.Sum(s => s.ToplamTutar)
-                }).ToList();
 
             var toplamLitre = yakitMap.Sum(y => y.Litre);
             foreach (var y in yakitMap)
@@ -289,117 +444,29 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("karsilastirma/{vardiyaId}")]
         public async Task<IActionResult> GetKarsilastirma(int vardiyaId)
         {
-            var vardiyaOzet = await _context.Vardiyalar
-                .Where(v => v.Id == vardiyaId)
-                .Select(v => new {
-                    v.Id,
-                    v.BaslangicTarihi,
-                    v.PompaToplam,
-                    PusulaOzet = v.Pusulalar.Select(p => new { p.Nakit, p.KrediKarti, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) }).ToList(),
-                    FiloToplam = v.FiloSatislar.Sum(f => f.Tutar),
-                    PompaOzetleri = v.OtomasyonSatislar
-                        .GroupBy(s => new { s.PompaNo, YakitAdi = s.Yakit != null ? s.Yakit.Ad : s.YakitTuru })
-                        .Select(g => new {
-                            g.Key.PompaNo,
-                            YakitTuru = g.Key.YakitAdi,
-                            Litre = g.Sum(s => s.Litre),
-                            ToplamTutar = g.Sum(s => s.ToplamTutar),
-                            IslemSayisi = g.Count()
-                        }).ToList(),
-                    FiloOzetleri = v.FiloSatislar
-                        .GroupBy(f => new { f.PompaNo, YakitAdi = f.Yakit != null ? f.Yakit.Ad : f.YakitTuru })
-                        .Select(g => new {
-                            g.Key.PompaNo,
-                            YakitTuru = g.Key.YakitAdi,
-                            Litre = g.Sum(f => f.Litre),
-                            ToplamTutar = g.Sum(f => f.Tutar),
-                            IslemSayisi = g.Count()
-                        }).ToList(),
-                    OdemeTuruOzet = v.OtomasyonSatislar
-                        .GroupBy(s => s.OdemeTuru)
-                        .Select(g => new { OdemeTuru = g.Key, Toplam = g.Sum(s => s.ToplamTutar) })
-                        .ToList(),
-                    PompaEndeksleri = v.PompaEndeksleri.ToList()
-                })
-                .FirstOrDefaultAsync();
+            // Vardiyayı kontrol et
+            var vardiya = await _context.Vardiyalar
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Id == vardiyaId);
 
-            if (vardiyaOzet == null) return NotFound();
+            if (vardiya == null)
+                return NotFound(new { message = "Vardiya bulunamadı." });
 
-            var sistemToplam = vardiyaOzet.PompaToplam;
-            var tahsilatToplam = vardiyaOzet.PusulaOzet.Sum(p => p.Toplam) + vardiyaOzet.FiloToplam;
-            var fark = tahsilatToplam - sistemToplam;
-            var farkYuzde = sistemToplam > 0 ? (fark / sistemToplam) * 100 : 0;
-
-            var durum = "UYUMLU";
-            if (Math.Abs(fark) > 100) durum = "KRITIK_FARK";
-            else if (Math.Abs(fark) > 1) durum = "FARK_VAR";
-
-            // Pompacı Satışı (Otomasyon Toplam vs Pusula Toplam)
-            var pompacisatisSistem = vardiyaOzet.PompaOzetleri.Sum(p => p.ToplamTutar); // Otomasyon Satışları Toplamı
-            var pompacisatisTahsilat = vardiyaOzet.PusulaOzet.Sum(p => p.Toplam); // Pusula (Nakit + KK) Toplamı
-
-            var detaylar = new List<KarsilastirmaDetayDto>
+            // Sadece onaylanmış vardiyalar için rapor göster
+            if (vardiya.Durum != VardiyaDurum.ONAYLANDI)
             {
-                new KarsilastirmaDetayDto { 
-                    OdemeYontemi = "POMPACI_SATISI", 
-                    SistemTutar = pompacisatisSistem,
-                    TahsilatTutar = pompacisatisTahsilat,
-                    Fark = pompacisatisTahsilat - pompacisatisSistem
-                },
-                new KarsilastirmaDetayDto { 
-                    OdemeYontemi = "FILO", 
-                    SistemTutar = vardiyaOzet.FiloToplam, 
-                    TahsilatTutar = vardiyaOzet.FiloToplam,
-                    Fark = 0
-                }
-            };
+                return BadRequest(new { message = "Bu vardiya henüz onaylanmadı, rapor mevcut değil." });
+            }
 
-            // Otomasyon ve Filo Satışlarını Birleştir
-            var birlesikSatislar = vardiyaOzet.PompaOzetleri
-                .Select(p => new { p.PompaNo, p.YakitTuru, p.Litre, p.ToplamTutar, p.IslemSayisi })
-                .Concat(vardiyaOzet.FiloOzetleri.Select(f => new { f.PompaNo, f.YakitTuru, f.Litre, f.ToplamTutar, f.IslemSayisi }))
-                .GroupBy(x => new { x.PompaNo, x.YakitTuru })
-                .Select(g => new {
-                    g.Key.PompaNo,
-                    g.Key.YakitTuru,
-                    Litre = g.Sum(x => x.Litre),
-                    ToplamTutar = g.Sum(x => x.ToplamTutar),
-                    IslemSayisi = g.Sum(x => x.IslemSayisi)
-                })
-                .ToList();
-
-            var pompaSatislari = birlesikSatislar
-                .Select(p => {
-                    var matchingEndeksler = vardiyaOzet.PompaEndeksleri
-                        .Where(e => e.PompaNo == p.PompaNo && e.YakitTuru == p.YakitTuru)
-                        .ToList();
-                    
-                    return new PompaSatisOzetDto
-                    {
-                        PompaNo = p.PompaNo,
-                        YakitTuru = p.YakitTuru,
-                        Litre = p.Litre,
-                        ToplamTutar = p.ToplamTutar,
-                        IslemSayisi = p.IslemSayisi,
-                        BaslangicEndeks = matchingEndeksler.Sum(e => e.BaslangicEndeks),
-                        BitisEndeks = matchingEndeksler.Sum(e => e.BitisEndeks)
-                    };
-                })
-                .OrderBy(p => p.PompaNo)
-                .ToList();
-
-            return Ok(new KarsilastirmaRaporuDto
+            // Arşivden oku
+            var arsivRaporu = await _arsivService.GetKarsilastirmaRaporuFromArsiv(vardiyaId);
+            if (arsivRaporu != null)
             {
-                VardiyaId = vardiyaOzet.Id,
-                Tarih = vardiyaOzet.BaslangicTarihi,
-                SistemToplam = sistemToplam,
-                TahsilatToplam = tahsilatToplam,
-                Fark = fark,
-                FarkYuzde = farkYuzde,
-                Durum = durum,
-                Detaylar = detaylar,
-                PompaSatislari = pompaSatislari
-            });
+                return Ok(arsivRaporu);
+            }
+
+            // Arşiv yoksa - bu durum olmamalı (onaylı ama arşivlenmemiş)
+            return StatusCode(500, new { message = "Rapor arşivi bulunamadı. Lütfen sistem yöneticisiyle iletişime geçin." });
         }
     }
 }

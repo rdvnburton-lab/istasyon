@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260106121528_AddFiloSatisDetayToArsiv")]
+    partial class AddFiloSatisDetayToArsiv
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1800,6 +1803,9 @@ namespace IstasyonDemo.Api.Migrations
                     b.Property<int>("VardiyaId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("VardiyaId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("YakitTipi")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1807,6 +1813,8 @@ namespace IstasyonDemo.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("VardiyaId");
+
+                    b.HasIndex("VardiyaId1");
 
                     b.ToTable("VardiyaTankEnvanterleri");
                 });
@@ -2343,10 +2351,14 @@ namespace IstasyonDemo.Api.Migrations
             modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaTankEnvanteri", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Vardiya", "Vardiya")
-                        .WithMany("VardiyaTankEnvanteri")
+                        .WithMany()
                         .HasForeignKey("VardiyaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("IstasyonDemo.Api.Models.Vardiya", null)
+                        .WithMany("VardiyaTankEnvanteri")
+                        .HasForeignKey("VardiyaId1");
 
                     b.Navigation("Vardiya");
                 });

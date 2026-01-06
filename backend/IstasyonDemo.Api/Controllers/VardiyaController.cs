@@ -341,6 +341,15 @@ namespace IstasyonDemo.Api.Controllers
                     v.RedNedeni,
                     v.OnaylayanAdi,
                     v.OnayTarihi,
+                    Fark = (v.Durum == VardiyaDurum.ONAYLANDI && v.RaporArsiv != null)
+                        ? v.RaporArsiv.Fark
+                        : v.Fark,
+                    ToplamTahsilat = (v.Durum == VardiyaDurum.ONAYLANDI && v.RaporArsiv != null)
+                        ? v.RaporArsiv.TahsilatToplam
+                        : (_context.Pusulalar.Where(p => p.VardiyaId == v.Id).Sum(p => p.Nakit + p.KrediKarti) +
+                           (_context.PusulaDigerOdemeleri.Where(d => d.Pusula.VardiyaId == v.Id).Sum(d => (decimal?)d.Tutar) ?? 0) +
+                           (_context.PusulaVeresiyeler.Where(vs => vs.Pusula.VardiyaId == v.Id).Sum(vs => (decimal?)vs.Tutar) ?? 0) +
+                           (_context.FiloSatislar.Where(f => f.VardiyaId == v.Id).Sum(f => (decimal?)f.Tutar) ?? 0)),
                     // Return counts instead of full objects
                     PersonelSayisi = _context.OtomasyonSatislar
                         .Where(s => s.VardiyaId == v.Id)

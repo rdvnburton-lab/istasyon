@@ -16,6 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TabsModule } from 'primeng/tabs';
+import { TabViewModule } from 'primeng/tabview';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -41,6 +42,8 @@ interface YuklenenVardiya {
     toplamTutar: number;
     durum: VardiyaDurum;
     redNedeni?: string;
+    fark?: number;
+    toplamTahsilat?: number;
     satislar: OtomasyonSatis[];
 }
 
@@ -63,6 +66,7 @@ interface YuklenenVardiya {
         ProgressBarModule,
         ProgressSpinnerModule,
         TabsModule,
+        TabViewModule,
         IconFieldModule,
         InputIconModule,
         InputTextModule,
@@ -75,6 +79,8 @@ interface YuklenenVardiya {
 export class VardiyaListesi implements OnInit {
     Math = Math; // For template usage
     vardiyalar: YuklenenVardiya[] = [];
+    onayliVardiyalar: YuklenenVardiya[] = [];
+    bekleyenVardiyalar: YuklenenVardiya[] = [];
 
     dosyaDialogVisible = false;
     secilenDosya: File | null = null;
@@ -366,10 +372,15 @@ export class VardiyaListesi implements OnInit {
                                     (v.durum === 'SILINME_ONAYI_BEKLIYOR' || v.durum === 4) ? VardiyaDurum.SILINME_ONAYI_BEKLIYOR :
                                         (v.durum === 'SILINDI' || v.durum === 5) ? VardiyaDurum.SILINDI : VardiyaDurum.ACIK,
                     redNedeni: '',
+                    fark: v.fark,
+                    toplamTahsilat: v.toplamTahsilat,
                     satislar: []
                 }))
-                    // Silinmiş vardiyaları listeden çıkar
                     .filter((v: YuklenenVardiya) => v.durum !== VardiyaDurum.SILINDI);
+
+                // Listeleri Ayır
+                this.onayliVardiyalar = this.vardiyalar.filter(v => v.durum === VardiyaDurum.ONAYLANDI);
+                this.bekleyenVardiyalar = this.vardiyalar.filter(v => v.durum !== VardiyaDurum.ONAYLANDI);
             },
             error: (err) => {
                 console.error('Vardiyalar yüklenirken hata:', err);

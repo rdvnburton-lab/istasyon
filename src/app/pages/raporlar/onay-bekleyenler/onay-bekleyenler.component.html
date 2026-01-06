@@ -1,4 +1,21 @@
 <p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<!-- GLOBAL LOADING OVERLAY -->
+<div *ngIf="showGlobalLoading" class="fixed inset-0 bg-black/70 z-[9999] flex items-center justify-center">
+    <div class="bg-white dark:bg-surface-800 rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4">
+        <div class="text-center">
+            <p-progressSpinner styleClass="w-16 h-16 mx-auto mb-4"></p-progressSpinner>
+            <h3 class="text-xl font-bold text-[var(--text-color)] mb-2">{{ islemDurumu }}</h3>
+            <p-progressBar [value]="islemYuzdesi" [showValue]="false" styleClass="mb-4"></p-progressBar>
+            <p class="text-sm text-[var(--text-color-secondary)]">Lütfen bekleyiniz, işlem devam ediyor...</p>
+            <div class="mt-4 flex items-center justify-center gap-2 text-xs text-[var(--text-color-secondary)]">
+                <i class="pi pi-info-circle"></i>
+                <span>Adım {{ currentStep + 1 }} / {{ processingSteps.length }}</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- MOBILE NATIVE VIEW -->
 <div class="onay-page block md:hidden">

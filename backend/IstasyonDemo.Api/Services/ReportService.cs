@@ -1,5 +1,6 @@
 using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Dtos;
+using IstasyonDemo.Api.Models;
 using ClosedXML.Excel;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -34,13 +35,37 @@ namespace IstasyonDemo.Api.Services
         public async Task<byte[]> GenerateMutabakatExcel(int vardiyaId)
         {
             var data = await _vardiyaService.CalculateVardiyaFinancials(vardiyaId);
-            var tankEnvanter = await _context.VardiyaTankEnvanterleri.Where(t => t.VardiyaId == vardiyaId).OrderBy(t => t.TankNo).ToListAsync();
+            
+            // Arşiv Kontrolü
+            var arsiv = await _context.VardiyaRaporArsivleri.FirstOrDefaultAsync(a => a.VardiyaId == vardiyaId);
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            List<VardiyaTankEnvanteri> tankEnvanter = new List<VardiyaTankEnvanteri>();
+
+            if (arsiv != null && !string.IsNullOrEmpty(arsiv.TankEnvanterJson))
+            {
+                try 
+                {
+                    tankEnvanter = System.Text.Json.JsonSerializer.Deserialize<List<VardiyaTankEnvanteri>>(arsiv.TankEnvanterJson, jsonOptions) ?? new List<VardiyaTankEnvanteri>();
+                }
+                catch { /* Log error */ }
+            }
+            else
+            {
+                tankEnvanter = await _context.VardiyaTankEnvanterleri.Where(t => t.VardiyaId == vardiyaId).OrderBy(t => t.TankNo).ToListAsync();
+            }
             
             using var workbook = new XLWorkbook();
             
             // 1. ÖZET SAYFASI
             var wsSummary = workbook.Worksheets.Add("Özet");
-            wsSummary.Cell("A1").Value = "Vardiya Hesap Özeti";
+            
+            string excelBaslik = "Vardiya Hesap Özeti (TASLAK)";
+            if (data.Vardiya.Durum == (int)VardiyaDurum.ONAYLANDI)
+            {
+                excelBaslik = "ONAYLI VARDİYA RAPORU";
+            }
+
+            wsSummary.Cell("A1").Value = excelBaslik;
             wsSummary.Cell("A1").Style.Font.Bold = true;
             wsSummary.Cell("A1").Style.Font.FontSize = 16;
 
@@ -237,8 +262,115 @@ namespace IstasyonDemo.Api.Services
         {
             var data = await _vardiyaService.CalculateVardiyaFinancials(vardiyaId);
             
-            // --- DATA PREPARATION ---
-            var tankEnvanter = await _context.VardiyaTankEnvanterleri.Where(t => t.VardiyaId == vardiyaId).ToListAsync();
+            // Arşiv Kontrolü
+            var arsiv = await _context.VardiyaRaporArsivleri.FirstOrDefaultAsync(a => a.VardiyaId == vardiyaId);
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            List<VardiyaTankEnvanteri> tankEnvanter = new List<VardiyaTankEnvanteri>();
+            List<PdfFuelSaleItem> fuelSales = new List<PdfFuelSaleItem>();
+
+            if (arsiv != null)
+            {
+                // 1. Tank Envanter (JSON)
+                if (!string.IsNullOrEmpty(arsiv.TankEnvanterJson))
+                {
+                    try { tankEnvanter = System.Text.Json.JsonSerializer.Deserialize<List<VardiyaTankEnvanteri>>(arsiv.TankEnvanterJson, jsonOptions) ?? new List<VardiyaTankEnvanteri>(); } catch { }
+                }
+
+                // 2. Otomasyon Satışları (JSON)
+                if (!string.IsNullOrEmpty(arsiv.PersonelSatisDetayJson))
+                {
+                    try
+                    {
+                        var personelDetay = System.Text.Json.JsonSerializer.Deserialize<List<PersonelSatisDetayDto>>(arsiv.PersonelSatisDetayJson, jsonOptions);
+                        if (personelDetay != null)
+                        {
+                            foreach (var p in personelDetay)
+                            {
+                                foreach (var s in p.Satislar)
+                                {
+                                    fuelSales.Add(new PdfFuelSaleItem { Tur = s.YakitTuru, Tutar = s.Tutar, Litre = s.Litre, Adet = 1 });
+                                }
+                            }
+
+                            // Personel Raporu için data.PersonelOzetler güncelle
+                            data.PersonelOzetler = personelDetay.Select(p => new PersonelMutabakatOzetDto
+                            {
+                                PersonelKeyId = p.PersonelKeyId,
+                                PersonelAdi = p.PersonelAdi,
+                                GercekPersonelAdi = p.PersonelAdi,
+                                ToplamLitre = p.Satislar.Sum(s => s.Litre),
+                                ToplamTutar = p.Satislar.Sum(s => s.Tutar),
+                                IslemSayisi = p.Satislar.Count
+                            }).ToList();
+
+                            // Personel ID eşleştirmesi
+                            var personels = await _context.Personeller.ToListAsync();
+                            foreach(var p in data.PersonelOzetler)
+                            {
+                                var match = personels.FirstOrDefault(x => x.KeyId == p.PersonelKeyId || x.AdSoyad == p.PersonelAdi);
+                                if (match != null) p.PersonelId = match.Id;
+                            }
+                        }
+                    } catch { }
+                }
+
+                // 3. Filo Satışları (JSON)
+                if (!string.IsNullOrEmpty(arsiv.FiloSatisDetayJson))
+                {
+                    try
+                    {
+                        var filoDetay = System.Text.Json.JsonSerializer.Deserialize<List<FiloSatisDetayDto>>(arsiv.FiloSatisDetayJson, jsonOptions);
+                        if (filoDetay != null)
+                        {
+                            foreach (var f in filoDetay)
+                            {
+                                fuelSales.Add(new PdfFuelSaleItem { Tur = f.YakitTuru, Tutar = f.Tutar, Litre = f.Litre, Adet = 1 });
+                            }
+
+                            // Filo Raporu için data.FiloDetaylari güncelle
+                            data.FiloDetaylari = filoDetay.Select(f => new FiloMutabakatDetayDto
+                            {
+                                FiloAdi = f.YakitTuru, // Filo Adı yoksa Yakıt Türü
+                                Tutar = f.Tutar,
+                                Litre = f.Litre,
+                                IslemSayisi = 1
+                            }).ToList();
+                            
+                            data.FiloOzet = new FiloMutabakatOzetDto
+                            {
+                                ToplamTutar = data.FiloDetaylari.Sum(f => f.Tutar),
+                                ToplamLitre = data.FiloDetaylari.Sum(f => f.Litre),
+                                IslemSayisi = data.FiloDetaylari.Sum(f => f.IslemSayisi)
+                            };
+                        }
+                    } catch { }
+                }
+
+                // Genel Özeti Güncelle
+                if (data.PersonelOzetler.Any())
+                {
+                    data.GenelOzet.ToplamOtomasyon = data.PersonelOzetler.Sum(p => p.ToplamTutar);
+                    var toplamTahsilat = data.GenelOzet.ToplamPusula + (data.FiloOzet?.ToplamTutar ?? 0) + data.GenelOzet.ToplamGider;
+                    
+                    // FIX: Satış tarafına Filo Satışlarını ekle (Otomasyon + Filo + Market)
+                    var toplamSatis = data.GenelOzet.ToplamOtomasyon + (data.FiloOzet?.ToplamTutar ?? 0) + data.GenelOzet.MarketToplam;
+                    
+                    data.GenelOzet.Fark = toplamTahsilat - toplamSatis;
+                }
+            }
+            else
+            {
+                // Canlı Veri
+                tankEnvanter = await _context.VardiyaTankEnvanterleri.Where(t => t.VardiyaId == vardiyaId).ToListAsync();
+                
+                var dbOtomasyon = await _context.OtomasyonSatislar.Where(s => s.VardiyaId == vardiyaId).ToListAsync();
+                fuelSales.AddRange(dbOtomasyon.Select(s => new PdfFuelSaleItem { Tur = s.YakitTuru, Tutar = s.ToplamTutar, Litre = s.Litre, Adet = 1 }));
+
+                var dbFilo = await _context.FiloSatislar.Where(f => f.VardiyaId == vardiyaId && f.FiloAdi != "İSTASYON").ToListAsync();
+                fuelSales.AddRange(dbFilo.Select(f => new PdfFuelSaleItem { Tur = f.YakitTuru, Tutar = f.Tutar, Litre = f.Litre, Adet = 1 }));
+            }
+
             var yakitOzetleri = tankEnvanter.GroupBy(t => t.YakitTipi)
                 .Select(g => new { 
                     YakitAdi = g.Key, 
@@ -248,29 +380,8 @@ namespace IstasyonDemo.Api.Services
                     Kalan = g.Sum(x => x.BitisStok) 
                 }).ToList();
 
-            // --- FUEL SALES DATA ---
-            // 1. Fetch Automation Sales
-            var otomasyonSatislari = await _context.OtomasyonSatislar
-                .Where(s => s.VardiyaId == vardiyaId)
-                .Select(s => new {
-                     Tur = s.YakitTuru, // Raw Type
-                     Tutar = s.ToplamTutar,
-                     Litre = s.Litre,
-                     Adet = 1 // Count as 1 transaction per record? Or is it aggregated? Usually per nozzle.
-                }).ToListAsync();
-
-             // 2. Fetch Fleet Sales (Separate Table)
-            var filoSatislar = await _context.FiloSatislar
-                .Where(f => f.VardiyaId == vardiyaId && f.FiloAdi != "İSTASYON")
-                .Select(f => new {
-                    Tur = f.YakitTuru, // Use Product Name from Fleet Sales
-                    Tutar = f.Tutar,
-                    Litre = f.Litre,
-                    Adet = 1
-                }).ToListAsync();
-
             // 3. Merge and Correct Fuel Types
-            var combinedSales = otomasyonSatislari.Concat(filoSatislar).Where(x => x.Litre > 0 || x.Tutar > 0).ToList();
+            var combinedSales = fuelSales.Where(x => x.Litre > 0 || x.Tutar > 0).ToList();
             
             var yakitSatislariRaw = new List<dynamic>();
             foreach (var s in combinedSales)
@@ -355,11 +466,10 @@ namespace IstasyonDemo.Api.Services
                 var bitis = data.Vardiya.BitisTarihi ?? baslangic.AddHours(8); // Fallback if null
                 
                 // Correct Timezone Offset (UTC -> TR +3)
-                // The data is stored as UTC, but the report needs to display TR time.
                 var trBaslangic = baslangic.AddHours(3);
                 var trBitis = bitis.AddHours(3);
 
-                // Parse Shift Number from Filename (Format: YYYYMMDDNN)
+                // Parse Shift Number
                 int repShift = 1;
                 if (!string.IsNullOrEmpty(data.Vardiya.DosyaAdi))
                 {
@@ -375,6 +485,18 @@ namespace IstasyonDemo.Api.Services
                     catch { /* Fallback to 1 */ }
                 }
 
+                // Dinamik Başlık ve Durum
+                string raporBasligi = "TASLAK RAPOR (ONAYLANMAMIŞ)";
+                string raporDurumu = "TASLAK";
+                string raporDurumuRenk = Colors.Orange.Accent2;
+
+                if (data.Vardiya.Durum == (int)VardiyaDurum.ONAYLANDI)
+                {
+                    raporBasligi = "ONAYLI VARDİYA RAPORU";
+                    raporDurumu = "ONAYLI";
+                    raporDurumuRenk = Colors.Green.Accent3;
+                }
+
                 container.Row(row =>
                 {
                     row.RelativeItem().Column(col =>
@@ -383,14 +505,13 @@ namespace IstasyonDemo.Api.Services
                         {
                             headerRow.RelativeItem().Column(c => {
                                 c.Item().Text(stationName).FontSize(16).Bold().FontColor(Colors.White);
-                                // Swap: Date Time here
                                 c.Item().Text($"{trBaslangic:dd.MM.yyyy HH:mm} - {trBitis:HH:mm} ({repShift}. Vardiya)").FontSize(10).FontColor(Colors.White);
+                                c.Item().PaddingTop(5).Text(raporBasligi).FontSize(12).Bold().FontColor(Colors.Yellow.Accent2);
                             });
                             headerRow.RelativeItem().AlignRight().Column(c => {
-                                // Swap: Vardiya ID here
                                 c.Item().Text($"Vardiya Özeti: #{vardiyaId}").FontSize(10).FontColor(Colors.Grey.Lighten3);
-                                // Status aligned right
                                 c.Item().Text(data.GenelOzet.Fark >= 0 ? "MUTABIK" : "FARK VAR").Bold().FontColor(data.GenelOzet.Fark >= 0 ? Colors.Green.Accent3 : Colors.Red.Accent2);
+                                c.Item().PaddingTop(5).Text(raporDurumu).FontSize(14).Bold().FontColor(raporDurumuRenk);
                             });
                         });
                     });
@@ -409,9 +530,10 @@ namespace IstasyonDemo.Api.Services
                     {
                         row.Spacing(10);
                         // Sales Card
+                        var totalFuelSales = data.GenelOzet.ToplamOtomasyon + (data.FiloOzet?.ToplamTutar ?? 0);
                         row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten2).Background(Colors.Grey.Lighten4).Padding(10).Column(c => {
-                            c.Item().Text("Akaryakıt Satış").FontSize(10).FontColor(Colors.Grey.Darken1);
-                            c.Item().Text(data.GenelOzet.ToplamOtomasyon.ToString("N2") + " TL").FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
+                            c.Item().Text("Akaryakıt Satış (Oto+Filo)").FontSize(10).FontColor(Colors.Grey.Darken1);
+                            c.Item().Text(totalFuelSales.ToString("N2") + " TL").FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
                         });
                         
                         // Collections Card
@@ -679,5 +801,13 @@ namespace IstasyonDemo.Api.Services
     {
         public string Banka { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
+    }
+
+    public class PdfFuelSaleItem
+    {
+        public string Tur { get; set; }
+        public decimal Tutar { get; set; }
+        public decimal Litre { get; set; }
+        public int Adet { get; set; }
     }
 }

@@ -115,6 +115,7 @@ namespace IstasyonDemo.Api.Models
         public ICollection<Pusula> Pusulalar { get; set; } = new List<Pusula>();
         public ICollection<VardiyaPompaEndeks> PompaEndeksleri { get; set; } = new List<VardiyaPompaEndeks>();
         public ICollection<PompaGider> Giderler { get; set; } = new List<PompaGider>();
+        public ICollection<VardiyaTankEnvanteri> VardiyaTankEnvanteri { get; set; } = new List<VardiyaTankEnvanteri>(); // 🆕 Eksik olan koleksiyon
     }
 
     public class PompaGider
