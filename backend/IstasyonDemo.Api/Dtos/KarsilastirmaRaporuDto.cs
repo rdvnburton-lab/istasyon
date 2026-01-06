@@ -31,5 +31,7 @@ namespace IstasyonDemo.Api.Dtos
         public decimal Litre { get; set; }
         public decimal ToplamTutar { get; set; }
         public int IslemSayisi { get; set; }
+        public decimal BaslangicEndeks { get; set; }
+        public decimal BitisEndeks { get; set; }
     }
 }

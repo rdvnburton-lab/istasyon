@@ -20,6 +20,9 @@ namespace IstasyonDemo.Api.Dtos
 
         // Tank Envanteri (XML'den okunan)
         public List<CreateVardiyaTankEnvanteriDto> TankEnvanterleri { get; set; } = new();
+
+        // Pompa Endeksleri (XML'den hesaplanan)
+        public List<CreateVardiyaPompaEndeksDto> PompaEndeksleri { get; set; } = new();
     }
 
     public class CreateVardiyaTankEnvanteriDto
@@ -33,6 +36,15 @@ namespace IstasyonDemo.Api.Dtos
         public decimal SevkiyatMiktar { get; set; }
         // Hesaplanan alanlar backend'de de hesaplanabilir ama XML'den geliyorsa alalım
         // XML yapısını bilmiyorum, ama genelde raw data gelir.
+    }
+
+    public class CreateVardiyaPompaEndeksDto
+    {
+        public int PompaNo { get; set; }
+        public int TabancaNo { get; set; }
+        public string YakitTuru { get; set; } = string.Empty;
+        public decimal BaslangicEndeks { get; set; }
+        public decimal BitisEndeks { get; set; }
     }
 
     public class MobilOdemeDto 
@@ -51,6 +63,7 @@ namespace IstasyonDemo.Api.Dtos
         public string? PersonelKeyId { get; set; }
         public int PompaNo { get; set; }
         public string YakitTuru { get; set; } = string.Empty;
+        public int? YakitId { get; set; }
         public decimal Litre { get; set; }
         public decimal BirimFiyat { get; set; }
         public decimal ToplamTutar { get; set; }
@@ -84,6 +97,7 @@ namespace IstasyonDemo.Api.Dtos
         public string FiloKodu { get; set; } = string.Empty;
         public string Plaka { get; set; } = string.Empty;
         public string YakitTuru { get; set; } = string.Empty;
+        public int? YakitId { get; set; }
         public decimal Litre { get; set; }
         public decimal BirimFiyat { get; set; }
         public decimal Tutar { get; set; }

@@ -442,12 +442,12 @@ export class Karsilastirma implements OnInit, OnDestroy {
     }
 
     getOdemeLabel(yontem: any): string {
-        const labels: any = { 'NAKIT': 'Nakit', 'KREDI_KARTI': 'Kredi Kartı', 'PARO_PUAN': 'Paro Puan', 'MOBIL_ODEME': 'Mobil Ödeme', 'FILO': 'Filo', 'GENEL_TOPLAM': 'Genel Toplam' };
+        const labels: any = { 'NAKIT': 'Nakit', 'KREDI_KARTI': 'Kredi Kartı', 'PARO_PUAN': 'Paro Puan', 'MOBIL_ODEME': 'Mobil Ödeme', 'FILO': 'Filo', 'GENEL_TOPLAM': 'Genel Toplam', 'POMPACI_SATISI': 'Pompacı Satışı' };
         return labels[yontem] || yontem;
     }
 
     getOdemeIcon(yontem: any): string {
-        const icons: any = { 'NAKIT': 'pi pi-money-bill text-green-500', 'KREDI_KARTI': 'pi pi-credit-card text-blue-500', 'PARO_PUAN': 'pi pi-ticket text-yellow-500', 'MOBIL_ODEME': 'pi pi-mobile text-purple-500', 'FILO': 'pi pi-car text-orange-500', 'GENEL_TOPLAM': 'pi pi-chart-bar text-blue-500' };
+        const icons: any = { 'NAKIT': 'pi pi-money-bill text-green-500', 'KREDI_KARTI': 'pi pi-credit-card text-blue-500', 'PARO_PUAN': 'pi pi-ticket text-yellow-500', 'MOBIL_ODEME': 'pi pi-mobile text-purple-500', 'FILO': 'pi pi-car text-orange-500', 'GENEL_TOPLAM': 'pi pi-chart-bar text-blue-500', 'POMPACI_SATISI': 'pi pi-user text-blue-500' };
         return icons[yontem] || 'pi pi-circle';
     }
 

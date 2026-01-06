@@ -482,6 +482,8 @@ export interface PompaSatis {
     toplamTutar: number;
     islemSayisi?: number;
     satisTarihi: Date;
+    baslangicEndeks?: number;
+    bitisEndeks?: number;
 }
 
 export interface PompaSatisOzet {

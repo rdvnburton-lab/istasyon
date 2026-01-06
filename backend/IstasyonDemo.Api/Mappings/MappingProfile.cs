@@ -18,7 +18,8 @@ namespace IstasyonDemo.Api.Mappings
                 .ForMember(dest => dest.PompaToplam, opt => opt.MapFrom(src => src.OtomasyonSatislar.Sum(s => s.ToplamTutar) + src.FiloSatislar.Sum(s => s.Tutar)))
                 .ForMember(dest => dest.GenelToplam, opt => opt.MapFrom(src => src.GenelToplam))
                 .ForMember(dest => dest.OtomasyonSatislar, opt => opt.Ignore()) // Handled manually in service due to logic
-                .ForMember(dest => dest.FiloSatislar, opt => opt.Ignore()); // Handled manually or mapped separately
+                .ForMember(dest => dest.FiloSatislar, opt => opt.Ignore()) // Handled manually or mapped separately
+                .ForMember(dest => dest.PompaEndeksleri, opt => opt.Ignore()); // Handled manually in service
 
             // OtomasyonSatis Mappings
             CreateMap<CreateOtomasyonSatisDto, OtomasyonSatis>()

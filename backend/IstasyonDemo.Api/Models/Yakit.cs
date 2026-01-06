@@ -18,5 +18,8 @@ namespace IstasyonDemo.Api.Models
         public string Renk { get; set; } = "#3b82f6"; // UI rengi
 
         public int Sira { get; set; } = 0;
+
+        [MaxLength(50)]
+        public string? TurpakUrunKodu { get; set; } // Örn: "4,5" veya "6,7,8"
     }
 }

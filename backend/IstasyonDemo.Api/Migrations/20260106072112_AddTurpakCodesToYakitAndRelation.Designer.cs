@@ -3,6 +3,7 @@ using System;
 using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IstasyonDemo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260106072112_AddTurpakCodesToYakitAndRelation")]
+    partial class AddTurpakCodesToYakitAndRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1593,41 +1596,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.ToTable("VardiyaLoglari");
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaPompaEndeks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("BaslangicEndeks")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("BitisEndeks")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("PompaNo")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TabancaNo")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("VardiyaId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("YakitTuru")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VardiyaId");
-
-                    b.ToTable("VardiyaPompaEndeksleri");
-                });
-
             modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaTankEnvanteri", b =>
                 {
                     b.Property<int>("Id")
@@ -1693,6 +1661,15 @@ namespace IstasyonDemo.Api.Migrations
 
                     b.Property<int>("IstasyonId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PumpDetailsJson")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SaleDetailsJson")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TankDetailsJson")
+                        .HasColumnType("text");
 
                     b.Property<int?>("VardiyaId")
                         .HasColumnType("integer");
@@ -2178,17 +2155,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Vardiya");
                 });
 
-            modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaPompaEndeks", b =>
-                {
-                    b.HasOne("IstasyonDemo.Api.Models.Vardiya", "Vardiya")
-                        .WithMany("PompaEndeksleri")
-                        .HasForeignKey("VardiyaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Vardiya");
-                });
-
             modelBuilder.Entity("IstasyonDemo.Api.Models.VardiyaTankEnvanteri", b =>
                 {
                     b.HasOne("IstasyonDemo.Api.Models.Vardiya", "Vardiya")
@@ -2263,8 +2229,6 @@ namespace IstasyonDemo.Api.Migrations
                     b.Navigation("Giderler");
 
                     b.Navigation("OtomasyonSatislar");
-
-                    b.Navigation("PompaEndeksleri");
 
                     b.Navigation("Pusulalar");
                 });

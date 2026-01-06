@@ -11,9 +11,6 @@ namespace IstasyonDemo.Api.Services
         public Istasyon Istasyon { get; set; } = null!;
         public string RawXmlContent { get; set; } = string.Empty;
         public byte[] ZipBytes { get; set; } = Array.Empty<byte>();
-        public string TankDetailsJson { get; set; } = string.Empty;
-        public string PumpDetailsJson { get; set; } = string.Empty;
-        public string SaleDetailsJson { get; set; } = string.Empty;
     }
 
     public interface IVardiyaImportService

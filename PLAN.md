@@ -1,70 +1,37 @@
-# Göç Planı: Frontend'den Backend'e Mantık Transferi
+# Implementation Plan - Dynamic Fuel Type Mapping
 
-Bu belge, iş mantığını Angular frontend tarafından .NET backend tarafına taşımak için gereken kritik görevleri özetlemektedir. Amaç güvenliği artırmak, veri bütünlüğünü sağlamak ve sistem performansını iyileştirmektir.
+The user wants to manage fuel type mappings (XML IDs -> Fuel Names) via the database instead of hardcoded values in the code. This allows for easier updates and maintenance.
 
-## 🚨 Faz 1: Güvenlik ve Veri Bütünlüğü (Yüksek Öncelik)
-Bu görevler, finansal hesaplamaların istemci (tarayıcı) tarafında yapıldığı ve manipülasyon veya hata riski taşıyan güvenlik açıklarını giderir.
+## 1. Database Schema Updates
 
-- [x] **1.1. Sunucu Taraflı Vardiya Farkı/Açığı Hesaplaması (`Vardiya Farkı`)**
-  - **Mevcut Durum:** "Fark" (Kasa Açığı/Fazlası) `pompa-yonetimi.component.ts` içinde hesaplanıp gösteriliyor. `OnayaGonder` servisi bu durumu doğrulamadan kabul ediyor.
-  - **Yapılacak İş:**
-    - `VardiyaController.OnayaGonder` (veya `Onayla`) metodunu güncelle.
-    - `Toplam Satış - (Nakit + Kredi Kartı + vb.)` işlemini sunucuda tekrar hesapla.
-    - Eğer fark varsa, onayı reddet veya bu farkı veritabanına otomatik "Vardiya Fark Kaydı" olarak işle.
-    - **Dosyalar:** `VardiyaController.cs`, `VardiyaService.cs`
+### `Yakit` Table
+- Add `TurpakUrunKodu` (string) column to store comma-separated XML IDs (e.g., "4,5").
 
-- [x] **1.2. Backend Fatura Toplamı Hesaplaması (`Yakıt Fatura`)**
-  - **Mevcut Durum:** `yakit-stok.component.ts` faturayı `Litre * Birim Fiyat` formülüyle tarayıcıda hesaplayıp API'ye gönderiyor.
-  - **Yapılacak İş:**
-    - `StokController.AddFaturaGiris` metodunu güncelle.
-    - İstemciden sadece `Litre` ve `BirimFiyat` (ve `YakitId`) bilgisini kabul et.
-    - `ToplamTutar` hesaplamasını veritabanına kaydetmeden önce sunucuda yap.
-    - İstemciden gelen `ToplamTutar` verisini güvenlik için yoksay.
-    - **Dosyalar:** `StokController.cs`, `CreateFaturaGirisDto.cs`
+### `OtomasyonSatis` Table
+- Add `YakitId` (int, nullable) column.
+- Add Foreign Key to `Yakit` table.
 
-- [x] **1.3. Pompa Sayaç Doğrulaması (`Pompa Sayaç`)**
-  - **Mevcut Durum:** Pompa son endeks mantığının frontend matematiğine güvenip güvenmediği kontrol edilmeli.
-  - **Yapılacak İş:**
-    - `OtomasyonSatis` kayıtlarının kesinlikle otomasyon dosyalarından veya ham sayaç verilerinden türetildiğinden emin ol, arayüzdeki hesaplamalara güvenme.
-    - **Dosyalar:** `VardiyaService.cs`, `OtomasyonSatis` mantığı.
+### `FiloSatis` Table
+- Add `YakitId` (int, nullable) column.
+- Add Foreign Key to `Yakit` table.
 
-## 🚀 Faz 2: Performans Optimizasyonu (Yüksek Öncelik)
-Bu görevler, ağır istemci taraflı işlemler veya verimsiz veri çekme nedeniyle oluşabilecek sistem çökme risklerini ele alır.
+## 2. Migration
+- Create a new migration `AddTurpakCodesToYakitAndRelation` to apply these schema changes.
+- Update `DefinitionsService` to seed default Turpak codes for existing fuel types.
 
-- [x] **2.1. Stok Özeti Refaktörü (`StokController.GetOzet`)**
-  - **Mevcut Durum:** TÜM `TankGiris` ve `OtomasyonSatis` kayıtlarını hafızaya (`ToList()`) çeker ve sonra döngü ile toplar. Bu işlem O(N) hafıza kullanımı ile büyük veride sunucuyu çökertebilir.
-  - **Yapılacak İş:**
-    - İşlemi `_context` üzerinde SQL toplama fonksiyonları (`SumAsync`, `GroupBy`) kullanarak yeniden yaz.
-    - Mantığı veritabanı katmanına taşı.
-    - **Dosyalar:** `StokController.cs`
+## 3. Service Logic Updates (`VardiyaService.cs`)
 
-- [x] **2.2. Sunucu Taraflı Raporlama (`Vardiya Raporları`)**
-  - **Mevcut Durum:** Raporlar çok büyük JSON veri setlerini çekip tarayıcıda filtreliyor.
-  - **Yapılacak İş:**
-    - `VardiyaController` içinde Tarih Aralığı, İstasyon ve Personel için `IQueryable` (SQL Where) filtrelemesi uygula.
-    - Büyük listeler için Sayfalama (Pagination - `Skip`, `Take`) uygula.
-    - **Dosyalar:** `VardiyaController.cs`
+### `ProcessXmlZipAsync` Method
+- Fetch all `Yakit` records from the database at the start of the method.
+- Create a mapping dictionary: `Dictionary<string, Yakit>` where the key is the XML ID.
+- When parsing `Txn` (Transaction) elements:
+    - Look up the `FuelType` ID in the dictionary.
+    - If found, assign `YakitId` to the `OtomasyonSatis` or `FiloSatis` object.
+    - Also assign `YakitTuru` (string) for backward compatibility (using `Yakit.Ad` or `Yakit.OtomasyonUrunAdi`).
 
-## 🛠 Faz 3: Mimari Tutarlılık ve Standartlar
-Uzun vadeli bakım ve güvenlik için görevler.
+### `MapFuelType` Method
+- Refactor or remove this method to use the database-driven mapping instead of the switch-case.
 
-- [x] **3.1. Rol Tabanlı Yetkilendirmeyi Zorunlu Kıl**
-  - **Mevcut Durum:** Bazı arayüz elemanları `*ngIf` ile gizleniyor ancak API uç noktalarında katı `[Authorize(Roles=...)]` kontrolleri eksik olabilir.
-  - **Yapılacak İş:**
-    - Tüm `Controller` metodlarını denetle.
-    - Kritik işlemlere (Silme, Güncelleme, Onaylama) `[Authorize(Roles = "admin,patron")]` ekle.
-    - **Dosyalar:** Tüm Controller'lar.
-
-- [x] **3.2. Rapor DTO'larını Merkezileştirme**
-
-## 🏗️ Faz 4: Market Vardiya Refaktörü (Kısa Vade & Öncelikli)
-Kullanıcı isteği üzerine Market modülü teknik olarak yeniden yapılandırılacak.
-- [x] **4.1. Market Servis Katmanı Oluşturma** (`IMarketVardiyaService`)
-- [x] **4.2. Controller Temizliği** (Logic -> Service)
-- [x] **4.3. Gereksiz Kod Temizliği** (Console.Write, WeatherForecast)
-- [x] **4.4. Backend Z-Raporu Validasyonu** (KDV Toplam Kontrolü)
-- [x] **4.5. Z-Raporu Giriş Ekranı Yenileme** (UX/UI Geliştirmesi)
-  - **Mevcut Durum:** Raporlama DTO'ları dağınık veya veritabanı modellerinden tekrar kullanılıyor.
-  - **Yapılacak İş:**
-    - Optimize veri transferi için özel `ReportDto` sınıfları oluştur.
-    - **Dosyalar:** `Dtos/Reports/*.cs`
+## 4. Verification
+- Upload a sample XML/ZIP file.
+- Verify that `OtomasyonSatis` and `FiloSatis` records have the correct `YakitId` and `YakitTuru` populated based on the database configuration.

@@ -75,6 +75,7 @@ import { YakitService, Yakit } from '../../../services/yakit.service';
                             <th style="width: 80px" class="text-center">Sıra</th>
                             <th>Yakıt Adı</th>
                             <th>Otomasyon Eşleşme Anahtarları</th>
+                            <th>Turpak Kodları</th>
                             <th>Renk</th>
                             <th style="width: 120px; text-align: center">İşlemler</th>
                         </tr>
@@ -90,6 +91,14 @@ import { YakitService, Yakit } from '../../../services/yakit.service';
                                     </span>
                                 </div>
                                 <span *ngIf="!yakit.otomasyonUrunAdi" class="text-[var(--text-color-secondary)] italic text-sm">Tanımsız</span>
+                            </td>
+                            <td>
+                                <div class="flex flex-wrap gap-1" *ngIf="yakit.turpakUrunKodu">
+                                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs border border-indigo-200 font-mono" *ngFor="let code of yakit.turpakUrunKodu.split(',')">
+                                        {{code.trim()}}
+                                    </span>
+                                </div>
+                                <span *ngIf="!yakit.turpakUrunKodu" class="text-[var(--text-color-secondary)] italic text-sm">Tanımsız</span>
                             </td>
                             <td>
                                 <div class="flex items-center gap-2">
@@ -161,6 +170,19 @@ import { YakitService, Yakit } from '../../../services/yakit.service';
                     <div class="bg-blue-50 text-blue-700 p-3 rounded text-xs border border-blue-100 flex gap-2">
                          <i class="pi pi-info-circle text-lg"></i>
                          <span class="leading-relaxed">Otomasyon sisteminden gelen veri bu anahtarlardan birini içeriyorsa ("DIESEL" gibi) yakıt türü otomatik tanınır. Virgülle ayırarak birden fazla girilebilir.</span>
+                    </div>
+                </div>
+
+                <!-- Turpak Ürün Kodları -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-bold text-sm flex items-center justify-between text-[var(--text-color)]">
+                        Turpak Ürün Kodları (XML ID)
+                    </label>
+                    <input pInputText [(ngModel)]="yakit.turpakUrunKodu" placeholder="Örn: 4,5,6" class="w-full" />
+                    
+                    <div class="bg-indigo-50 text-indigo-700 p-3 rounded text-xs border border-indigo-100 flex gap-2">
+                         <i class="pi pi-info-circle text-lg"></i>
+                         <span class="leading-relaxed">XML dosyasındaki 'FuelType' alanında gelen sayısal kodlar (4, 5, 6 vb.). Virgülle ayırarak birden fazla girilebilir.</span>
                     </div>
                 </div>
 

@@ -19,14 +19,16 @@ namespace IstasyonDemo.Api.Services
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
         private readonly IVardiyaFinancialService _financialService;
+        private readonly IYakitService _yakitService;
 
-        public VardiyaService(AppDbContext context, ILogger<VardiyaService> logger, IMapper mapper, INotificationService notificationService, IVardiyaFinancialService financialService)
+        public VardiyaService(AppDbContext context, ILogger<VardiyaService> logger, IMapper mapper, INotificationService notificationService, IVardiyaFinancialService financialService, IYakitService yakitService)
         {
             _context = context;
             _logger = logger;
             _mapper = mapper;
             _notificationService = notificationService;
             _financialService = financialService;
+            _yakitService = yakitService;
         }
 
         public async Task<Vardiya> CreateVardiyaAsync(CreateVardiyaDto dto, int userId, string? userRole, string? userName)
@@ -158,6 +160,24 @@ namespace IstasyonDemo.Api.Services
                     var filo = _mapper.Map<FiloSatis>(filoDto);
                     filo.VardiyaId = vardiya.Id;
                     _context.FiloSatislar.Add(filo);
+                }
+
+                // 3.b Pompa Endekslerini Ekle
+                if (dto.PompaEndeksleri != null)
+                {
+                    foreach (var endeksDto in dto.PompaEndeksleri)
+                    {
+                        var endeks = new VardiyaPompaEndeks
+                        {
+                            VardiyaId = vardiya.Id,
+                            PompaNo = endeksDto.PompaNo,
+                            TabancaNo = endeksDto.TabancaNo,
+                            YakitTuru = endeksDto.YakitTuru,
+                            BaslangicEndeks = endeksDto.BaslangicEndeks,
+                            BitisEndeks = endeksDto.BitisEndeks
+                        };
+                        _context.VardiyaPompaEndeksleri.Add(endeks);
+                    }
                 }
 
                 // 3.a Tank Envanterini Ekle
@@ -347,12 +367,12 @@ namespace IstasyonDemo.Api.Services
 
                 // Eğer işlemi yapan kişi Vardiya Sorumlusu değilse (örn: Admin, Patron veya Otomasyon),
                 // o istasyonun Vardiya Sorumlularına bildirim gönder.
-                if (userRole != "vardiya_sorumlusu" && userRole != "vardiya sorumlusu")
+                if (userRole != "vardiya sorumlusu")
                 {
                     var vardiyaSorumlulari = await _context.Users
                         .Include(u => u.Role)
                         .Where(u => u.IstasyonId == vardiya.IstasyonId && u.Role != null &&
-                                   (u.Role.Ad == "Vardiya Sorumlusu" || u.Role.Ad == "vardiya_sorumlusu"))
+                                   u.Role.Ad == "vardiya sorumlusu")
                         .ToListAsync();
 
                     foreach (var sorumlu in vardiyaSorumlulari)
@@ -890,7 +910,8 @@ namespace IstasyonDemo.Api.Services
                     _logger.LogInformation($"İstasyon Ayarları Güncellendi: Ver={version}, Decimals={unitPriceDecimal}/{amountDecimal}/{totalDecimal}");
                 }
 
-                // 4. Detayları JSON olarak hazırla
+                // 4. Detayları JSON olarak hazırla (KALDIRILDI)
+                /*
                 var tanks = xdoc.Descendants().Where(x => x.Name.LocalName == "TankDetails").Select(t => new 
                 {
                     TankNo = t.Elements().FirstOrDefault(x => x.Name.LocalName == "TankNo")?.Value,
@@ -904,6 +925,7 @@ namespace IstasyonDemo.Api.Services
                     Volume = p.Elements().FirstOrDefault(x => x.Name.LocalName == "Volume")?.Value,
                     Amount = p.Elements().FirstOrDefault(x => x.Name.LocalName == "Amount")?.Value
                 }).ToList();
+                */
 
                 var rawTxns = xdoc.Descendants().Where(x => x.Name.LocalName.Equals("Txn", StringComparison.OrdinalIgnoreCase)).ToList();
                 _logger.LogInformation($"XML Parsing Debug: Toplam {rawTxns.Count} adet 'Txn' elementi bulundu.");
@@ -937,7 +959,7 @@ namespace IstasyonDemo.Api.Services
                     .Where(x => x.ReceiptNr != null) // Filter out empty parses
                     .ToList();
 
-                _logger.LogInformation($"XML İstatistikleri: {tanks.Count} Tank, {pumps.Count} Pompa, {txnList.Count} Satış bulundu.");
+                _logger.LogInformation($"XML İstatistikleri: {rawTxns.Count} Satış bulundu.");
 
                 // 5. VardiyaXmlLog Kaydı
                 var xmlLog = new VardiyaXmlLog
@@ -945,9 +967,7 @@ namespace IstasyonDemo.Api.Services
                     IstasyonId = station.Id,
                     DosyaAdi = fileName,
                     ZipDosyasi = zipBytes,
-                    TankDetailsJson = JsonSerializer.Serialize(tanks),
-                    PumpDetailsJson = JsonSerializer.Serialize(pumps),
-                    SaleDetailsJson = JsonSerializer.Serialize(txnList),
+                    XmlIcerik = xmlContent,
                     YuklemeTarihi = DateTime.UtcNow
                 };
 
@@ -1010,6 +1030,26 @@ namespace IstasyonDemo.Api.Services
                     OtomasyonSatislar = new List<CreateOtomasyonSatisDto>()
                 };
 
+                // 6.1. Yakıt Tanımlarını Hazırla (Dynamic Mapping)
+                var yakitlar = await _context.Yakitlar.AsNoTracking().ToListAsync();
+                var yakitMap = new Dictionary<string, Yakit>();
+
+                foreach (var y in yakitlar)
+                {
+                    if (!string.IsNullOrEmpty(y.TurpakUrunKodu))
+                    {
+                        var codes = y.TurpakUrunKodu.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var code in codes)
+                        {
+                            var trimmed = code.Trim();
+                            if (!yakitMap.ContainsKey(trimmed))
+                            {
+                                yakitMap[trimmed] = y;
+                            }
+                        }
+                    }
+                }
+
                 foreach (var txn in rawTxns)
                 {
                     var sale = txn.Elements().FirstOrDefault(x => x.Name.LocalName == "SaleDetails");
@@ -1018,7 +1058,21 @@ namespace IstasyonDemo.Api.Services
                     var tag = txn.Elements().FirstOrDefault(x => x.Name.LocalName == "TagDetails");
                     var fleetCode = tag?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetCode")?.Value;
 
-                    var fuelType = MapFuelType(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value);
+                    var fuelTypeRaw = sale.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value;
+                    
+                    // Dynamic Fuel Mapping
+                    Yakit? matchedYakit = null;
+                    string fuelTypeStr = "DIGER";
+                    int? yakitId = null;
+
+                    if (!string.IsNullOrEmpty(fuelTypeRaw) && yakitMap.ContainsKey(fuelTypeRaw))
+                    {
+                        matchedYakit = yakitMap[fuelTypeRaw];
+                        fuelTypeStr = matchedYakit.Ad; // Use standardized name
+                        yakitId = matchedYakit.Id;
+                    }
+
+                    
                     var satisTarihi = ParseDate(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "DateTime")?.Value);
 
                     var amountRaw = decimal.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "Amount")?.Value ?? "0", CultureInfo.InvariantCulture);
@@ -1074,7 +1128,9 @@ namespace IstasyonDemo.Api.Services
                         dto.OtomasyonSatislar.Add(new CreateOtomasyonSatisDto
                         {
                             PompaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpNr")?.Value ?? "0"),
-                            YakitTuru = fuelType,
+
+                            YakitTuru = fuelTypeStr,
+                            YakitId = yakitId,
                             Litre = amountRaw / 100m,
                             BirimFiyat = priceRaw / 100m,
                             ToplamTutar = totalRaw / 100m,
@@ -1135,7 +1191,9 @@ namespace IstasyonDemo.Api.Services
                            Tarih = satisTarihi,
                            FiloKodu = fleetCode ?? "",
                            Plaka = plakaVal,
-                           YakitTuru = fuelType,
+
+                           YakitTuru = fuelTypeStr,
+                           YakitId = yakitId,
                            Litre = amountRaw / 100m,
                            Tutar = totalRaw / 100m,
                            PompaNo = int.Parse(sale.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpNr")?.Value ?? "0"),
@@ -1193,6 +1251,59 @@ namespace IstasyonDemo.Api.Services
                 
                 _logger.LogInformation($"DTO Oluşturuldu: {dto.OtomasyonSatislar.Count} Otomasyon, {dto.FiloSatislar.Count} Filo, {dto.TankEnvanterleri.Count} Tank satışı eklendi.");
                 
+                // 2.b Pompa Endekslerini Hesapla
+                var nozzleSales = new Dictionary<string, decimal>();
+                foreach (var s in dto.OtomasyonSatislar)
+                {
+                    string key = $"{s.PompaNo}-{s.TabancaNo}";
+                    if (!nozzleSales.ContainsKey(key)) nozzleSales[key] = 0;
+                    nozzleSales[key] += s.Litre;
+                }
+                foreach (var s in dto.FiloSatislar)
+                {
+                    string key = $"{s.PompaNo}-{s.TabancaNo}";
+                    if (!nozzleSales.ContainsKey(key)) nozzleSales[key] = 0;
+                    nozzleSales[key] += s.Litre;
+                }
+
+                var pumpElements = xdoc.Descendants().Where(x => x.Name.LocalName == "Pump").ToList();
+                foreach (var pumpElement in pumpElements)
+                {
+                    string pumpNameStr = pumpElement.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpName")?.Value ?? "0";
+                    int.TryParse(pumpNameStr, out int pumpNr);
+
+                    var nozzles = pumpElement.Descendants().Where(x => x.Name.LocalName == "Nozzle").ToList();
+                    foreach (var nozzle in nozzles)
+                    {
+                        int.TryParse(nozzle.Elements().FirstOrDefault(x => x.Name.LocalName == "NozzleNr")?.Value, out int nozzleNr);
+                        string fuelTypeRaw = nozzle.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? "";
+                        decimal.TryParse(nozzle.Elements().FirstOrDefault(x => x.Name.LocalName == "Totalizer")?.Value?.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal bitisEndeks);
+
+                        if (bitisEndeks > 1000000) bitisEndeks /= 100;
+
+                        // Fuel Type Mapping (Reuse logic from above)
+                        string fuelTypeStr = "DIGER";
+                        if (!string.IsNullOrEmpty(fuelTypeRaw) && yakitMap.ContainsKey(fuelTypeRaw))
+                        {
+                            fuelTypeStr = yakitMap[fuelTypeRaw].Ad;
+                        }
+
+
+                        string key = $"{pumpNr}-{nozzleNr}";
+                        decimal satilanLitre = nozzleSales.ContainsKey(key) ? nozzleSales[key] : 0;
+                        decimal baslangicEndeks = bitisEndeks - satilanLitre;
+
+                        dto.PompaEndeksleri.Add(new CreateVardiyaPompaEndeksDto
+                        {
+                            PompaNo = pumpNr,
+                            TabancaNo = nozzleNr,
+                            YakitTuru = fuelTypeStr,
+                            BaslangicEndeks = baslangicEndeks,
+                            BitisEndeks = bitisEndeks
+                        });
+                    }
+                }
+
                 // Genel Toplamı Hesapla (Otomasyon + Filo)
                 dto.GenelToplam = dto.OtomasyonSatislar.Sum(s => s.ToplamTutar) + dto.FiloSatislar.Sum(f => f.Tutar);
                 _logger.LogInformation($"Vardiya Genel Toplam Hesaplandı: {dto.GenelToplam:N2} TL (Oto: {dto.OtomasyonSatislar.Sum(s => s.ToplamTutar):N2} + Filo: {dto.FiloSatislar.Sum(f => f.Tutar):N2})");
@@ -1240,8 +1351,9 @@ namespace IstasyonDemo.Api.Services
                     {
                         VardiyaId = vardiya.Id,
                         TankNo = tankNo,
+
                         TankAdi = tankAdi,
-                        YakitTipi = NormalizeYakitTipi(tankAdi),
+                        YakitTipi = (await _yakitService.IdentifyYakitAsync(tankAdi))?.Ad ?? "DIGER", // Tanklarda isimden gidiyoruz
                         BaslangicStok = previousVol,
                         BitisStok = currentVol,
                         SatilanMiktar = satilanMiktar,  // İşaretli değer
@@ -1266,29 +1378,20 @@ namespace IstasyonDemo.Api.Services
             }
         }
 
-        private string MapFuelType(string? code)
+
+
+        private async Task<string> NormalizeYakitTipiAsync(string tankAdi)
         {
-            return code switch
-            {
-                "4" => "MOTORIN", // Diesel
-                "5" => "BENZIN",  // Unleaded 95
-                "6" => "LPG",     // Autogas
-                "1" => "MOTORIN", // Sometimes 1 is Diesel too
-                "2" => "BENZIN",
-                _ => "DIGER"
-            };
+            if (string.IsNullOrEmpty(tankAdi)) return "DIGER";
+            var yakit = await _yakitService.IdentifyYakitAsync(tankAdi);
+            return yakit?.Ad ?? "DIGER";
         }
 
         private string NormalizeYakitTipi(string tankAdi)
         {
             if (string.IsNullOrEmpty(tankAdi)) return "DIGER";
-            
-            var normalized = tankAdi.ToUpperInvariant();
-            if (normalized.Contains("MOTORIN") || normalized.Contains("DIESEL")) return "MOTORIN";
-            if (normalized.Contains("BENZIN") || normalized.Contains("KURŞUNSUZ") || normalized.Contains("KURSUN")) return "BENZIN";
-            if (normalized.Contains("LPG") || normalized.Contains("AUTOGAS")) return "LPG";
-            
-            return "DIGER";
+            var yakit = _yakitService.IdentifyYakitAsync(tankAdi).GetAwaiter().GetResult();
+            return yakit?.Ad ?? "DIGER";
         }
 
         public async Task<MutabakatViewModel> CalculateVardiyaFinancials(int vardiyaId)

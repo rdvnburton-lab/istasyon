@@ -20,10 +20,6 @@ namespace IstasyonDemo.Api.Models
         public byte[]? ZipDosyasi { get; set; } // Orijinal ZIP dosyası
         public string? XmlIcerik { get; set; } // XML İçeriği (Text olarak)
 
-        // JSON olarak saklanacak detaylar
-        public string? TankDetailsJson { get; set; }
-        public string? PumpDetailsJson { get; set; }
-        public string? SaleDetailsJson { get; set; }
 
         public DateTime YuklemeTarihi { get; set; } = DateTime.UtcNow;
     }

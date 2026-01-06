@@ -1,4 +1,6 @@
 using IstasyonDemo.Api.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IstasyonDemo.Api.Services
 {

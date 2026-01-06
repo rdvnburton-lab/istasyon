@@ -392,7 +392,7 @@ namespace IstasyonDemo.Api.Services
                  return query.Where(m => m.Istasyon != null && m.Istasyon.Firma != null && m.Istasyon.Firma.PatronId == userId);
             }
             
-            if (userRole == "vardiya_sorumlusu")
+            if (userRole == "vardiya sorumlusu")
             {
                 // Can see nothing or only their own if needed, but requirements say they don't see market shifts usually?
                 // Returning empty as per original controller logic

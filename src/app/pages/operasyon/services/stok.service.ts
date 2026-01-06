@@ -151,6 +151,8 @@ export class StokService {
 // Karma Stok Response Interfaces
 export interface XmlStokOzet {
     yakitTipi: string;
+    renk?: string;
+    tanimli?: boolean;
     toplamSevkiyat: number;
     toplamSatis: number;
     sonStok: number;
@@ -161,6 +163,7 @@ export interface XmlStokOzet {
 
 export interface ManuelStokOzet {
     yakitTipi: string;
+    renk?: string;
     toplamGiris: number;
     toplamSatis: number;
     kaynak: string;
@@ -173,6 +176,7 @@ export interface VardiyaTankHareket {
         tankNo: number;
         tankAdi: string;
         yakitTipi: string;
+        renk?: string;
         baslangicStok: number;
         bitisStok: number;
         sevkiyatMiktar: number;

@@ -19,6 +19,10 @@ namespace IstasyonDemo.Api.Models
         
         [MaxLength(50)]
         public string YakitTuru { get; set; } = string.Empty;
+
+        public int? YakitId { get; set; }
+        [ForeignKey("YakitId")]
+        public Yakit? Yakit { get; set; }
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal Litre { get; set; }

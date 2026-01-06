@@ -32,7 +32,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
-            else if (CurrentUserRole == "market_sorumlusu")
+            else if (CurrentUserRole == "market sorumlusu")
             {
                 return Ok(new VardiyaRaporuDto { Ozet = new VardiyaRaporOzetDto(), Vardiyalar = new List<VardiyaRaporItemDto>() });
             }
@@ -89,7 +89,7 @@ namespace IstasyonDemo.Api.Controllers
             {
                 query = query.Where(v => v.Istasyon != null && v.Istasyon.Firma != null && v.Istasyon.Firma.PatronId == CurrentUserId);
             }
-            else if (CurrentUserRole == "market_sorumlusu")
+            else if (CurrentUserRole == "market sorumlusu")
             {
                 return Ok(new { Ozet = new { }, Vardiyalar = new List<object>() });
             }
@@ -200,7 +200,7 @@ namespace IstasyonDemo.Api.Controllers
 
             var satislar = await _context.OtomasyonSatislar
                 .Where(s => s.PersonelId == personelId && s.Vardiya!.BaslangicTarihi >= start && s.Vardiya!.BaslangicTarihi <= end && s.Vardiya!.Durum != VardiyaDurum.SILINDI)
-                .Select(s => new { s.VardiyaId, s.Vardiya!.BaslangicTarihi, s.ToplamTutar, s.Litre, s.YakitTuru })
+                .Select(s => new { s.VardiyaId, s.Vardiya!.BaslangicTarihi, s.ToplamTutar, s.Litre, YakitTuru = s.Yakit != null ? s.Yakit.Ad : s.YakitTuru })
                 .ToListAsync();
 
             var pusulalar = await _context.Pusulalar
@@ -295,17 +295,31 @@ namespace IstasyonDemo.Api.Controllers
                     v.Id,
                     v.BaslangicTarihi,
                     v.PompaToplam,
-                    PusulaOzet = v.Pusulalar.Select(p => new { p.Nakit, p.KrediKarti, p.Toplam }).ToList(),
+                    PusulaOzet = v.Pusulalar.Select(p => new { p.Nakit, p.KrediKarti, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) }).ToList(),
                     FiloToplam = v.FiloSatislar.Sum(f => f.Tutar),
                     PompaOzetleri = v.OtomasyonSatislar
-                        .GroupBy(s => new { s.PompaNo, s.YakitTuru })
+                        .GroupBy(s => new { s.PompaNo, YakitAdi = s.Yakit != null ? s.Yakit.Ad : s.YakitTuru })
                         .Select(g => new {
                             g.Key.PompaNo,
-                            YakitTuru = g.Key.YakitTuru.ToString(),
+                            YakitTuru = g.Key.YakitAdi,
                             Litre = g.Sum(s => s.Litre),
                             ToplamTutar = g.Sum(s => s.ToplamTutar),
                             IslemSayisi = g.Count()
-                        }).ToList()
+                        }).ToList(),
+                    FiloOzetleri = v.FiloSatislar
+                        .GroupBy(f => new { f.PompaNo, YakitAdi = f.Yakit != null ? f.Yakit.Ad : f.YakitTuru })
+                        .Select(g => new {
+                            g.Key.PompaNo,
+                            YakitTuru = g.Key.YakitAdi,
+                            Litre = g.Sum(f => f.Litre),
+                            ToplamTutar = g.Sum(f => f.Tutar),
+                            IslemSayisi = g.Count()
+                        }).ToList(),
+                    OdemeTuruOzet = v.OtomasyonSatislar
+                        .GroupBy(s => s.OdemeTuru)
+                        .Select(g => new { OdemeTuru = g.Key, Toplam = g.Sum(s => s.ToplamTutar) })
+                        .ToList(),
+                    PompaEndeksleri = v.PompaEndeksleri.ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -320,19 +334,17 @@ namespace IstasyonDemo.Api.Controllers
             if (Math.Abs(fark) > 100) durum = "KRITIK_FARK";
             else if (Math.Abs(fark) > 1) durum = "FARK_VAR";
 
+            // Pompacı Satışı (Otomasyon Toplam vs Pusula Toplam)
+            var pompacisatisSistem = vardiyaOzet.PompaOzetleri.Sum(p => p.ToplamTutar); // Otomasyon Satışları Toplamı
+            var pompacisatisTahsilat = vardiyaOzet.PusulaOzet.Sum(p => p.Toplam); // Pusula (Nakit + KK) Toplamı
+
             var detaylar = new List<KarsilastirmaDetayDto>
             {
                 new KarsilastirmaDetayDto { 
-                    OdemeYontemi = "NAKIT", 
-                    SistemTutar = 0,
-                    TahsilatTutar = vardiyaOzet.PusulaOzet.Sum(p => p.Nakit),
-                    Fark = vardiyaOzet.PusulaOzet.Sum(p => p.Nakit)
-                },
-                new KarsilastirmaDetayDto { 
-                    OdemeYontemi = "KREDI_KARTI", 
-                    SistemTutar = 0, 
-                    TahsilatTutar = vardiyaOzet.PusulaOzet.Sum(p => p.KrediKarti),
-                    Fark = vardiyaOzet.PusulaOzet.Sum(p => p.KrediKarti)
+                    OdemeYontemi = "POMPACI_SATISI", 
+                    SistemTutar = pompacisatisSistem,
+                    TahsilatTutar = pompacisatisTahsilat,
+                    Fark = pompacisatisTahsilat - pompacisatisSistem
                 },
                 new KarsilastirmaDetayDto { 
                     OdemeYontemi = "FILO", 
@@ -342,14 +354,36 @@ namespace IstasyonDemo.Api.Controllers
                 }
             };
 
-            var pompaSatislari = vardiyaOzet.PompaOzetleri
-                .Select(p => new PompaSatisOzetDto
-                {
-                    PompaNo = p.PompaNo,
-                    YakitTuru = p.YakitTuru,
-                    Litre = p.Litre,
-                    ToplamTutar = p.ToplamTutar,
-                    IslemSayisi = p.IslemSayisi
+            // Otomasyon ve Filo Satışlarını Birleştir
+            var birlesikSatislar = vardiyaOzet.PompaOzetleri
+                .Select(p => new { p.PompaNo, p.YakitTuru, p.Litre, p.ToplamTutar, p.IslemSayisi })
+                .Concat(vardiyaOzet.FiloOzetleri.Select(f => new { f.PompaNo, f.YakitTuru, f.Litre, f.ToplamTutar, f.IslemSayisi }))
+                .GroupBy(x => new { x.PompaNo, x.YakitTuru })
+                .Select(g => new {
+                    g.Key.PompaNo,
+                    g.Key.YakitTuru,
+                    Litre = g.Sum(x => x.Litre),
+                    ToplamTutar = g.Sum(x => x.ToplamTutar),
+                    IslemSayisi = g.Sum(x => x.IslemSayisi)
+                })
+                .ToList();
+
+            var pompaSatislari = birlesikSatislar
+                .Select(p => {
+                    var matchingEndeksler = vardiyaOzet.PompaEndeksleri
+                        .Where(e => e.PompaNo == p.PompaNo && e.YakitTuru == p.YakitTuru)
+                        .ToList();
+                    
+                    return new PompaSatisOzetDto
+                    {
+                        PompaNo = p.PompaNo,
+                        YakitTuru = p.YakitTuru,
+                        Litre = p.Litre,
+                        ToplamTutar = p.ToplamTutar,
+                        IslemSayisi = p.IslemSayisi,
+                        BaslangicEndeks = matchingEndeksler.Sum(e => e.BaslangicEndeks),
+                        BitisEndeks = matchingEndeksler.Sum(e => e.BitisEndeks)
+                    };
                 })
                 .OrderBy(p => p.PompaNo)
                 .ToList();

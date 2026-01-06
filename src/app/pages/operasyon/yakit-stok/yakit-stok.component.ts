@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
-import { ChartModule } from 'primeng/chart'; // Added ChartModule
+import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { StokService, KarmaStokOzet, XmlStokOzet, VardiyaTankHareket } from '../services/stok.service';
 
@@ -17,7 +18,8 @@ import { StokService, KarmaStokOzet, XmlStokOzet, VardiyaTankHareket } from '../
         CardModule,
         SelectModule,
         ToastModule,
-        ChartModule
+        ChartModule,
+        TableModule
     ],
     providers: [MessageService],
     templateUrl: './yakit-stok.component.html',
@@ -77,7 +79,21 @@ export class YakitStokComponent implements OnInit {
         this.stokService.getKarmaStokOzeti(this.selectedYear.value, this.selectedMonth.value + 1).subscribe({
             next: (data) => {
                 this.karmaStokOzet = data;
-                this.xmlStokVerileri = data.xmlKaynakli || [];
+
+                // Merge XML and Manual (LPG) data for display
+                const xmlData = data.xmlKaynakli || [];
+                const manuelData = (data.manuelKaynakli || []).map(m => ({
+                    yakitTipi: m.yakitTipi,
+                    renk: m.renk || '#3b82f6', // Use backend color or default LPG color
+                    toplamSevkiyat: m.toplamGiris,
+                    toplamSatis: m.toplamSatis,
+                    sonStok: 0, // Not tracked via XML
+                    ilkStok: 0,
+                    toplamFark: 0,
+                    kayitSayisi: xmlData.length > 0 ? xmlData[0].kayitSayisi : 0
+                }));
+
+                this.xmlStokVerileri = [...xmlData, ...manuelData];
                 this.vardiyaHareketleri = data.vardiyaHareketleri || [];
 
                 this.calculateKPIs();
@@ -136,7 +152,7 @@ export class YakitStokComponent implements OnInit {
     prepareCharts() {
         if (!this.vardiyaHareketleri || this.vardiyaHareketleri.length === 0) return;
 
-        // Sort by date just in case
+        // Sort by date
         const sortedData = [...this.vardiyaHareketleri].sort((a, b) => new Date(a.tarih).getTime() - new Date(b.tarih).getTime());
 
         const labels = sortedData.map(v => {
@@ -144,68 +160,59 @@ export class YakitStokComponent implements OnInit {
             return `${d.getDate()}.${d.getMonth() + 1}`;
         });
 
-        // --- Stock Trend Chart (Line) ---
-        // Motorin Stocks over time
-        const motorinStocks = sortedData.map(v => {
-            const tank = v.tanklar.find(t => t.yakitTipi === 'MOTORIN');
-            return tank ? tank.bitisStok : 0; // Note: sum if multiple tanks? Assuming simplified view for now or single tank total
-            // Actually vardiyaHareketleri returns array of tanks. We should sum them up by fuel type if multiple tanks exist.
+        // Get all unique fuel types across all shifts
+        const fuelTypes = new Set<string>();
+        const fuelColors: { [key: string]: string } = {};
+
+        sortedData.forEach(v => {
+            v.tanklar.forEach(t => {
+                fuelTypes.add(t.yakitTipi);
+                if (t.renk) fuelColors[t.yakitTipi] = t.renk;
+            });
         });
 
-        // We need to aggregate tanks by fuel type for each shift
-        const dailyMotorinStok = sortedData.map(v =>
-            v.tanklar.filter(t => t.yakitTipi === 'MOTORIN').reduce((sum, t) => sum + t.bitisStok, 0)
-        );
-        const dailyBenzinStok = sortedData.map(v =>
-            v.tanklar.filter(t => t.yakitTipi === 'BENZIN').reduce((sum, t) => sum + t.bitisStok, 0)
-        );
+        const fuelTypeList = Array.from(fuelTypes);
+
+        // --- Stock Trend Chart (Line) ---
+        const stockDatasets = fuelTypeList.map(ft => {
+            const color = fuelColors[ft] || '#666';
+            const data = sortedData.map(v =>
+                v.tanklar.filter(t => t.yakitTipi === ft).reduce((sum, t) => sum + t.bitisStok, 0)
+            );
+
+            return {
+                label: ft + ' Stok',
+                data: data,
+                borderColor: color,
+                backgroundColor: color + '1A', // 10% opacity
+                fill: true,
+                tension: 0.4
+            };
+        });
 
         this.stockTrendData = {
             labels: labels,
-            datasets: [
-                {
-                    label: 'Motorin Stok',
-                    data: dailyMotorinStok,
-                    borderColor: '#3b82f6', // blue-500
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                },
-                {
-                    label: 'Benzin Stok',
-                    data: dailyBenzinStok,
-                    borderColor: '#22c55e', // green-500
-                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }
-            ]
+            datasets: stockDatasets
         };
 
         // --- Daily Sales Chart (Bar) ---
-        const dailyMotorinSatis = sortedData.map(v =>
-            v.tanklar.filter(t => t.yakitTipi === 'MOTORIN').reduce((sum, t) => sum + t.satilanMiktar, 0)
-        );
-        const dailyBenzinSatis = sortedData.map(v =>
-            v.tanklar.filter(t => t.yakitTipi === 'BENZIN').reduce((sum, t) => sum + t.satilanMiktar, 0)
-        );
+        const salesDatasets = fuelTypeList.map(ft => {
+            const color = fuelColors[ft] || '#666';
+            const data = sortedData.map(v =>
+                v.tanklar.filter(t => t.yakitTipi === ft).reduce((sum, t) => sum + t.satilanMiktar, 0)
+            );
+
+            return {
+                label: ft + ' Satış',
+                data: data,
+                backgroundColor: color,
+                borderRadius: 4
+            };
+        });
 
         this.dailySalesData = {
             labels: labels,
-            datasets: [
-                {
-                    label: 'Motorin Satış',
-                    data: dailyMotorinSatis,
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 4
-                },
-                {
-                    label: 'Benzin Satış',
-                    data: dailyBenzinSatis,
-                    backgroundColor: '#22c55e',
-                    borderRadius: 4
-                }
-            ]
+            datasets: salesDatasets
         };
     }
 

@@ -114,14 +114,21 @@
             </h2>
 
             <div class="card p-6 bg-gray-50 border border-gray-200 rounded-2xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
                     <div *ngFor="let item of xmlStokVerileri"
                         class="p-5 rounded-2xl border-l-4 bg-white shadow-sm hover:shadow-md transition-all"
-                        [class.border-blue-500]="item.yakitTipi === 'MOTORIN'"
-                        [class.border-green-500]="item.yakitTipi === 'BENZIN'">
+                        [style.border-left-color]="item.renk || '#666'">
 
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="font-bold text-xl text-gray-800 m-0">{{ item.yakitTipi }}</h4>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-bold text-xl text-gray-800 m-0">{{ item.yakitTipi }}</h4>
+                                <div *ngIf="item.tanimli === false" class="mt-1">
+                                    <span
+                                        class="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded-md border border-red-100 font-bold flex items-center gap-1 w-max">
+                                        <i class="pi pi-exclamation-triangle"></i> Tanımsız Ürün (Sisteme Ekleyin)
+                                    </span>
+                                </div>
+                            </div>
                             <span
                                 class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full font-medium flex items-center gap-1">
                                 <i class="pi pi-history text-[10px]"></i> {{ item.kayitSayisi }} Vardiya
@@ -130,11 +137,10 @@
 
                         <div class="text-center py-6 bg-gray-50/50 rounded-xl mb-4 border border-gray-100">
                             <div class="text-xs text-gray-400 mb-1">Mevcut Stok</div>
-                            <span class="text-4xl font-bold" [class.text-blue-600]="item.yakitTipi === 'MOTORIN'"
-                                [class.text-green-600]="item.yakitTipi === 'BENZIN'">
-                                {{ item.sonStok | number:'1.0-0' }}
+                            <span class="text-4xl font-bold" [style.color]="item.renk || '#666'">
+                                {{ item.sonStok > 0 ? (item.sonStok | number:'1.0-0') : '0' }}
                             </span>
-                            <span class="text-gray-500 text-lg ml-1">Lt</span>
+                            <span *ngIf="item.sonStok > 0" class="text-gray-500 text-lg ml-1">Lt</span>
                         </div>
 
                         <div class="grid grid-cols-3 gap-3 text-center">
@@ -159,6 +165,46 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- SHIFT MOVEMENTS TABLE -->
+        <div *ngIf="vardiyaHareketleri.length > 0" class="mt-8">
+            <h2 class="text-lg font-bold text-gray-700 mb-4 px-1 flex items-center gap-2">
+                <i class="pi pi-history text-gray-400"></i>
+                Vardiya Bazlı Hareketler
+            </h2>
+            <div class="card bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
+                <p-table [value]="vardiyaHareketleri" [rows]="10" [paginator]="true" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Vardiya ID</th>
+                            <th>Tank Detayları</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-v>
+                        <tr>
+                            <td class="font-medium text-gray-600">{{ v.tarih | date:'dd.MM.yyyy HH:mm' }}</td>
+                            <td><span class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs font-bold">#{{
+                                    v.vardiyaId }}</span></td>
+                            <td>
+                                <div class="flex flex-wrap gap-2">
+                                    <div *ngFor="let t of v.tanklar"
+                                        class="text-[10px] border px-2 py-1 rounded-lg flex items-center gap-2"
+                                        [style.border-color]="t.renk + '40'" [style.background-color]="t.renk + '0A'">
+                                        <span class="w-2 h-2 rounded-full" [style.background-color]="t.renk"></span>
+                                        <span class="font-bold text-gray-700">{{ t.tankAdi }}:</span>
+                                        <span class="text-gray-600">{{ t.satilanMiktar | number:'1.0-1' }} Lt
+                                            Satış</span>
+                                        <span *ngIf="t.sevkiyatMiktar > 0" class="text-green-600 font-bold">+{{
+                                            t.sevkiyatMiktar | number:'1.0-0' }} Lt</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </div>
         </div>
 

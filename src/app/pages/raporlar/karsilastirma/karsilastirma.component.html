@@ -160,9 +160,9 @@
                     <p-table [value]="sonuc.detaylar" styleClass="p-datatable-striped">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th>Ödeme Yöntemi</th>
-                                <th class="text-right">Sistem</th>
-                                <th class="text-right">Tahsilat</th>
+                                <th>Satış Türü</th>
+                                <th class="text-right">Sistem (Otomasyon)</th>
+                                <th class="text-right">Tahsilat (Pusula)</th>
                                 <th class="text-right">Fark</th>
                                 <th class="text-center">Durum</th>
                             </tr>
@@ -222,7 +222,8 @@
                                         [ngClass]="getPompaIconClass(grup.pompaNo, enYogunAkaryakitPompaNo, enYogunLpgPompaNo)"></i>
                                     <span>Pompa {{ grup.pompaNo }}</span>
                                 </div>
-                                <span class="text-white">{{ grup.toplamTutar | currency:'TRY':'':'1.0-0':'tr' }}</span>
+                                <span class="text-white">{{ grup.toplamTutar |
+                                    currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</span>
                             </div>
                             <div class="divide-y divide-surface-200 dark:divide-surface-700">
                                 <div *ngFor="let satis of grup.satislar"
@@ -234,8 +235,9 @@
                                     <div class="flex-1">
                                         <div class="flex justify-between items-center">
                                             <span class="font-medium text-sm">{{ satis.yakitTuru }}</span>
-                                            <span class="font-bold text-sm">{{ satis.toplamTutar |
-                                                currency:'TRY':'':'1.2-2':'tr' }}</span>
+                                            <span class="font-bold text-sm">
+                                                {{ satis.litre | number:'1.2-2' }} Lt
+                                            </span>
                                         </div>
                                         <div class="flex items-center gap-4 text-xs text-surface-500 mt-1">
                                             <span class="flex items-center gap-1">
@@ -244,8 +246,21 @@
                                             </span>
                                             <span class="flex items-center gap-1">
                                                 <i class="pi pi-tint text-orange-400"></i>
-                                                {{ satis.litre | number:'1.2-2' }} Lt
+                                                {{ satis.toplamTutar |
+                                                currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
                                             </span>
+                                        </div>
+                                        <div class="flex flex-col gap-1 text-[10px] text-surface-400 mt-1 border-t border-surface-100 dark:border-surface-700 pt-1"
+                                            *ngIf="satis.baslangicEndeks > 0 || satis.bitisEndeks > 0">
+                                            <div class="flex justify-between">
+                                                <span>Başlangıç:</span>
+                                                <span class="font-mono">{{ satis.baslangicEndeks | number:'1.2-2'
+                                                    }}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span>Bitiş:</span>
+                                                <span class="font-mono">{{ satis.bitisEndeks | number:'1.2-2' }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -324,8 +339,10 @@
                             <ng-template pTemplate="body" let-detay>
                                 <tr>
                                     <td>{{ getOdemeLabel(detay.odemeYontemi) }}</td>
-                                    <td class="text-right">{{ detay.sistemTutar | currency:'TRY':'':'1.0-0':'tr' }}</td>
-                                    <td class="text-right">{{ detay.tahsilatTutar | currency:'TRY':'':'1.0-0':'tr' }}
+                                    <td class="text-right">{{ detay.sistemTutar |
+                                        currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</td>
+                                    <td class="text-right">{{ detay.tahsilatTutar |
+                                        currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}
                                     </td>
                                 </tr>
                             </ng-template>

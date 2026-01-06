@@ -19,11 +19,13 @@ namespace IstasyonDemo.Api.Services
     {
         private readonly AppDbContext _context;
         private readonly IVardiyaService _vardiyaService;
+        private readonly IYakitService _yakitService;
 
-        public ReportService(AppDbContext context, IVardiyaService vardiyaService)
+        public ReportService(AppDbContext context, IVardiyaService vardiyaService, IYakitService yakitService)
         {
             _context = context;
             _vardiyaService = vardiyaService;
+            _yakitService = yakitService;
             
             // QuestPDF License Configuration (Community)
             QuestPDF.Settings.License = LicenseType.Community;
@@ -268,21 +270,26 @@ namespace IstasyonDemo.Api.Services
                 }).ToListAsync();
 
             // 3. Merge and Correct Fuel Types
-            // Correction Logic: Benzin -> LPG, LPG -> Benzin, Others -> Motorin
             var combinedSales = otomasyonSatislari.Concat(filoSatislar).Where(x => x.Litre > 0 || x.Tutar > 0).ToList();
             
-            var yakitSatislari = combinedSales
-                .GroupBy(x => {
-                    var raw = x.Tur?.ToUpperInvariant() ?? "";
-                    if (raw.Contains("BENZIN")) return "LPG"; // User confirmed this is correct
-                    if (raw.Contains("LPG") || raw.Contains("OTOGAZ")) return "MOTORİN"; // Swapped based on user request
-                    return "BENZIN"; // Default swapped to Benzin
-                })
+            var yakitSatislariRaw = new List<dynamic>();
+            foreach (var s in combinedSales)
+            {
+                var yakit = await _yakitService.IdentifyYakitAsync(s.Tur);
+                yakitSatislariRaw.Add(new {
+                    YakitTuru = yakit?.Ad ?? s.Tur ?? "DIGER",
+                    s.Tutar,
+                    s.Litre
+                });
+            }
+
+            var yakitSatislari = yakitSatislariRaw
+                .GroupBy(x => x.YakitTuru)
                 .Select(g => new { 
-                    YakitTuru = g.Key, 
-                    ToplamTutar = g.Sum(s => s.Tutar),
-                    ToplamLitre = g.Sum(s => s.Litre),
-                    IslemAdedi = g.Count() // This is record count, might not be exact transaction count if data is aggregated, but best we have.
+                    YakitTuru = (string)g.Key, 
+                    ToplamTutar = g.Sum(s => (decimal)s.Tutar),
+                    ToplamLitre = g.Sum(s => (decimal)s.Litre),
+                    IslemAdedi = g.Count()
                 })
                 .OrderBy(x => x.YakitTuru)
                 .ToList();
@@ -618,10 +625,11 @@ namespace IstasyonDemo.Api.Services
                                 if (percent > 1) percent = 1;
                                 
                                 var color = Colors.Grey.Medium;
-                                var rawType = tank.YakitTipi?.ToUpperInvariant() ?? "";
-                                if (rawType.Contains("MOTORIN")) color = Colors.Green.Medium;
-                                else if (rawType.Contains("BENZIN")) color = Colors.Red.Medium;
-                                else if (rawType.Contains("LPG") || rawType.Contains("OTOGAZ")) color = Colors.Blue.Medium;
+                                var yakit = _yakitService.IdentifyYakitAsync(tank.YakitTipi).GetAwaiter().GetResult();
+                                if (yakit != null && !string.IsNullOrEmpty(yakit.Renk))
+                                {
+                                    try { color = yakit.Renk; } catch { }
+                                }
 
                                 row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten3).Column(c =>
                                 {

@@ -9,6 +9,7 @@ export interface Yakit {
     otomasyonUrunAdi: string;
     renk: string;
     sira: number;
+    turpakUrunKodu?: string;
 }
 
 @Injectable({

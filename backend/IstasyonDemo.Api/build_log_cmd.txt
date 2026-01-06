@@ -1,0 +1,13 @@
+  Geri yüklenecek projeler belirleniyor...
+  Geri yükleme için tüm projeler güncel.
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Services\DefinitionsService.cs(8,26): error CS0246: 'AppDbContext' türü veya ad alanı adı bulunamadı (bir using yönergeniz veya derleme başvurunuz mu eksik?) [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Services\DefinitionsService.cs(11,35): error CS0246: 'AppDbContext' türü veya ad alanı adı bulunamadı (bir using yönergeniz veya derleme başvurunuz mu eksik?) [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+
+Oluşturma BAŞARISIZ OLDU.
+
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Services\DefinitionsService.cs(8,26): error CS0246: 'AppDbContext' türü veya ad alanı adı bulunamadı (bir using yönergeniz veya derleme başvurunuz mu eksik?) [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\Services\DefinitionsService.cs(11,35): error CS0246: 'AppDbContext' türü veya ad alanı adı bulunamadı (bir using yönergeniz veya derleme başvurunuz mu eksik?) [C:\Users\Administrator\Desktop\istasyon demo\backend\IstasyonDemo.Api\IstasyonDemo.Api.csproj]
+    0 Uyarı
+    2 Hata
+
+Geçen Süre 00:00:01.30

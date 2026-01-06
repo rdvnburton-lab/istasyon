@@ -40,6 +40,8 @@ namespace IstasyonDemo.Api.Data
         public DbSet<VardiyaTankEnvanteri> VardiyaTankEnvanterleri { get; set; }
         public DbSet<CariKart> CariKartlar { get; set; }
         public DbSet<CariHareket> CariHareketler { get; set; }
+        public DbSet<VardiyaPompaEndeks> VardiyaPompaEndeksleri { get; set; }
+        public DbSet<VardiyaRaporArsiv> VardiyaRaporArsivleri { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -96,6 +98,12 @@ namespace IstasyonDemo.Api.Data
                 .HasOne(t => t.Vardiya)
                 .WithMany()
                 .HasForeignKey(t => t.VardiyaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<VardiyaPompaEndeks>()
+                .HasOne(e => e.Vardiya)
+                .WithMany(v => v.PompaEndeksleri)
+                .HasForeignKey(e => e.VardiyaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Cari Kart ve Hareket İlişkileri

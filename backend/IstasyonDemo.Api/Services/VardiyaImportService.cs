@@ -12,11 +12,13 @@ namespace IstasyonDemo.Api.Services
     {
         private readonly AppDbContext _context;
         private readonly ILogger<VardiyaImportService> _logger;
+        private readonly IYakitService _yakitService;
 
-        public VardiyaImportService(AppDbContext context, ILogger<VardiyaImportService> logger)
+        public VardiyaImportService(AppDbContext context, ILogger<VardiyaImportService> logger, IYakitService yakitService)
         {
             _context = context;
             _logger = logger;
+            _yakitService = yakitService;
         }
 
         public async Task<VardiyaImportResult> ParseXmlZipAsync(Stream zipStream, string fileName, int userId)
@@ -145,7 +147,7 @@ namespace IstasyonDemo.Api.Services
                             PersonelKeyId = tagNr,
                             PompaNo = pumpNr,
                             TabancaNo = nozzleNr,
-                            YakitTuru = MapFuelType(saleDetails.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? ""),
+                            YakitTuru = (await _yakitService.IdentifyYakitAsync(saleDetails.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? ""))?.Ad ?? "DIGER",
                             Litre = amount, 
                             BirimFiyat = unitPrice / 100, // XML values are usually scaled (e.g. 4748 -> 47.48)
                             ToplamTutar = total / 100,
@@ -172,7 +174,7 @@ namespace IstasyonDemo.Api.Services
                             Tarih = satisTarihi,
                             PompaNo = pumpNr,
                             FisNo = receiptNr,
-                            YakitTuru = MapFuelType(saleDetails.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? ""),
+                            YakitTuru = (await _yakitService.IdentifyYakitAsync(saleDetails.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? ""))?.Ad ?? "DIGER",
                             TagNr = tagNr
                         });
                     }
@@ -185,6 +187,82 @@ namespace IstasyonDemo.Api.Services
                         .Concat(dto.FiloSatislar.Select(s => s.Tarih)).ToList();
                     dto.BaslangicTarihi = allDates.Min();
                     dto.BitisTarihi = allDates.Max();
+                }
+
+                // 7.1 Pompa Endekslerini Hesapla
+                // Tüm satışları (Otomasyon + Filo) birleştirip pompa/tabanca bazında gruplayacağız
+                var allSales = new List<dynamic>();
+                
+                foreach(var s in dto.OtomasyonSatislar)
+                {
+                    allSales.Add(new { s.PompaNo, s.TabancaNo, s.YakitTuru, s.SatisTarihi, s.Litre });
+                }
+                foreach(var s in dto.FiloSatislar)
+                {
+                    allSales.Add(new { s.PompaNo, s.TabancaNo, s.YakitTuru, Tarih = s.Tarih, s.Litre });
+                }
+
+                // Not: XML'de her işlemde TotalizerStart ve TotalizerEnd olmayabilir.
+                // Ancak genellikle vardiya raporlarında bu bilgi "PumpReport" veya benzeri bir bölümde olur.
+                // Eğer yoksa, elimizdeki verilerle sadece "Satılan Litre"yi biliyoruz, gerçek endeksi bilemeyiz.
+                // Ancak kullanıcı "xml den pompa endeksleri geliyor" dediği için, Txn içinde TotalizerStart/End arayacağız.
+                // Txn döngüsünde bu değerleri geçici bir listede tutalım.
+                
+                // Bu adım için Txn döngüsüne geri dönüp Totalizer değerlerini okumamız lazım.
+                // Performans için Txn döngüsü içinde bir Dictionary doldurabiliriz.
+                // Ancak şu an kod yapısı gereği, Txn döngüsü bitti. 
+                // Txn listesi hala elimizde (var txns), tekrar dönebiliriz.
+
+                // 7.1 Pompa Endekslerini Hesapla
+                // XML'de <Pump><Nozzles><Nozzle> yapısı içinde Totalizer bilgisi var.
+                // Bu genellikle vardiya sonu (Bitiş) endeksidir.
+                // Başlangıç endeksini bulmak için Bitiş - Satılan Litre formülünü kullanabiliriz.
+
+                var nozzleSales = new Dictionary<string, decimal>();
+                foreach (var s in dto.OtomasyonSatislar)
+                {
+                    string key = $"{s.PompaNo}-{s.TabancaNo}";
+                    if (!nozzleSales.ContainsKey(key)) nozzleSales[key] = 0;
+                    nozzleSales[key] += s.Litre;
+                }
+                foreach (var s in dto.FiloSatislar)
+                {
+                    string key = $"{s.PompaNo}-{s.TabancaNo}";
+                    if (!nozzleSales.ContainsKey(key)) nozzleSales[key] = 0;
+                    nozzleSales[key] += s.Litre;
+                }
+
+                var pumpElements = xdoc.Descendants().Where(x => x.Name.LocalName == "Pump").ToList();
+                foreach (var pumpElement in pumpElements)
+                {
+                    string pumpNameStr = pumpElement.Elements().FirstOrDefault(x => x.Name.LocalName == "PumpName")?.Value ?? "0";
+                    int.TryParse(pumpNameStr, out int pumpNr);
+
+                    var nozzles = pumpElement.Descendants().Where(x => x.Name.LocalName == "Nozzle").ToList();
+                    foreach (var nozzle in nozzles)
+                    {
+                        int.TryParse(nozzle.Elements().FirstOrDefault(x => x.Name.LocalName == "NozzleNr")?.Value, out int nozzleNr);
+                        string fuelTypeStr = nozzle.Elements().FirstOrDefault(x => x.Name.LocalName == "FuelType")?.Value ?? "";
+                        decimal.TryParse(nozzle.Elements().FirstOrDefault(x => x.Name.LocalName == "Totalizer")?.Value?.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal bitisEndeks);
+
+                        // XML'deki Totalizer genellikle 2 decimal basamaklı tam sayı olarak gelir (örn: 200093.76 -> 20009376)
+                        // Eğer değer çok büyükse 100'e bölmeyi deneyebiliriz. 
+                        // Ancak kullanıcıdan gelen örnekte 20009376 var. Bu 200.093,76 Lt olabilir.
+                        if (bitisEndeks > 1000000) bitisEndeks /= 100;
+
+                        string key = $"{pumpNr}-{nozzleNr}";
+                        decimal satilanLitre = nozzleSales.ContainsKey(key) ? nozzleSales[key] : 0;
+                        decimal baslangicEndeks = bitisEndeks - satilanLitre;
+
+                        dto.PompaEndeksleri.Add(new CreateVardiyaPompaEndeksDto
+                        {
+                            PompaNo = pumpNr,
+                            TabancaNo = nozzleNr,
+                            YakitTuru = (await _yakitService.IdentifyYakitAsync(fuelTypeStr))?.Ad ?? "DIGER",
+                            BaslangicEndeks = baslangicEndeks,
+                            BitisEndeks = bitisEndeks
+                        });
+                    }
                 }
 
                 // 8. Tank Envanteri
@@ -208,7 +286,7 @@ namespace IstasyonDemo.Api.Services
                     {
                         TankNo = tankNo,
                         TankAdi = tankAdi,
-                        YakitTipi = MapFuelType(tankAdi),
+                        YakitTipi = (await _yakitService.IdentifyYakitAsync(tankAdi))?.Ad ?? "DIGER",
                         BaslangicStok = previousVol,
                         BitisStok = currentVol,
                         SatilanMiktar = satilanMiktar,
@@ -222,7 +300,7 @@ namespace IstasyonDemo.Api.Services
                     {
                         TankNo = tankNo,
                         TankAdi = tankAdi,
-                        YakitTipi = MapFuelType(tankAdi),
+                        YakitTipi = (await _yakitService.IdentifyYakitAsync(tankAdi))?.Ad ?? "DIGER",
                         BitisStok = currentVol
                     });
                 }
@@ -244,27 +322,6 @@ namespace IstasyonDemo.Api.Services
             }
         }
 
-        public string MapFuelType(string fuelType)
-        {
-            if (string.IsNullOrEmpty(fuelType)) return "DIGER";
-            
-            fuelType = fuelType.ToUpperInvariant();
-            
-            // If it's a numeric code from XML FuelType tag
-            if (fuelType == "4" || fuelType == "5") return "KURSUNSUZ_95";
-            if (fuelType == "6" || fuelType == "7" || fuelType == "8") return "MOTORIN";
-            if (fuelType == "9") return "LPG";
 
-            if (fuelType.Contains("DIESEL") || fuelType.Contains("MOTORIN") || fuelType.Contains("V/MAX")) return "MOTORIN";
-            if (fuelType.Contains("KURSUNSUZ") || fuelType.Contains("BENZIN")) return "KURSUNSUZ_95";
-            if (fuelType.Contains("LPG") || fuelType.Contains("OTOGAZ")) return "LPG";
-            
-            return "DIGER";
-        }
-
-        public string NormalizeYakitTipi(string tankName)
-        {
-            return MapFuelType(tankName);
-        }
     }
 }

@@ -41,6 +41,7 @@ builder.Services.AddScoped<IMarketVardiyaService, MarketVardiyaService>();
 builder.Services.AddScoped<IDefinitionsService, DefinitionsService>();
 builder.Services.AddScoped<StokHesaplamaService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IYakitService, YakitService>();
 
 // Firebase Admin SDK Başlatma
 try
@@ -294,7 +295,8 @@ using (var scope = app.Services.CreateScope())
                 new Role { Ad = "patron", Aciklama = "İstasyon Sahibi", IsSystemRole = true },
                 new Role { Ad = "istasyon sorumlusu", Aciklama = "İstasyon Sorumlusu", IsSystemRole = true },
                 new Role { Ad = "vardiya sorumlusu", Aciklama = "Vardiya Sorumlusu", IsSystemRole = true },
-                new Role { Ad = "market sorumlusu", Aciklama = "Market Sorumlusu", IsSystemRole = true }
+                new Role { Ad = "market sorumlusu", Aciklama = "Market Sorumlusu", IsSystemRole = true },
+                new Role { Ad = "pasif", Aciklama = "Pasif Kullanıcı", IsSystemRole = true }
             );
             context.SaveChanges();
         }

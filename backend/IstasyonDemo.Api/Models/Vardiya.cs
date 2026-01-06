@@ -64,10 +64,56 @@ namespace IstasyonDemo.Api.Models
         [MaxLength(100)]
         public string? SorumluAdi { get; set; }
         
+        // ═══════════════════════════════════════════════════════════════
+        // HESAPLANMIŞ ÖZET ALANLAR (Denormalizasyon - Performans için)
+        // Vardiya onaylandığında bir kez hesaplanır ve kaydedilir
+        // ═══════════════════════════════════════════════════════════════
+        
+        /// <summary>
+        /// Tüm pusulalardan gelen toplam tahsilat (Nakit + KK + Diğer)
+        /// </summary>
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TahsilatToplam { get; set; }
+        
+        /// <summary>
+        /// Otomasyon sisteminden gelen toplam satış
+        /// </summary>
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal OtomasyonToplam { get; set; }
+        
+        /// <summary>
+        /// Filo satışları toplamı
+        /// </summary>
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal FiloToplam { get; set; }
+        
+        /// <summary>
+        /// Toplam gider
+        /// </summary>
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal GiderToplam { get; set; }
+        
+        // ═══════════════════════════════════════════════════════════════
+        // ARŞİV REFERANSI
+        // ═══════════════════════════════════════════════════════════════
+        
+        /// <summary>
+        /// Bu vardiyaya ait arşiv kaydının ID'si (varsa)
+        /// </summary>
+        public int? RaporArsivId { get; set; }
+        
+        /// <summary>
+        /// Vardiya arşivlenmiş mi?
+        /// </summary>
+        public bool Arsivlendi { get; set; } = false;
+        
+        public VardiyaRaporArsiv? RaporArsiv { get; set; }
+        
         // Navigation Properties
         public ICollection<OtomasyonSatis> OtomasyonSatislar { get; set; } = new List<OtomasyonSatis>();
         public ICollection<FiloSatis> FiloSatislar { get; set; } = new List<FiloSatis>();
         public ICollection<Pusula> Pusulalar { get; set; } = new List<Pusula>();
+        public ICollection<VardiyaPompaEndeks> PompaEndeksleri { get; set; } = new List<VardiyaPompaEndeks>();
         public ICollection<PompaGider> Giderler { get; set; } = new List<PompaGider>();
     }
 

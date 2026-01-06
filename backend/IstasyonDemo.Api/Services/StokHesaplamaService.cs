@@ -10,10 +10,12 @@ namespace IstasyonDemo.Api.Services
     public class StokHesaplamaService
     {
         private readonly AppDbContext _context;
+        private readonly IYakitService _yakitService;
 
-        public StokHesaplamaService(AppDbContext context)
+        public StokHesaplamaService(AppDbContext context, IYakitService yakitService)
         {
             _context = context;
+            _yakitService = yakitService;
         }
 
         /// <summary>
@@ -88,16 +90,16 @@ namespace IstasyonDemo.Api.Services
         /// </summary>
         private async Task<decimal> HesaplaAySatislari(Yakit yakit, DateTime startDate, DateTime endDate)
         {
-            // Otomasyon anahtarlarını parse et
-            var keywords = (yakit.OtomasyonUrunAdi ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(k => k.Trim().ToUpper())
-                .ToList();
+            // Otomasyon Satışlarını çek
+            var otomasyonSatislar = await _context.OtomasyonSatislar
+                .Where(s => s.Vardiya != null && 
+                            s.Vardiya.Durum == VardiyaDurum.ONAYLANDI &&
+                            s.Vardiya.BaslangicTarihi >= startDate && 
+                            s.Vardiya.BaslangicTarihi < endDate)
+                .ToListAsync();
 
-            if (!keywords.Any())
-                return 0;
-
-            // Tüm satışları çek ve keyword ile filtrele
-            var satislar = await _context.OtomasyonSatislar
+            // Filo Satışlarını çek
+            var filoSatislar = await _context.FiloSatislar
                 .Where(s => s.Vardiya != null && 
                             s.Vardiya.Durum == VardiyaDurum.ONAYLANDI &&
                             s.Vardiya.BaslangicTarihi >= startDate && 
@@ -105,17 +107,22 @@ namespace IstasyonDemo.Api.Services
                 .ToListAsync();
 
             decimal toplam = 0;
-            foreach (var satis in satislar)
-            {
-                // Numeric YakitTuru değerini normalize et
-                string normalizedValue = satis.YakitTuru;
-                if (int.TryParse(satis.YakitTuru, out var intValue) && Enum.IsDefined(typeof(YakitTuru), intValue))
-                {
-                    normalizedValue = ((YakitTuru)intValue).ToString();
-                }
 
-                var upper = normalizedValue.ToUpper();
-                if (keywords.Any(k => upper.Contains(k)))
+            // Otomasyon satışlarını topla
+            foreach (var satis in otomasyonSatislar)
+            {
+                var identifiedYakit = await _yakitService.IdentifyYakitAsync(satis.YakitTuru);
+                if (identifiedYakit != null && identifiedYakit.Id == yakit.Id)
+                {
+                    toplam += satis.Litre;
+                }
+            }
+
+            // Filo satışlarını topla
+            foreach (var satis in filoSatislar)
+            {
+                var identifiedYakit = await _yakitService.IdentifyYakitAsync(satis.YakitTuru);
+                if (identifiedYakit != null && identifiedYakit.Id == yakit.Id)
                 {
                     toplam += satis.Litre;
                 }

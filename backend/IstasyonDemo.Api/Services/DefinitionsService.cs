@@ -1,24 +1,30 @@
-using IstasyonDemo.Api.Data;
 using IstasyonDemo.Api.Models;
+using IstasyonDemo.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System;
 
 namespace IstasyonDemo.Api.Services
 {
     public class DefinitionsService : IDefinitionsService
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<DefinitionsService> _logger;
 
-        public DefinitionsService(AppDbContext context)
+        public DefinitionsService(AppDbContext context, ILogger<DefinitionsService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<SystemDefinition>> GetDefinitionsByTypeAsync(DefinitionType type)
         {
             return await _context.SystemDefinitions
-                .Where(x => x.Type == type && x.IsActive)
-                .OrderBy(x => x.SortOrder)
-                .ThenBy(x => x.Name)
+                .Where(d => d.Type == type && d.IsActive)
+                .OrderBy(d => d.SortOrder)
                 .ToListAsync();
         }
 
@@ -32,117 +38,102 @@ namespace IstasyonDemo.Api.Services
         public async Task<SystemDefinition> UpdateDefinitionAsync(int id, SystemDefinition definition)
         {
             var existing = await _context.SystemDefinitions.FindAsync(id);
-            if (existing == null) throw new Exception("Definition not found");
+            if (existing == null) throw new KeyNotFoundException("Tanım bulunamadı.");
 
             existing.Name = definition.Name;
             existing.Description = definition.Description;
             existing.IsActive = definition.IsActive;
             existing.SortOrder = definition.SortOrder;
-            
+            existing.Code = definition.Code;
+
             await _context.SaveChangesAsync();
             return existing;
         }
 
         public async Task DeleteDefinitionAsync(int id)
         {
-            var definition = await _context.SystemDefinitions.FindAsync(id);
-            if (definition == null) return;
-
-            // Soft delete
-            definition.IsActive = false;
-            await _context.SaveChangesAsync();
+            var existing = await _context.SystemDefinitions.FindAsync(id);
+            if (existing != null)
+            {
+                _context.SystemDefinitions.Remove(existing);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<SystemDefinition>> GetAllDefinitionsAsync()
         {
-            return await _context.SystemDefinitions.ToListAsync();
+            return await _context.SystemDefinitions
+                .OrderBy(d => d.Type)
+                .ThenBy(d => d.SortOrder)
+                .ToListAsync();
         }
 
         public async Task SeedInitialDataAsync()
         {
-            var existingTypes = await _context.SystemDefinitions.Select(x => x.Type).Distinct().ToListAsync();
-            var definitionsToSeed = new List<SystemDefinition>();
+            await SeedYakitlarAsync();
+            await SeedSystemDefinitionsAsync();
+        }
 
-            // Bankalar
-            if (!existingTypes.Contains(DefinitionType.BANKA))
+        private async Task SeedYakitlarAsync()
+        {
+            if (!await _context.Yakitlar.AnyAsync())
             {
-                var bankalar = new[] { "Ziraat Bankası", "Garanti BBVA", "İş Bankası", "Yapı Kredi", "Akbank", "Halkbank", "Vakıfbank", "QNB Finansbank", "Denizbank" };
-                int order = 1;
-                foreach (var b in bankalar)
+                _logger.LogInformation("Yakıt tanımları oluşturuluyor...");
+                var yakitlar = new List<Yakit>
                 {
-                    definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.BANKA, Name = b, SortOrder = order++ });
+                    new Yakit { Ad = "Benzin", OtomasyonUrunAdi = "BENZIN,KURSUNSUZ", TurpakUrunKodu = "4", Renk = "#22c55e", Sira = 1 },
+                    new Yakit { Ad = "Motorin", OtomasyonUrunAdi = "MOTORIN,DIZEL", TurpakUrunKodu = "6", Renk = "#eab308", Sira = 2 },
+                    new Yakit { Ad = "LPG", OtomasyonUrunAdi = "LPG,OTOGAZ", Renk = "#3b82f6", TurpakUrunKodu = "5", Sira = 3 },
+                    new Yakit { Ad = "Euro Diesel", OtomasyonUrunAdi = "EURO DIESEL", TurpakUrunKodu = "", Renk = "#f97316", Sira = 4 }
+                };
+
+                _context.Yakitlar.AddRange(yakitlar);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                // Update existing records with default Turpak codes if they are empty
+                var existingYakitlar = await _context.Yakitlar.ToListAsync();
+                bool changed = false;
+
+                foreach (var yakit in existingYakitlar)
+                {
+                    if (string.IsNullOrEmpty(yakit.TurpakUrunKodu))
+                    {
+                        if (yakit.OtomasyonUrunAdi.Contains("BENZIN")) { yakit.TurpakUrunKodu = "5,2"; changed = true; }
+                        else if (yakit.OtomasyonUrunAdi.Contains("MOTORIN")) { yakit.TurpakUrunKodu = "4,6,7,8,1"; changed = true; }
+                        else if (yakit.OtomasyonUrunAdi.Contains("LPG")) { yakit.TurpakUrunKodu = "9"; changed = true; }
+                    }
+                }
+
+                if (changed)
+                {
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Mevcut yakıt tanımları Turpak kodları ile güncellendi.");
                 }
             }
+        }
 
-            // Yakıtlar
-            if (!existingTypes.Contains(DefinitionType.YAKIT))
+        private async Task SeedSystemDefinitionsAsync()
+        {
+            if (!await _context.SystemDefinitions.AnyAsync())
             {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.YAKIT, Name = "Benzin", Code = "BENZIN", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.YAKIT, Name = "Motorin", Code = "MOTORIN", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.YAKIT, Name = "LPG", Code = "LPG", SortOrder = 3 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.YAKIT, Name = "Euro Diesel", Code = "EURO_DIESEL", SortOrder = 4 });
-            }
+                _logger.LogInformation("Sistem tanımları oluşturuluyor...");
+                var definitions = new List<SystemDefinition>();
 
-            // Giderler
-            if (!existingTypes.Contains(DefinitionType.GIDER))
-            {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Ekmek", Code = "EKMEK", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Temizlik", Code = "TEMIZLIK", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Personel", Code = "PERSONEL", SortOrder = 3 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Kırtasiye", Code = "KIRTASIYE", SortOrder = 4 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Diğer", Code = "DIGER", SortOrder = 99 });
-            }
+                // Gider Türleri
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Personel", Code = "PERSONEL", SortOrder = 1 });
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Yemek", Code = "YEMEK", SortOrder = 2 });
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Temizlik", Code = "TEMIZLIK", SortOrder = 3 });
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Kırtasiye", Code = "KIRTASIYE", SortOrder = 4 });
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GIDER, Name = "Diğer", Code = "DIGER", SortOrder = 99 });
 
-            // Gelirler
-            if (!existingTypes.Contains(DefinitionType.GELIR))
-            {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GELIR, Name = "Komisyon", Code = "KOMISYON", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GELIR, Name = "Prim", Code = "PRIM", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GELIR, Name = "Diğer", Code = "DIGER", SortOrder = 99 });
-            }
+                // Gelir Türleri
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GELIR, Name = "Prim", Code = "PRIM", SortOrder = 1 });
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GELIR, Name = "Komisyon", Code = "KOMISYON", SortOrder = 2 });
+                definitions.Add(new SystemDefinition { Type = DefinitionType.GELIR, Name = "Diğer", Code = "DIGER", SortOrder = 99 });
 
-            // Ödeme Yöntemleri
-            if (!existingTypes.Contains(DefinitionType.ODEME))
-            {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.ODEME, Name = "Nakit", Code = "NAKIT", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.ODEME, Name = "Kredi Kartı", Code = "KREDI_KARTI", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.ODEME, Name = "Paro Puan", Code = "PARO_PUAN", SortOrder = 3 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.ODEME, Name = "Mobil Ödeme", Code = "MOBIL_ODEME", SortOrder = 4 });
-            }
-
-            // Geliş Yöntemleri
-            if (!existingTypes.Contains(DefinitionType.GELIS_YONTEMI))
-            {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GELIS_YONTEMI, Name = "Tanker", Code = "TANKER", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GELIS_YONTEMI, Name = "Boru Hattı", Code = "BORU_HATTI", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.GELIS_YONTEMI, Name = "Varil", Code = "VARIL", SortOrder = 3 });
-            }
-
-            // Pompa Giderleri
-            if (!existingTypes.Contains(DefinitionType.POMPA_GIDER))
-            {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.POMPA_GIDER, Name = "Yıkama", Code = "YIKAMA", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.POMPA_GIDER, Name = "Bahşiş", Code = "BAHSIS", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.POMPA_GIDER, Name = "Temizlik", Code = "TEMIZLIK", SortOrder = 3 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.POMPA_GIDER, Name = "Tamir", Code = "TAMIR", SortOrder = 4 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.POMPA_GIDER, Name = "Diğer", Code = "DIGER", SortOrder = 99 });
-            }
-
-            // Pusula Türleri
-            if (!existingTypes.Contains(DefinitionType.PUSULA_TURU))
-            {
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Kasa Açılış", Code = "KASA_ACILIS", SortOrder = 1 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Kasa Devir", Code = "KASA_DEVIR", SortOrder = 2 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Nakit Tahsilat", Code = "NAKIT_TAHSILAT", SortOrder = 3 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Kredi Kartı", Code = "KREDI_KARTI", SortOrder = 4 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Havale/EFT", Code = "HAVALE_EFT", SortOrder = 5 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Masraf", Code = "MASRAF", SortOrder = 6 });
-                definitionsToSeed.Add(new SystemDefinition { Type = DefinitionType.PUSULA_TURU, Name = "Diğer", Code = "DIGER", SortOrder = 99 });
-            }
-
-            if (definitionsToSeed.Any())
-            {
-                await _context.SystemDefinitions.AddRangeAsync(definitionsToSeed);
+                _context.SystemDefinitions.AddRange(definitions);
                 await _context.SaveChangesAsync();
             }
         }
