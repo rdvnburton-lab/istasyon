@@ -159,6 +159,7 @@ export interface XmlStokOzet {
     ilkStok: number;
     toplamFark: number;
     kayitSayisi: number;
+    tahminiGun?: number;
 }
 
 export interface ManuelStokOzet {
@@ -166,6 +167,8 @@ export interface ManuelStokOzet {
     renk?: string;
     toplamGiris: number;
     toplamSatis: number;
+    sonStok?: number;
+    tahminiGun?: number;
     kaynak: string;
 }
 

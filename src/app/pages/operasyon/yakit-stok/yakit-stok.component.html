@@ -143,6 +143,17 @@
                             <span *ngIf="item.sonStok > 0" class="text-gray-500 text-lg ml-1">Lt</span>
                         </div>
 
+                        <!-- Tahmini Gün Gösterimi -->
+                        <div class="text-center mb-4" *ngIf="item.tahminiGun !== undefined && item.sonStok > 0">
+                            <span class="text-sm font-bold px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
+                                [class.bg-green-100]="item.tahminiGun > 7" [class.text-green-700]="item.tahminiGun > 7"
+                                [class.bg-yellow-100]="item.tahminiGun <= 7 && item.tahminiGun > 3"
+                                [class.text-yellow-700]="item.tahminiGun <= 7 && item.tahminiGun > 3"
+                                [class.bg-red-100]="item.tahminiGun <= 3" [class.text-red-700]="item.tahminiGun <= 3">
+                                <i class="pi pi-hourglass"></i>~ {{ item.tahminiGun }} Gün Yeter
+                            </span>
+                        </div>
+
                         <div class="grid grid-cols-3 gap-3 text-center">
                             <div class="p-3 bg-green-50 rounded-xl">
                                 <div class="text-green-600 text-[10px] mb-1 font-bold uppercase tracking-wide">Yükle

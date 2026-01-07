@@ -62,6 +62,9 @@ namespace IstasyonDemo.Api.Services
                 // 2. Otomasyon Satışlarını Ekle
                 foreach (var satisDto in dto.OtomasyonSatislar)
                 {
+                    // Safety check for zero-value sales (Otomasyon)
+                    if (satisDto.ToplamTutar <= 0 && satisDto.Litre <= 0) continue;
+
                     Personel? personel = null;
 
                     // 1. Önce bu Key ID şu an kimde var?
@@ -174,6 +177,9 @@ namespace IstasyonDemo.Api.Services
                 // 3. Filo Satışlarını Ekle
                 foreach (var filoDto in dto.FiloSatislar)
                 {
+                    // Safety check for zero-value sales
+                    if (filoDto.Tutar <= 0 && filoDto.Litre <= 0) continue;
+
                     var filo = _mapper.Map<FiloSatis>(filoDto);
                     filo.VardiyaId = vardiya.Id;
                     _context.FiloSatislar.Add(filo);
@@ -230,7 +236,7 @@ namespace IstasyonDemo.Api.Services
                 // Vardiyada satışı olan her personel için Pusula kaydı oluştur (Boş olsa bile)
                 var activePersonnelIds = await _context.OtomasyonSatislar
                     .Where(s => s.VardiyaId == vardiya.Id && s.PersonelId.HasValue)
-                    .Select(s => s.PersonelId.Value)
+                    .Select(s => s.PersonelId!.Value)
                     .Distinct()
                     .ToListAsync();
                 
@@ -1941,9 +1947,19 @@ namespace IstasyonDemo.Api.Services
                         var personel = await _context.Personeller
                             .FirstOrDefaultAsync(p => p.IstasyonId == vardiya.IstasyonId && (p.KeyId == sDto.PersonelKeyId || p.OtomasyonAdi == sDto.PersonelAdi));
 
+                        // Safety check for zero-value sales
+                        if (sDto.ToplamTutar <= 0 && sDto.Litre <= 0) continue;
+
                         var satis = _mapper.Map<OtomasyonSatis>(sDto);
                         satis.VardiyaId = vardiyaId;
                         satis.PersonelId = personel?.Id;
+                        
+                        // Explicitly ensure these are mapped for restoration
+                        satis.MobilOdemeTutar = sDto.MobilOdemeTutar;
+                        satis.PuanKullanimi = sDto.PuanKullanimi;
+                        satis.FiloAdi = sDto.FiloAdi;
+                        satis.TagNr = sDto.TagNr;
+                        satis.Plaka = sDto.Plaka;
                         
                         _context.OtomasyonSatislar.Add(satis);
                     }
@@ -1954,6 +1970,9 @@ namespace IstasyonDemo.Api.Services
                 {
                     foreach (var fDto in dto.FiloSatislar)
                     {
+                        // Safety check for zero-value sales
+                        if (fDto.Tutar <= 0 && fDto.Litre <= 0) continue;
+
                         var filo = _mapper.Map<FiloSatis>(fDto);
                         filo.VardiyaId = vardiyaId;
                         _context.FiloSatislar.Add(filo);

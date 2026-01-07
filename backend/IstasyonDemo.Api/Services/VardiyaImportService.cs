@@ -137,10 +137,17 @@ namespace IstasyonDemo.Api.Services
                     }
 
                     // Otomasyon vs Filo ayrımı
-                    bool isOtomasyon = fleetCode == "C0000" || string.IsNullOrEmpty(fleetCode) || fleetCode == "0";
+                    string dynamicCode = !string.IsNullOrWhiteSpace(station?.OtomasyonFiloKodu) ? station.OtomasyonFiloKodu.Trim() : "C0000";
+                    bool isMOdemSale = fleetCode != null && fleetCode.Equals("M-ODEM", StringComparison.OrdinalIgnoreCase);
+                    bool isOtomasyon = fleetCode == dynamicCode || string.IsNullOrEmpty(fleetCode) || fleetCode == "0" || isMOdemSale;
 
                     if (isOtomasyon)
                     {
+                        // Filter out zero-value sales (usually tests or errors)
+                        if (total <= 0 && amount <= 0) continue;
+
+                        var redemptionRaw = decimal.Parse(saleDetails.Elements().FirstOrDefault(x => x.Name.LocalName == "Redemption")?.Value.Replace(",", ".") ?? "0", CultureInfo.InvariantCulture);
+
                         dto.OtomasyonSatislar.Add(new CreateOtomasyonSatisDto
                         {
                             PersonelAdi = plate, // Plate field is used for attendant name in C0000
@@ -158,14 +165,20 @@ namespace IstasyonDemo.Api.Services
                             OdemeTuru = paymentType,
                             YazarKasaPlaka = ecrPlate,
                             YazarKasaFisNo = ecrReceiptNr,
-                            TagNr = tagNr
+                            TagNr = tagNr,
+                            FiloAdi = tagDetails?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetName")?.Value ?? "",
+                            PuanKullanimi = redemptionRaw,
+                            MobilOdemeTutar = isMOdemSale ? (total / 100) : 0
                         });
                     }
                     else
                     {
+                        // Filter out zero-value sales for Fleet as well
+                        if (total <= 0 && amount <= 0) continue;
+
                         dto.FiloSatislar.Add(new CreateFiloSatisDto
                         {
-                            FiloKodu = fleetCode,
+                            FiloKodu = fleetCode ?? "C0000",
                             FiloAdi = tagDetails?.Elements().FirstOrDefault(x => x.Name.LocalName == "FleetName")?.Value ?? "",
                             Plaka = !string.IsNullOrEmpty(plate) ? plate : ecrPlate,
                             Tutar = total / 100,
@@ -312,7 +325,7 @@ namespace IstasyonDemo.Api.Services
 
                 result.CreateDto = dto;
                 result.DosyaHash = hashString;
-                result.Istasyon = station;
+                result.Istasyon = station!;
                 result.RawXmlContent = xmlContent;
                 result.ZipBytes = zipBytes;
                 

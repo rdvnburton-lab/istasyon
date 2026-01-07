@@ -87,10 +87,11 @@ export class YakitStokComponent implements OnInit {
                     renk: m.renk || '#3b82f6', // Use backend color or default LPG color
                     toplamSevkiyat: m.toplamGiris,
                     toplamSatis: m.toplamSatis,
-                    sonStok: 0, // Not tracked via XML
+                    sonStok: m.sonStok || 0,
                     ilkStok: 0,
                     toplamFark: 0,
-                    kayitSayisi: xmlData.length > 0 ? xmlData[0].kayitSayisi : 0
+                    kayitSayisi: xmlData.length > 0 ? xmlData[0].kayitSayisi : 0,
+                    tahminiGun: m.tahminiGun || 0
                 }));
 
                 this.xmlStokVerileri = [...xmlData, ...manuelData];
@@ -122,27 +123,16 @@ export class YakitStokComponent implements OnInit {
         // 2. Total Monthly Sales
         this.totalMonthlySales = this.xmlStokVerileri.reduce((acc, item) => acc + item.toplamSatis, 0);
 
-        // 3. Estimated Days Remaining (Simple Avg Calculation)
-        // Avg Daily Sales = Total Sales / Days Passed (or record count)
-        // If we have proper shift dates, we can count distinct days. 
-        // For approximation, we'll use vardiyaHareketleri length or day of month.
+        // 3. Estimated Days Remaining (Minimum of all fuels)
+        // We use the backend provided 'tahminiGun' which is more accurate
+        const validEstimates = this.xmlStokVerileri
+            .filter(x => x.sonStok > 0 && x.tahminiGun !== undefined)
+            .map(x => x.tahminiGun || 0);
 
-        let daysPassed = this.vardiyaHareketleri.length > 0 ? this.vardiyaHareketleri.length : 1;
-        // Or strictly use current day of month if current month
-        const now = new Date();
-        if (this.selectedYear.value === now.getFullYear() && this.selectedMonth.value === now.getMonth()) {
-            daysPassed = Math.max(1, now.getDate());
+        if (validEstimates.length > 0) {
+            this.estimatedDaysLeft = Math.min(...validEstimates);
         } else {
-            // For past months, use ~30 days or actual count
-            daysPassed = Math.max(1, this.vardiyaHareketleri.length);
-        }
-
-        const avgDailySales = this.totalMonthlySales / daysPassed;
-
-        if (avgDailySales > 0) {
-            this.estimatedDaysLeft = Math.round(this.totalCurrentStock / avgDailySales);
-        } else {
-            this.estimatedDaysLeft = 999; // Plenty of stock / no sales
+            this.estimatedDaysLeft = 0;
         }
 
         // Cap reasonable display

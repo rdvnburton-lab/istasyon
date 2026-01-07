@@ -340,12 +340,12 @@ namespace IstasyonDemo.Api.Controllers
 
                     decimal otomasyonSatis = 0;
                     decimal litre = 0;
-                    int aracSayisi = 0; // JSON'da araç sayısı yok, şimdilik 0 veya tahmini
-
+                    int aracSayisi = 0;
                     if (personelDetay != null)
                     {
                         otomasyonSatis = personelDetay.Satislar.Sum(s => s.Tutar);
                         litre = personelDetay.Satislar.Sum(s => s.Litre);
+                        aracSayisi = personelDetay.ToplamIslemSayisi; // 🆕 JSON'dan oku
                         
                         // Yakıt dağılımını topla
                         foreach (var satis in personelDetay.Satislar)

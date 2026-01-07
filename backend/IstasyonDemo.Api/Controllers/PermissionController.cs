@@ -80,7 +80,7 @@ namespace IstasyonDemo.Api.Controllers
                 .ToListAsync();
 
             var grouped = allPermissions
-                .GroupBy(rp => rp.Role.Ad.ToLower())
+                .GroupBy(rp => rp.Role?.Ad.ToLower() ?? "unknown")
                 .ToDictionary(g => g.Key, g => g.Select(rp => rp.ResourceKey).ToList());
 
             return Ok(grouped);

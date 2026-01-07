@@ -303,7 +303,7 @@ namespace IstasyonDemo.Api.Services
                                 GercekPersonelAdi = p.PersonelAdi,
                                 ToplamLitre = p.Satislar.Sum(s => s.Litre),
                                 ToplamTutar = p.Satislar.Sum(s => s.Tutar),
-                                IslemSayisi = p.Satislar.Count
+                                IslemSayisi = p.ToplamIslemSayisi // FIX: Use archived transaction count, not fuel type count
                             }).ToList();
 
                             // Personel ID eşleştirmesi
@@ -338,7 +338,7 @@ namespace IstasyonDemo.Api.Services
                                 Tutar = f.Tutar, 
                                 Litre = f.Litre,
                                 IslemSayisi = 1 
-                            }).ToList();
+                            }).OrderBy(x => x.FiloAdi).ToList();
 
                             data.FiloOzet = new FiloMutabakatOzetDto
                             {
@@ -376,7 +376,9 @@ namespace IstasyonDemo.Api.Services
                 var dbOtomasyon = await _context.OtomasyonSatislar.Where(s => s.VardiyaId == vardiyaId).ToListAsync();
                 fuelSales.AddRange(dbOtomasyon.Select(s => new PdfFuelSaleItem { Tur = s.YakitTuru, Tutar = s.ToplamTutar, Litre = s.Litre, Adet = 1 }));
 
-                var dbFilo = await _context.FiloSatislar.Where(f => f.VardiyaId == vardiyaId && f.FiloAdi != "İSTASYON").ToListAsync();
+                var dbFilo = await _context.FiloSatislar
+                    .Where(f => f.VardiyaId == vardiyaId && f.FiloAdi != "İSTASYON")
+                    .ToListAsync();
                 fuelSales.AddRange(dbFilo.Select(f => new PdfFuelSaleItem { Tur = f.YakitTuru, Tutar = f.Tutar, Litre = f.Litre, Adet = 1 }));
             }
 
@@ -415,7 +417,7 @@ namespace IstasyonDemo.Api.Services
                 var yakitSatislariRaw = new List<dynamic>();
                 foreach (var s in combinedSales)
                 {
-                    var yakit = await _yakitService.IdentifyYakitAsync(s.Tur);
+                    var yakit = await _yakitService.IdentifyYakitAsync(s.Tur ?? "");
                     yakitSatislariRaw.Add(new {
                         YakitTuru = yakit?.Ad ?? s.Tur ?? "DIGER",
                         s.Tutar,
@@ -449,7 +451,7 @@ namespace IstasyonDemo.Api.Services
                     AcikFazla = fark, 
                     Durum = Math.Abs(fark) < 1 ? "TAM" : (fark < 0 ? "AÇIK" : "FAZLA") 
                 };
-            }).ToList();
+            }).OrderBy(x => x.Ad).ToList();
 
             var krediKartiDokumu = new List<CreditCardJsonModel>();
             foreach (var p in data.Pusulalar)
@@ -457,7 +459,7 @@ namespace IstasyonDemo.Api.Services
                 if (p.KrediKartiDetayList != null && p.KrediKartiDetayList.Any())
                     krediKartiDokumu.AddRange(p.KrediKartiDetayList.Select(k => new CreditCardJsonModel { Banka = k.BankaAdi, Tutar = k.Tutar }));
             }
-            var groupedKK = krediKartiDokumu.GroupBy(k => k.Banka).Select(g => new { Banka = g.Key, Tutar = g.Sum(x => x.Tutar) }).ToList();
+            var groupedKK = krediKartiDokumu.GroupBy(k => k.Banka).Select(g => new { Banka = g.Key, Tutar = g.Sum(x => x.Tutar) }).OrderBy(x => x.Banka).ToList();
             if (!groupedKK.Any() && data.GenelOzet.ToplamKrediKarti > 0) groupedKK.Add(new { Banka = "GENEL TOPLAM", Tutar = data.GenelOzet.ToplamKrediKarti });
 
             var digerList = data.Pusulalar.SelectMany(p => p.DigerOdemeler)
@@ -559,8 +561,9 @@ namespace IstasyonDemo.Api.Services
                     col.Item().Row(row =>
                     {
                         row.Spacing(10);
-                        // Sales Card
-                        var totalFuelSales = data.GenelOzet.ToplamOtomasyon + (data.FiloOzet?.ToplamTutar ?? 0);
+                        // Sales Card - FIX: Use yakitSatislari sum for consistency
+                        // This ensures Draft and Approved reports show the same "Akaryakıt Satış" value
+                        var totalFuelSales = yakitSatislari.Sum(x => (decimal)x.ToplamTutar);
                         row.RelativeItem().Border(1).BorderColor(Colors.Grey.Lighten2).Background(Colors.Grey.Lighten4).Padding(10).Column(c => {
                             c.Item().Text("Akaryakıt Satış (Oto+Filo)").FontSize(10).FontColor(Colors.Grey.Darken1);
                             c.Item().Text(totalFuelSales.ToString("N2") + " TL").FontSize(14).Bold().FontColor(Colors.Blue.Darken2);
@@ -705,7 +708,7 @@ namespace IstasyonDemo.Api.Services
                              rightCol.Item().Table(table => {
                                  table.ColumnsDefinition(cd => { cd.RelativeColumn(3); cd.RelativeColumn(2); });
                                  table.Header(h => { h.Cell().Element(HStyle).Text("Banka"); h.Cell().Element(HStyle).AlignRight().Text("Tutar"); });
-                                 foreach(var kk in groupedKK) {
+                                 foreach(var kk in groupedKK.OrderBy(x => x.Banka)) {
                                      table.Cell().Element(CStyle).Text(kk.Banka); table.Cell().Element(CStyle).AlignRight().Text(kk.Tutar.ToString("N2"));
                                  }
                                  table.Footer(f => { f.Cell().Element(FStyle).Text("TOPLAM").Bold(); f.Cell().Element(FStyle).AlignRight().Text(groupedKK.Sum(x=>x.Tutar).ToString("N2")).Bold(); });
@@ -835,7 +838,7 @@ namespace IstasyonDemo.Api.Services
 
     public class PdfFuelSaleItem
     {
-        public string Tur { get; set; }
+        public string Tur { get; set; } = string.Empty;
         public decimal Tutar { get; set; }
         public decimal Litre { get; set; }
         public int Adet { get; set; }

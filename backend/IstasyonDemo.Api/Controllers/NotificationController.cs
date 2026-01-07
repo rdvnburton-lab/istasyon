@@ -196,7 +196,7 @@ namespace IstasyonDemo.Api.Controllers
             if (!logs.Any()) return Ok(new { message = "İşlenecek log bulunamadı." });
 
             var logDates = logs.Select(l => l.IslemTarihi).ToList();
-            var userIds = logs.Where(l => l.KullaniciId.HasValue).Select(l => l.KullaniciId.Value).Distinct().ToList();
+            var userIds = logs.Where(l => l.KullaniciId.HasValue).Select(l => l.KullaniciId!.Value).Distinct().ToList();
 
             // Batch check for existing notifications
             // Note: This is an approximation. Ideally, we should have a LogId in Notification table to be precise.

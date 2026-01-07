@@ -58,7 +58,7 @@ namespace IstasyonDemo.Api.Controllers
         [HttpPost("{id}/silme-talebi")]
         public async Task<IActionResult> SilmeTalebi(int id, [FromBody] SilmeTalebiDto dto)
         {
-            await _vardiyaService.SilmeTalebiOlusturAsync(id, dto, CurrentUserId, CurrentUserRole, User.Identity.Name);
+            await _vardiyaService.SilmeTalebiOlusturAsync(id, dto, CurrentUserId, CurrentUserRole, User.Identity?.Name ?? "Unknown");
             return Ok(new { message = "Vardiya silme onayına gönderildi." });
         }
 

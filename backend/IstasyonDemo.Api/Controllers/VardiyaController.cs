@@ -57,7 +57,7 @@ namespace IstasyonDemo.Api.Controllers
 
             try
             {
-                var vardiya = await _vardiyaService.CreateVardiyaAsync(dto, CurrentUserId, CurrentUserRole, User.Identity.Name);
+                var vardiya = await _vardiyaService.CreateVardiyaAsync(dto, CurrentUserId, CurrentUserRole, User.Identity?.Name ?? "Unknown");
                 return CreatedAtAction(nameof(GetById), new { id = vardiya.Id }, vardiya);
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace IstasyonDemo.Api.Controllers
                     return BadRequest(new { message = "Sadece .zip dosyaları kabul edilir." });
 
                 using var stream = file.OpenReadStream();
-                await _vardiyaService.ProcessXmlZipAsync(stream, file.FileName, CurrentUserId, CurrentUserRole, User.Identity.Name);
+                await _vardiyaService.ProcessXmlZipAsync(stream, file.FileName, CurrentUserId, CurrentUserRole, User.Identity?.Name ?? "Unknown");
                 return Ok(new { message = "Dosya başarıyla işlendi ve vardiya oluşturuldu." });
             }
             catch (InvalidOperationException ex)

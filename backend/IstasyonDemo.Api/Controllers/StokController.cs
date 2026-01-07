@@ -473,7 +473,7 @@ namespace IstasyonDemo.Api.Controllers
             var xmlOzet = new List<dynamic>();
             foreach (var g in xmlOzetRaw)
             {
-                var yakit = await _yakitService.IdentifyYakitAsync(g.Key);
+                var yakit = await _yakitService.IdentifyYakitAsync(g.Key ?? "");
                 var yakitAdi = yakit?.Ad ?? g.Key ?? "Bilinmeyen";
 
                 var tankBazliGruplar = g.GroupBy(t => t.TankNo).ToList();
@@ -503,6 +503,16 @@ namespace IstasyonDemo.Api.Controllers
             }
 
             // 4. XML Kaynaklı Özetini Tamamla (Satış ve Fark Hesapla)
+            // Gün hesabı - Gerçek veri bulunan gün sayısını hesapla
+            // Arşivlerdeki distinct tarih sayısı gerçek çalışma günlerini verir
+            int daysElapsed = arsivler
+                .Select(a => a.Tarih.Date)
+                .Distinct()
+                .Count();
+            
+            // Eğer veri yoksa veya 0 ise, minimum 1 gün kabul et
+            if (daysElapsed == 0) daysElapsed = 1;
+
             var xmlOzetFinal = new List<object>();
             foreach (var item in xmlOzet)
             {
@@ -519,6 +529,9 @@ namespace IstasyonDemo.Api.Controllers
                 decimal beklenenSatis = item.IlkStok + item.ToplamSevkiyat - item.SonStok;
                 decimal fark = beklenenSatis - toplamSatis;
 
+                decimal gunlukOrtalama = daysElapsed > 0 ? toplamSatis / daysElapsed : 0;
+                decimal tahminiGun = gunlukOrtalama > 0 ? item.SonStok / gunlukOrtalama : 0;
+
                 xmlOzetFinal.Add(new
                 {
                     item.YakitTipi,
@@ -529,7 +542,8 @@ namespace IstasyonDemo.Api.Controllers
                     item.SonStok,
                     item.IlkStok,
                     ToplamFark = fark,
-                    item.KayitSayisi
+                    item.KayitSayisi,
+                    TahminiGun = (int)Math.Floor(tahminiGun)
                 });
             }
 
@@ -562,6 +576,21 @@ namespace IstasyonDemo.Api.Controllers
             }
             var lpgSatislar = lpgSatisGruplari.Values.Sum();
 
+            // LPG Devir ve Son Stok Hesabı
+            decimal lpgDevir = 0;
+            if (lpgYakitEntity != null)
+            {
+                var prevMonthDate = startDate.AddMonths(-1);
+                // İstasyon filtresi varsa stok özetinde de dikkate almak gerekebilir ama AylikStokOzetleri istasyon bazlı değil şu an (Global kabul ediliyor veya geliştirilmeli)
+                // Basitlik için direkt çekiyoruz.
+                var prevStock = await _context.AylikStokOzetleri
+                    .FirstOrDefaultAsync(x => x.Yil == prevMonthDate.Year && x.Ay == prevMonthDate.Month && x.YakitId == lpgYakitEntity.Id);
+                lpgDevir = prevStock?.KalanStok ?? 0;
+            }
+            decimal lpgSonStok = lpgDevir + lpgGirisler - lpgSatislar;
+            decimal lpgGunlukOrtalama = daysElapsed > 0 ? lpgSatislar / daysElapsed : 0;
+            decimal lpgTahminiGun = lpgGunlukOrtalama > 0 ? lpgSonStok / lpgGunlukOrtalama : 0;
+
             var manuelOzet = new List<object>();
             if (lpgYakitlar.Any() || lpgSatislar > 0)
             {
@@ -571,6 +600,8 @@ namespace IstasyonDemo.Api.Controllers
                     Renk = lpgYakitEntity?.Renk ?? "#3b82f6",
                     ToplamGiris = lpgGirisler,
                     ToplamSatis = lpgSatislar,
+                    SonStok = lpgSonStok,
+                    TahminiGun = (int)Math.Floor(lpgTahminiGun),
                     Kaynak = "FATURA"
                 });
             }
