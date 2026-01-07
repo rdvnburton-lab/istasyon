@@ -367,8 +367,10 @@ namespace IstasyonDemo.Api.Controllers
         [HttpGet("karma-ozet")]
         public async Task<IActionResult> GetKarmaOzet([FromQuery] int? istasyonId, [FromQuery] int yil, [FromQuery] int ay)
         {
-            var startDate = DateTime.SpecifyKind(new DateTime(yil, ay, 1), DateTimeKind.Utc);
-            var endDate = startDate.AddMonths(1);
+            // Yerel saat diliminde ay başlangıcı ve bitişi oluştur, sonra UTC'ye çevir
+            var localStart = new DateTime(yil, ay, 1, 0, 0, 0, DateTimeKind.Local);
+            var startDate = localStart.ToUniversalTime();
+            var endDate = localStart.AddMonths(1).ToUniversalTime();
 
             // 1. Arşivleri Çek (JSON)
             var query = _context.VardiyaRaporArsivleri

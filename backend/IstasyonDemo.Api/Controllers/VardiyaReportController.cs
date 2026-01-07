@@ -162,7 +162,7 @@ namespace IstasyonDemo.Api.Controllers
                     v.Durum,
                     PersonelSatisJson = v.RaporArsiv != null ? v.RaporArsiv.PersonelSatisDetayJson : null,
                     FiloSatisJson = v.RaporArsiv != null ? v.RaporArsiv.FiloSatisDetayJson : null,
-                    Pusulalar = v.Pusulalar.Select(p => new { p.PersonelId, p.PersonelAdi, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) }).ToList()
+                    Pusulalar = v.Pusulalar.Select(p => new { p.PersonelId, p.PersonelAdi, Toplam = p.Nakit + p.KrediKarti + p.DigerOdemeler.Sum(d => d.Tutar) + p.Veresiyeler.Sum(vr => vr.Tutar) }).ToList()
                 })
                 .ToListAsync();
 
@@ -194,7 +194,7 @@ namespace IstasyonDemo.Api.Controllers
                                 var personelAdi = personel?.AdSoyad ?? p.PersonelAdi;
 
                                 // Tahsilat bul
-                                var pusula = v.Pusulalar.FirstOrDefault(x => x.PersonelId == personelId);
+                                var pusula = v.Pusulalar.FirstOrDefault(x => x.PersonelId == personelId || x.PersonelAdi == personelAdi);
                                 var tahsilat = pusula?.Toplam ?? 0;
 
                                 personelFarklari.Add(new PersonelFarkDto
@@ -318,10 +318,11 @@ namespace IstasyonDemo.Api.Controllers
                 })
                 .ToListAsync();
 
-            // 2. Pusulaları çek (Manuel tahsilat - Silinmeyen tablo)
             var pusulalar = await _context.Pusulalar
-                .Where(p => p.PersonelId == personelId && p.Vardiya!.BaslangicTarihi >= start && p.Vardiya!.BaslangicTarihi <= end && p.Vardiya!.Durum == VardiyaDurum.ONAYLANDI)
-                .Select(p => new { p.VardiyaId, p.Nakit, p.KrediKarti, p.Aciklama, p.Vardiya!.BaslangicTarihi })
+                .Include(p => p.Vardiya)
+                .Include(p => p.DigerOdemeler)
+                .Include(p => p.Veresiyeler)
+                .Where(p => (p.PersonelId == personelId || p.PersonelAdi == personel.AdSoyad) && p.Vardiya!.BaslangicTarihi >= start && p.Vardiya!.BaslangicTarihi <= end && p.Vardiya!.Durum == VardiyaDurum.ONAYLANDI)
                 .ToListAsync();
 
             var hareketler = new List<PersonelHareketDto>();
@@ -364,7 +365,14 @@ namespace IstasyonDemo.Api.Controllers
                     }
 
                     var pPusula = pusulalar.FirstOrDefault(p => p.VardiyaId == arsiv.VardiyaId);
-                    var manuelTahsilat = pPusula != null ? (pPusula.Nakit + pPusula.KrediKarti) : 0;
+                    
+                    decimal manuelTahsilat = 0;
+                    if (pPusula != null)
+                    {
+                        var digerToplam = pPusula.DigerOdemeler?.Sum(d => d.Tutar) ?? 0;
+                        var veresiyeToplam = pPusula.Veresiyeler?.Sum(v => v.Tutar) ?? 0;
+                        manuelTahsilat = pPusula.Nakit + pPusula.KrediKarti + digerToplam + veresiyeToplam;
+                    }
 
                     // Eğer hem satış hem tahsilat yoksa listeye ekleme
                     if (otomasyonSatis == 0 && manuelTahsilat == 0) continue;
@@ -376,7 +384,7 @@ namespace IstasyonDemo.Api.Controllers
                         OtomasyonSatis = otomasyonSatis,
                         ManuelTahsilat = manuelTahsilat,
                         Fark = manuelTahsilat - otomasyonSatis,
-                        AracSayisi = 0, // JSON'da yoktu, eklenebilir
+                        AracSayisi = aracSayisi, // JSON'dan hesaplanan değer
                         Litre = litre,
                         Aciklama = pPusula?.Aciklama
                     });
@@ -393,10 +401,13 @@ namespace IstasyonDemo.Api.Controllers
             var arsivVardiyaIds = arsivler.Select(a => a.VardiyaId).ToHashSet();
             foreach (var p in pusulalar.Where(p => !arsivVardiyaIds.Contains(p.VardiyaId)))
             {
-                var manuelTahsilat = p.Nakit + p.KrediKarti;
+                var digerToplam = p.DigerOdemeler?.Sum(d => d.Tutar) ?? 0;
+                var veresiyeToplam = p.Veresiyeler?.Sum(v => v.Tutar) ?? 0;
+                var manuelTahsilat = p.Nakit + p.KrediKarti + digerToplam + veresiyeToplam;
+                
                 hareketler.Add(new PersonelHareketDto
                 {
-                    Tarih = p.BaslangicTarihi,
+                    Tarih = p.Vardiya.BaslangicTarihi, // Vardiya Included
                     VardiyaId = p.VardiyaId,
                     OtomasyonSatis = 0,
                     ManuelTahsilat = manuelTahsilat,
@@ -422,8 +433,8 @@ namespace IstasyonDemo.Api.Controllers
                 ToplamFark = hareketler.Sum(h => h.Fark),
                 ToplamLitre = toplamLitre,
                 AracSayisi = hareketler.Sum(h => h.AracSayisi),
-                OrtalamaLitre = hareketler.Count > 0 ? toplamLitre / hareketler.Count : 0,
-                OrtalamaTutar = hareketler.Count > 0 ? hareketler.Sum(h => h.OtomasyonSatis) / hareketler.Count : 0,
+                OrtalamaLitre = hareketler.Count > 0 ? toplamLitre / hareketler.Sum(h => h.AracSayisi)  : 0,
+                OrtalamaTutar = hareketler.Count > 0 ? hareketler.Sum(h => h.OtomasyonSatis) / hareketler.Sum(h => h.AracSayisi)  : 0,
                 YakitDagilimi = yakitMap.OrderByDescending(y => y.Litre).ToList()
             };
 
@@ -452,21 +463,24 @@ namespace IstasyonDemo.Api.Controllers
             if (vardiya == null)
                 return NotFound(new { message = "Vardiya bulunamadı." });
 
-            // Sadece onaylanmış vardiyalar için rapor göster
-            if (vardiya.Durum != VardiyaDurum.ONAYLANDI)
+            // Sadece onaylanmış vardiyalar için arşivden oku
+            if (vardiya.Durum == VardiyaDurum.ONAYLANDI)
             {
-                return BadRequest(new { message = "Bu vardiya henüz onaylanmadı, rapor mevcut değil." });
+                var arsivRaporu = await _arsivService.GetKarsilastirmaRaporuFromArsiv(vardiyaId);
+                if (arsivRaporu != null)
+                {
+                    return Ok(arsivRaporu);
+                }
             }
 
-            // Arşivden oku
-            var arsivRaporu = await _arsivService.GetKarsilastirmaRaporuFromArsiv(vardiyaId);
-            if (arsivRaporu != null)
+            // Onaylanmamış veya arşivi eksik olanlar için anlık hesapla (Taslak)
+            var taslakRapor = await _arsivService.GetTaslakKarsilastirmaRaporu(vardiyaId);
+            if (taslakRapor != null)
             {
-                return Ok(arsivRaporu);
+                return Ok(taslakRapor);
             }
 
-            // Arşiv yoksa - bu durum olmamalı (onaylı ama arşivlenmemiş)
-            return StatusCode(500, new { message = "Rapor arşivi bulunamadı. Lütfen sistem yöneticisiyle iletişime geçin." });
+            return StatusCode(500, new { message = "Rapor oluşturulamadı." });
         }
     }
 }

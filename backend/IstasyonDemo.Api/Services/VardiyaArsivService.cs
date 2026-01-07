@@ -196,6 +196,14 @@ namespace IstasyonDemo.Api.Services
             return arsiv;
         }
 
+        public async Task<KarsilastirmaRaporuDto?> GetTaslakKarsilastirmaRaporu(int vardiyaId)
+        {
+            var vardiya = await GetVardiyaWithDetails(vardiyaId);
+            if (vardiya == null) return null;
+            var sonuc = await HesaplaRaporVerileri(vardiya);
+            return sonuc.KarsilastirmaRaporu;
+        }
+
         public async Task<bool> OnayiKaldirVeGeriYukle(int vardiyaId, int userId, string userName)
         {
             try
@@ -215,7 +223,7 @@ namespace IstasyonDemo.Api.Services
 
         #region Private Helper Methods
 
-        private async Task<Vardiya?> GetVardiyaWithDetails(int vardiyaId)
+        public async Task<Vardiya?> GetVardiyaWithDetails(int vardiyaId)
         {
             return await _context.Vardiyalar
                 .AsSplitQuery()
@@ -229,7 +237,7 @@ namespace IstasyonDemo.Api.Services
                 .FirstOrDefaultAsync(v => v.Id == vardiyaId);
         }
 
-        private async Task<VardiyaHesaplamaSonucu> HesaplaRaporVerileri(Vardiya vardiya)
+        public async Task<VardiyaHesaplamaSonucu> HesaplaRaporVerileri(Vardiya vardiya)
         {
             // Mobil Satışlar (OtomasyonSatislar içindeki MobilOdemeTutar alanından)
             var mobileSales = vardiya.OtomasyonSatislar.Where(s => s.MobilOdemeTutar > 0).ToList();
@@ -237,8 +245,8 @@ namespace IstasyonDemo.Api.Services
             // Geçerli Filo Satışları (Mobil ödemeler artık OtomasyonSatislar içinde olduğu için buradan ayıklamaya gerek yok ama ISTASYON'u dahil ediyoruz)
             var validFiloSatislar = vardiya.FiloSatislar.ToList();
 
-            var sistemToplam = vardiya.OtomasyonSatislar.Sum(s => s.ToplamTutar); // Mobil ödemeler zaten OtomasyonSatislar içinde
             var filoToplam = validFiloSatislar.Sum(f => f.Tutar);
+            var sistemToplam = vardiya.OtomasyonSatislar.Sum(s => s.ToplamTutar) + filoToplam; // FIX: Sistem Verisine Filo da dahildir.
 
             // Tahsilat Toplamı Hesabı:
             // Mobil ödemeler otomatik olarak pompacı pusulasına "Diğer Ödeme" olarak işlendiği için
@@ -247,6 +255,8 @@ namespace IstasyonDemo.Api.Services
             var tahsilatToplam = vardiya.Pusulalar.Sum(p => p.Nakit + p.KrediKarti + (p.DigerOdemeler?.Sum(d => d.Tutar) ?? 0) + (p.Veresiyeler?.Sum(v => v.Tutar) ?? 0));
             var giderToplam = vardiya.Giderler.Sum(g => g.Tutar);
             
+            // Fark = (Pusula + Gider + Filo(Sanal Tahsilat)) - (Otomasyon + Filo(Sistem))
+            // Filo iki tarafta da olduğu için sadeleşir: Fark = Pusula + Gider - Otomasyon
             var fark = tahsilatToplam + filoToplam + giderToplam - sistemToplam;
             var farkYuzde = sistemToplam > 0 ? (fark / sistemToplam) * 100 : 0;
             
@@ -316,7 +326,7 @@ namespace IstasyonDemo.Api.Services
 
             var karsilastirmaDetaylar = new List<KarsilastirmaDetayDto>
             {
-                new() { OdemeYontemi = "POMPACI_SATISI", SistemTutar = sistemToplam, TahsilatTutar = tahsilatToplam, Fark = tahsilatToplam - sistemToplam },
+                new() { OdemeYontemi = "POMPACI_SATISI", SistemTutar = sistemToplam - filoToplam, TahsilatTutar = tahsilatToplam, Fark = tahsilatToplam - (sistemToplam - filoToplam) },
                 new() { OdemeYontemi = "FILO", SistemTutar = filoToplam, TahsilatTutar = filoToplam, Fark = 0 }
             };
 
@@ -379,7 +389,7 @@ namespace IstasyonDemo.Api.Services
         public string? SorumluAdi { get; set; }
     }
 
-    internal class VardiyaHesaplamaSonucu
+    public class VardiyaHesaplamaSonucu
     {
         public decimal SistemToplam { get; set; }
         public decimal TahsilatToplam { get; set; }
