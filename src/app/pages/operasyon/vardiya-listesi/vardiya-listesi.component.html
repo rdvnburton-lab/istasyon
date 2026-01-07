@@ -44,7 +44,7 @@
         </div>
         <div class="summary-card purple">
             <div class="summary-icon"><i class="pi pi-wallet"></i></div>
-            <div class="summary-value">{{ formatShortNumber(summary.toplamCiro) }}₺</div>
+            <div class="summary-value">{{ summary.toplamCiro | number:'1.2-2' }}₺</div>
             <div class="summary-label">Toplam</div>
         </div>
     </div>
@@ -292,7 +292,7 @@
                             class="text-xs font-semibold uppercase tracking-wider text-[var(--text-color-secondary)]">Toplam
                             Ciro</span>
                         <h3 class="text-2xl font-bold m-0 text-[var(--text-color)]">{{
-                            formatShortNumber(summary.toplamCiro) }} ₺</h3>
+                            summary.toplamCiro | number:'1.2-2' }} ₺</h3>
                     </div>
                 </div>
                 <div class="pt-3 border-t border-[var(--surface-border)]">

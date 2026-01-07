@@ -5,6 +5,45 @@
     padding-bottom: 80px; // Bottom nav space
 }
 
+// Tank Animation Keyframes
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: translateX(-100%);
+    }
+
+    50% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes tankFill {
+    0% {
+        height: 0;
+    }
+
+    100% {
+        height: var(--fill-height);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 // ===== MOBILE NATIVE HEADER =====
 .mobile-page-header {
     background: var(--surface-card);

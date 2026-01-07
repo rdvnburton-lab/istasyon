@@ -90,16 +90,17 @@
         <ng-container *ngIf="!loading && !vardiyalarLoading && sonuc">
             <!-- Sistem Toplamı -->
             <div class="col-span-12 md:col-span-4">
-                <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
-                    style="background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #2563eb 100%); box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);">
+                <div class="p-5 rounded-2xl h-full transition-all duration-300 hover:scale-105 shadow-xl"
+                    style="background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #2563eb 100%);">
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
-                            style="background: rgba(255,255,255,0.2);">
+                            style="background: rgba(254, 252, 252, 0.2);">
                             <i class="pi pi-server text-2xl text-white"></i>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs uppercase tracking-wider text-white">Sistem Verisi</span>
-                            <h3 class="text-3xl font-bold m-0 text-white">{{ sonuc.sistemToplam |
+                            <span class="text-lg font-bold uppercase tracking-wide text-white">Sistem Verisi</span>
+                            <h3 class="text-4xl font-bold m-0 text-white tracking-tight"
+                                style="color: white !important;">{{ sonuc.sistemToplam |
                                 currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</h3>
                         </div>
                     </div>
@@ -112,17 +113,20 @@
 
             <!-- Tahsilat Toplamı -->
             <div class="col-span-12 md:col-span-4">
-                <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
-                    style="background: linear-gradient(135deg, #10b981 0%, #22c55e 50%, #16a34a 100%); box-shadow: 0 10px 40px rgba(34, 197, 94, 0.3);">
+                <div class="p-5 rounded-2xl h-full transition-all duration-300 hover:scale-105 shadow-xl"
+                    style="background: linear-gradient(135deg, #10b981 0%, #22c55e 50%, #16a34a 100%);">
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
                             style="background: rgba(255,255,255,0.2);">
                             <i class="pi pi-wallet text-2xl text-white"></i>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs uppercase tracking-wider text-white/70">Girilen Tahsilat</span>
-                            <h3 class="text-3xl font-bold m-0 text-white">{{ sonuc.tahsilatToplam |
-                                currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</h3>
+                            <span class="text-lg font-bold uppercase tracking-wide text-white/90">
+                                Tahsilat</span>
+                            <h3 class="text-4xl font-bold m-0 text-white tracking-tight"
+                                style="color: white !important;">{{ sonuc.tahsilatToplam |
+                                currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                            </h3>
                         </div>
                     </div>
                     <div class="pt-3 mt-3 border-t border-white/20">
@@ -133,17 +137,19 @@
 
             <!-- Fark -->
             <div class="col-span-12 md:col-span-4">
-                <div class="p-4 rounded-xl h-full transition-all duration-300 hover:scale-105"
-                    [style.background]="getFarkCardBackground(sonuc)" [style.box-shadow]="getFarkCardShadow(sonuc)">
+                <div class="p-5 rounded-2xl h-full transition-all duration-300 hover:scale-105 shadow-xl"
+                    [style.background]="getFarkCardBackground(sonuc)">
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
                             style="background: rgba(255,255,255,0.2);">
                             <i class="pi text-2xl text-white" [ngClass]="getFarkIcon(sonuc)"></i>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs uppercase tracking-wider text-white/70">Fark</span>
-                            <h3 class="text-3xl font-bold m-0 text-white">{{ sonuc.fark |
-                                currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</h3>
+                            <span class="text-lg font-bold uppercase tracking-wide text-white/90">Fark</span>
+                            <h3 class="text-4xl font-bold m-0 text-white tracking-tight"
+                                style="color: white !important;">{{ sonuc.fark |
+                                currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}
+                            </h3>
                         </div>
                     </div>
                     <div class="pt-3 mt-3 border-t border-white/20 flex justify-between items-center">
@@ -283,13 +289,13 @@
                 <div class="card">
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-semibold text-surface-500 uppercase">Tarih</label>
+                            <label class="text-sm font-semibold text-surface-500 uppercase">Tarih</label>
                             <p-datepicker [(ngModel)]="baslangicTarihi" (ngModelChange)="onTarihChange()"
                                 [showIcon]="true" dateFormat="dd.mm.yy" styleClass="w-40">
                             </p-datepicker>
                         </div>
                         <div class="flex flex-col gap-1 flex-1">
-                            <label class="text-xs font-semibold text-surface-500 uppercase">Vardiya</label>
+                            <label class="text-sm font-semibold text-surface-500 uppercase">Vardiya</label>
                             <p-select [options]="vardiyalar" [(ngModel)]="secilenVardiya"
                                 (ngModelChange)="karsilastirmaYap()" optionLabel="dosyaAdi" placeholder="Vardiya Seçin"
                                 [loading]="vardiyalarLoading" styleClass="w-full">
@@ -311,18 +317,29 @@
                 <!-- Sonuçlar 1 -->
                 <ng-container *ngIf="sonuc">
                     <div class="grid grid-cols-3 gap-4">
-                        <div class="p-3 rounded-lg bg-blue-500 text-white text-center">
-                            <div class="text-xs opacity-80">Sistem</div>
-                            <div class="font-bold">{{ sonuc.sistemToplam | currency:'TRY':'':'1.2-2':'tr' }}</div>
+                        <div
+                            class="p-5 rounded-2xl bg-blue-600 text-white text-center shadow-xl transform transition-transform hover:scale-105">
+                            <div class="text-lg font-bold opacity-90 mb-2 uppercase tracking-wide">Sistem</div>
+                            <div class="text-4xl font-bold tracking-tight" style="color: white !important;">{{
+                                sonuc.sistemToplam |
+                                currency:'TRY':'':'1.0-0':'tr' }}<span class="text-2xl text-white">,{{
+                                    (sonuc.sistemToplam % 1 * 100) | number:'1.0-0' }}</span></div>
                         </div>
-                        <div class="p-3 rounded-lg bg-green-500 text-white text-center">
-                            <div class="text-xs opacity-80">Tahsilat</div>
-                            <div class="font-bold">{{ sonuc.tahsilatToplam | currency:'TRY':'':'1.2-2':'tr' }}</div>
+                        <div
+                            class="p-5 rounded-2xl bg-green-600 text-white text-center shadow-xl transform transition-transform hover:scale-105">
+                            <div class="text-lg font-bold opacity-90 mb-2 uppercase tracking-wide">Tahsilat</div>
+                            <div class="text-4xl font-bold tracking-tight" style="color: white !important;">{{
+                                sonuc.tahsilatToplam |
+                                currency:'TRY':'':'1.0-0':'tr' }}<span class="text-2xl text-white">,{{
+                                    (sonuc.tahsilatToplam % 1 * 100) | number:'1.0-0' }}</span></div>
                         </div>
-                        <div class="p-3 rounded-lg text-white text-center"
+                        <div class="p-5 rounded-2xl text-white text-center shadow-xl transform transition-transform hover:scale-105"
                             [style.background]="getFarkCardBackground(sonuc)">
-                            <div class="text-xs opacity-80">Fark</div>
-                            <div class="font-bold">{{ sonuc.fark | currency:'TRY':'':'1.2-2':'tr' }}</div>
+                            <div class="text-lg font-bold opacity-90 mb-2 uppercase tracking-wide">Fark</div>
+                            <div class="text-4xl font-bold tracking-tight" style="color: white !important;">{{
+                                sonuc.fark |
+                                currency:'TRY':'':'1.0-0':'tr' }}<span class="text-2xl text-white">,{{ (sonuc.fark % 1 *
+                                    100) | number:'1.0-0' }}</span></div>
                         </div>
                     </div>
 
@@ -364,13 +381,13 @@
                 <div class="card border-primary border-t-4">
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex flex-col gap-1">
-                            <label class="text-xs font-semibold text-surface-500 uppercase">Kıyas Tarihi</label>
+                            <label class="text-sm font-semibold text-surface-500 uppercase">Kıyas Tarihi</label>
                             <p-datepicker [(ngModel)]="baslangicTarihi2" (ngModelChange)="onTarihChange2()"
                                 [showIcon]="true" dateFormat="dd.mm.yy" styleClass="w-40">
                             </p-datepicker>
                         </div>
                         <div class="flex flex-col gap-1 flex-1">
-                            <label class="text-xs font-semibold text-surface-500 uppercase">Kıyas Vardiya</label>
+                            <label class="text-sm font-semibold text-surface-500 uppercase">Kıyas Vardiya</label>
                             <p-select [options]="vardiyalar2" [(ngModel)]="secilenVardiya2"
                                 (ngModelChange)="karsilastirmaYap2()" optionLabel="dosyaAdi" placeholder="Vardiya Seçin"
                                 [loading]="vardiyalarLoading2" styleClass="w-full">
@@ -392,18 +409,30 @@
                 <!-- Sonuçlar 2 -->
                 <ng-container *ngIf="sonuc2">
                     <div class="grid grid-cols-3 gap-4">
-                        <div class="p-3 rounded-lg bg-blue-500 text-white text-center">
-                            <div class="text-xs opacity-80">Sistem</div>
-                            <div class="font-bold">{{ sonuc2.sistemToplam | currency:'TRY':'':'1.2-2':'tr' }}</div>
+                        <div
+                            class="p-5 rounded-2xl bg-blue-600 text-white text-center shadow-xl transform transition-transform hover:scale-105">
+                            <div class="text-lg font-bold opacity-90 mb-2 uppercase tracking-wide">Sistem</div>
+                            <div class="text-4xl font-bold tracking-tight" style="color: white !important;">{{
+                                sonuc2.sistemToplam |
+                                currency:'TRY':'':'1.0-0':'tr' }}<span class="text-2xl text-white">,{{
+                                    (sonuc2.sistemToplam % 1 * 100) | number:'1.0-0' }}</span></div>
                         </div>
-                        <div class="p-3 rounded-lg bg-green-500 text-white text-center">
-                            <div class="text-xs opacity-80">Tahsilat</div>
-                            <div class="font-bold">{{ sonuc2.tahsilatToplam | currency:'TRY':'':'1.2-2':'tr' }}</div>
+                        <div
+                            class="p-5 rounded-2xl bg-green-600 text-white text-center shadow-xl transform transition-transform hover:scale-105">
+                            <div class="text-lg font-bold opacity-90 mb-2 uppercase tracking-wide">Tahsilat</div>
+                            <div class="text-4xl font-bold tracking-tight" style="color: white !important;">{{
+                                sonuc2.tahsilatToplam |
+                                currency:'TRY':'':'1.0-0':'tr' }}<span class="text-2xl text-white">,{{
+                                    (sonuc2.tahsilatToplam % 1 * 100) | number:'1.0-0' }}</span></div>
                         </div>
-                        <div class="p-3 rounded-lg text-white text-center"
+                        <div class="p-5 rounded-2xl text-white text-center shadow-xl transform transition-transform hover:scale-105"
                             [style.background]="getFarkCardBackground(sonuc2)">
-                            <div class="text-xs opacity-80">Fark</div>
-                            <div class="font-bold">{{ sonuc2.fark | currency:'TRY':'':'1.2-2':'tr' }}</div>
+                            <div class="text-lg font-bold opacity-90 mb-2 uppercase tracking-wide">Fark</div>
+                            <div class="text-4xl font-bold tracking-tight" style="color: white !important;">{{
+                                sonuc2.fark |
+                                currency:'TRY':'':'1.0-0':'tr' }}<span class="text-2xl text-white">,{{ (sonuc2.fark % 1
+                                    *
+                                    100) | number:'1.0-0' }}</span></div>
                         </div>
                     </div>
 

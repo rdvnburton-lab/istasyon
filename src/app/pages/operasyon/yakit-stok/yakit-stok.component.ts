@@ -56,6 +56,38 @@ export class YakitStokComponent implements OnInit {
     stockTrendData: any;
     dailySalesData: any;
     chartOptions: any;
+    barChartOptions: any;
+
+    // Latest Shift Tank Data Getter
+    get latestShiftTanks(): any[] {
+        if (!this.vardiyaHareketleri || this.vardiyaHareketleri.length === 0) return [];
+        // Sort by date descending and get first (most recent)
+        const sorted = [...this.vardiyaHareketleri].sort((a, b) =>
+            new Date(b.tarih).getTime() - new Date(a.tarih).getTime()
+        );
+        return sorted[0]?.tanklar || [];
+    }
+
+    get latestShiftDate(): Date | null {
+        if (!this.vardiyaHareketleri || this.vardiyaHareketleri.length === 0) return null;
+        const sorted = [...this.vardiyaHareketleri].sort((a, b) =>
+            new Date(b.tarih).getTime() - new Date(a.tarih).getTime()
+        );
+        return new Date(sorted[0].tarih);
+    }
+
+    // Tank capacity estimation (we use 30000 Lt as default for visual display)
+    getTankFillPercentage(currentStock: number): number {
+        const estimatedCapacity = 30000; // 30 ton estimated tank capacity
+        const percentage = (currentStock / estimatedCapacity) * 100;
+        return Math.min(Math.max(percentage, 0), 100); // Clamp between 0-100
+    }
+
+    getTankStatusClass(fillPercent: number): string {
+        if (fillPercent >= 50) return 'tank-healthy';
+        if (fillPercent >= 25) return 'tank-warning';
+        return 'tank-critical';
+    }
 
     constructor(
         private stokService: StokService
@@ -117,8 +149,14 @@ export class YakitStokComponent implements OnInit {
             return;
         }
 
-        // 1. Total Current Stock
-        this.totalCurrentStock = this.xmlStokVerileri.reduce((acc, item) => acc + item.sonStok, 0);
+        // 1. Total Current Stock - prefer latest shift tank data if available
+        if (this.latestShiftTanks && this.latestShiftTanks.length > 0) {
+            // Use real-time data from the latest shift
+            this.totalCurrentStock = this.latestShiftTanks.reduce((acc, item) => acc + (item.bitisStok || 0), 0);
+        } else {
+            // Fallback to aggregated data
+            this.totalCurrentStock = this.xmlStokVerileri.reduce((acc, item) => acc + item.sonStok, 0);
+        }
 
         // 2. Total Monthly Sales
         this.totalMonthlySales = this.xmlStokVerileri.reduce((acc, item) => acc + item.toplamSatis, 0);
@@ -212,7 +250,8 @@ export class YakitStokComponent implements OnInit {
         const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary') || '#9ca3af';
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border') || '#e5e7eb';
 
-        this.chartOptions = {
+        // Shared base options
+        const baseOptions = {
             maintainAspectRatio: false,
             aspectRatio: 0.6,
             plugins: {
@@ -239,6 +278,25 @@ export class YakitStokComponent implements OnInit {
                     grid: {
                         color: surfaceBorder,
                         drawBorder: false
+                    }
+                }
+            }
+        };
+
+        // Line chart uses base options
+        this.chartOptions = baseOptions;
+
+        // Bar chart with offset to fix half-bar issue
+        this.barChartOptions = {
+            ...baseOptions,
+            scales: {
+                ...baseOptions.scales,
+                x: {
+                    ...baseOptions.scales.x,
+                    offset: true,
+                    grid: {
+                        ...baseOptions.scales.x.grid,
+                        offset: true
                     }
                 }
             }
