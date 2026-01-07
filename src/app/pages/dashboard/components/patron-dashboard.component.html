@@ -101,7 +101,7 @@
                 <div class="stat-content">
                     <span class="stat-label">Bugünkü Ciro</span>
                     <div class="stat-value">
-                        {{ dashboard.ozet.bugunToplamCiro | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                        {{ dashboard.ozet.bugunToplamCiro | currency:'TRY':'symbol-narrow':'1.2-2' }}
                     </div>
                     <div class="stat-footer flex items-center gap-1">
                         <i class="pi pi-calendar"></i>
@@ -117,7 +117,7 @@
                 <div class="stat-content">
                     <span class="stat-label">Aylık Ciro</span>
                     <div class="stat-value">
-                        {{ dashboard.ozet.buAyToplamCiro | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                        {{ dashboard.ozet.buAyToplamCiro | currency:'TRY':'symbol-narrow':'1.2-2' }}
                     </div>
                     <div class="stat-footer flex items-center gap-1"
                         [class.text-green-500]="dashboard.ozet.buyumeOrani >= 0"
@@ -230,7 +230,7 @@
                             </div>
                         </div>
                         <div class="station-revenue font-bold text-primary">
-                            {{ istasyon.toplamCiro | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                            {{ istasyon.toplamCiro | currency:'TRY':'symbol-narrow':'1.2-2' }}
                         </div>
                     </div>
                     <div class="empty-state text-center py-8 text-surface-500"
@@ -326,7 +326,7 @@
                                             [severity]="getDurumSeverity(vardiya.durum)"></p-tag>
                                     </td>
                                     <td class="font-bold">{{ vardiya.genelToplam |
-                                        currency:'TRY':'symbol-narrow':'1.0-0' }}
+                                        currency:'TRY':'symbol-narrow':'1.2-2' }}
                                     </td>
                                     <td>{{ vardiya.olusturmaTarihi | date:'dd.MM.yyyy HH:mm' }}</td>
                                     <td>
@@ -353,7 +353,7 @@
                             </div>
                             <div class="item-details">
                                 <span class="istasyon">{{ vardiya.istasyonAdi }}</span>
-                                <span class="price">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.0-0'
+                                <span class="price">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.2-2'
                                     }}</span>
                             </div>
                             <div class="mt-2 text-xs text-surface-400 flex justify-between items-center">

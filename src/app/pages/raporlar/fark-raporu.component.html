@@ -32,18 +32,18 @@
     <div class="summary-scroll">
         <div class="summary-card red">
             <div class="summary-label">Toplam Açık</div>
-            <div class="summary-value red">{{ ozet.toplamAcik | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value red">{{ ozet.toplamAcik | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
             <div class="summary-meta">{{ ozet.acikVardiyaSayisi }} Vardiya</div>
         </div>
         <div class="summary-card green">
             <div class="summary-label">Toplam Fazla</div>
-            <div class="summary-value green">{{ ozet.toplamFazla | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value green">{{ ozet.toplamFazla | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
             <div class="summary-meta">{{ ozet.fazlaVardiyaSayisi }} Vardiya</div>
         </div>
         <div class="summary-card" [ngClass]="ozet.toplamFark >= 0 ? 'blue' : 'orange'">
             <div class="summary-label">Net Durum</div>
             <div class="summary-value" [ngClass]="ozet.toplamFark >= 0 ? 'blue' : 'orange'">
-                {{ ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                {{ ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}
             </div>
             <div class="summary-meta">{{ ozet.toplamFark >= 0 ? 'FAZLA' : 'AÇIK' }}</div>
         </div>
@@ -75,12 +75,12 @@
                         </div>
                         <div class="vardiya-field">
                             <div class="field-label">Otomasyon</div>
-                            <div class="field-value">{{ vardiya.otomasyonToplam | currency:'TRY':'symbol-narrow':'1.0-0'
+                            <div class="field-value">{{ vardiya.otomasyonToplam | currency:'TRY':'symbol-narrow':'1.2-2'
                                 }}</div>
                         </div>
                         <div class="vardiya-field">
                             <div class="field-label">Tahsilat</div>
-                            <div class="field-value">{{ vardiya.tahsilatToplam | currency:'TRY':'symbol-narrow':'1.0-0'
+                            <div class="field-value">{{ vardiya.tahsilatToplam | currency:'TRY':'symbol-narrow':'1.2-2'
                                 }}</div>
                         </div>
                     </ng-container>
@@ -88,12 +88,12 @@
                         <div class="vardiya-field">
                             <div class="field-label">Satış</div>
                             <div class="field-value">{{ vardiya.toplamSatisTutari |
-                                currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+                                currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                         </div>
                         <div class="vardiya-field">
                             <div class="field-label">Teslimat</div>
                             <div class="field-value">{{ vardiya.toplamTeslimatTutari |
-                                currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+                                currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                         </div>
                     </ng-container>
                     <div class="vardiya-field full-width">
@@ -305,10 +305,10 @@
 
                         <!-- Pompa (Diğer Roller) İçin Alanlar -->
                         <td *ngIf="!isMarketSorumlusu" class="text-right text-[var(--text-color)]">
-                            {{vardiya.otomasyonToplam | currency:'TRY':'symbol-narrow':'1.0-0'}}
+                            {{vardiya.otomasyonToplam | currency:'TRY':'symbol-narrow':'1.2-2'}}
                         </td>
                         <td *ngIf="!isMarketSorumlusu" class="text-right text-[var(--text-color)]">
-                            {{vardiya.tahsilatToplam | currency:'TRY':'symbol-narrow':'1.0-0'}}
+                            {{vardiya.tahsilatToplam | currency:'TRY':'symbol-narrow':'1.2-2'}}
                         </td>
                         <td *ngIf="!isMarketSorumlusu" class="text-right font-bold"
                             [ngClass]="{'text-red-500': vardiya.fark < -1, 'text-green-500': vardiya.fark > 1}">
@@ -342,7 +342,7 @@
                                                     Otomasyon</div>
                                                 <div class="font-bold text-sm text-[var(--text-color)]">
                                                     {{pf.otomasyon |
-                                                    currency:'TRY':'symbol-narrow':'1.0-0'}}</div>
+                                                    currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
                                             </div>
                                             <div>
                                                 <div
@@ -350,7 +350,7 @@
                                                     Tahsilat</div>
                                                 <div class="font-bold text-sm text-[var(--text-color)]">
                                                     {{pf.tahsilat |
-                                                    currency:'TRY':'symbol-narrow':'1.0-0'}}</div>
+                                                    currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
                                             </div>
                                         </div>
                                         <div

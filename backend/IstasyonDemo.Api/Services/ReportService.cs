@@ -760,6 +760,23 @@ namespace IstasyonDemo.Api.Services
                             table.Cell().Element(CStyle).AlignRight().Text(p.AcikFazla.ToString("N2")).FontColor(p.AcikFazla < 0 ? Colors.Red.Medium : (p.AcikFazla > 0 ? Colors.Green.Medium : Colors.Black)); 
                             table.Cell().Element(CStyle).AlignRight().Text(p.Durum).Bold().FontColor(p.Durum == "AÇIK" ? Colors.Red.Darken1 : (p.Durum == "FAZLA" ? Colors.Green.Darken1 : Colors.Grey.Darken1));
                         }
+
+                        table.Footer(footer => {
+                             IContainer FStyle(IContainer i) => i.Background(Colors.Grey.Lighten4).Padding(5).BorderTop(1).BorderColor(Colors.Grey.Darken1);
+
+                             footer.Cell().ColumnSpan(2).Element(FStyle).Text("GENEL TOPLAM").Bold(); 
+                             footer.Cell().Element(FStyle).AlignRight().Text(personelListesi.Sum(x => x.Islem).ToString("N0")).Bold();
+                             footer.Cell().Element(FStyle).AlignRight().Text(personelListesi.Sum(x => x.Litre).ToString("N0") + " Lt").Bold();
+                             footer.Cell().Element(FStyle).AlignRight().Text(personelListesi.Sum(x => x.SatisTutar).ToString("N2")).Bold();
+                             footer.Cell().Element(FStyle).AlignRight().Text(personelListesi.Sum(x => x.BeyanTutar).ToString("N2")).Bold();
+                             
+                             var totalDiff = personelListesi.Sum(x => x.AcikFazla);
+                             footer.Cell().Element(FStyle).AlignRight().Text(totalDiff.ToString("N2"))
+                                .Bold()
+                                .FontColor(totalDiff < 0 ? Colors.Red.Darken1 : (totalDiff > 0 ? Colors.Green.Darken1 : Colors.Black));
+                                
+                             footer.Cell().Element(FStyle).Text("");
+                        });
                     });
 
                     // --- TANK VISUALS ---

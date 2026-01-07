@@ -52,15 +52,15 @@
         </div>
         <div class="summary-card green">
             <div class="summary-label">Toplam Ciro</div>
-            <div class="summary-value">{{ ozet.toplamTutar | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value">{{ ozet.toplamTutar | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
         </div>
         <div class="summary-card orange">
             <div class="summary-label">Toplam Litre</div>
-            <div class="summary-value">{{ ozet.toplamLitre | number:'1.0-0' }} Lt</div>
+            <div class="summary-value">{{ ozet.toplamLitre | number:'1.2-2' }} Lt</div>
         </div>
         <div class="summary-card purple">
             <div class="summary-label">Toplam Gider</div>
-            <div class="summary-value">{{ ozet.toplamGider | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value">{{ ozet.toplamGider | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
         </div>
     </div>
 
@@ -72,15 +72,15 @@
         </div>
         <div class="summary-card green">
             <div class="summary-label">Toplam Satış</div>
-            <div class="summary-value">{{ ozet.toplamSatis | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value">{{ ozet.toplamSatis | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
         </div>
         <div class="summary-card indigo">
             <div class="summary-label">Toplam Teslimat</div>
-            <div class="summary-value">{{ ozet.toplamTeslimat | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value">{{ ozet.toplamTeslimat | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
         </div>
         <div class="summary-card" [ngClass]="ozet.toplamFark < 0 ? 'red' : 'teal'">
             <div class="summary-label">Toplam Fark</div>
-            <div class="summary-value">{{ ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+            <div class="summary-value">{{ ozet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
         </div>
     </div>
 

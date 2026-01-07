@@ -36,7 +36,7 @@
             <div class="summary-card blue">
                 <div>
                     <div class="card-label">SATIŞ</div>
-                    <div class="card-value">{{ozet.toplamSatis | currency:'TRY':'symbol-narrow':'1.0-0'}}</div>
+                    <div class="card-value">{{ozet.toplamSatis | currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
                 </div>
                 <div class="card-sub" *ngIf="isPompaci">{{ozet.aracSayisi}} Araç</div>
             </div>
@@ -44,7 +44,7 @@
             <div class="summary-card orange" *ngIf="isPompaci">
                 <div>
                     <div class="card-label">LİTRE</div>
-                    <div class="card-value">{{ozet.toplamLitre | number:'1.0-0'}}</div>
+                    <div class="card-value">{{ozet.toplamLitre | number:'1.2-2'}}</div>
                 </div>
                 <div class="card-sub">{{ozet.yakitDagilimi.length > 0 ? ozet.yakitDagilimi[0].yakit : 'Yakıt'}}</div>
             </div>
@@ -52,7 +52,7 @@
             <div class="summary-card indigo">
                 <div>
                     <div class="card-label">TAHSİLAT</div>
-                    <div class="card-value">{{ozet.toplamTahsilat | currency:'TRY':'symbol-narrow':'1.0-0'}}</div>
+                    <div class="card-value">{{ozet.toplamTahsilat | currency:'TRY':'symbol-narrow':'1.2-2'}}</div>
                 </div>
             </div>
 
@@ -78,16 +78,16 @@
                 </div>
                 <div class="card-row">
                     <span class="sub-info">Satış: {{item.otomasyonSatis |
-                        currency:'TRY':'symbol-narrow':'1.0-0'}}</span>
+                        currency:'TRY':'symbol-narrow':'1.2-2'}}</span>
                     <span class="sub-info">Tahsilat: {{item.manuelTahsilat |
-                        currency:'TRY':'symbol-narrow':'1.0-0'}}</span>
+                        currency:'TRY':'symbol-narrow':'1.2-2'}}</span>
                 </div>
                 <div class="card-row mt-2 pt-2 border-t border-slate-50" *ngIf="isPompaci">
                     <span class="sub-info text-xs flex items-center gap-1">
                         <i class="pi pi-car"></i> {{item.aracSayisi}} Araç
                     </span>
                     <span class="sub-info text-xs flex items-center gap-1">
-                        <i class="pi pi-filter"></i> {{item.litre | number:'1.0-0'}} Lt
+                        <i class="pi pi-filter"></i> {{item.litre | number:'1.2-2'}} Lt
                     </span>
                 </div>
             </div>
@@ -286,9 +286,9 @@
                                 <td class="text-right" *ngIf="isPompaci">{{item.aracSayisi}}</td>
                                 <td class="text-right" *ngIf="isPompaci">{{item.litre | number:'1.0-2'}}</td>
                                 <td class="text-right font-bold text-[var(--text-color)]">
-                                    {{item.otomasyonSatis | currency:'TRY':'symbol-narrow':'1.0-0'}}</td>
+                                    {{item.otomasyonSatis | currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
                                 <td class="text-right font-bold text-blue-600">{{item.manuelTahsilat |
-                                    currency:'TRY':'symbol-narrow':'1.0-0'}}</td>
+                                    currency:'TRY':'symbol-narrow':'1.2-2'}}</td>
                                 <td class="text-right font-bold"
                                     [ngClass]="{'text-red-500': item.fark < -1, 'text-green-500': item.fark > 1}">
                                     {{item.fark | currency:'TRY':'symbol-narrow':'1.2-2'}}

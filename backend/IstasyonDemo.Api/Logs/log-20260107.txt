@@ -3215,3 +3215,90 @@ System.UnauthorizedAccessException: Bu işlem için yetkiniz yok.
 2026-01-07 14:17:07.176 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
 2026-01-07 14:17:08.166 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
 2026-01-07 14:17:19.275 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-07 21:52:48.730 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-07 21:52:48.944 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-07 21:52:49.829 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-07 21:55:10.053 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-07 21:58:09.854 +03:00 [WRN] Yetkisiz cihaz erişimi! İstasyon 1. Kayıtlı: 899801fe-ba7c-410f-aeea-049bf0d683c6, Gelen: 7caa2e1f-79d7-44a7-93a0-e3d63b8f3ce2
+2026-01-07 22:11:08.512 +03:00 [WRN] Firebase credential dosyası bulunamadı: firebase-adminsdk.json. Push bildirimleri çalışmayacak.
+2026-01-07 22:11:08.648 +03:00 [INF] Veritabanına bağlanılıyor (Deneme 1)...
+2026-01-07 22:11:09.401 +03:00 [INF] Veritabanı migration işlemleri başarıyla tamamlandı.
+2026-01-07 22:11:21.240 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 8 satır var.
+2026-01-07 22:11:21.292 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 8 adet.
+2026-01-07 22:11:21.293 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-07 22:11:21.294 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-07 22:11:21.295 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-07 22:11:21.295 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-07 22:11:21.296 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-07 22:11:21.297 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-07 22:11:21.297 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-07 22:11:21.298 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-07 22:11:21.318 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-07 22:11:21.335 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 8 pusula var.
+2026-01-07 22:11:23.984 +03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-07 22:11:24.024 +03:00 [ERR] Something went wrong: Bu işlem için yetkiniz yok.
+System.UnauthorizedAccessException: Bu işlem için yetkiniz yok.
+   at IstasyonDemo.Api.Services.VardiyaService.OnayaGonderAsync(Int32 id, Int32 userId, String userRole) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Services\VardiyaService.cs:line 471
+   at IstasyonDemo.Api.Controllers.VardiyaApprovalController.OnayaGonder(Int32 id) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Controllers\VardiyaApprovalController.cs:line 54
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at IstasyonDemo.Api.Middleware.UserActivityMiddleware.InvokeAsync(HttpContext context, AppDbContext dbContext) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\UserActivityMiddleware.cs:line 34
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at IstasyonDemo.Api.Middleware.SecurityHeadersMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\SecurityHeadersMiddleware.cs:line 81
+   at IstasyonDemo.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\TiShift\istasyon\backend\IstasyonDemo.Api\Middleware\ExceptionMiddleware.cs:line 23
+2026-01-07 22:11:29.716 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 8 satır var.
+2026-01-07 22:11:29.718 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 8 adet.
+2026-01-07 22:11:29.718 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-07 22:11:29.719 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-07 22:11:29.720 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-07 22:11:29.720 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-07 22:11:29.721 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-07 22:11:29.722 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-07 22:11:29.723 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-07 22:11:29.724 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-07 22:11:29.728 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 8 pusula var.
+2026-01-07 22:11:29.812 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-07 22:13:45.921 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 8 satır var.
+2026-01-07 22:13:45.924 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 8 adet.
+2026-01-07 22:13:45.925 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-07 22:13:45.926 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-07 22:13:45.926 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-07 22:13:45.927 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-07 22:13:45.928 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-07 22:13:45.929 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-07 22:13:45.929 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-07 22:13:45.930 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-07 22:13:45.936 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 8 pusula var.
+2026-01-07 22:13:48.624 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 8 satır var.
+2026-01-07 22:13:48.625 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 8 adet.
+2026-01-07 22:13:48.626 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-07 22:13:48.627 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-07 22:13:48.627 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-07 22:13:48.628 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-07 22:13:48.629 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-07 22:13:48.630 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-07 22:13:48.630 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-07 22:13:48.631 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-07 22:13:48.636 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 8 pusula var.
+2026-01-07 22:14:04.611 +03:00 [INF] [VardiyaService] Personel eşleştirme başladı. 8 satır var.
+2026-01-07 22:14:04.613 +03:00 [INF] [VardiyaService] DB Adayları bulundu: 8 adet.
+2026-01-07 22:14:04.613 +03:00 [INF] [VardiyaService] Eşleşti: A.ARLI -> A.ARLI (FD1086E1)
+2026-01-07 22:14:04.614 +03:00 [INF] [VardiyaService] Eşleşti: U.ZEYLEK -> U.ZEYLEK (FD8A2EB1)
+2026-01-07 22:14:04.615 +03:00 [INF] [VardiyaService] Eşleşti: A.VURAL -> A.VURAL (DD216AD3)
+2026-01-07 22:14:04.616 +03:00 [INF] [VardiyaService] Eşleşti: M.MERVE -> M.MERVE (DD5EFD13)
+2026-01-07 22:14:04.616 +03:00 [INF] [VardiyaService] Eşleşti: F.BAYLAS -> F.BAYLAS (DD020763)
+2026-01-07 22:14:04.617 +03:00 [INF] [VardiyaService] Eşleşti: H.CIVGIN -> H.CIVGIN (0244211A)
+2026-01-07 22:14:04.618 +03:00 [INF] [VardiyaService] Eşleşti: L.KOCAK -> L.KOCAK (DD288D93)
+2026-01-07 22:14:04.618 +03:00 [INF] [VardiyaService] Eşleşti: Y.E.KOCA -> Y.E.KOCA (FE1FADE1)
+2026-01-07 22:14:04.623 +03:00 [INF] [VardiyaService] Pusula eşleştirme başladı. 8 pusula var.
+2026-01-07 22:14:07.152 +03:00 [INF] Yakıt tanımları önbelleği yenileniyor...
+2026-01-07 22:14:07.267 +03:00 [INF] Vardiya 117 başarıyla arşivlendi.

@@ -20,12 +20,12 @@
             <div class="summary-scroll mt-2">
                 <div class="summary-card blue">
                     <div class="summary-icon"><i class="pi pi-shopping-cart"></i></div>
-                    <div class="summary-value">{{ listOzet.toplamSatis | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ listOzet.toplamSatis | number:'1.2-2' }} ₺</div>
                     <div class="summary-label">Top. Satış</div>
                 </div>
                 <div class="summary-card green">
                     <div class="summary-icon"><i class="pi pi-wallet"></i></div>
-                    <div class="summary-value">{{ listOzet.toplamTeslimat | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ listOzet.toplamTeslimat | number:'1.2-2' }} ₺</div>
                     <div class="summary-label">Top. Teslimat</div>
                 </div>
                 <div class="summary-card orange">
@@ -38,7 +38,7 @@
                     'red': listOzet.toplamFark < 0
                 }">
                     <div class="summary-icon"><i class="pi pi-chart-line"></i></div>
-                    <div class="summary-value">{{ listOzet.toplamFark | number:'1.0-0' }} ₺</div>
+                    <div class="summary-value">{{ listOzet.toplamFark | number:'1.2-2' }} ₺</div>
                     <div class="summary-label">Toplam Fark</div>
                 </div>
             </div>
@@ -81,21 +81,21 @@
                         <div class="vardiya-stats">
                             <div class="vardiya-stat">
                                 <div class="vardiya-stat-label">Satış</div>
-                                <div class="vardiya-stat-value">{{ (vardiya.toplamSatisTutari || 0) | number:'1.0-0' }}
+                                <div class="vardiya-stat-value">{{ (vardiya.toplamSatisTutari || 0) | number:'1.2-2' }}
                                     ₺
                                 </div>
                             </div>
                             <div class="vardiya-stat">
                                 <div class="vardiya-stat-label">Teslimat</div>
                                 <div class="vardiya-stat-value green">{{ (vardiya.toplamTeslimatTutari || 0) |
-                                    number:'1.0-0' }} ₺
+                                    number:'1.2-2' }} ₺
                                 </div>
                             </div>
                             <div class="vardiya-stat">
                                 <div class="vardiya-stat-label">Fark</div>
                                 <div class="vardiya-stat-value" [class.red]="(vardiya.toplamFark || 0) < 0"
                                     [class.blue]="(vardiya.toplamFark || 0) > 0">
-                                    {{ (vardiya.toplamFark || 0) | number:'1.0-0' }} ₺
+                                    {{ (vardiya.toplamFark || 0) | number:'1.2-2' }} ₺
                                 </div>
                             </div>
                         </div>
@@ -266,7 +266,7 @@
                         <div class="flex items-center gap-2">
                             <span class="transaction-total" style="color: var(--orange-600)"
                                 *ngIf="giderler.length > 0">
-                                {{ getGiderToplam() | number:'1.0-0' }} ₺
+                                {{ getGiderToplam() | number:'1.2-2' }} ₺
                             </span>
                             <button
                                 *ngIf="seciliMarketVardiya.durum === 'ACIK' || seciliMarketVardiya.durum === 'REDDEDILDI'"
@@ -283,7 +283,7 @@
                                 <div class="transaction-desc" *ngIf="gider.aciklama">{{ gider.aciklama }}</div>
                             </div>
                             <div class="transaction-amount" style="color: var(--orange-600)">{{ gider.tutar |
-                                number:'1.0-0'
+                                number:'1.2-2'
                                 }} ₺</div>
                             <button
                                 *ngIf="seciliMarketVardiya.durum === 'ACIK' || seciliMarketVardiya.durum === 'REDDEDILDI'"
@@ -307,7 +307,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="transaction-total" style="color: var(--green-600)" *ngIf="gelirler.length > 0">
-                                {{ getGelirToplam() | number:'1.0-0' }} ₺
+                                {{ getGelirToplam() | number:'1.2-2' }} ₺
                             </span>
                             <button
                                 *ngIf="seciliMarketVardiya.durum === 'ACIK' || seciliMarketVardiya.durum === 'REDDEDILDI'"
@@ -324,7 +324,7 @@
                                 <div class="transaction-desc" *ngIf="gelir.aciklama">{{ gelir.aciklama }}</div>
                             </div>
                             <div class="transaction-amount" style="color: var(--green-600)">{{ gelir.tutar |
-                                number:'1.0-0'
+                                number:'1.2-2'
                                 }} ₺</div>
                             <button
                                 *ngIf="seciliMarketVardiya.durum === 'ACIK' || seciliMarketVardiya.durum === 'REDDEDILDI'"
@@ -357,15 +357,15 @@
                         <div class="z-raporu-item">
                             <div class="z-raporu-label">Genel Toplam</div>
                             <div class="z-raporu-value" style="color: var(--orange-600)">{{ zRaporu.genelToplam |
-                                number:'1.0-0' }} ₺</div>
+                                number:'1.2-2' }} ₺</div>
                         </div>
                         <div class="z-raporu-item">
                             <div class="z-raporu-label">KDV Toplam</div>
-                            <div class="z-raporu-value">{{ zRaporu.kdvToplam | number:'1.0-0' }} ₺</div>
+                            <div class="z-raporu-value">{{ zRaporu.kdvToplam | number:'1.2-2' }} ₺</div>
                         </div>
                         <div class="z-raporu-item">
                             <div class="z-raporu-label">KDV Hariç</div>
-                            <div class="z-raporu-value">{{ zRaporu.kdvHaricToplam | number:'1.0-0' }} ₺</div>
+                            <div class="z-raporu-value">{{ zRaporu.kdvHaricToplam | number:'1.2-2' }} ₺</div>
                         </div>
                         <div class="z-raporu-item">
                             <div class="z-raporu-label">Tarih</div>
@@ -447,7 +447,7 @@
                         </div>
                     </div>
                     <div class="text-3xl font-bold text-[var(--text-color)]">{{ listOzet.toplamSatis |
-                        currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</div>
+                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
                     <div class="text-[10px] text-[var(--text-color-secondary)] mt-2 font-medium">Tüm kayıtlı satışların
                         toplamı</div>
                 </div>
@@ -465,7 +465,7 @@
                         </div>
                     </div>
                     <div class="text-3xl font-bold text-[var(--text-color)]">{{ listOzet.toplamTeslimat |
-                        currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</div>
+                        currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
                     <div class="text-[10px] text-[var(--text-color-secondary)] mt-2 font-medium">Toplanan nakit ve kredi
                         kartı</div>
                 </div>
@@ -511,7 +511,7 @@
                     <div class="text-3xl font-bold" [ngClass]="{
                         'text-green-600': listOzet.toplamFark >= 0,
                         'text-red-600': listOzet.toplamFark < 0
-                    }">{{ listOzet.toplamFark | currency:'TRY':'symbol-narrow':'1.0-0':'tr' }}</div>
+                    }">{{ listOzet.toplamFark | currency:'TRY':'symbol-narrow':'1.2-2':'tr' }}</div>
                     <div class="text-[10px] mt-2 font-bold"
                         [ngClass]="listOzet.toplamFark >= 0 ? 'text-green-600' : 'text-red-600'">
                         {{ listOzet.toplamFark >= 0 ? 'Kasa Uyumlu / Fazla' : 'Toplam Kasa Açığı' }}

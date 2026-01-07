@@ -185,8 +185,21 @@ namespace IstasyonDemo.Api.Services
 
         public async Task ProcessVardiyaApproval(int vardiyaId, int onaylayanId)
         {
+            // İdempotency Check: Already processed?
+            bool alreadyProcessed = await _context.CariHareketler.AnyAsync(c => c.VardiyaId == vardiyaId);
+            if (alreadyProcessed) 
+            {
+                _logger.LogInformation($"Vardiya {vardiyaId} finansal onayı daha önce işlenmiş, atlanıyor.");
+                return;
+            }
+
+            // Vardiya bilgilerini çek (Tarih için)
+            var vardiya = await _context.Vardiyalar.AsNoTracking().FirstOrDefaultAsync(v => v.Id == vardiyaId);
+            string vardiyaTarihi = vardiya?.BaslangicTarihi.ToString("dd.MM.yyyy") ?? DateTime.Now.ToString("dd.MM.yyyy");
+
             var veresiyeler = await _context.PusulaVeresiyeler
                 .Include(pv => pv.CariKart)
+                .Include(pv => pv.Pusula) // Pompacı adı için gerekli
                 .Where(pv => pv.Pusula.VardiyaId == vardiyaId)
                 .ToListAsync();
 
@@ -200,7 +213,8 @@ namespace IstasyonDemo.Api.Services
                     Tarih = DateTime.UtcNow,
                     IslemTipi = "SATIS",
                     Tutar = veresiye.Tutar,
-                    Aciklama = $"Vardiya #{vardiyaId} - Plaka: {veresiye.Plaka} - {veresiye.Litre:F2} L - {veresiye.Tutar:F2} ₺" + (string.IsNullOrEmpty(veresiye.Aciklama) ? "" : $" - {veresiye.Aciklama}"),
+                    Aciklama = $"Vardiya #{vardiyaId} ({vardiyaTarihi}) - {veresiye.Pusula.PersonelAdi} - Plaka: {veresiye.Plaka} - {veresiye.Litre:F2} L - {veresiye.Tutar:F2} TL" + (string.IsNullOrEmpty(veresiye.Aciklama) ? "" : $" - {veresiye.Aciklama}"),
+                    VardiyaId = vardiyaId, // Important for idempotency
                     OlusturanId = onaylayanId,
                     OlusturmaTarihi = DateTime.UtcNow
                 };

@@ -65,7 +65,7 @@
                             <div class="card-title">{{ vardiya.dosyaAdi }}</div>
                             <div class="card-id">#{{ vardiya.id }} • {{ vardiya.istasyonAdi }}</div>
                         </div>
-                        <div class="card-amount">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.0-0' }}
+                        <div class="card-amount">{{ vardiya.genelToplam | currency:'TRY':'symbol-narrow':'1.2-2' }}
                         </div>
                     </div>
                     <div class="card-body">
@@ -98,15 +98,15 @@
                             <div class="card-title">Market Vardiyası</div>
                             <div class="card-id">#{{ vardiya.id }} • {{ vardiya.tarih | date:'dd.MM.yyyy' }}</div>
                         </div>
-                        <div class="card-amount">{{ vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.0-0'
+                        <div class="card-amount">{{ vardiya.toplamSatisTutari | currency:'TRY':'symbol-narrow':'1.2-2'
                             }}</div>
                     </div>
                     <div class="card-body">
                         <span class="card-meta"><i class="pi pi-arrow-up"></i>Teslimat: {{ vardiya.toplamTeslimatTutari
-                            | currency:'TRY':'symbol-narrow':'1.0-0' }}</span>
+                            | currency:'TRY':'symbol-narrow':'1.2-2' }}</span>
                         <span class="card-meta" [ngClass]="{'text-red-500': (vardiya.toplamFark || 0) < 0}">
                             <i class="pi pi-chart-bar"></i>Fark: {{ vardiya.toplamFark |
-                            currency:'TRY':'symbol-narrow':'1.0-0' }}
+                            currency:'TRY':'symbol-narrow':'1.2-2' }}
                         </span>
                         <span class="status-tag pending"><i class="pi pi-clock"></i>Onay Bekliyor</span>
                     </div>
@@ -136,7 +136,7 @@
                             <div class="card-id">#{{ vardiya.id }} • {{ vardiya.istasyonAdi }}</div>
                         </div>
                         <div class="card-amount text-red-500">{{ vardiya.genelToplam |
-                            currency:'TRY':'symbol-narrow':'1.0-0' }}</div>
+                            currency:'TRY':'symbol-narrow':'1.2-2' }}</div>
                     </div>
                     <div class="card-body">
                         <span class="card-meta"><i class="pi pi-calendar"></i>{{ vardiya.baslangicTarihi |
@@ -407,22 +407,22 @@
         <div class="summary-scroll block md:hidden">
             <div class="summary-card blue">
                 <div class="summary-icon"><i class="pi pi-chart-line"></i></div>
-                <div class="summary-value">{{ pompaciSatisTutar | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaciSatisTutar | number:'1.2-2' }}₺</div>
                 <div class="summary-label">Pompa Cirosu</div>
             </div>
             <div class="summary-card green">
                 <div class="summary-icon"><i class="pi pi-users"></i></div>
-                <div class="summary-value">{{ pompaCiroGosterim | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaCiroGosterim | number:'1.2-2' }}₺</div>
                 <div class="summary-label">Pompacı Satış</div>
             </div>
             <div class="summary-card purple" (click)="openKrediKartiDetay()">
                 <div class="summary-icon"><i class="pi pi-credit-card"></i></div>
-                <div class="summary-value">{{ toplamKrediKarti | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ toplamKrediKarti | number:'1.2-2' }}₺</div>
                 <div class="summary-label">Kredi Kartı</div>
             </div>
             <div class="summary-card orange">
                 <div class="summary-icon"><i class="pi pi-wallet"></i></div>
-                <div class="summary-value">{{ pompaciNakitToplam | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaciNakitToplam | number:'1.2-2' }}₺</div>
                 <div class="summary-label">Nakit</div>
             </div>
             <div class="summary-card" [ngClass]="{
@@ -436,7 +436,7 @@
                         'pi-exclamation-circle': pompaFarkDurumRenk !== 'success'
                     }"></i>
                 </div>
-                <div class="summary-value">{{ pompaFark | number:'1.0-0' }}₺</div>
+                <div class="summary-value">{{ pompaFark | number:'1.2-2' }}₺</div>
                 <div class="summary-label">Fark</div>
             </div>
         </div>
@@ -875,14 +875,14 @@
                                     class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
                                     <span class="text-[var(--text-color-secondary)]">Başlangıç Stok:</span>
                                     <span class="font-bold text-[var(--text-color)]">{{ tank.baslangicStok |
-                                        number:'1.0-0' }} L</span>
+                                        number:'1.2-2' }} L</span>
                                 </div>
 
                                 <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
                                     *ngIf="tank.sevkiyatMiktar > 0">
                                     <span class="text-[var(--text-color-secondary)]">Sevkiyat:</span>
                                     <span class="font-bold text-green-600">+{{ tank.sevkiyatMiktar |
-                                        number:'1.0-0'
+                                        number:'1.2-2'
                                         }}
                                         L</span>
                                 </div>
@@ -891,7 +891,7 @@
                                     class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
                                     <span class="text-[var(--text-color-secondary)]">Satılan:</span>
                                     <span class="font-bold text-red-600">-{{ tank.satilanMiktar |
-                                        number:'1.0-0' }}
+                                        number:'1.2-2' }}
                                         L</span>
                                 </div>
 
@@ -899,7 +899,7 @@
                                     class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
                                     <span class="text-[var(--text-color-secondary)]">Bitiş Stok:</span>
                                     <span class="font-bold text-[var(--text-color)]">{{ tank.bitisStok |
-                                        number:'1.0-0'
+                                        number:'1.2-2'
                                         }} L</span>
                                 </div>
 
@@ -929,7 +929,7 @@
                                               }">
                                                     {{ tank.farkMiktar >= 0 ? '+' : '' }}{{ tank.farkMiktar
                                                     |
-                                                    number:'1.0-0' }} L
+                                                    number:'1.2-2' }} L
                                                 </span>
                                     </div>
                                     <p class="text-xs" [ngClass]="{

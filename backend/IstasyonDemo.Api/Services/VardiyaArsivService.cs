@@ -222,6 +222,7 @@ namespace IstasyonDemo.Api.Services
                 .Include(v => v.OtomasyonSatislar).ThenInclude(s => s.Yakit)
                 .Include(v => v.FiloSatislar).ThenInclude(f => f.Yakit)
                 .Include(v => v.Pusulalar).ThenInclude(p => p.DigerOdemeler)
+                .Include(v => v.Pusulalar).ThenInclude(p => p.Veresiyeler)
                 .Include(v => v.PompaEndeksleri)
                 .Include(v => v.Giderler)
                 .Include(v => v.VardiyaTankEnvanteri)
@@ -238,7 +239,12 @@ namespace IstasyonDemo.Api.Services
 
             var sistemToplam = vardiya.OtomasyonSatislar.Sum(s => s.ToplamTutar); // Mobil ödemeler zaten OtomasyonSatislar içinde
             var filoToplam = validFiloSatislar.Sum(f => f.Tutar);
-            var tahsilatToplam = vardiya.Pusulalar.Sum(p => p.Nakit + p.KrediKarti + (p.DigerOdemeler?.Sum(d => d.Tutar) ?? 0)) + mobileSales.Sum(m => m.MobilOdemeTutar);
+
+            // Tahsilat Toplamı Hesabı:
+            // Mobil ödemeler otomatik olarak pompacı pusulasına "Diğer Ödeme" olarak işlendiği için
+            // burada sadece pusula toplamını almak yeterlidir. Ayrıca mobileSales eklenmemelidir.
+            // FIX: Veresiyeler de toplama dahil edildi.
+            var tahsilatToplam = vardiya.Pusulalar.Sum(p => p.Nakit + p.KrediKarti + (p.DigerOdemeler?.Sum(d => d.Tutar) ?? 0) + (p.Veresiyeler?.Sum(v => v.Tutar) ?? 0));
             var giderToplam = vardiya.Giderler.Sum(g => g.Tutar);
             
             var fark = tahsilatToplam + filoToplam + giderToplam - sistemToplam;
@@ -298,7 +304,7 @@ namespace IstasyonDemo.Api.Services
             foreach (var p in personelFarklari)
             {
                 var pusula = vardiya.Pusulalar.FirstOrDefault(ps => ps.PersonelAdi == p.PersonelAdi);
-                if (pusula != null) p.Tahsilat = pusula.Nakit + pusula.KrediKarti + (pusula.DigerOdemeler?.Sum(d => d.Tutar) ?? 0);
+                if (pusula != null) p.Tahsilat = pusula.Nakit + pusula.KrediKarti + (pusula.DigerOdemeler?.Sum(d => d.Tutar) ?? 0) + (pusula.Veresiyeler?.Sum(v => v.Tutar) ?? 0);
                 
                 // Mobil ödemeleri bu personelin tahsilatına ekle
                 var personelinMobilOdemeleri = mobileSales.Where(m => m.PersonelKeyId == p.PersonelKeyId || m.PersonelAdi == p.PersonelAdi).Sum(m => m.MobilOdemeTutar);

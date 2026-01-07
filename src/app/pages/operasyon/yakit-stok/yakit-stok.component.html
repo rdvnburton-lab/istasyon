@@ -42,7 +42,7 @@
                 </div>
                 <div class="relative z-10">
                     <div class="text-indigo-100 text-sm font-medium mb-1">Toplam Anlık Stok</div>
-                    <div class="text-4xl font-bold mb-2">{{ totalCurrentStock | number:'1.0-0' }} <span
+                    <div class="text-4xl font-bold mb-2">{{ totalCurrentStock | number:'1.2-2' }} <span
                             class="text-lg opacity-70">Lt</span></div>
                     <div class="flex items-center gap-2 text-xs bg-white/20 w-max px-2 py-1 rounded-lg">
                         <i class="pi pi-clock"></i> <span>Canlı Tank Verisi</span>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="relative z-10">
                     <div class="text-emerald-100 text-sm font-medium mb-1">Aylık Toplam Satış</div>
-                    <div class="text-4xl font-bold mb-2">{{ totalMonthlySales | number:'1.0-0' }} <span
+                    <div class="text-4xl font-bold mb-2">{{ totalMonthlySales | number:'1.2-2' }} <span
                             class="text-lg opacity-70">Lt</span></div>
                     <div class="flex items-center gap-2 text-xs bg-white/20 w-max px-2 py-1 rounded-lg">
                         <i class="pi pi-chart-line"></i> <span>{{ selectedMonth.label }} ayına ait</span>
@@ -138,7 +138,7 @@
                         <div class="text-center py-6 bg-gray-50/50 rounded-xl mb-4 border border-gray-100">
                             <div class="text-xs text-gray-400 mb-1">Mevcut Stok</div>
                             <span class="text-4xl font-bold" [style.color]="item.renk || '#666'">
-                                {{ item.sonStok > 0 ? (item.sonStok | number:'1.0-0') : '0' }}
+                                {{ item.sonStok > 0 ? (item.sonStok | number:'1.2-2') : '0' }}
                             </span>
                             <span *ngIf="item.sonStok > 0" class="text-gray-500 text-lg ml-1">Lt</span>
                         </div>
@@ -158,19 +158,19 @@
                             <div class="p-3 bg-green-50 rounded-xl">
                                 <div class="text-green-600 text-[10px] mb-1 font-bold uppercase tracking-wide">Yükle
                                 </div>
-                                <div class="font-bold text-gray-800 text-sm">{{ item.toplamSevkiyat | number:'1.0-0' }}
+                                <div class="font-bold text-gray-800 text-sm">{{ item.toplamSevkiyat | number:'1.2-2' }}
                                 </div>
                             </div>
                             <div class="p-3 bg-red-50 rounded-xl">
                                 <div class="text-red-500 text-[10px] mb-1 font-bold uppercase tracking-wide">Sat</div>
-                                <div class="font-bold text-gray-800 text-sm">{{ item.toplamSatis | number:'1.0-0' }}
+                                <div class="font-bold text-gray-800 text-sm">{{ item.toplamSatis | number:'1.2-2' }}
                                 </div>
                             </div>
                             <div class="p-3 bg-gray-100 rounded-xl">
                                 <div class="text-gray-500 text-[10px] mb-1 font-bold uppercase tracking-wide">Fark</div>
                                 <div class="font-bold text-sm" [class.text-green-600]="item.toplamFark >= 0"
                                     [class.text-red-600]="item.toplamFark < 0">
-                                    {{ item.toplamFark | number:'1.0-0' }}
+                                    {{ item.toplamFark | number:'1.2-2' }}
                                 </div>
                             </div>
                         </div>
@@ -206,10 +206,10 @@
                                         [style.border-color]="t.renk + '40'" [style.background-color]="t.renk + '0A'">
                                         <span class="w-2 h-2 rounded-full" [style.background-color]="t.renk"></span>
                                         <span class="font-bold text-gray-700">{{ t.tankAdi }}:</span>
-                                        <span class="text-gray-600">{{ t.satilanMiktar | number:'1.0-1' }} Lt
+                                        <span class="text-gray-600">{{ t.satilanMiktar | number:'1.2-2' }} Lt
                                             Satış</span>
                                         <span *ngIf="t.sevkiyatMiktar > 0" class="text-green-600 font-bold">+{{
-                                            t.sevkiyatMiktar | number:'1.0-0' }} Lt</span>
+                                            t.sevkiyatMiktar | number:'1.2-2' }} Lt</span>
                                     </div>
                                 </div>
                             </td>

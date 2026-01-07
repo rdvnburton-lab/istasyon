@@ -32,17 +32,17 @@
     <div class="summary-scroll">
         <div class="summary-card blue">
             <div class="summary-icon"><i class="pi pi-database"></i></div>
-            <div class="summary-value">{{ otomasyonToplam | number:'1.0-0' }} ₺</div>
+            <div class="summary-value">{{ otomasyonToplam | number:'1.2-2' }} ₺</div>
             <div class="summary-label">Otomasyon</div>
         </div>
         <div class="summary-card green">
             <div class="summary-icon"><i class="pi pi-file"></i></div>
-            <div class="summary-value">{{ pusulaToplam | number:'1.0-0' }} ₺</div>
+            <div class="summary-value">{{ pusulaToplam | number:'1.2-2' }} ₺</div>
             <div class="summary-label">Pusula</div>
         </div>
         <div class="summary-card red" *ngIf="getToplamGider() > 0">
             <div class="summary-icon"><i class="pi pi-ticket"></i></div>
-            <div class="summary-value">{{ getToplamGider() | number:'1.0-0' }} ₺</div>
+            <div class="summary-value">{{ getToplamGider() | number:'1.2-2' }} ₺</div>
             <div class="summary-label">Gider</div>
         </div>
         <!-- Pompacı ve Filo Kartları Kaldırıldı - Özet Gösterim -->
@@ -59,7 +59,7 @@
                     'pi-exclamation-circle': Math.abs(fark) >= 1
                 }"></i>
             </div>
-            <div class="summary-value">{{ fark | number:'1.0-0' }} ₺</div>
+            <div class="summary-value">{{ fark | number:'1.2-2' }} ₺</div>
             <div class="summary-label">{{ Math.abs(fark) < 1 ? 'Mutabık' : (fark < 0 ? 'Eksik' : 'Fazla' ) }}</div>
             </div>
         </div>
